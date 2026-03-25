@@ -28,7 +28,6 @@
             padding-bottom: 60px;
         }
 
-        /* HEADER */
         .header {
             text-align: center;
             padding: 32px 20px 20px;
@@ -50,7 +49,6 @@
 
         .header h1 span { color: var(--brand-accent); }
 
-        /* MAIN CONTAINER */
         .container {
             max-width: 860px;
             margin: 0 auto;
@@ -103,7 +101,6 @@
             border-color: var(--brand-accent);
         }
 
-        /* FILTER PANEL */
         .filter-panel {
             background: var(--card-bg);
             border: 1px solid #1a2a35;
@@ -148,7 +145,6 @@
             color: #000;
         }
 
-        /* RESULTS */
         .results-count {
             font-size: 0.7rem;
             color: #555;
@@ -178,22 +174,9 @@
         .result-item:last-child { border-bottom: none; }
         .result-item:hover { background: #152733; }
 
-        .result-name {
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .result-tags {
-            font-size: 0.65rem;
-            color: #555;
-            margin-top: 2px;
-        }
-
-        .result-play {
-            color: var(--brand-accent);
-            font-size: 1.2rem;
-            opacity: 0.6;
-        }
+        .result-name { font-size: 0.9rem; font-weight: 600; }
+        .result-tags { font-size: 0.65rem; color: #555; margin-top: 2px; }
+        .result-play { color: var(--brand-accent); font-size: 1.2rem; opacity: 0.6; }
 
         /* VIDEO MODAL */
         .video-overlay {
@@ -219,118 +202,23 @@
 
         .video-close {
             position: absolute;
-            top: -40px;
+            top: -44px;
             right: 0;
             background: none;
             border: none;
             color: white;
-            font-size: 2rem;
+            font-size: 2.2rem;
             cursor: pointer;
+            line-height: 1;
+            z-index: 10;
         }
 
         .video-title {
-            padding: 16px;
+            padding: 14px 16px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--brand-accent);
-        }
-
-        /* TOOLS GRID */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .tool-card {
-            background: var(--card-bg);
-            border: 1px solid #1a2a35;
-            border-radius: 10px;
-            padding: 18px;
-        }
-
-        .tool-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.7rem;
-            font-weight: 800;
-            color: var(--brand-accent);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 14px;
-        }
-
-        .timer-display {
-            font-size: 2.8rem;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            text-align: center;
-            margin: 10px 0;
-            color: white;
-        }
-
-        input[type="number"], input[type="range"] {
-            width: 100%;
-            background: var(--input-bg);
-            border: 1px solid #1a2a35;
-            border-radius: 6px;
-            color: white;
-            padding: 8px 10px;
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-        }
-
-        input[type="range"] {
-            padding: 4px 0;
-            cursor: pointer;
-        }
-
-        .tool-btn {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            background: #003B5C;
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            font-size: 0.75rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.2s;
-            margin-top: 4px;
-        }
-
-        .tool-btn:hover { background: #004d7a; }
-        .tool-btn.running { background: #7f1d1d; color: #f87171; }
-
-        .tool-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .tool-row input { margin-bottom: 0; }
-
-        .bpm-display {
-            font-size: 3rem;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
-            text-align: center;
-            color: var(--brand-accent);
-            margin: 6px 0;
-            transition: all 0.05s;
-        }
-
-        .result-output {
-            background: #000;
-            border-left: 3px solid var(--brand-accent);
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            margin-top: 8px;
-            display: none;
         }
 
         /* LOGIN SECTION */
@@ -437,12 +325,167 @@
         .msg-error { background: rgba(255,82,82,0.1); border: 1px solid #ff5252; color: #ff5252; }
         .msg-success { background: rgba(46,125,50,0.1); border: 1px solid #2E7D32; color: #4ade80; }
 
+        /* TOOLS */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid #1a2a35;
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .tool-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--brand-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .timer-display {
+            font-size: 2.6rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-align: center;
+            margin: 8px 0;
+            color: white;
+        }
+
+        .tool-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid #1a2a35;
+            border-radius: 6px;
+            color: white;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-family: inherit;
+        }
+
+        .tool-input:focus { outline: none; border-color: var(--brand-accent); }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+            margin-bottom: 8px;
+            accent-color: var(--brand-accent);
+        }
+
+        .tool-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background: #003B5C;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.2s;
+            margin-top: 4px;
+        }
+
+        .tool-btn:hover { background: #004d7a; }
+        .tool-btn.running { background: #7f1d1d; color: #f87171; }
+
+        .tool-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tool-row .tool-input { margin-bottom: 0; }
+
+        .bpm-display {
+            font-size: 3rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            text-align: center;
+            color: var(--brand-accent);
+            margin: 4px 0 8px;
+            transition: transform 0.05s, color 0.05s;
+        }
+
+        .result-output {
+            background: #000;
+            border-left: 3px solid var(--brand-accent);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            display: none;
+            line-height: 1.8;
+        }
+
+        .phase-label {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .solve-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .solve-field { display: flex; flex-direction: column; gap: 4px; }
+        .solve-label {
+            font-size: 0.55rem;
+            font-weight: 800;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .solve-field .tool-input { margin-bottom: 0; }
+
+        .rm-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            margin-top: 8px;
+        }
+
+        .rm-table th {
+            color: var(--brand-accent);
+            font-weight: 800;
+            padding: 4px 6px;
+            text-align: center;
+            border-bottom: 1px solid #1a2a35;
+        }
+
+        .rm-table td {
+            padding: 4px 6px;
+            text-align: center;
+            border-bottom: 1px solid #0e1b24;
+            color: #ccc;
+        }
+
+        .rm-table tr:last-child td { border-bottom: none; }
+        .rm-table tr.highlight td { color: var(--brand-accent); font-weight: 700; }
+
         .section-gap { margin-bottom: 16px; }
     </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
     <img src="icon-512.png" alt="Rest Period" />
     <h1>REST <span>PERIOD</span></h1>
@@ -460,97 +503,18 @@
                 FILTERS ▾
             </button>
         </div>
-
         <div class="filter-panel" id="filter-panel"></div>
-
         <div class="results-count" id="results-count"></div>
         <div class="results-list" id="results-list"></div>
     </div>
 
-    <!-- TOOLS ROW 1: Countdown + Metronome -->
-    <div class="tools-grid section-gap">
-
-        <!-- COUNTDOWN -->
-        <div class="tool-card">
-            <div class="tool-title">⏱ Countdown</div>
-            <input type="number" id="cd-input" value="60" min="1" placeholder="Seconds" />
-            <div class="timer-display" id="cd-display">01:00</div>
-            <button class="tool-btn" id="cd-btn" onclick="toggleCountdown()">Start</button>
-        </div>
-
-        <!-- METRONOME -->
-        <div class="tool-card">
-            <div class="tool-title">🥁 Metronome</div>
-            <div class="bpm-display" id="bpm-display">60</div>
-            <input type="range" id="bpm-slider" min="40" max="220" value="60"
-                oninput="updateBPM(this.value)" />
-            <button class="tool-btn" id="metro-btn" onclick="toggleMetronome()">Start</button>
-        </div>
-
-    </div>
-
-    <!-- TOOLS ROW 2: Stopwatch + 1RM -->
-    <div class="tools-grid section-gap">
-
-        <!-- STOPWATCH -->
-        <div class="tool-card">
-            <div class="tool-title">⏲ Stopwatch</div>
-            <div class="timer-display" id="sw-display">00:00.00</div>
-            <div class="tool-row">
-                <button class="tool-btn" id="sw-btn" onclick="toggleStopwatch()">Start</button>
-                <button class="tool-btn" onclick="resetStopwatch()">Reset</button>
-            </div>
-        </div>
-
-        <!-- 1RM CALCULATOR -->
-        <div class="tool-card">
-            <div class="tool-title">🏋️ 1RM Calc</div>
-            <div class="tool-row" style="margin-bottom:8px;">
-                <input type="number" id="rm-weight" placeholder="Weight (kg)" />
-                <input type="number" id="rm-reps" placeholder="Reps" />
-            </div>
-            <button class="tool-btn" onclick="calc1RM()">Calculate</button>
-            <div class="result-output" id="rm-output"></div>
-        </div>
-
-    </div>
-
-    <!-- TOOLS ROW 3: Pace + Intervals -->
-    <div class="tools-grid section-gap">
-
-        <!-- PACE CALCULATOR -->
-        <div class="tool-card">
-            <div class="tool-title">🏃 Pace Calc</div>
-            <input type="number" id="pace-dist" placeholder="Distance (km)" />
-            <div class="tool-row" style="margin-bottom:8px;">
-                <input type="number" id="pace-min" placeholder="Min" />
-                <input type="number" id="pace-sec" placeholder="Sec" />
-            </div>
-            <button class="tool-btn" onclick="calcPace()">Calculate</button>
-            <div class="result-output" id="pace-output"></div>
-        </div>
-
-        <!-- INTERVAL TIMER -->
-        <div class="tool-card">
-            <div class="tool-title">🔁 Intervals</div>
-            <div class="tool-row" style="margin-bottom:8px;">
-                <input type="number" id="int-work" value="30" placeholder="Work (s)" />
-                <input type="number" id="int-rest" value="15" placeholder="Rest (s)" />
-            </div>
-            <div class="timer-display" id="int-display" style="font-size:2rem;">00:30</div>
-            <button class="tool-btn" id="int-btn" onclick="toggleInterval()">Start</button>
-        </div>
-
-    </div>
-
     <!-- LOGIN / SIGNUP -->
-    <div class="login-section">
+    <div class="login-section section-gap">
         <div class="tabs">
             <button class="tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
             <button class="tab" id="tab-signup" onclick="switchTab('signup')">Sign Up Free</button>
         </div>
 
-        <!-- LOGIN -->
         <div id="login-form">
             <div class="form-group">
                 <label class="form-label">Email</label>
@@ -564,7 +528,6 @@
             <div class="msg msg-error" id="login-error"></div>
         </div>
 
-        <!-- SIGNUP -->
         <div id="signup-form" style="display:none;">
             <div class="free-badge">
                 Free accounts can <strong>search the full exercise library</strong> and
@@ -593,11 +556,129 @@
         </div>
     </div>
 
+    <!-- ROW 1: Countdown + Metronome -->
+    <div class="tools-grid section-gap">
+
+        <div class="tool-card">
+            <div class="tool-title">⏱ Countdown</div>
+            <input type="number" class="tool-input" id="cd-input" value="60" min="1" placeholder="Seconds"
+                oninput="if(!cdRunning){cdTime=parseInt(this.value)||60;updateCDDisplay()}" />
+            <div class="timer-display" id="cd-display">01:00</div>
+            <button class="tool-btn" id="cd-btn" onclick="toggleCountdown()">Start</button>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-title">🥁 Metronome</div>
+            <div class="bpm-display" id="bpm-display">60</div>
+            <input type="range" id="bpm-slider" min="40" max="220" value="60"
+                oninput="document.getElementById('bpm-display').textContent=this.value" />
+            <button class="tool-btn" id="metro-btn" onclick="toggleMetronome()">Start</button>
+        </div>
+
+    </div>
+
+    <!-- ROW 2: Stopwatch + 1RM -->
+    <div class="tools-grid section-gap">
+
+        <div class="tool-card">
+            <div class="tool-title">⏲ Stopwatch</div>
+            <div class="timer-display" id="sw-display">00:00.00</div>
+            <div class="tool-row">
+                <button class="tool-btn" id="sw-btn" onclick="toggleStopwatch()">Start</button>
+                <button class="tool-btn" onclick="resetStopwatch()">Reset</button>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-title">🏋️ 1RM Calculator</div>
+            <div class="tool-row">
+                <div class="solve-field">
+                    <span class="solve-label">Weight (kg)</span>
+                    <input type="number" class="tool-input" id="rm-weight" placeholder="e.g. 100" />
+                </div>
+                <div class="solve-field">
+                    <span class="solve-label">Reps done</span>
+                    <input type="number" class="tool-input" id="rm-reps" placeholder="e.g. 5" />
+                </div>
+            </div>
+            <button class="tool-btn" onclick="calc1RM()">Calculate</button>
+            <div id="rm-output" style="display:none; margin-top:10px; max-height:220px; overflow-y:auto;">
+                <table class="rm-table">
+                    <thead>
+                        <tr>
+                            <th>Reps</th>
+                            <th>Epley</th>
+                            <th>Brzycki</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rm-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ROW 3: Pace + Intervals -->
+    <div class="tools-grid section-gap">
+
+        <!-- PACE SOLVER -->
+        <div class="tool-card">
+            <div class="tool-title">🏃 Pace Solver</div>
+            <p style="font-size:0.65rem; color:#555; margin-bottom:10px;">Fill any 2 fields — leave 1 blank to solve it.</p>
+            <div class="solve-row">
+                <div class="solve-field">
+                    <span class="solve-label">Distance</span>
+                    <input type="number" class="tool-input" id="pace-dist" placeholder="km" step="0.01" />
+                </div>
+                <div class="solve-field">
+                    <span class="solve-label">Time (min)</span>
+                    <input type="number" class="tool-input" id="pace-time" placeholder="mins" step="0.1" />
+                </div>
+                <div class="solve-field">
+                    <span class="solve-label">Pace /km</span>
+                    <input type="number" class="tool-input" id="pace-pace" placeholder="min/km" step="0.1" />
+                </div>
+            </div>
+            <button class="tool-btn" onclick="solvePace()">Solve</button>
+            <div class="result-output" id="pace-output"></div>
+        </div>
+
+        <!-- INTERVAL TIMER -->
+        <div class="tool-card">
+            <div class="tool-title">🔁 Interval Timer</div>
+            <div class="tool-row">
+                <div class="solve-field">
+                    <span class="solve-label">Warm up (s)</span>
+                    <input type="number" class="tool-input" id="int-warmup" value="0" min="0" placeholder="0 = skip" />
+                </div>
+                <div class="solve-field">
+                    <span class="solve-label">Sets</span>
+                    <input type="number" class="tool-input" id="int-sets" value="5" min="1" />
+                </div>
+            </div>
+            <div class="tool-row">
+                <div class="solve-field">
+                    <span class="solve-label">Work (s)</span>
+                    <input type="number" class="tool-input" id="int-work" value="30" min="1" />
+                </div>
+                <div class="solve-field">
+                    <span class="solve-label">Rest (s)</span>
+                    <input type="number" class="tool-input" id="int-rest" value="15" min="0" />
+                </div>
+            </div>
+            <div class="phase-label" id="int-phase-label" style="color:var(--brand-accent);">READY</div>
+            <div class="timer-display" id="int-display" style="font-size:2.2rem;">00:30</div>
+            <div style="font-size:0.65rem; color:#555; text-align:center; margin-bottom:6px;" id="int-sets-label"></div>
+            <button class="tool-btn" id="int-btn" onclick="toggleInterval()">Start</button>
+        </div>
+
+    </div>
+
 </div>
 
 <!-- VIDEO MODAL -->
-<div class="video-overlay" id="video-overlay">
-    <div class="video-box">
+<div class="video-overlay" id="video-overlay" onclick="handleVideoOverlayClick(event)">
+    <div class="video-box" id="video-box">
         <button class="video-close" onclick="closeVideo()">✕</button>
         <div class="video-title" id="video-title"></div>
         <div id="video-content"></div>
@@ -606,7 +687,6 @@
 
 <script>
     const pb = new PocketBase('https://restperiod.org');
-
     if (pb.authStore.isValid) redirect(pb.authStore.model.role);
 
     function redirect(role) {
@@ -628,7 +708,6 @@
     let activeFilters = [];
     let filterPanelOpen = false;
 
-    // Build filter panel
     const filterPanel = document.getElementById('filter-panel');
     for (const [group, options] of Object.entries(filterGroups)) {
         const div = document.createElement('div');
@@ -670,8 +749,10 @@
         }
 
         const results = exerciseDatabase.filter(e => {
-            const textMatch = !q || e.title.toLowerCase().includes(q) || e.searchStr.toLowerCase().includes(q);
-            const filterMatch = activeFilters.every(f => e.searchStr.toUpperCase().includes(f));
+            const textMatch = !q || e.title.toLowerCase().includes(q) ||
+                (e.searchStr || '').toLowerCase().includes(q);
+            const filterMatch = activeFilters.every(f =>
+                (e.searchStr || '').toUpperCase().includes(f));
             return textMatch && filterMatch;
         }).slice(0, 50);
 
@@ -680,8 +761,10 @@
 
         resultsList.innerHTML = results.map(e => {
             const cleanName = e.title.replace(/^([A-Z0-9-]{2,}\s*)+/, '').trim();
-            const tags = e.searchStr.split(' ').filter(t => t.length > 1 && t.length < 10).slice(0, 4).join(' · ');
-            return `<div class="result-item" onclick="openVideo('${e.title.replace(/'/g, "\\'")}', '${(e.video||e.src||'').replace(/'/g, "\\'")}')">
+            const tags = (e.searchStr || '').split(' ')
+                .filter(t => t.length > 1 && t.length < 12).slice(0, 4).join(' · ');
+            const videoUrl = e.video || e.src || '';
+            return `<div class="result-item" onclick="openVideo('${e.title.replace(/'/g,"\\'")}','${videoUrl.replace(/'/g,"\\'")}')">
                 <div>
                     <div class="result-name">${cleanName}</div>
                     <div class="result-tags">${tags}</div>
@@ -697,15 +780,28 @@
         const content = document.getElementById('video-content');
 
         if (!url) {
-            content.innerHTML = `<div style="padding:40px; text-align:center; color:#555;">No video available for this exercise.</div>`;
-        } else if (url.includes('.mp4') || url.includes('.mov')) {
-            content.innerHTML = `<video controls autoplay loop playsinline style="width:100%; display:block; border-radius:0 0 12px 12px;"><source src="${url}" type="video/mp4"></video>`;
+            content.innerHTML = `<div style="padding:40px;text-align:center;color:#555;border-radius:0 0 12px 12px;">No video available.</div>`;
+        } else if (url.includes('.mp4') || url.includes('.mov') || url.includes('pocketbase')) {
+            content.innerHTML = `<video controls autoplay loop playsinline
+                style="width:100%;display:block;border-radius:0 0 12px 12px;max-height:70vh;">
+                <source src="${url}" type="video/mp4">
+            </video>`;
         } else {
-            const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('youtu.be/')[1];
-            content.innerHTML = `<div style="position:relative;padding-bottom:56.25%;height:0;"><iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:0 0 12px 12px;" frameborder="0" allowfullscreen></iframe></div>`;
+            let videoId = '';
+            if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
+            else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
+            content.innerHTML = `<div style="position:relative;padding-bottom:56.25%;height:0;">
+                <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1"
+                    style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:0 0 12px 12px;"
+                    frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>
+            </div>`;
         }
 
         document.getElementById('video-overlay').classList.add('open');
+    }
+
+    function handleVideoOverlayClick(e) {
+        if (e.target === document.getElementById('video-overlay')) closeVideo();
     }
 
     function closeVideo() {
@@ -716,16 +812,10 @@
     // ── COUNTDOWN ─────────────────────────────────────
     let cdRunning = false, cdTime = 60, cdInterval = null;
 
-    document.getElementById('cd-input').addEventListener('input', function() {
-        if (!cdRunning) {
-            cdTime = parseInt(this.value) || 60;
-            updateCDDisplay();
-        }
-    });
-
     function updateCDDisplay() {
         const m = Math.floor(cdTime / 60), s = cdTime % 60;
-        document.getElementById('cd-display').textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        document.getElementById('cd-display').textContent =
+            `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }
 
     function toggleCountdown() {
@@ -749,59 +839,70 @@
                     btn.textContent = 'Start';
                     btn.classList.remove('running');
                     cdTime = parseInt(document.getElementById('cd-input').value) || 60;
+                    updateCDDisplay();
                 }
             }, 1000);
         }
     }
 
-    // ── METRONOME ─────────────────────────────────────
-    let audioCtx = null, metroPlaying = false, metroTimer = null, nextTick = 0;
+    // ── METRONOME (Web Audio API — precise scheduler) ─
+    let audioCtx = null;
+    let metroPlaying = false;
+    let metroTimerID = null;
+    let nextTickTime = 0.0;
+    const lookahead = 25.0;
+    const scheduleAhead = 0.1;
 
-    function updateBPM(val) {
-        document.getElementById('bpm-display').textContent = val;
+    function scheduleClick(time) {
+        const osc = audioCtx.createOscillator();
+        const env = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 1000;
+        env.gain.setValueAtTime(1, time);
+        env.gain.exponentialRampToValueAtTime(0.001, time + 0.025);
+        osc.connect(env);
+        env.connect(audioCtx.destination);
+        osc.start(time);
+        osc.stop(time + 0.03);
+
+        // Visual pulse synced to audio
+        const delay = Math.max(0, (time - audioCtx.currentTime) * 1000);
+        setTimeout(() => {
+            const d = document.getElementById('bpm-display');
+            if (!d) return;
+            d.style.color = '#fff';
+            d.style.transform = 'scale(1.18)';
+            setTimeout(() => {
+                d.style.color = 'var(--brand-accent)';
+                d.style.transform = 'scale(1)';
+            }, 60);
+        }, delay);
     }
 
-    function scheduler() {
-        while (nextTick < audioCtx.currentTime + 0.1) {
-            const osc = audioCtx.createOscillator();
-            const env = audioCtx.createGain();
-            osc.frequency.value = 1000;
-            env.gain.value = 1;
-            env.gain.exponentialRampToValueAtTime(0.001, nextTick + 0.02);
-            osc.connect(env);
-            env.connect(audioCtx.destination);
-            osc.start(nextTick);
-            osc.stop(nextTick + 0.03);
-            const bpm = parseFloat(document.getElementById('bpm-slider').value);
-            nextTick += 60 / bpm;
-
-            const delay = (nextTick - audioCtx.currentTime) * 1000;
-            setTimeout(() => {
-                const d = document.getElementById('bpm-display');
-                if (d) { d.style.color = '#fff'; d.style.transform = 'scale(1.15)'; }
-                setTimeout(() => {
-                    if (d) { d.style.color = 'var(--brand-accent)'; d.style.transform = 'scale(1)'; }
-                }, 60);
-            }, delay);
+    function metroScheduler() {
+        const bpm = parseFloat(document.getElementById('bpm-slider').value);
+        const secPerBeat = 60.0 / bpm;
+        while (nextTickTime < audioCtx.currentTime + scheduleAhead) {
+            scheduleClick(nextTickTime);
+            nextTickTime += secPerBeat;
         }
-        metroTimer = setTimeout(scheduler, 25);
+        metroTimerID = setTimeout(metroScheduler, lookahead);
     }
 
     function toggleMetronome() {
-        const btn = document.getElementById('metro-btn');
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
-
+        const btn = document.getElementById('metro-btn');
         metroPlaying = !metroPlaying;
         if (metroPlaying) {
             btn.textContent = 'Stop';
             btn.classList.add('running');
-            nextTick = audioCtx.currentTime;
-            scheduler();
+            nextTickTime = audioCtx.currentTime;
+            metroScheduler();
         } else {
             btn.textContent = 'Start';
             btn.classList.remove('running');
-            clearTimeout(metroTimer);
+            clearTimeout(metroTimerID);
         }
     }
 
@@ -827,91 +928,212 @@
                 const s = Math.floor((t % 60000) / 1000);
                 const ms = Math.floor((t % 1000) / 10);
                 document.getElementById('sw-display').textContent =
-                    `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${ms.toString().padStart(2,'0')}`;
+                    `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms).padStart(2,'0')}`;
             }, 50);
         }
     }
 
     function resetStopwatch() {
         clearInterval(swInterval);
-        swRunning = false;
-        swElapsed = 0;
+        swRunning = false; swElapsed = 0;
         document.getElementById('sw-display').textContent = '00:00.00';
-        document.getElementById('sw-btn').textContent = 'Start';
-        document.getElementById('sw-btn').classList.remove('running');
+        const btn = document.getElementById('sw-btn');
+        btn.textContent = 'Start';
+        btn.classList.remove('running');
     }
 
     // ── 1RM CALCULATOR ────────────────────────────────
     function calc1RM() {
         const w = parseFloat(document.getElementById('rm-weight').value);
         const r = parseFloat(document.getElementById('rm-reps').value);
-        if (!w || !r) return;
-        const epley = Math.round(w * (1 + r / 30));
-        const brzycki = Math.round(w * (36 / (37 - r)));
-        const out = document.getElementById('rm-output');
-        out.innerHTML = `Epley: <strong style="color:var(--brand-accent)">${epley}kg</strong> &nbsp;|&nbsp; Brzycki: <strong style="color:var(--brand-accent)">${brzycki}kg</strong>`;
-        out.style.display = 'block';
+        if (!w || !r || r < 1 || r > 30) return;
+
+        const tbody = document.getElementById('rm-table-body');
+        tbody.innerHTML = '';
+
+        for (let reps = 1; reps <= 10; reps++) {
+            const epley = Math.round(w * (1 + reps / 30));
+            const brzycki = reps < 37 ? Math.round(w * (36 / (37 - reps))) : '—';
+            const row = document.createElement('tr');
+            if (reps === Math.round(r)) row.classList.add('highlight');
+            row.innerHTML = `<td>${reps}</td><td>${epley}kg</td><td>${brzycki}${typeof brzycki === 'number' ? 'kg' : ''}</td>`;
+            tbody.appendChild(row);
+        }
+
+        document.getElementById('rm-output').style.display = 'block';
     }
 
-    // ── PACE CALCULATOR ───────────────────────────────
-    function calcPace() {
-        const dist = parseFloat(document.getElementById('pace-dist').value);
-        const min = parseInt(document.getElementById('pace-min').value) || 0;
-        const sec = parseInt(document.getElementById('pace-sec').value) || 0;
-        if (!dist || (!min && !sec)) return;
-        const totalSec = (min * 60) + sec;
-        const paceSec = totalSec / dist;
-        const pm = Math.floor(paceSec / 60);
-        const ps = Math.round(paceSec % 60);
+    // ── PACE SOLVER ───────────────────────────────────
+    function solvePace() {
+        const distVal = document.getElementById('pace-dist').value;
+        const timeVal = document.getElementById('pace-time').value;
+        const paceVal = document.getElementById('pace-pace').value;
+
+        const filled = [distVal, timeVal, paceVal].filter(v => v !== '').length;
         const out = document.getElementById('pace-output');
-        out.innerHTML = `Pace: <strong style="color:var(--brand-accent)">${pm}:${ps.toString().padStart(2,'0')} /km</strong>`;
+
+        if (filled < 2) {
+            out.innerHTML = 'Fill in any 2 fields to solve the third.';
+            out.style.display = 'block';
+            return;
+        }
+
+        let dist = parseFloat(distVal);
+        let time = parseFloat(timeVal); // in minutes
+        let pace = parseFloat(paceVal); // min/km
+
+        let result = '';
+
+        if (!distVal) {
+            dist = time / pace;
+            result = `Distance: <strong style="color:var(--brand-accent)">${dist.toFixed(2)} km</strong>`;
+        } else if (!timeVal) {
+            time = dist * pace;
+            const h = Math.floor(time / 60);
+            const m = Math.floor(time % 60);
+            const s = Math.round((time % 1) * 60);
+            result = `Time: <strong style="color:var(--brand-accent)">${h > 0 ? h + 'h ' : ''}${m}m ${s}s</strong>`;
+        } else {
+            pace = time / dist;
+            const pm = Math.floor(pace);
+            const ps = Math.round((pace % 1) * 60);
+            result = `Pace: <strong style="color:var(--brand-accent)">${pm}:${String(ps).padStart(2,'0')} /km</strong>`;
+        }
+
+        out.innerHTML = result;
         out.style.display = 'block';
     }
 
     // ── INTERVAL TIMER ────────────────────────────────
-    let intRunning = false, intPhase = 'work', intTime = 30, intInterval = null;
+    let intRunning = false;
+    let intInterval = null;
+    let intPhase = 'idle';
+    let intCurrentSet = 0;
+    let intTotalSets = 0;
+    let intTime = 0;
 
     function updateIntDisplay() {
         const m = Math.floor(intTime / 60), s = intTime % 60;
         document.getElementById('int-display').textContent =
-            `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function setIntPhase(phase, set, total) {
+        intPhase = phase;
+        const label = document.getElementById('int-phase-label');
+        const display = document.getElementById('int-display');
+        const setsLabel = document.getElementById('int-sets-label');
+
+        if (phase === 'warmup') {
+            label.textContent = 'WARM UP';
+            label.style.color = '#fb923c';
+            display.style.color = '#fb923c';
+            setsLabel.textContent = '';
+        } else if (phase === 'work') {
+            label.textContent = 'WORK';
+            label.style.color = '#4ade80';
+            display.style.color = '#4ade80';
+            setsLabel.textContent = `Set ${set} of ${total}`;
+        } else if (phase === 'rest') {
+            label.textContent = 'REST';
+            label.style.color = '#f87171';
+            display.style.color = '#f87171';
+            setsLabel.textContent = `Set ${set} of ${total}`;
+        } else if (phase === 'done') {
+            label.textContent = 'DONE 🔥';
+            label.style.color = 'var(--brand-accent)';
+            display.style.color = 'white';
+            setsLabel.textContent = '';
+        }
     }
 
     function toggleInterval() {
         const btn = document.getElementById('int-btn');
+
         if (intRunning) {
             clearInterval(intInterval);
             intRunning = false;
             btn.textContent = 'Start';
             btn.classList.remove('running');
-            intPhase = 'work';
+            intPhase = 'idle';
+            document.getElementById('int-phase-label').textContent = 'READY';
+            document.getElementById('int-phase-label').style.color = 'var(--brand-accent)';
+            document.getElementById('int-display').style.color = 'white';
+            document.getElementById('int-sets-label').textContent = '';
             intTime = parseInt(document.getElementById('int-work').value) || 30;
             updateIntDisplay();
+            return;
+        }
+
+        const warmup = parseInt(document.getElementById('int-warmup').value) || 0;
+        const sets = parseInt(document.getElementById('int-sets').value) || 5;
+        const work = parseInt(document.getElementById('int-work').value) || 30;
+        const rest = parseInt(document.getElementById('int-rest').value) || 15;
+
+        intTotalSets = sets;
+        intCurrentSet = 1;
+        intRunning = true;
+        btn.textContent = 'Stop';
+        btn.classList.add('running');
+
+        if (warmup > 0) {
+            intTime = warmup;
+            setIntPhase('warmup', 0, sets);
         } else {
-            intTime = parseInt(document.getElementById('int-work').value) || 30;
-            intPhase = 'work';
-            intRunning = true;
-            btn.textContent = 'Stop';
-            btn.classList.add('running');
-            const display = document.getElementById('int-display');
-            display.style.color = '#4ade80';
+            intTime = work;
+            setIntPhase('work', 1, sets);
+        }
+        updateIntDisplay();
+
+        intInterval = setInterval(() => {
+            intTime--;
             updateIntDisplay();
-            intInterval = setInterval(() => {
-                intTime--;
-                updateIntDisplay();
-                if (intTime <= 0) {
-                    if (intPhase === 'work') {
-                        intPhase = 'rest';
-                        intTime = parseInt(document.getElementById('int-rest').value) || 15;
-                        display.style.color = '#f87171';
+
+            if (intTime > 0) return;
+
+            // Phase transition
+            if (intPhase === 'warmup') {
+                intTime = work;
+                intCurrentSet = 1;
+                setIntPhase('work', intCurrentSet, intTotalSets);
+
+            } else if (intPhase === 'work') {
+                if (rest > 0) {
+                    intTime = rest;
+                    setIntPhase('rest', intCurrentSet, intTotalSets);
+                } else {
+                    // No rest — go straight to next set
+                    intCurrentSet++;
+                    if (intCurrentSet > intTotalSets) {
+                        clearInterval(intInterval);
+                        intRunning = false;
+                        btn.textContent = 'Start';
+                        btn.classList.remove('running');
+                        intTime = 0;
+                        setIntPhase('done', 0, 0);
+                        updateIntDisplay();
                     } else {
-                        intPhase = 'work';
-                        intTime = parseInt(document.getElementById('int-work').value) || 30;
-                        display.style.color = '#4ade80';
+                        intTime = work;
+                        setIntPhase('work', intCurrentSet, intTotalSets);
                     }
                 }
-            }, 1000);
-        }
+
+            } else if (intPhase === 'rest') {
+                intCurrentSet++;
+                if (intCurrentSet > intTotalSets) {
+                    clearInterval(intInterval);
+                    intRunning = false;
+                    btn.textContent = 'Start';
+                    btn.classList.remove('running');
+                    intTime = 0;
+                    setIntPhase('done', 0, 0);
+                    updateIntDisplay();
+                } else {
+                    intTime = work;
+                    setIntPhase('work', intCurrentSet, intTotalSets);
+                }
+            }
+        }, 1000);
     }
 
     // ── AUTH ──────────────────────────────────────────
@@ -947,11 +1169,9 @@
         const password = document.getElementById('signup-password').value;
         const confirm = document.getElementById('signup-confirm').value;
         const errEl = document.getElementById('signup-error');
-        const successEl = document.getElementById('signup-success');
         const btn = document.getElementById('signup-btn');
 
         errEl.style.display = 'none';
-        successEl.style.display = 'none';
 
         if (!name || !email || !password) {
             errEl.textContent = 'Please fill in all fields.';
