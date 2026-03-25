@@ -89,6 +89,47 @@
         .quad-title { font-size: 0.65rem; color: #aaa; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; display: block; }
         .timer-display { font-size: 4rem; font-family: 'Courier New', monospace; font-weight: bold; margin: 15px 0; color: #fff; text-align: center;}
         #sync-toast { position: fixed; bottom: 20px; right: 20px; background: var(--brand-secondary); color: white; padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; display: none; z-index: 7000; }
+   .t-unit-btn {
+    padding: 5px 10px;
+    border: none;
+    background: none;
+    color: #555;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 0.65rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.t-unit-btn.active { background: var(--brand-accent); color: #000; }
+
+.tool-inp {
+    width: 100%;
+    background: #000;
+    border: 1px solid #1a2c3a;
+    border-radius: 4px;
+    color: white;
+    padding: 9px 10px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    margin-bottom: 10px;
+}
+.tool-inp:focus { outline: none; border-color: var(--brand-accent); }
+
+.tool-action-btn {
+    padding: 11px;
+    border: none;
+    border-radius: 6px;
+    background: var(--brand-primary);
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.2s;
+}
+.tool-action-btn:hover { background: #004d7a; }
+.tool-action-btn.running { background: #7f1d1d; color: #f87171; }
     </style>
 </head>
 <body>
@@ -137,86 +178,131 @@
     </div>
 
     <div id="toolModal" class="modal">
-        <div class="modal-content">
-            <span onclick="closeTool()" style="float:right; cursor:pointer; font-size:1.5rem;">&times;</span>
-            
-            <div id="pace-tool" class="tool-content" style="display:none;">
-                <h3 style="color:var(--brand-accent)">Pace Solver</h3>
-                <input type="number" id="p-dist" placeholder="Distance"><select id="p-unit"><option value="km">KM</option><option value="mi">Miles</option></select>
-                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px;"><input type="number" id="p-h" placeholder="H"><input type="number" id="p-m" placeholder="M"><input type="number" id="p-s" placeholder="S"></div>
-                <button class="btn-blue" style="background:var(--brand-primary); color:white; border:none; padding:15px; width:100%; border-radius:4px; font-weight:800; margin-top:10px;" onclick="solvePace()">Calculate</button>
-                <div id="p-output" style="margin-top:10px; background:#000; padding:10px; display:none; border-left:3px solid var(--brand-accent);"></div>
-            </div>
+    <div class="modal-content" style="max-width:480px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <span id="tool-modal-title" style="font-family:'Montserrat'; font-weight:800; font-size:1rem; color:var(--brand-accent);"></span>
+            <span onclick="closeTool()" style="cursor:pointer; font-size:1.5rem; color:#888;">&times;</span>
+        </div>
 
-            <div id="onerm-tool" class="tool-content" style="display:none;">
-                <h3>1RM Pro</h3>
-                <input type="number" id="rm-w" placeholder="Weight"><input type="number" id="rm-r" placeholder="Reps">
-                <button class="btn-blue" style="background:var(--brand-primary); color:white; border:none; padding:15px; width:100%; border-radius:4px; font-weight:800; margin-top:10px;" onclick="calc1RM()">Calculate</button>
-                <div id="rm-results" style="display:none; margin-top:10px; background:#000; padding:10px; border-radius:4px;">
-                    Epley: <span id="res-epley" style="color:var(--brand-accent)"></span> | Brzycki: <span id="res-brzycki" style="color:var(--brand-accent)"></span>
+        <!-- PACE SOLVER -->
+        <div id="pace-tool" class="tool-content" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <p style="font-size:0.7rem; color:#555; margin:0;">Fill any 2 fields — leave 1 blank to solve.</p>
+                <div style="display:flex; border:1px solid #1a2a35; border-radius:6px; overflow:hidden;">
+                    <button id="t-pace-km-btn" class="t-unit-btn active" onclick="tSetPaceUnit('km')">KM</button>
+                    <button id="t-pace-mi-btn" class="t-unit-btn" onclick="tSetPaceUnit('mi')">MI</button>
                 </div>
             </div>
-
-           <div id="metronome-tool" class="tool-content" style="display:none; text-align:center;">
-    <h3 style="color:var(--brand-accent); font-family: 'Montserrat';">Metronome Pro</h3>
-    <p style="font-size:0.7rem; opacity:0.6; margin-bottom: 10px;">(Ensure Silent Mode is OFF)</p>
-    
-    <div id="bpm-val" style="font-size:4.5rem; color:var(--brand-accent); font-weight: 800; transition: all 0.05s ease;">60</div>
-    
-    <span class="quad-title">Beats Per Minute</span>
-    <input type="range" id="m-slider" min="40" max="240" value="60" style="width:100%; margin: 10px 0;" oninput="syncBPM(this.value)">
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-        <div>
-            <span class="quad-title">Click Sound</span>
-            <select id="m-sound-type" style="width: 100%; background: #111; border: 1px solid #333; color: var(--brand-accent); font-family: 'Montserrat'; font-weight: 700; padding: 10px; border-radius: 4px;">
-                <option value="woodblock">WOODBLOCK</option>
-                <option value="beep">BEEP</option>
-                <option value="sub">SUB KICK</option>
-                <option value="high">HIGH TICK</option>
-            </select>
+            <label class="quad-title" id="t-pace-dist-label">Distance (km)</label>
+            <input type="number" class="tool-inp" id="t-pace-dist" placeholder="e.g. 10" step="0.01" />
+            <label class="quad-title">Total Time</label>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+                <div><label class="quad-title">Min</label><input type="number" class="tool-inp" id="t-pace-min" placeholder="0" /></div>
+                <div><label class="quad-title">Sec</label><input type="number" class="tool-inp" id="t-pace-sec" placeholder="0" min="0" max="59" /></div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+                <div>
+                    <label class="quad-title" id="t-pace-pace-label">Pace (min:sec /km)</label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                        <input type="number" class="tool-inp" id="t-pace-pace-min" placeholder="min" />
+                        <input type="number" class="tool-inp" id="t-pace-pace-sec" placeholder="sec" min="0" max="59" />
+                    </div>
+                </div>
+                <div>
+                    <label class="quad-title" id="t-pace-speed-label">Speed (km/h)</label>
+                    <input type="number" class="tool-inp" id="t-pace-speed" placeholder="e.g. 12" step="0.1" />
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <button class="tool-action-btn" onclick="tSolvePace()">Solve</button>
+                <button class="tool-action-btn" onclick="tClearPace()">Clear</button>
+            </div>
+            <div id="t-pace-output" style="display:none; background:#000; border-left:3px solid var(--brand-accent); padding:10px; border-radius:4px; font-size:0.8rem; margin-top:10px; line-height:1.8;"></div>
         </div>
-        <div>
-            <span class="quad-title">Subdivision</span>
-            <select id="m-subdivide" style="width: 100%; background: #111; border: 1px solid #333; color: var(--brand-accent); font-family: 'Montserrat'; font-weight: 700; padding: 10px; border-radius: 4px;">
-                <option value="1">NONE</option>
-                <option value="2">2nd (8ths)</option>
-                <option value="3">3rd (Trips)</option>
-                <option value="4">4th (16ths)</option>
-            </select>
+
+        <!-- 1RM CALCULATOR -->
+        <div id="onerm-tool" class="tool-content" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <p style="font-size:0.7rem; color:#555; margin:0;">Epley &amp; Brzycki for 1–10 reps</p>
+                <div style="display:flex; border:1px solid #1a2a35; border-radius:6px; overflow:hidden;">
+                    <button id="t-rm-kg-btn" class="t-unit-btn active" onclick="tSetRMUnit('kg')">KG</button>
+                    <button id="t-rm-lb-btn" class="t-unit-btn" onclick="tSetRMUnit('lb')">LB</button>
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+                <div>
+                    <label class="quad-title" id="t-rm-weight-label">Weight (kg)</label>
+                    <input type="number" class="tool-inp" id="t-rm-weight" placeholder="e.g. 100" />
+                </div>
+                <div>
+                    <label class="quad-title">Reps done</label>
+                    <input type="number" class="tool-inp" id="t-rm-reps" placeholder="e.g. 5" min="1" max="30" />
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <button class="tool-action-btn" onclick="tCalc1RM()">Calculate</button>
+                <button class="tool-action-btn" onclick="tClear1RM()">Clear</button>
+            </div>
+            <div id="t-rm-output" style="display:none; margin-top:10px; max-height:220px; overflow-y:auto;">
+                <table style="width:100%; border-collapse:collapse; font-size:0.78rem;">
+                    <thead>
+                        <tr>
+                            <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Reps</th>
+                            <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Epley</th>
+                            <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Brzycki</th>
+                        </tr>
+                    </thead>
+                    <tbody id="t-rm-table-body"></tbody>
+                </table>
+            </div>
         </div>
+
+        <!-- METRONOME -->
+        <div id="metronome-tool" class="tool-content" style="display:none; text-align:center;">
+            <p style="font-size:0.7rem; color:#555; margin-bottom:12px;">(Ensure Silent Mode is OFF)</p>
+            <div id="t-bpm-val" style="font-size:4rem; color:var(--brand-accent); font-weight:800; font-family:'Montserrat'; transition:all 0.05s;">60</div>
+            <label class="quad-title">Beats Per Minute</label>
+            <input type="range" id="t-m-slider" min="40" max="220" value="60" style="width:100%; margin:10px 0; accent-color:var(--brand-accent);"
+                oninput="document.getElementById('t-bpm-val').textContent=this.value" />
+            <button class="tool-action-btn" id="t-metro-btn" onclick="tToggleMetronome()" style="width:100%;">Start</button>
+        </div>
+
+        <!-- INTERVAL TIMER -->
+        <div id="interval-tool" class="tool-content" style="display:none;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+                <div><label class="quad-title">Warm Up (s)</label><input type="number" class="tool-inp" id="t-int-warmup" value="0" min="0" placeholder="0 = skip" /></div>
+                <div><label class="quad-title">Sets</label><input type="number" class="tool-inp" id="t-int-sets" value="5" min="1" /></div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+                <div><label class="quad-title">Work (s)</label><input type="number" class="tool-inp" id="t-int-work" value="30" min="1" /></div>
+                <div><label class="quad-title">Rest (s)</label><input type="number" class="tool-inp" id="t-int-rest" value="15" min="0" /></div>
+            </div>
+            <div id="t-int-phase" style="text-align:center; font-family:'Montserrat'; font-weight:800; font-size:0.75rem; letter-spacing:1px; color:var(--brand-accent); margin-bottom:4px;">READY</div>
+            <div id="t-int-display" style="font-size:3.5rem; font-family:'Courier New'; font-weight:bold; text-align:center; color:white; margin:6px 0;">00:30</div>
+            <div id="t-int-sets-label" style="text-align:center; font-size:0.65rem; color:#555; margin-bottom:8px;"></div>
+            <button class="tool-action-btn" id="t-int-btn" onclick="tToggleInterval()" style="width:100%;">Start</button>
+        </div>
+
+        <!-- COUNTDOWN -->
+        <div id="countdown-tool" class="tool-content" style="display:none;">
+            <label class="quad-title">Seconds</label>
+            <input type="number" class="tool-inp" id="t-cd-input" value="60" min="1"
+                oninput="if(!tCdRunning){tCdTime=parseInt(this.value)||60;tUpdateCDDisplay()}" />
+            <div id="t-cd-display" style="font-size:4rem; font-family:'Courier New'; font-weight:bold; text-align:center; color:white; margin:12px 0;">01:00</div>
+            <button class="tool-action-btn" id="t-cd-btn" onclick="tToggleCountdown()" style="width:100%;">Start</button>
+        </div>
+
+        <!-- STOPWATCH -->
+        <div id="stopwatch-tool" class="tool-content" style="display:none;">
+            <div id="t-sw-display" style="font-size:4rem; font-family:'Courier New'; font-weight:bold; text-align:center; color:white; margin:12px 0;">00:00.00</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <button class="tool-action-btn" id="t-sw-btn" onclick="tToggleStopwatch()">Start</button>
+                <button class="tool-action-btn" onclick="tResetStopwatch()">Reset</button>
+            </div>
+        </div>
+
     </div>
-
-    <button class="btn-finish" id="m-btn" style="background: var(--brand-primary); margin-top: 20px;" onclick="toggleMetronome()">START BEAT</button>
 </div>
-                <input type="range" id="m-slider" min="40" max="240" value="60" style="width:100%;" oninput="syncBPM(this.value)">
-                <button class="btn-blue" id="m-btn" style="background:var(--brand-primary); color:white; border:none; padding:15px; width:100%; border-radius:4px; font-weight:800; margin-top:10px;" onclick="toggleMetronome()">START</button>
-            </div>
-
-
-
-            <div id="interval-tool" class="tool-content" style="display:none;">
-                <h3>Intervals</h3>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <div><label class="quad-title">Work</label><input type="number" id="int-w" value="30"></div>
-                    <div><label class="quad-title">Rest</label><input type="number" id="int-r" value="15"></div>
-                </div>
-                <div id="int-display" class="timer-display">00:30</div>
-                <button class="btn-blue" id="int-btn" style="background:var(--brand-primary); color:white; border:none; padding:15px; width:100%; border-radius:4px; font-weight:800; margin-top:10px;" onclick="toggleInterval()">START</button>
-            </div>
-
-            <div id="countdown-tool" class="tool-content" style="display:none;">
-                <h3>Countdown</h3><div id="cd-display" class="timer-display">01:00</div>
-                <button class="btn-blue" id="cd-btn" style="background:var(--brand-primary); color:white; border:none; padding:15px; width:100%; border-radius:4px; font-weight:800; margin-top:10px;" onclick="toggleCountdown()">START</button>
-            </div>
-
-            <div id="stopwatch-tool" class="tool-content" style="display:none;">
-                <h3>Stopwatch</h3><div id="sw-display" class="timer-display">00:00.00</div>
-                <button class="btn-blue" id="sw-btn" style="background:var(--brand-primary); color:white; border:none; padding:15px; width:100%; border-radius:4px; font-weight:800; margin-top:10px;" onclick="toggleStopwatch()">START</button>
-                <button class="btn-blue" style="background:#333; color:white; border:none; padding:15px; width:100%; border-radius:4px; font-weight:800; margin-top:10px;" onclick="resetStopwatch()">RESET</button>
-            </div>
-        </div>
-    </div>
 
 <script>
     const pb = new PocketBase('https://restperiod.org');
