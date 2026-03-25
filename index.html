@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rest Period</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
 
@@ -24,37 +25,327 @@
             background: var(--brand-bg);
             color: var(--text-main);
             min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            padding: 32px 20px 20px;
+        }
+
+        .header img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+
+        .header h1 span { color: var(--brand-accent); }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* SEARCH */
+        .search-section { margin-bottom: 16px; }
+
+        .search-row {
             display: flex;
-            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: var(--input-bg);
+            border: 1px solid #1a2a35;
+            border-radius: 8px;
+            color: white;
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--brand-accent);
+        }
+
+        .filter-toggle {
+            background: var(--input-bg);
+            border: 1px solid #1a2a35;
+            border-radius: 8px;
+            color: var(--brand-accent);
+            padding: 0 18px;
+            font-size: 0.75rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .filter-toggle:hover, .filter-toggle.active {
+            background: var(--brand-accent);
+            color: #000;
+            border-color: var(--brand-accent);
+        }
+
+        /* FILTER PANEL */
+        .filter-panel {
+            background: var(--card-bg);
+            border: 1px solid #1a2a35;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .filter-panel.open { display: block; }
+
+        .filter-group { margin-bottom: 12px; }
+
+        .filter-group-label {
+            font-size: 0.55rem;
+            font-weight: 800;
+            color: var(--brand-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .filter-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .filter-btn {
+            padding: 5px 12px;
+            background: transparent;
+            border: 1px solid #1a2a35;
+            border-radius: 4px;
+            color: #888;
+            font-size: 0.65rem;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+
+        .filter-btn.active {
+            background: var(--brand-accent);
+            border-color: var(--brand-accent);
+            color: #000;
+        }
+
+        /* RESULTS */
+        .results-count {
+            font-size: 0.7rem;
+            color: #555;
+            margin-bottom: 8px;
+            padding-left: 2px;
+        }
+
+        .results-list {
+            background: var(--card-bg);
+            border: 1px solid #1a2a35;
+            border-radius: 8px;
+            max-height: 320px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #0e1b24;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .result-item:last-child { border-bottom: none; }
+        .result-item:hover { background: #152733; }
+
+        .result-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .result-tags {
+            font-size: 0.65rem;
+            color: #555;
+            margin-top: 2px;
+        }
+
+        .result-play {
+            color: var(--brand-accent);
+            font-size: 1.2rem;
+            opacity: 0.6;
+        }
+
+        /* VIDEO MODAL */
+        .video-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
 
-        .logo {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 32px;
-            letter-spacing: 2px;
+        .video-overlay.open { display: flex; }
+
+        .video-box {
+            background: #000;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 700px;
+            position: relative;
         }
 
-        .logo span { color: var(--brand-accent); }
+        .video-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
 
-        .card {
+        .video-title {
+            padding: 16px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--brand-accent);
+        }
+
+        /* TOOLS GRID */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .tool-card {
             background: var(--card-bg);
             border: 1px solid #1a2a35;
-            border-radius: 12px;
-            padding: 32px;
-            width: 100%;
-            max-width: 400px;
+            border-radius: 10px;
+            padding: 18px;
         }
 
-        /* Tabs */
+        .tool-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--brand-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+
+        .timer-display {
+            font-size: 2.8rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+            color: white;
+        }
+
+        input[type="number"], input[type="range"] {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid #1a2a35;
+            border-radius: 6px;
+            color: white;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        input[type="range"] {
+            padding: 4px 0;
+            cursor: pointer;
+        }
+
+        .tool-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background: #003B5C;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 0.75rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.2s;
+            margin-top: 4px;
+        }
+
+        .tool-btn:hover { background: #004d7a; }
+        .tool-btn.running { background: #7f1d1d; color: #f87171; }
+
+        .tool-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .tool-row input { margin-bottom: 0; }
+
+        .bpm-display {
+            font-size: 3rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            text-align: center;
+            color: var(--brand-accent);
+            margin: 6px 0;
+            transition: all 0.05s;
+        }
+
+        .result-output {
+            background: #000;
+            border-left: 3px solid var(--brand-accent);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+        }
+
+        /* LOGIN SECTION */
+        .login-section {
+            background: var(--card-bg);
+            border: 1px solid #1a2a35;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
         .tabs {
             display: flex;
             gap: 4px;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
             background: #050d12;
             padding: 4px;
             border-radius: 8px;
@@ -62,186 +353,573 @@
 
         .tab {
             flex: 1;
-            padding: 10px;
+            padding: 9px;
             text-align: center;
             cursor: pointer;
             border-radius: 6px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #555;
-            transition: 0.2s;
             border: none;
             background: none;
+            transition: 0.2s;
         }
 
-        .tab.active {
-            background: var(--brand-accent);
-            color: #000;
-        }
+        .tab.active { background: var(--brand-accent); color: #000; }
 
-        /* Form */
-        .form-group { margin-bottom: 16px; }
+        .form-group { margin-bottom: 12px; }
 
-        label {
+        .form-label {
             display: block;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 800;
             text-transform: uppercase;
             color: #888;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             letter-spacing: 0.5px;
         }
 
-        input {
+        .form-input {
             width: 100%;
             background: var(--input-bg);
             border: 1px solid #1a2a35;
             border-radius: 6px;
             color: white;
-            padding: 12px;
-            font-size: 0.95rem;
+            padding: 11px 12px;
+            font-size: 0.9rem;
             font-family: inherit;
-            transition: border-color 0.2s;
         }
 
-        input:focus {
-            outline: none;
-            border-color: var(--brand-accent);
-        }
+        .form-input:focus { outline: none; border-color: var(--brand-accent); }
 
-        .btn {
+        .submit-btn {
             width: 100%;
-            padding: 13px;
+            padding: 12px;
             border: none;
             border-radius: 6px;
+            background: var(--brand-accent);
+            color: #000;
             font-family: 'Montserrat', sans-serif;
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 8px;
+            margin-top: 4px;
             transition: 0.2s;
         }
 
-        .btn-primary {
-            background: var(--brand-accent);
-            color: #000;
-        }
-
-        .btn-primary:hover { background: #1eb3c5; }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .error {
-            background: rgba(255, 82, 82, 0.1);
-            border: 1px solid #ff5252;
-            border-radius: 6px;
-            padding: 10px 14px;
-            font-size: 0.8rem;
-            color: #ff5252;
-            margin-top: 12px;
-            display: none;
-        }
-
-        .success {
-            background: rgba(46, 125, 50, 0.1);
-            border: 1px solid var(--brand-secondary);
-            border-radius: 6px;
-            padding: 10px 14px;
-            font-size: 0.8rem;
-            color: #4ade80;
-            margin-top: 12px;
-            display: none;
-        }
+        .submit-btn:hover { background: #1eb3c5; }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .free-badge {
-            background: rgba(38, 198, 218, 0.1);
-            border: 1px solid rgba(38, 198, 218, 0.3);
+            background: rgba(38,198,218,0.07);
+            border: 1px solid rgba(38,198,218,0.2);
             border-radius: 6px;
             padding: 10px 14px;
             font-size: 0.75rem;
             color: #888;
-            margin-bottom: 20px;
-            line-height: 1.5;
+            margin-bottom: 16px;
+            line-height: 1.6;
         }
 
         .free-badge strong { color: var(--brand-accent); }
+
+        .msg {
+            border-radius: 6px;
+            padding: 9px 12px;
+            font-size: 0.78rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .msg-error { background: rgba(255,82,82,0.1); border: 1px solid #ff5252; color: #ff5252; }
+        .msg-success { background: rgba(46,125,50,0.1); border: 1px solid #2E7D32; color: #4ade80; }
+
+        .section-gap { margin-bottom: 16px; }
     </style>
 </head>
 <body>
 
-<div class="logo">REST <span>PERIOD</span></div>
+<!-- HEADER -->
+<div class="header">
+    <img src="icon-512.png" alt="Rest Period" />
+    <h1>REST <span>PERIOD</span></h1>
+</div>
 
-<div class="card">
-    <div class="tabs">
-        <button class="tab active" onclick="switchTab('login')">Sign In</button>
-        <button class="tab" onclick="switchTab('signup')">Sign Up</button>
+<div class="container">
+
+    <!-- EXERCISE SEARCH -->
+    <div class="search-section section-gap">
+        <div class="search-row">
+            <input type="text" class="search-input" id="search-input"
+                placeholder="Search for an exercise..."
+                oninput="runSearch()" />
+            <button class="filter-toggle" id="filter-toggle-btn" onclick="toggleFilters()">
+                FILTERS ▾
+            </button>
+        </div>
+
+        <div class="filter-panel" id="filter-panel"></div>
+
+        <div class="results-count" id="results-count"></div>
+        <div class="results-list" id="results-list"></div>
     </div>
 
-    <!-- LOGIN FORM -->
-    <div id="login-form">
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="login-email" placeholder="you@example.com" />
+    <!-- TOOLS ROW 1: Countdown + Metronome -->
+    <div class="tools-grid section-gap">
+
+        <!-- COUNTDOWN -->
+        <div class="tool-card">
+            <div class="tool-title">⏱ Countdown</div>
+            <input type="number" id="cd-input" value="60" min="1" placeholder="Seconds" />
+            <div class="timer-display" id="cd-display">01:00</div>
+            <button class="tool-btn" id="cd-btn" onclick="toggleCountdown()">Start</button>
         </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="login-password" placeholder="••••••••" />
+
+        <!-- METRONOME -->
+        <div class="tool-card">
+            <div class="tool-title">🥁 Metronome</div>
+            <div class="bpm-display" id="bpm-display">60</div>
+            <input type="range" id="bpm-slider" min="40" max="220" value="60"
+                oninput="updateBPM(this.value)" />
+            <button class="tool-btn" id="metro-btn" onclick="toggleMetronome()">Start</button>
         </div>
-        <button class="btn btn-primary" id="login-btn" onclick="login()">Sign In</button>
-        <div class="error" id="login-error"></div>
+
     </div>
 
-    <!-- SIGNUP FORM -->
-    <div id="signup-form" style="display:none;">
-        <div class="free-badge">
-            Create a <strong>free account</strong> to browse the exercise library and build basic programs.
+    <!-- TOOLS ROW 2: Stopwatch + 1RM -->
+    <div class="tools-grid section-gap">
+
+        <!-- STOPWATCH -->
+        <div class="tool-card">
+            <div class="tool-title">⏲ Stopwatch</div>
+            <div class="timer-display" id="sw-display">00:00.00</div>
+            <div class="tool-row">
+                <button class="tool-btn" id="sw-btn" onclick="toggleStopwatch()">Start</button>
+                <button class="tool-btn" onclick="resetStopwatch()">Reset</button>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Name</label>
-            <input type="text" id="signup-name" placeholder="Your name" />
+
+        <!-- 1RM CALCULATOR -->
+        <div class="tool-card">
+            <div class="tool-title">🏋️ 1RM Calc</div>
+            <div class="tool-row" style="margin-bottom:8px;">
+                <input type="number" id="rm-weight" placeholder="Weight (kg)" />
+                <input type="number" id="rm-reps" placeholder="Reps" />
+            </div>
+            <button class="tool-btn" onclick="calc1RM()">Calculate</button>
+            <div class="result-output" id="rm-output"></div>
         </div>
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="signup-email" placeholder="you@example.com" />
+
+    </div>
+
+    <!-- TOOLS ROW 3: Pace + Intervals -->
+    <div class="tools-grid section-gap">
+
+        <!-- PACE CALCULATOR -->
+        <div class="tool-card">
+            <div class="tool-title">🏃 Pace Calc</div>
+            <input type="number" id="pace-dist" placeholder="Distance (km)" />
+            <div class="tool-row" style="margin-bottom:8px;">
+                <input type="number" id="pace-min" placeholder="Min" />
+                <input type="number" id="pace-sec" placeholder="Sec" />
+            </div>
+            <button class="tool-btn" onclick="calcPace()">Calculate</button>
+            <div class="result-output" id="pace-output"></div>
         </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="signup-password" placeholder="At least 8 characters" />
+
+        <!-- INTERVAL TIMER -->
+        <div class="tool-card">
+            <div class="tool-title">🔁 Intervals</div>
+            <div class="tool-row" style="margin-bottom:8px;">
+                <input type="number" id="int-work" value="30" placeholder="Work (s)" />
+                <input type="number" id="int-rest" value="15" placeholder="Rest (s)" />
+            </div>
+            <div class="timer-display" id="int-display" style="font-size:2rem;">00:30</div>
+            <button class="tool-btn" id="int-btn" onclick="toggleInterval()">Start</button>
         </div>
-        <div class="form-group">
-            <label>Confirm Password</label>
-            <input type="password" id="signup-confirm" placeholder="Repeat password" />
+
+    </div>
+
+    <!-- LOGIN / SIGNUP -->
+    <div class="login-section">
+        <div class="tabs">
+            <button class="tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+            <button class="tab" id="tab-signup" onclick="switchTab('signup')">Sign Up Free</button>
         </div>
-        <button class="btn btn-primary" id="signup-btn" onclick="signup()">Create Free Account</button>
-        <div class="error" id="signup-error"></div>
-        <div class="success" id="signup-success"></div>
+
+        <!-- LOGIN -->
+        <div id="login-form">
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="login-email" placeholder="you@example.com" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="login-password" placeholder="••••••••" />
+            </div>
+            <button class="submit-btn" id="login-btn" onclick="login()">Sign In</button>
+            <div class="msg msg-error" id="login-error"></div>
+        </div>
+
+        <!-- SIGNUP -->
+        <div id="signup-form" style="display:none;">
+            <div class="free-badge">
+                Free accounts can <strong>search the full exercise library</strong> and
+                <strong>build one program</strong> with sets, reps and tempo.
+                Upgrade anytime for full coaching features.
+            </div>
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-input" id="signup-name" placeholder="Your name" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="signup-email" placeholder="you@example.com" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="signup-password" placeholder="At least 8 characters" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" class="form-input" id="signup-confirm" placeholder="Repeat password" />
+            </div>
+            <button class="submit-btn" id="signup-btn" onclick="signup()">Create Free Account</button>
+            <div class="msg msg-error" id="signup-error"></div>
+            <div class="msg msg-success" id="signup-success"></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- VIDEO MODAL -->
+<div class="video-overlay" id="video-overlay">
+    <div class="video-box">
+        <button class="video-close" onclick="closeVideo()">✕</button>
+        <div class="video-title" id="video-title"></div>
+        <div id="video-content"></div>
     </div>
 </div>
 
 <script>
     const pb = new PocketBase('https://restperiod.org');
 
-    // If already logged in, redirect
     if (pb.authStore.isValid) redirect(pb.authStore.model.role);
 
-    function switchTab(tab) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
-        document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-        document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
+    function redirect(role) {
+        if (role === 'trainer' || role === 'admin') window.location.href = '/dashboard.html';
+        else if (role === 'client') window.location.href = '/program.html';
+        else window.location.href = '/free.html';
     }
 
-    function redirect(role) {
-        if (role === 'trainer' || role === 'admin') {
-            window.location.href = '/dashboard.html';
-        } else if (role === 'client') {
-            window.location.href = '/program.html';
+    // ── EXERCISE SEARCH ───────────────────────────────
+    const filterGroups = {
+        "MOVEMENT": { "PUSH": "PUSH", "PULL": "PULL", "SQUAT": "SQUAT", "HINGE": "HINGE" },
+        "ANGLE":    { "HOR": "HORIZONTAL", "VER": "VERTICAL" },
+        "LIMBS":    { "DA": "DOUBLE ARM", "DL": "DOUBLE LEG", "SA": "SINGLE ARM", "SL": "SINGLE LEG" },
+        "EQUIPMENT":{ "BB": "BARBELL", "DB": "DUMBBELL", "BW": "BODYWEIGHT", "BND": "BAND" },
+        "TYPE":     { "MOB": "MOBILITY", "PRIMER": "PRIMER" },
+        "BODY PART":{ "UB": "UPPER BODY", "LB": "LOWER BODY" }
+    };
+
+    let activeFilters = [];
+    let filterPanelOpen = false;
+
+    // Build filter panel
+    const filterPanel = document.getElementById('filter-panel');
+    for (const [group, options] of Object.entries(filterGroups)) {
+        const div = document.createElement('div');
+        div.className = 'filter-group';
+        div.innerHTML = `<div class="filter-group-label">${group}</div>
+            <div class="filter-tags">${Object.entries(options).map(([tag, label]) =>
+                `<button class="filter-btn" id="f-${tag}" onclick="toggleFilter('${tag}')">${label}</button>`
+            ).join('')}</div>`;
+        filterPanel.appendChild(div);
+    }
+
+    function toggleFilters() {
+        filterPanelOpen = !filterPanelOpen;
+        filterPanel.classList.toggle('open', filterPanelOpen);
+        document.getElementById('filter-toggle-btn').classList.toggle('active', filterPanelOpen);
+    }
+
+    function toggleFilter(tag) {
+        const btn = document.getElementById(`f-${tag}`);
+        if (activeFilters.includes(tag)) {
+            activeFilters = activeFilters.filter(f => f !== tag);
+            btn.classList.remove('active');
         } else {
-            // free user
-            window.location.href = '/free.html';
+            activeFilters.push(tag);
+            btn.classList.add('active');
         }
+        runSearch();
+    }
+
+    function runSearch() {
+        const q = document.getElementById('search-input').value.toLowerCase().trim();
+        const resultsList = document.getElementById('results-list');
+        const resultsCount = document.getElementById('results-count');
+
+        if (!q && activeFilters.length === 0) {
+            resultsList.style.display = 'none';
+            resultsCount.textContent = '';
+            return;
+        }
+
+        const results = exerciseDatabase.filter(e => {
+            const textMatch = !q || e.title.toLowerCase().includes(q) || e.searchStr.toLowerCase().includes(q);
+            const filterMatch = activeFilters.every(f => e.searchStr.toUpperCase().includes(f));
+            return textMatch && filterMatch;
+        }).slice(0, 50);
+
+        resultsCount.textContent = `${results.length} exercise${results.length !== 1 ? 's' : ''} found`;
+        resultsList.style.display = results.length ? 'block' : 'none';
+
+        resultsList.innerHTML = results.map(e => {
+            const cleanName = e.title.replace(/^([A-Z0-9-]{2,}\s*)+/, '').trim();
+            const tags = e.searchStr.split(' ').filter(t => t.length > 1 && t.length < 10).slice(0, 4).join(' · ');
+            return `<div class="result-item" onclick="openVideo('${e.title.replace(/'/g, "\\'")}', '${(e.video||e.src||'').replace(/'/g, "\\'")}')">
+                <div>
+                    <div class="result-name">${cleanName}</div>
+                    <div class="result-tags">${tags}</div>
+                </div>
+                <span class="result-play">▶</span>
+            </div>`;
+        }).join('');
+    }
+
+    function openVideo(name, url) {
+        const cleanName = name.replace(/^([A-Z0-9-]{2,}\s*)+/, '').trim();
+        document.getElementById('video-title').textContent = cleanName;
+        const content = document.getElementById('video-content');
+
+        if (!url) {
+            content.innerHTML = `<div style="padding:40px; text-align:center; color:#555;">No video available for this exercise.</div>`;
+        } else if (url.includes('.mp4') || url.includes('.mov')) {
+            content.innerHTML = `<video controls autoplay loop playsinline style="width:100%; display:block; border-radius:0 0 12px 12px;"><source src="${url}" type="video/mp4"></video>`;
+        } else {
+            const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('youtu.be/')[1];
+            content.innerHTML = `<div style="position:relative;padding-bottom:56.25%;height:0;"><iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:0 0 12px 12px;" frameborder="0" allowfullscreen></iframe></div>`;
+        }
+
+        document.getElementById('video-overlay').classList.add('open');
+    }
+
+    function closeVideo() {
+        document.getElementById('video-overlay').classList.remove('open');
+        document.getElementById('video-content').innerHTML = '';
+    }
+
+    // ── COUNTDOWN ─────────────────────────────────────
+    let cdRunning = false, cdTime = 60, cdInterval = null;
+
+    document.getElementById('cd-input').addEventListener('input', function() {
+        if (!cdRunning) {
+            cdTime = parseInt(this.value) || 60;
+            updateCDDisplay();
+        }
+    });
+
+    function updateCDDisplay() {
+        const m = Math.floor(cdTime / 60), s = cdTime % 60;
+        document.getElementById('cd-display').textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+
+    function toggleCountdown() {
+        const btn = document.getElementById('cd-btn');
+        if (cdRunning) {
+            clearInterval(cdInterval);
+            cdRunning = false;
+            btn.textContent = 'Start';
+            btn.classList.remove('running');
+        } else {
+            cdTime = parseInt(document.getElementById('cd-input').value) || 60;
+            cdRunning = true;
+            btn.textContent = 'Stop';
+            btn.classList.add('running');
+            cdInterval = setInterval(() => {
+                cdTime--;
+                updateCDDisplay();
+                if (cdTime <= 0) {
+                    clearInterval(cdInterval);
+                    cdRunning = false;
+                    btn.textContent = 'Start';
+                    btn.classList.remove('running');
+                    cdTime = parseInt(document.getElementById('cd-input').value) || 60;
+                }
+            }, 1000);
+        }
+    }
+
+    // ── METRONOME ─────────────────────────────────────
+    let audioCtx = null, metroPlaying = false, metroTimer = null, nextTick = 0;
+
+    function updateBPM(val) {
+        document.getElementById('bpm-display').textContent = val;
+    }
+
+    function scheduler() {
+        while (nextTick < audioCtx.currentTime + 0.1) {
+            const osc = audioCtx.createOscillator();
+            const env = audioCtx.createGain();
+            osc.frequency.value = 1000;
+            env.gain.value = 1;
+            env.gain.exponentialRampToValueAtTime(0.001, nextTick + 0.02);
+            osc.connect(env);
+            env.connect(audioCtx.destination);
+            osc.start(nextTick);
+            osc.stop(nextTick + 0.03);
+            const bpm = parseFloat(document.getElementById('bpm-slider').value);
+            nextTick += 60 / bpm;
+
+            const delay = (nextTick - audioCtx.currentTime) * 1000;
+            setTimeout(() => {
+                const d = document.getElementById('bpm-display');
+                if (d) { d.style.color = '#fff'; d.style.transform = 'scale(1.15)'; }
+                setTimeout(() => {
+                    if (d) { d.style.color = 'var(--brand-accent)'; d.style.transform = 'scale(1)'; }
+                }, 60);
+            }, delay);
+        }
+        metroTimer = setTimeout(scheduler, 25);
+    }
+
+    function toggleMetronome() {
+        const btn = document.getElementById('metro-btn');
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        metroPlaying = !metroPlaying;
+        if (metroPlaying) {
+            btn.textContent = 'Stop';
+            btn.classList.add('running');
+            nextTick = audioCtx.currentTime;
+            scheduler();
+        } else {
+            btn.textContent = 'Start';
+            btn.classList.remove('running');
+            clearTimeout(metroTimer);
+        }
+    }
+
+    // ── STOPWATCH ─────────────────────────────────────
+    let swRunning = false, swStart = 0, swElapsed = 0, swInterval = null;
+
+    function toggleStopwatch() {
+        const btn = document.getElementById('sw-btn');
+        if (swRunning) {
+            clearInterval(swInterval);
+            swElapsed += Date.now() - swStart;
+            swRunning = false;
+            btn.textContent = 'Start';
+            btn.classList.remove('running');
+        } else {
+            swStart = Date.now();
+            swRunning = true;
+            btn.textContent = 'Stop';
+            btn.classList.add('running');
+            swInterval = setInterval(() => {
+                const t = swElapsed + (Date.now() - swStart);
+                const m = Math.floor(t / 60000);
+                const s = Math.floor((t % 60000) / 1000);
+                const ms = Math.floor((t % 1000) / 10);
+                document.getElementById('sw-display').textContent =
+                    `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${ms.toString().padStart(2,'0')}`;
+            }, 50);
+        }
+    }
+
+    function resetStopwatch() {
+        clearInterval(swInterval);
+        swRunning = false;
+        swElapsed = 0;
+        document.getElementById('sw-display').textContent = '00:00.00';
+        document.getElementById('sw-btn').textContent = 'Start';
+        document.getElementById('sw-btn').classList.remove('running');
+    }
+
+    // ── 1RM CALCULATOR ────────────────────────────────
+    function calc1RM() {
+        const w = parseFloat(document.getElementById('rm-weight').value);
+        const r = parseFloat(document.getElementById('rm-reps').value);
+        if (!w || !r) return;
+        const epley = Math.round(w * (1 + r / 30));
+        const brzycki = Math.round(w * (36 / (37 - r)));
+        const out = document.getElementById('rm-output');
+        out.innerHTML = `Epley: <strong style="color:var(--brand-accent)">${epley}kg</strong> &nbsp;|&nbsp; Brzycki: <strong style="color:var(--brand-accent)">${brzycki}kg</strong>`;
+        out.style.display = 'block';
+    }
+
+    // ── PACE CALCULATOR ───────────────────────────────
+    function calcPace() {
+        const dist = parseFloat(document.getElementById('pace-dist').value);
+        const min = parseInt(document.getElementById('pace-min').value) || 0;
+        const sec = parseInt(document.getElementById('pace-sec').value) || 0;
+        if (!dist || (!min && !sec)) return;
+        const totalSec = (min * 60) + sec;
+        const paceSec = totalSec / dist;
+        const pm = Math.floor(paceSec / 60);
+        const ps = Math.round(paceSec % 60);
+        const out = document.getElementById('pace-output');
+        out.innerHTML = `Pace: <strong style="color:var(--brand-accent)">${pm}:${ps.toString().padStart(2,'0')} /km</strong>`;
+        out.style.display = 'block';
+    }
+
+    // ── INTERVAL TIMER ────────────────────────────────
+    let intRunning = false, intPhase = 'work', intTime = 30, intInterval = null;
+
+    function updateIntDisplay() {
+        const m = Math.floor(intTime / 60), s = intTime % 60;
+        document.getElementById('int-display').textContent =
+            `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+
+    function toggleInterval() {
+        const btn = document.getElementById('int-btn');
+        if (intRunning) {
+            clearInterval(intInterval);
+            intRunning = false;
+            btn.textContent = 'Start';
+            btn.classList.remove('running');
+            intPhase = 'work';
+            intTime = parseInt(document.getElementById('int-work').value) || 30;
+            updateIntDisplay();
+        } else {
+            intTime = parseInt(document.getElementById('int-work').value) || 30;
+            intPhase = 'work';
+            intRunning = true;
+            btn.textContent = 'Stop';
+            btn.classList.add('running');
+            const display = document.getElementById('int-display');
+            display.style.color = '#4ade80';
+            updateIntDisplay();
+            intInterval = setInterval(() => {
+                intTime--;
+                updateIntDisplay();
+                if (intTime <= 0) {
+                    if (intPhase === 'work') {
+                        intPhase = 'rest';
+                        intTime = parseInt(document.getElementById('int-rest').value) || 15;
+                        display.style.color = '#f87171';
+                    } else {
+                        intPhase = 'work';
+                        intTime = parseInt(document.getElementById('int-work').value) || 30;
+                        display.style.color = '#4ade80';
+                    }
+                }
+            }, 1000);
+        }
+    }
+
+    // ── AUTH ──────────────────────────────────────────
+    function switchTab(tab) {
+        document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+        document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+        document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+        document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
     }
 
     async function login() {
@@ -249,11 +927,9 @@
         const password = document.getElementById('login-password').value;
         const errEl = document.getElementById('login-error');
         const btn = document.getElementById('login-btn');
-
         errEl.style.display = 'none';
         btn.disabled = true;
         btn.textContent = 'Signing in...';
-
         try {
             const auth = await pb.collection('users').authWithPassword(email, password);
             redirect(auth.record.role);
@@ -282,13 +958,11 @@
             errEl.style.display = 'block';
             return;
         }
-
         if (password.length < 8) {
             errEl.textContent = 'Password must be at least 8 characters.';
             errEl.style.display = 'block';
             return;
         }
-
         if (password !== confirm) {
             errEl.textContent = 'Passwords do not match.';
             errEl.style.display = 'block';
@@ -300,18 +974,13 @@
 
         try {
             await pb.collection('users').create({
-                name,
-                email,
-                password,
+                name, email, password,
                 passwordConfirm: confirm,
                 role: 'free',
                 emailVisibility: true
             });
-
-            // Auto login after signup
             const auth = await pb.collection('users').authWithPassword(email, password);
             redirect(auth.record.role);
-
         } catch (e) {
             const msg = e?.response?.data?.email?.message || e.message || 'Signup failed.';
             errEl.textContent = msg;
@@ -321,7 +990,6 @@
         }
     }
 
-    // Allow Enter key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const loginVisible = document.getElementById('login-form').style.display !== 'none';
