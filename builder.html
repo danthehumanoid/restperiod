@@ -265,30 +265,60 @@
         </div>
 
      <div id="library-col" style="display:none;">
-            <div class="card" style="position:sticky; top:20px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                    <h3 style="margin:0;">VAULT</h3>
-                    <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:0.6rem;" onclick="openModal('addExModal')">+ NEW TO LIB</button>
-                </div>
-                
-                <label>📂 Load Full Training Block (All Weeks)</label>
-                <select id="full-template-select" onchange="loadFullProgramTemplate(this.value)" style="border-color: var(--brand-secondary); margin-bottom: 20px;">
-                    <option value="">-- Choose a Training Block --</option>
+    <div class="card" style="position:sticky; top:20px;">
+
+        <!-- Column toggle -->
+        <div style="display:flex; gap:4px; margin-bottom:16px; background:#050d12; padding:4px; border-radius:8px;">
+            <button id="col-lib-btn" 
+                style="flex:1; padding:8px; border:none; border-radius:6px; background:var(--brand-accent); color:#000; font-family:'Montserrat'; font-weight:800; font-size:0.7rem; cursor:pointer;"
+                onclick="switchRightCol('library')">VAULT</button>
+            <button id="col-review-btn"
+                style="flex:1; padding:8px; border:none; border-radius:6px; background:none; color:#555; font-family:'Montserrat'; font-weight:800; font-size:0.7rem; cursor:pointer;"
+                onclick="switchRightCol('review')">CLIENT REVIEW</button>
+        </div>
+
+        <!-- LIBRARY PANEL -->
+        <div id="library-panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="margin:0;">VAULT</h3>
+                <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:0.6rem;" onclick="openModal('addExModal')">+ NEW TO LIB</button>
+            </div>
+
+            <label>📂 Load Full Training Block (All Weeks)</label>
+            <select id="full-template-select" onchange="loadFullProgramTemplate(this.value)" style="border-color:var(--brand-secondary); margin-bottom:20px;">
+                <option value="">-- Choose a Training Block --</option>
+            </select>
+
+            <label>Load Section Template</label>
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:15px;">
+                <select id="section-template-select" onchange="loadSectionTemplate(this.value)" style="margin-bottom:0;">
+                    <option value="">-- Choose a template --</option>
                 </select>
+                <i class="fas fa-trash-alt" style="color:#ff4d4d; cursor:pointer;" onclick="deleteSectionTemplate()"></i>
+            </div>
 
-                <label>Load Section Template</label>
-                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 15px;">
-                    <select id="section-template-select" onchange="loadSectionTemplate(this.value)" style="margin-bottom:0;">
-                        <option value="">-- Choose a template --</option>
-                    </select>
-                    <i class="fas fa-trash-alt" style="color: #ff4d4d; cursor:pointer;" onclick="deleteSectionTemplate()"></i>
-                </div>
+            <input type="text" id="lib-search-text" placeholder="Search exercises..." onkeyup="runLibrarySearch()">
+            <div class="filter-grid" id="filter-container"></div>
+            <div id="lib-results" style="max-height:600px; overflow-y:auto; border:1px solid #333; margin-top:10px;"></div>
+        </div>
 
-                <input type="text" id="lib-search-text" placeholder="Search exercises..." onkeyup="runLibrarySearch()">
-                <div class="filter-grid" id="filter-container"></div>
-                <div id="lib-results" style="max-height: 600px; overflow-y: auto; border: 1px solid #333; margin-top:10px;"></div>
+        <!-- REVIEW PANEL -->
+        <div id="review-panel" style="display:none;">
+            <div style="margin-bottom:14px;">
+                <label style="font-size:0.6rem; color:#aaa; font-weight:800; text-transform:uppercase; display:block; margin-bottom:6px;">Review Week</label>
+                <select id="review-week-select" onchange="renderReview()"
+                    style="width:100%; background:#050d12; border:1px solid #333; color:white; padding:8px; border-radius:4px; font-size:0.85rem;">
+                </select>
+            </div>
+
+            <div id="review-session-info" style="margin-bottom:14px;"></div>
+            <div id="review-content">
+                <div style="color:#555; font-size:0.85rem; padding:20px; text-align:center;">Select a client and week to review</div>
             </div>
         </div>
+
+    </div>
+</div>
 
     <div id="addClientModal" class="modal"><div class="modal-content">
         <span onclick="closeModal('addClientModal')" style="float:right; cursor:pointer;">&times;</span>
@@ -917,6 +947,160 @@ function toggleModalTag(tag, btn) {
     }
 }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        // ── RIGHT COLUMN TOGGLE ───────────────────────────
+function switchRightCol(mode) {
+    const libBtn = document.getElementById('col-lib-btn');
+    const revBtn = document.getElementById('col-review-btn');
+    const libPanel = document.getElementById('library-panel');
+    const revPanel = document.getElementById('review-panel');
+
+    if (mode === 'library') {
+        libBtn.style.background = 'var(--brand-accent)';
+        libBtn.style.color = '#000';
+        revBtn.style.background = 'none';
+        revBtn.style.color = '#555';
+        libPanel.style.display = 'block';
+        revPanel.style.display = 'none';
+    } else {
+        revBtn.style.background = 'var(--brand-accent)';
+        revBtn.style.color = '#000';
+        libBtn.style.background = 'none';
+        libBtn.style.color = '#555';
+        libPanel.style.display = 'none';
+        revPanel.style.display = 'block';
+        populateReviewWeeks();
+        renderReview();
+    }
+}
+
+function populateReviewWeeks() {
+    const sel = document.getElementById('review-week-select');
+    if (!editingProgramId || !Array.isArray(programData)) {
+        sel.innerHTML = '<option value="">No program loaded</option>';
+        return;
+    }
+    sel.innerHTML = programData.map((w, i) =>
+        `<option value="${i}">Week ${w.weekNum}</option>`
+    ).join('');
+    // Default to current week being edited
+    sel.value = currentWeekIndex;
+}
+
+function renderReview() {
+    const sel = document.getElementById('review-week-select');
+    const weekIdx = parseInt(sel.value);
+    if (isNaN(weekIdx) || !programData[weekIdx]) {
+        document.getElementById('review-content').innerHTML =
+            '<div style="color:#555; font-size:0.85rem; padding:20px; text-align:center;">No data</div>';
+        return;
+    }
+
+    const week = programData[weekIdx];
+
+    // Session date info
+    const infoEl = document.getElementById('review-session-info');
+    if (week.sessionDate) {
+        const d = new Date(week.sessionDate).toLocaleDateString([], {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+        infoEl.innerHTML = `<div style="background:#052e16; border:1px solid #166534; border-radius:6px; padding:8px 12px; font-size:0.75rem; color:#4ade80;">
+            ✓ Logged: ${d}
+        </div>`;
+    } else {
+        infoEl.innerHTML = `<div style="background:#1a1a1a; border:1px solid #333; border-radius:6px; padding:8px 12px; font-size:0.75rem; color:#555;">
+            No session date logged yet
+        </div>`;
+    }
+
+    // Build review content
+    const allExercises = [
+        ...(week.warmup || []).map(ex => ({...ex, section: 'Warm Up'})),
+        ...(week.exercises || []).map(ex => ({...ex, section: 'Main Workout'}))
+    ];
+
+    if (allExercises.length === 0) {
+        document.getElementById('review-content').innerHTML =
+            '<div style="color:#555; font-size:0.85rem; padding:20px; text-align:center;">No exercises in this week</div>';
+        return;
+    }
+
+    let lastSection = '';
+    const html = allExercises.map(ex => {
+        const sectionHeader = ex.section !== lastSection
+            ? `<div style="font-size:0.6rem; font-weight:800; color:${ex.section === 'Warm Up' ? 'var(--brand-accent)' : 'var(--brand-secondary)'}; text-transform:uppercase; letter-spacing:1px; margin:12px 0 6px; padding-top:8px; border-top:1px solid #1a2a35;">${ex.section}</div>`
+            : '';
+        lastSection = ex.section;
+
+        const cleanName = ex.name.replace(/^([A-Z0-9-]+\s)+/, '');
+        const completedSets = (ex.setsData || []).filter(s => s.act_reps && s.act_weight).length;
+        const totalSets = (ex.setsData || []).length;
+        const allDone = completedSets === totalSets && totalSets > 0;
+
+        const setsHtml = (ex.setsData || []).map((s, si) => {
+            const hasData = s.act_reps || s.act_weight;
+            const repsDiff = s.act_reps && s.reps
+                ? parseInt(s.act_reps) - parseInt(s.reps)
+                : null;
+            const weightDiff = s.act_weight && s.weight
+                ? parseFloat(s.act_weight) - parseFloat(s.weight)
+                : null;
+            const rpeDiff = s.act_rpe && s.rpe
+                ? parseFloat(s.act_rpe) - parseFloat(s.rpe)
+                : null;
+
+            const diffColor = (val) => val === null ? '#555'
+                : val > 0 ? '#4ade80'
+                : val < 0 ? '#f87171'
+                : '#888';
+
+            const diffStr = (val, unit='') => val === null ? '—'
+                : val === 0 ? `=${unit}`
+                : val > 0 ? `+${val}${unit}`
+                : `${val}${unit}`;
+
+            return `<div style="background:${hasData ? '#050d12' : '#020c12'}; border:1px solid ${hasData ? '#1a2a35' : '#111'}; border-radius:6px; padding:8px; margin-bottom:6px; font-size:0.75rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:${hasData ? '6px' : '0'};">
+                    <span style="color:var(--brand-accent); font-weight:800;">Set ${si+1}</span>
+                    <span style="color:#444; font-size:0.65rem;">${s.reps} reps @ ${s.weight}kg / RPE ${s.rpe || '—'}</span>
+                </div>
+                ${hasData ? `
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; text-align:center;">
+                    <div>
+                        <div style="font-size:0.55rem; color:#888; margin-bottom:2px;">REPS</div>
+                        <div style="font-weight:800; color:white;">${s.act_reps || '—'}</div>
+                        <div style="font-size:0.6rem; color:${diffColor(repsDiff)}">${diffStr(repsDiff)}</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.55rem; color:#888; margin-bottom:2px;">WEIGHT</div>
+                        <div style="font-weight:800; color:white;">${s.act_weight || '—'}kg</div>
+                        <div style="font-size:0.6rem; color:${diffColor(weightDiff)}">${diffStr(weightDiff,'kg')}</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.55rem; color:#888; margin-bottom:2px;">RPE</div>
+                        <div style="font-weight:800; color:white;">${s.act_rpe || '—'}</div>
+                        <div style="font-size:0.6rem; color:${diffColor(rpeDiff)}">${diffStr(rpeDiff)}</div>
+                    </div>
+                </div>
+                ${s.act_note ? `<div style="margin-top:6px; padding:5px 8px; background:#111; border-radius:4px; color:#aaa; font-size:0.7rem; font-style:italic;">"${s.act_note}"</div>` : ''}
+                ` : `<div style="color:#333; font-size:0.7rem;">Not completed</div>`}
+            </div>`;
+        }).join('');
+
+        return `${sectionHeader}
+        <div style="background:var(--card-bg); border:1px solid #1a2a35; border-radius:8px; padding:12px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-family:'Montserrat'; font-weight:800; font-size:0.85rem; color:var(--brand-accent);">${cleanName}</span>
+                <span style="font-size:0.65rem; padding:2px 8px; border-radius:4px; font-weight:800;
+                    background:${allDone ? '#052e16' : completedSets > 0 ? '#1a2a1a' : '#1a1a1a'};
+                    color:${allDone ? '#4ade80' : completedSets > 0 ? '#888' : '#444'};">
+                    ${completedSets}/${totalSets} sets
+                </span>
+            </div>
+            ${setsHtml}
+        </div>`;
+    }).join('');
+
+    document.getElementById('review-content').innerHTML =
+        `<div style="max-height:600px; overflow-y:auto;">${html}</div>`;
+}
     </script>
 </body>
 </html>

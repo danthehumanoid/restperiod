@@ -423,20 +423,38 @@
 }
 
     function renderContent() {
-        const week = currentProgram.schedule[currentWeekIndex];
-        const sStart = week.sessionStart ? new Date(week.sessionStart).toLocaleString([], {weekday:'short', hour:'2-digit', minute:'2-digit'}) : null;
-        let html = `<button class="btn-start" onclick="startSession()"><span>${sStart ? 'SESSION ACTIVE' : 'START SESSION'}</span><span>${sStart || 'Tap to start'}</span></button>`;
-        if (week.warmup?.length) {
-            html += `<div class="section-header" onclick="toggleWarmup()" style="cursor:pointer; display:flex; justify-content:space-between;"><span>WARM UP</span><i id="warmup-chevron" class="fas fa-chevron-down"></i></div>
-                     <div id="warmup-content-wrapper" style="display:block;">${generateExerciseHTML(week.warmup, 'warmup')}</div>`;
-        }
-        if (week.exercises?.length) {
-            html += `<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>` + generateExerciseHTML(week.exercises, 'exercises');
-        }
-        const isFinished = week.sessionEnd ? true : false;
-        html += `<button class="btn-finish" onclick="finishSession()">${isFinished ? 'FINISHED 🔥' : 'FINISH SESSION'}</button>`;
-        document.getElementById('workout-content').innerHTML = html;
+    const week = currentProgram.schedule[currentWeekIndex];
+    const dateVal = week.sessionDate || '';
+
+    let html = `
+        <div style="background:var(--card-bg); border:1px solid #004d7a; border-radius:8px; padding:14px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+            <div>
+                <span class="quad-title">Session Date</span>
+                <input type="date" 
+                    style="background:#000; border:1px solid #004d7a; color:white; padding:8px 12px; border-radius:4px; font-size:0.9rem; font-family:inherit;"
+                    value="${dateVal}"
+                    onchange="saveSessionDate(this.value)" />
+            </div>
+            <div style="display:flex; gap:8px;">
+                ${week.sessionDate 
+                    ? `<div style="background:#052e16; border:1px solid #166534; border-radius:6px; padding:6px 12px; font-size:0.75rem; color:#4ade80; font-weight:800;">✓ LOGGED ${new Date(week.sessionDate).toLocaleDateString([], {day:'numeric', month:'short'})}</div>`
+                    : `<div style="font-size:0.75rem; color:#555; padding:6px 0;">Not logged yet</div>`
+                }
+            </div>
+        </div>`;
+
+    if (week.warmup?.length) {
+        html += `<div class="section-header" onclick="toggleWarmup()" style="cursor:pointer; display:flex; justify-content:space-between;"><span>WARM UP</span><i id="warmup-chevron" class="fas fa-chevron-down"></i></div>
+                 <div id="warmup-content-wrapper" style="display:block;">${generateExerciseHTML(week.warmup, 'warmup')}</div>`;
     }
+    if (week.exercises?.length) {
+        html += `<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>` + generateExerciseHTML(week.exercises, 'exercises');
+    }
+
+    const isFinished = week.sessionDate ? true : false;
+    html += `<button class="btn-finish" onclick="finishSession()">${isFinished ? 'FINISHED 🔥' : 'FINISH SESSION'}</button>`;
+    document.getElementById('workout-content').innerHTML = html;
+}
 
     // --- PROGRAM LOGIC ---
     async function fetchUserPrograms() {
@@ -518,8 +536,19 @@
         document.getElementById('progress-bar').style.width = p + '%';
         document.getElementById('progress-percent').innerText = p + '%';
     }
-    async function startSession() { currentProgram.schedule[currentWeekIndex].sessionStart = new Date().toISOString(); await syncWorkoutToDB("Started ✓"); renderContent(); }
-    async function finishSession() { currentProgram.schedule[currentWeekIndex].sessionEnd = new Date().toISOString(); await syncWorkoutToDB("Finished 🔥"); renderContent(); }
+    async function saveSessionDate(val) {
+    currentProgram.schedule[currentWeekIndex].sessionDate = val;
+    await syncWorkoutToDB("Date saved ✓");
+    renderContent();
+}
+
+async function finishSession() {
+    currentProgram.schedule[currentWeekIndex].sessionDate = 
+        currentProgram.schedule[currentWeekIndex].sessionDate || 
+        new Date().toISOString().split('T')[0];
+    await syncWorkoutToDB("Finished 🔥");
+    renderContent();
+}
 
     // --- UI HELPERS ---
     function openTool(id) { document.querySelectorAll('.tool-content').forEach(el => el.style.display = 'none'); document.getElementById(id).style.display = 'block'; document.getElementById('toolModal').style.display = 'block'; }
