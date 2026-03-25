@@ -482,6 +482,21 @@
         .rm-table tr.highlight td { color: var(--brand-accent); font-weight: 700; }
 
         .section-gap { margin-bottom: 16px; }
+        .unit-toggle {
+    padding: 5px 10px;
+    border: none;
+    background: none;
+    color: #555;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 0.65rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.unit-toggle.active {
+    background: var(--brand-accent);
+    color: #000;
+}
     </style>
 </head>
 <body>
@@ -589,60 +604,104 @@
             </div>
         </div>
 
-        <div class="tool-card">
-            <div class="tool-title">🏋️ 1RM Calculator</div>
-            <div class="tool-row">
-                <div class="solve-field">
-                    <span class="solve-label">Weight (kg)</span>
-                    <input type="number" class="tool-input" id="rm-weight" placeholder="e.g. 100" />
-                </div>
-                <div class="solve-field">
-                    <span class="solve-label">Reps done</span>
-                    <input type="number" class="tool-input" id="rm-reps" placeholder="e.g. 5" />
-                </div>
-            </div>
-            <button class="tool-btn" onclick="calc1RM()">Calculate</button>
-            <div id="rm-output" style="display:none; margin-top:10px; max-height:220px; overflow-y:auto;">
-                <table class="rm-table">
-                    <thead>
-                        <tr>
-                            <th>Reps</th>
-                            <th>Epley</th>
-                            <th>Brzycki</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rm-table-body"></tbody>
-                </table>
-            </div>
+        <!-- 1RM CALCULATOR -->
+<div class="tool-card">
+    <div class="tool-title">🏋️ 1RM Calculator</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <span style="font-size:0.65rem; color:#555;">Epley &amp; Brzycki for 1–10 reps</span>
+        <div style="display:flex; gap:0; border:1px solid #1a2a35; border-radius:6px; overflow:hidden;">
+            <button id="rm-kg-btn" class="unit-toggle active" onclick="setRMUnit('kg')">KG</button>
+            <button id="rm-lb-btn" class="unit-toggle" onclick="setRMUnit('lb')">LB</button>
         </div>
-
+    </div>
+    <div class="tool-row">
+        <div class="solve-field">
+            <span class="solve-label" id="rm-weight-label">Weight (kg)</span>
+            <input type="number" class="tool-input" id="rm-weight" placeholder="e.g. 100" />
+        </div>
+        <div class="solve-field">
+            <span class="solve-label">Reps done</span>
+            <input type="number" class="tool-input" id="rm-reps" placeholder="e.g. 5" min="1" max="30" />
+        </div>
+    </div>
+    <div class="tool-row">
+        <button class="tool-btn" onclick="calc1RM()">Calculate</button>
+        <button class="tool-btn" onclick="clear1RM()">Clear</button>
+    </div>
+    <div id="rm-output" style="display:none; margin-top:10px; max-height:220px; overflow-y:auto;">
+        <table class="rm-table">
+            <thead>
+                <tr>
+                    <th>Reps</th>
+                    <th>Epley</th>
+                    <th>Brzycki</th>
+                </tr>
+            </thead>
+            <tbody id="rm-table-body"></tbody>
+        </table>
+    </div>
+</div>
     </div>
 
     <!-- ROW 3: Pace + Intervals -->
     <div class="tools-grid section-gap">
 
         <!-- PACE SOLVER -->
-        <div class="tool-card">
-            <div class="tool-title">🏃 Pace Solver</div>
-            <p style="font-size:0.65rem; color:#555; margin-bottom:10px;">Fill any 2 fields — leave 1 blank to solve it.</p>
-            <div class="solve-row">
+<div class="tool-card">
+    <div class="tool-title">🏃 Pace Solver</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <p style="font-size:0.65rem; color:#555; margin:0;">Fill any 2 fields — leave 1 blank to solve.</p>
+        <div style="display:flex; gap:0; border:1px solid #1a2a35; border-radius:6px; overflow:hidden;">
+            <button id="pace-km-btn" class="unit-toggle active" onclick="setPaceUnit('km')">KM</button>
+            <button id="pace-mi-btn" class="unit-toggle" onclick="setPaceUnit('mi')">MI</button>
+        </div>
+    </div>
+
+    <div class="solve-field" style="margin-bottom:8px;">
+        <span class="solve-label" id="pace-dist-label">Distance (km)</span>
+        <input type="number" class="tool-input" id="pace-dist" placeholder="e.g. 10" step="0.01" />
+    </div>
+
+    <div class="solve-field" style="margin-bottom:8px;">
+        <span class="solve-label">Total Time</span>
+        <div class="tool-row" style="margin-bottom:0;">
+            <div class="solve-field">
+                <span class="solve-label">Min</span>
+                <input type="number" class="tool-input" id="pace-min" placeholder="0" min="0" />
+            </div>
+            <div class="solve-field">
+                <span class="solve-label">Sec</span>
+                <input type="number" class="tool-input" id="pace-sec" placeholder="0" min="0" max="59" />
+            </div>
+        </div>
+    </div>
+
+    <div style="display:flex; gap:6px; margin-bottom:8px;">
+        <div class="solve-field" style="flex:1;">
+            <span class="solve-label" id="pace-pace-label">Pace (min:sec /km)</span>
+            <div class="tool-row" style="margin-bottom:0;">
                 <div class="solve-field">
-                    <span class="solve-label">Distance</span>
-                    <input type="number" class="tool-input" id="pace-dist" placeholder="km" step="0.01" />
+                    <span class="solve-label">Min</span>
+                    <input type="number" class="tool-input" id="pace-pace-min" placeholder="0" min="0" />
                 </div>
                 <div class="solve-field">
-                    <span class="solve-label">Time (min)</span>
-                    <input type="number" class="tool-input" id="pace-time" placeholder="mins" step="0.1" />
-                </div>
-                <div class="solve-field">
-                    <span class="solve-label">Pace /km</span>
-                    <input type="number" class="tool-input" id="pace-pace" placeholder="min/km" step="0.1" />
+                    <span class="solve-label">Sec</span>
+                    <input type="number" class="tool-input" id="pace-pace-sec" placeholder="0" min="0" max="59" />
                 </div>
             </div>
-            <button class="tool-btn" onclick="solvePace()">Solve</button>
-            <div class="result-output" id="pace-output"></div>
         </div>
+        <div class="solve-field" style="flex:1;">
+            <span class="solve-label" id="pace-speed-label">Speed (km/h)</span>
+            <input type="number" class="tool-input" id="pace-speed" placeholder="e.g. 12" step="0.1" />
+        </div>
+    </div>
 
+    <div class="tool-row">
+        <button class="tool-btn" onclick="solvePace()">Solve</button>
+        <button class="tool-btn" onclick="clearPace()">Clear</button>
+    </div>
+    <div class="result-output" id="pace-output"></div>
+</div>
         <!-- INTERVAL TIMER -->
         <div class="tool-card">
             <div class="tool-title">🔁 Interval Timer</div>
@@ -964,48 +1023,145 @@
     }
 
     // ── PACE SOLVER ───────────────────────────────────
-    function solvePace() {
-        const distVal = document.getElementById('pace-dist').value;
-        const timeVal = document.getElementById('pace-time').value;
-        const paceVal = document.getElementById('pace-pace').value;
+let paceUnit = 'km';
 
-        const filled = [distVal, timeVal, paceVal].filter(v => v !== '').length;
-        const out = document.getElementById('pace-output');
+function setPaceUnit(unit) {
+    paceUnit = unit;
+    document.getElementById('pace-km-btn').classList.toggle('active', unit === 'km');
+    document.getElementById('pace-mi-btn').classList.toggle('active', unit === 'mi');
+    document.getElementById('pace-dist-label').textContent = `Distance (${unit})`;
+    document.getElementById('pace-pace-label').textContent = `Pace (min:sec /${unit})`;
+    document.getElementById('pace-speed-label').textContent = `Speed (${unit}/h)`;
+    clearPace();
+}
 
-        if (filled < 2) {
-            out.innerHTML = 'Fill in any 2 fields to solve the third.';
-            out.style.display = 'block';
-            return;
-        }
+function clearPace() {
+    ['pace-dist','pace-min','pace-sec','pace-pace-min','pace-pace-sec','pace-speed'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
+    const out = document.getElementById('pace-output');
+    out.style.display = 'none';
+    out.innerHTML = '';
+}
 
-        let dist = parseFloat(distVal);
-        let time = parseFloat(timeVal); // in minutes
-        let pace = parseFloat(paceVal); // min/km
+function solvePace() {
+    const dist   = document.getElementById('pace-dist').value;
+    const tMin   = document.getElementById('pace-min').value;
+    const tSec   = document.getElementById('pace-sec').value;
+    const pMin   = document.getElementById('pace-pace-min').value;
+    const pSec   = document.getElementById('pace-pace-sec').value;
+    const speed  = document.getElementById('pace-speed').value;
+    const out    = document.getElementById('pace-output');
+    const u      = paceUnit;
 
-        let result = '';
+    // Convert inputs to base values (total seconds)
+    const hasTime  = tMin !== '' || tSec !== '';
+    const hasPace  = pMin !== '' || pSec !== '';
+    const hasDist  = dist !== '';
+    const hasSpeed = speed !== '';
 
-        if (!distVal) {
-            dist = time / pace;
-            result = `Distance: <strong style="color:var(--brand-accent)">${dist.toFixed(2)} km</strong>`;
-        } else if (!timeVal) {
-            time = dist * pace;
-            const h = Math.floor(time / 60);
-            const m = Math.floor(time % 60);
-            const s = Math.round((time % 1) * 60);
-            result = `Time: <strong style="color:var(--brand-accent)">${h > 0 ? h + 'h ' : ''}${m}m ${s}s</strong>`;
-        } else {
-            pace = time / dist;
-            const pm = Math.floor(pace);
-            const ps = Math.round((pace % 1) * 60);
-            result = `Pace: <strong style="color:var(--brand-accent)">${pm}:${String(ps).padStart(2,'0')} /km</strong>`;
-        }
+    const totalTimeSec = hasTime  ? (parseFloat(tMin)||0)*60 + (parseFloat(tSec)||0) : null;
+    const paceSec      = hasPace  ? (parseFloat(pMin)||0)*60 + (parseFloat(pSec)||0) : null;
+    const distVal      = hasDist  ? parseFloat(dist) : null;
+    const speedVal     = hasSpeed ? parseFloat(speed) : null;
 
-        out.innerHTML = result;
+    // Build a complete picture from any 2 knowns
+    let d = distVal, t = totalTimeSec, p = paceSec, sp = speedVal;
+
+    // Derive missing values
+    if (d && t && !p) p = t / d;
+    if (d && t && !sp) sp = (d / (t / 3600));
+    if (d && p && !t) t = d * p;
+    if (d && p && !sp) sp = 3600 / p;
+    if (d && sp && !t) t = (d / sp) * 3600;
+    if (d && sp && !p) p = 3600 / sp;
+    if (t && p && !d) d = t / p;
+    if (t && p && !sp) sp = 3600 / p;
+    if (t && sp && !d) d = sp * (t / 3600);
+    if (t && sp && !p) p = 3600 / sp;
+    if (p && sp) { if (!d && !t) { out.innerHTML = 'Need at least distance or time too.'; out.style.display='block'; return; } }
+
+    if (!d || !t || !p || !sp) {
+        out.innerHTML = 'Fill in any 2 fields to solve.';
         out.style.display = 'block';
+        return;
     }
 
+    const pM = Math.floor(p / 60);
+    const pS = Math.round(p % 60);
+    const tH = Math.floor(t / 3600);
+    const tM = Math.floor((t % 3600) / 60);
+    const tSS = Math.round(t % 60);
+    const timeStr = tH > 0
+        ? `${tH}h ${tM}m ${tSS}s`
+        : `${tM}m ${tSS}s`;
+
+    out.innerHTML = `
+        Distance: <strong style="color:var(--brand-accent)">${d.toFixed(2)} ${u}</strong><br>
+        Time: <strong style="color:var(--brand-accent)">${timeStr}</strong><br>
+        Pace: <strong style="color:var(--brand-accent)">${pM}:${String(pS).padStart(2,'0')} /${u}</strong><br>
+        Speed: <strong style="color:var(--brand-accent)">${sp.toFixed(2)} ${u}/h</strong>
+    `;
+    out.style.display = 'block';
+}
+
+// ── 1RM CALCULATOR ────────────────────────────────
+let rmUnit = 'kg';
+
+function setRMUnit(unit) {
+    rmUnit = unit;
+    document.getElementById('rm-kg-btn').classList.toggle('active', unit === 'kg');
+    document.getElementById('rm-lb-btn').classList.toggle('active', unit === 'lb');
+    document.getElementById('rm-weight-label').textContent = `Weight (${unit})`;
+    clear1RM();
+}
+
+function clear1RM() {
+    document.getElementById('rm-weight').value = '';
+    document.getElementById('rm-reps').value = '';
+    document.getElementById('rm-output').style.display = 'none';
+    document.getElementById('rm-table-body').innerHTML = '';
+}
+
+function calc1RM() {
+    let w = parseFloat(document.getElementById('rm-weight').value);
+    const r = parseFloat(document.getElementById('rm-reps').value);
+    if (!w || !r || r < 1) return;
+
+    // Convert lbs to kg for calculation
+    if (rmUnit === 'lb') w = w / 2.2046;
+
+    const tbody = document.getElementById('rm-table-body');
+    tbody.innerHTML = '';
+
+    for (let reps = 1; reps <= 10; reps++) {
+        let epley   = w * (1 + reps / 30);
+        let brzycki = reps < 37 ? w * (36 / (37 - reps)) : null;
+
+        // Convert back to lbs for display if needed
+        if (rmUnit === 'lb') {
+            epley   = epley * 2.2046;
+            if (brzycki) brzycki = brzycki * 2.2046;
+        }
+
+        const fmt = (v) => v ? `${Math.round(v)}${rmUnit}` : '—';
+        const row = document.createElement('tr');
+        if (reps === Math.round(r)) row.classList.add('highlight');
+        row.innerHTML = `<td>${reps}</td><td>${fmt(epley)}</td><td>${fmt(brzycki)}</td>`;
+        tbody.appendChild(row);
+    }
+
+    document.getElementById('rm-output').style.display = 'block';
+}
+
     // ── INTERVAL TIMER ────────────────────────────────
-    let intRunning = false;
+    function clear1RM() {
+    document.getElementById('rm-weight').value = '';
+    document.getElementById('rm-reps').value = '';
+    document.getElementById('rm-output').style.display = 'none';
+    document.getElementById('rm-table-body').innerHTML = '';
+}
+let intRunning = false;
     let intInterval = null;
     let intPhase = 'idle';
     let intCurrentSet = 0;
