@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Electronic Press Kit for DTH, featuring music, videos, and social media.">
+    <title>EPK | DTH</title>
+
+    <style>
+        :root {
+            --brand-yellow: #ffde59;
+            --background-dark: #121212;
+            --surface-dark: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --border-color: #333333;
+        }
+
+        /* --- Modern Setup & Typography --- */
+        body {
+            background-color: rgba(18, 18, 18, 0.85); /* Dark overlay for readability */
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-image: url('dthhs.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
+        }
+        a { color: var(--brand-yellow); text-decoration: none; transition: opacity 0.3s; }
+        a:hover { opacity: 0.8; }
+        h1, h2, h3 { font-weight: 600; }
+
+        /* --- Header & Navigation --- */
+        .page-header {
+            text-align: center;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .site-title a {
+            color: #ce0104;
+            font-size: 2.5em;
+            text-decoration: none;
+            font-family: monospace;
+        }
+        nav ul { list-style: none; padding: 0; margin: 15px 0 0 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; }
+        nav a { font-size: 1.1em; letter-spacing: 1px; }
+
+        /* --- Download & Social Button Styling --- */
+        .button-container {
+            text-align: center;
+            margin: 40px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        .yellow-btn {
+            background-color: var(--brand-yellow);
+            color: #000;
+            padding: 12px 25px;
+            font-weight: bold;
+            border-radius: 8px;
+            font-size: 1.1em;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+        .yellow-btn:hover {
+            transform: scale(1.05);
+            opacity: 1; /* Override default link hover */
+        }
+
+        /* --- Section Styling --- */
+        .epk-section {
+            margin-bottom: 60px;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section-header h2 { font-size: 2.5em; color: #ffffff; margin: 0; }
+        .section-header p { font-style: italic; color: var(--text-secondary); margin: 5px 0 0 0; }
+
+        /* --- Main Feature Layout (Video + Singles) --- */
+        .main-feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr; /* 25% | 50% | 25% */
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .singles-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .video-column video {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .music-item {
+            background-color: var(--surface-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .music-item h3 {
+            padding: 15px;
+            margin: 0;
+            background-color: #252525;
+            font-size: 1.2em;
+        }
+        .music-item h3.highlight-title {
+            color: var(--brand-yellow);
+        }
+        .music-item iframe {
+            display: block;
+            border: 0;
+            width: 100%;
+            margin-bottom: 10px; /* Added spacing */
+        }
+        .music-item iframe:last-child {
+            margin-bottom: 0; /* Remove margin from the last iframe in a group */
+        }
+
+        /* --- Albums Grid --- */
+        .albums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- Footer --- */
+        .page-footer { text-align: center; margin-top: 60px; color: var(--text-secondary); font-size: 0.9em; }
+        
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 1024px) {
+            .main-feature-grid {
+                grid-template-columns: 1fr; /* Stack columns on smaller screens */
+            }
+            .video-column {
+                order: -1; /* Move video to the top on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <h1 class="site-title"><a href="#">DEE TEE HAYCH</a></h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">HOME</a></li>
+                 <li><a href="dthconnect.html">DTH Email List</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="button-container">
+        <a href="Daniel Hardie - Splash EPK - Electronic Press Kit 2025.pdf" class="yellow-btn" download>Download Full EPK</a>
+        <a href="mailto:deeteehaych@gmail.com" class="yellow-btn">EMAIL DTH</a>
+    </div>
+
+    <main>
+        <section class="epk-section">
+            <div class="main-feature-grid">
+                
+                <div class="singles-column">
+                    <div class="music-item">
+                        <h3 class="highlight-title">Singles</h3>
+                        <iframe src="https://open.spotify.com/embed/track/6gaxetTsI9Aq3VLdpfQnxk?utm_source=generator&theme=0" width="100%" height="152" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        <iframe src="https://open.spotify.com/embed/track/6wHg7BOiaSLaBXAtfuUuzD?utm_source=generator" width="100%" height="152" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    </div>
+                    <div class="music-item">
+                        <h3 class="highlight-title">Piano</h3>
+                        <iframe src="https://open.spotify.com/embed/track/5UylgaH6rS3AMriAQeQpLN?utm_source=generator" width="100%" height="152" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        <iframe src="https://open.spotify.com/embed/track/08E2MsKqicMw5usrJvXofw?utm_source=generator" width="100%" height="152" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        <iframe src="https://open.spotify.com/embed/track/3nMsgTsod4d6aYTcPeZskv?utm_source=generator" width="100%" height="152" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    </div>
+                </div>
+
+                <div class="video-column">
+                    <video controls muted autoplay loop>
+                        <source src="videos/EPK Video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="singles-column">
+                    <div class="music-item">
+                        <h3 class="highlight-title">Soundscapes</h3>
+                        <iframe src="https://open.spotify.com/embed/track/0o6KFkAbHLTc7KMfGl4Fi0?utm_source=generator" width="100%" height="152" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        <iframe src="https://open.spotify.com/embed/track/0QdOVRhgaCfxoWZMby9K8v?utm_source=generator" width="100%" height="152" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    </div>
+                    
+                    <div class="music-item">
+                        <h3 class="highlight-title">Single Take Looping</h3>
+                        <iframe src="https://open.spotify.com/embed/track/7bMWCAfdJzcdwBmdhIpsvF?utm_source=generator" width="100%" height="152" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        
+                        <iframe width="100%" height="152" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2225899217&color=%23ffde59&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+
+                        <iframe width="100%" height="152" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2223512243&color=%23ffde59&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+
+                        <iframe src="https://open.spotify.com/embed/track/5TlyHs4VWpDYWxRQJuBVs7?utm_source=generator" width="100%" height="152" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        <iframe src="https://open.spotify.com/embed/track/6gaxetTsI9Aq3VLdpfQnxk?utm_source=generator" width="100%" height="152" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        
+                         <iframe width="100%" height="152" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2225899217&color=%23ffde59&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+
+                        <iframe width="100%" height="152" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2223512243&color=%23ffde59&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false"></iframe>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="button-container">
+            <a href="https://music.apple.com/nz/artist/dth/1263139811" class="yellow-btn" target="_blank">Apple Music</a>
+            <a href="https://open.spotify.com/artist/5PxxCIlhbneezdsaP7FvzV?si=PHbhR0fUTv2pbvUJO-eOrQ" class="yellow-btn" target="_blank">Spotify</a>
+            <a href="https://soundcloud.com/user-269168570" class="yellow-btn" target="_blank">Soundcloud</a>
+            <a href="https://www.instagram.com/dan.thehuman/" class="yellow-btn" target="_blank">Instagram</a>
+        </div>
+
+        <section class="epk-section">
+            <div class="section-header">
+                <h2>Albums</h2>
+                <p>Full-length projects and compilations.</p>
+            </div>
+            <div class="albums-grid">
+                <div class="music-item">
+                    <iframe src="https://open.spotify.com/embed/album/1mkhapJYuLXsatB6ywIohJ?utm_source=generator" width="100%" height="352" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+                <div class="music-item">
+                    <iframe src="https://open.spotify.com/embed/album/1me1WQ9eNgyJGYNPQM2Mdo?utm_source=generator" width="100%" height="352" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+                <div class="music-item">
+                    <iframe src="https://open.spotify.com/embed/album/4TYWEE96s6u4Ym2HhPhzuu?utm_source=generator" width="100%" height="352" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="page-footer">
+        <div class="button-container" style="margin-top: 0; margin-bottom: 20px;">
+             <a href="Daniel Hardie - Splash EPK - Electronic Press Kit 2025.pdf" class="yellow-btn" download>Download Full EPK</a>
+        </div>
+        <p>© 2025 DEE TEE HAYCH. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>

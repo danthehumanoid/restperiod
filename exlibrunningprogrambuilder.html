@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running Pace & Program Calculator</title>
+    <style>
+        :root {
+            --brand-yellow: #ffde18;
+            --brand-red: #ce0104;
+            --brand-text: #ccc;
+            --brand-blue: #007bff;
+            --brand-green: #28a745;
+        }
+
+        /* Highlight animation */
+        @keyframes highlight-fade {
+            from { box-shadow: 0 0 15px 5px var(--brand-yellow); }
+            to { box-shadow: 0 0 0 0px transparent; }
+        }
+        .highlight {
+            animation: highlight-fade 30s ease-out;
+        }
+
+        body {
+            margin: 0; padding: 20px;
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: #000; color: white;
+            scroll-behavior: smooth;
+        }
+        
+        .header, .page-footer { text-align: center; margin: 20px 0; }
+        h1, h2, h3, h4 { font-family: monospace; font-weight: normal; color: var(--brand-red); }
+        a { color: var(--brand-yellow); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+/* --- EMAIL BUTTON STYLES (NEW) --- */
+.email-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+#revealButton {
+    background-color: var(--brand-red);
+    color: #000; /* This is black text */
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: monospace;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+#revealButton:hover {
+    transform: scale(1.03);
+}
+
+#emailDisplay {
+    display: none; /* Hidden by default */
+    margin-top: 15px;
+    color: var(--brand-text);
+    font-size: 1.1rem;
+    font-family: monospace;
+}
+
+#emailDisplay a {
+    color: var(--brand-text); /* Makes it look like normal text */
+    text-decoration: none;   /* Removes the underline */
+}
+
+#emailDisplay a:hover {
+    color: var(--brand-yellow); /* Changes to yellow on hover */
+    text-decoration: underline; /* Adds underline on hover */
+}
+/* --- END NEW STYLES --- */
+        /* --- NAVIGATION STYLES START HERE --- */
+        
+        /* Styling for the Top Home Buttons */
+        .top-nav-container {
+            width: 100%;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444; 
+        }
+        .top-nav {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .top-nav .nav-link {
+            background-color: var(--brand-yellow);
+            color: #111;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .top-nav .nav-link:hover {
+            background-color: #d1b50f;
+            color: #000;
+        }
+
+        /* Main Navigation Bar Styles */
+        .main-nav-container {
+            max-width: 1200px; margin: 20px auto 10px auto; padding: 15px;
+            background: #222; border-radius: 8px;
+        }
+        .main-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .nav-item {
+            position: relative;
+        }
+        .main-nav .nav-link { /* Specificity for main nav links */
+            background-color: #333;
+            color: var(--brand-yellow);
+            border: 1px solid #555;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 1rem;
+            transition: background-color 0.3s, color 0.3s;
+            display: block;
+            white-space: nowrap;
+        }
+        .main-nav .nav-link:hover {
+            background-color: var(--brand-red);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 15px);
+            left: 0;
+            min-width: 200px;
+            background-color: #222;
+            border-radius: 6px;
+            list-style: none;
+            padding: 8px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid #444;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        /* Triangle for the dropdown */
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: 20px;
+            width: 0; height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-bottom: 7px solid var(--brand-red);
+        }
+
+        /* Show the dropdown when active */
+        .nav-item.active > .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Links inside the dropdown */
+        .dropdown-menu a {
+            color: var(--brand-yellow);
+            padding: 10px 20px;
+            display: block;
+            font-family: monospace;
+            font-size: 0.9rem;
+            transition: background-color 0.2s ease, padding-left 0.2s ease;
+        }
+        
+        .dropdown-menu a:hover {
+            background-color: #333;
+            padding-left: 25px;
+            text-decoration: none;
+        }
+        /* --- NAVIGATION STYLES END HERE --- */
+
+        /* --- Calculator Styles (Merged) --- */
+        .calculator { 
+            max-width: 800px; 
+            margin: 30px auto; 
+            padding: 20px; 
+            border: 1px solid #444; 
+            border-radius: 8px;
+            background-color: #1a1a1a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+        .calculator h1 {
+            text-align: center;
+            color: var(--brand-red); /* Style guide h1 */
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-weight: normal;
+        }
+        .calculator h2 {
+            color: var(--brand-red);
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-weight: normal;
+        }
+        .calculator h3 {
+            color: var(--brand-yellow); /* Changed for emphasis */
+            margin-top: 15px;
+            font-family: monospace;
+            font-weight: normal;
+        }
+        .input-group { 
+            margin-bottom: 15px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--brand-text); /* Style guide text */
+        }
+        input, select { 
+            padding: 10px; 
+            width: 100%; 
+            box-sizing: border-box;
+            border: 1px solid #555;
+            border-radius: 6px;
+            background-color: #333;
+            color: #ffffff;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            border-color: var(--brand-yellow);
+            outline: none;
+        }
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+        .day-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        .day-selector label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+            color: #fff; /* White for easier selection */
+        }
+        .day-selector input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        button { 
+            background-color: var(--brand-yellow); 
+            color: #111; 
+            padding: 12px 25px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        button:hover { 
+            background-color: #d1b50f; 
+        }
+        .results, .program-builder {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #222; /* Matched nav */
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+            color: #ffffff;
+        }
+        th {
+            font-weight: bold;
+            background-color: #333;
+            color: var(--brand-yellow); /* Style guide highlight */
+        }
+        tr:hover {
+            background-color: #333;
+        }
+        .section {
+            margin-top: 20px;
+        }
+        .error {
+            color: var(--brand-red); /* Style guide danger */
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .program-output {
+            background-color: #111; /* Darker for contrast */
+            border: 1px solid #444;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 6px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            color: #ffffff;
+        }
+        .copy-btn {
+            background-color: var(--brand-blue); /* Style guide blue */
+            color: white;
+            margin-top: 10px;
+            width: auto;
+            padding: 10px 18px;
+        }
+        .copy-btn:hover {
+            background-color: #0056b3; /* Darker blue */
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+        .input-row .input-group {
+            flex: 1;
+        }
+        
+        /* Progression Section Styles */
+        .progression-section {
+            background-color: #333;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #555;
+        }
+        
+        .progression-section h4 {
+            color: var(--brand-red);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border-bottom: 1px solid #555;
+            padding-bottom: 8px;
+            font-family: monospace;
+            font-weight: normal;
+        }
+        
+        .progression-section .input-row {
+            margin-bottom: 10px;
+        }
+        
+        .progression-section .input-group {
+            margin-bottom: 10px;
+        }
+        
+        /* Calendar Table Styles */
+        .calendar-container {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            min-width: 600px;
+        }
+        .calendar-table th {
+            background-color: #333;
+            color: var(--brand-yellow);
+            padding: 8px 4px;
+            text-align: center;
+            border: 1px solid #444;
+            font-size: 10px;
+        }
+        .calendar-table td {
+            border: 1px solid #444;
+            padding: 4px;
+            text-align: center;
+            vertical-align: top;
+            height: 80px;
+            width: 120px;
+            color: #fff;
+        }
+        .week-header {
+            background-color: #222 !important;
+            font-weight: bold;
+            writing-mode: horizontal-tb;
+            width: 60px;
+            color: var(--brand-text) !important;
+        }
+        .session-cell {
+            font-size: 9px;
+            line-height: 1.2;
+        }
+        .session-date {
+            font-weight: bold;
+            margin-bottom: 2px;
+            color: #fff;
+        }
+        .session-type {
+            margin-bottom: 1px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .session-pace {
+            color: var(--brand-yellow); /* Highlight pace */
+            margin-bottom: 1px;
+            font-weight: bold;
+        }
+        .session-speed {
+            color: #ccc;
+            font-size: 8px;
+            margin-bottom: 1px;
+        }
+        .session-hr {
+            color: #f48fb1; /* Pink for HR */
+            font-size: 8px;
+            margin-bottom: 1px;
+        }
+        .session-zone {
+            color: #81c784; /* Green for Zone */
+            font-size: 8px;
+            margin-bottom: 1px;
+        }
+        .session-duration {
+            color: #999;
+            font-size: 8px;
+        }
+        
+        /* Session type colors */
+        .easy { background-color: #1a4d1a; }
+        .tempo { background-color: #4d4d1a; }
+        .intervals { background-color: #4d1a1a; }
+        .long { background-color: #1a1a4d; }
+        .recovery { background-color: #2a2a2a; }
+        .speed { background-color: #4d1a4d; }
+        .rest { background-color: #111; }
+
+        /* *** ADDED THIS RULE *** */
+        .footer-notice {
+            text-align: center; 
+            font-style: italic; 
+            color: #888; /* Faded grey */
+            font-size: 0.9rem;
+            max-width: 800px; 
+            margin: 40px auto 20px auto; /* Centering and spacing */
+            line-height: 1.5;
+        }
+        /* --- End of Merged Styles --- */
+
+
+        /* --- Style Guide Media Queries --- */
+        @media (max-width: 900px) { .video-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 600px) { .video-grid { grid-template-columns: repeat(2, 1fr); } .workout-item-inputs input { width: 45%; } }
+         @media (max-width: 600px) {
+            .top-nav {
+                flex-direction: column; /* Stack the buttons vertically */
+                align-items: center;    /* Center them horizontally */
+                gap: 30px;              /* Adjust the space between them */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="top"></div>
+
+    <div class="header">
+        <a href="index.html"><img src="RPLOGO Psychedelic.gif" alt="RPLOGO Psychedelic"></a>
+        
+        <nav class="top-nav-container">
+            <ul class="top-nav">
+                <li class="nav-item"><a href="index.html" class="nav-link">HOME - DTH</a></li>
+                <li class="nav-item"><a href="exlibindex.html" class="nav-link">HOME - EXERCISE LIBRARY</a></li>
+            </ul>
+        </nav>
+
+        <nav class="main-nav-container">
+            <ul class="main-nav">
+                <li class="nav-item">
+                    <a class="nav-link">CORE ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibcoreanterior.html">Anterior</a></li>
+                        <li><a href="exlibcoreposterior.html">Posterior</a></li>
+                        <li><a href="exlibcorestability.html">Total Core Stability</a></li>
+                        <li><a href="exlibcoreside.html">Side</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">HINGE ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibhingedouble.html">Double Leg</a></li>
+                        <li><a href="exlibhingesingle.html">Single Leg</a></li>
+                        <li><a href="exlibhingesplit.html">Split Stance</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">MOBILITY ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibmobilityfb.html">Full Body</a></li>
+                        <li><a href="exlibmobilitylb.html">Lower Body</a></li>
+                        <li><a href="exlibmobilityub.html">Upper Body</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">PLYOMETRICS ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibplyovertical.html">Vertical</a></li>
+                        <li><a href="exlibplyohorizontal.html">Horizontal</a></li>
+                        <li><a href="exlibplyolateral.html">Lateral</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">PRIMER ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibprimerfb.html">Full Body</a></li>
+                        <li><a href="exlibprimerlb.html">Lower Body</a></li>
+                        <li><a href="exlibprimerub.html">Upper Body</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">PULL ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibpullvertical.html">Vertical</a></li>
+                        <li><a href="exlibpullhorizontal.html">Horizontal</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">PUSH ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibpushvertical.html">Vertical</a></li>
+                        <li><a href="exlibpushhorizontal.html">Horizontal</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">RECOVER ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibrectis.html">TISSUE</a></li>
+                        <li><a href="exlibrecdec.html">DECOMPRESS</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">RUN ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibrunhorizontal.html">Horizontal</a></li>
+                        <li><a href="exlibrunvertical.html">Vertical</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">SKILLS & DRILLS ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibskillsanddrillsball.html">BALL</a></li>
+                        <li><a href="exlibskillsanddrillsbw.html">BODYWEIGHT</a></li>
+                        <li><a href="exlibskillsanddrillsstick.html">STICK</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">SQUAT ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibsquatdouble.html">Double Leg</a></li>
+                        <li><a href="exlibsquatsingle.html">Single Leg</a></li>
+                        <li><a href="exlibsquatsplit.html">Split Squat</a></li>
+                    </ul>
+                </li>
+            </ul>
+       </nav>
+    </div>
+ <div class="email-container">
+    <button id="revealButton" onclick="revealEmail()">QUESTIONS? EMAIL ME</button>
+    <div id="emailDisplay">
+        <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
+    </div>
+</div>
+    <div style="text-align: center;">
+        <a href="https://www.instagram.com/dan.thehuman/" target="_blank">
+            <img src="InstagramDTH.png" alt="Follow Dan The Human on Instagram" style="width: 100px; height: 100px; margin: 0 5px;">
+        </a>
+        <a href="https://buymeacoffee.com/deeteehacyh" target="_blank">
+            <img src="dthsupport.png" alt="Support DTH" style="width: 100px; height: 100px; margin: 0 5px;">
+        </a>
+        <a href="dthconnect.html" target="_blank">
+            <img src="dthemaillist.png" alt="DTH emaillist" style="width: 100px; height: 100px; margin: 0 5px;">
+        </a>
+    </div>
+
+    <div class="calculator">
+      <h1>Running Pace Calculator</h1>
+      
+      <div class="input-group">
+        <label>
+          <input type="checkbox" id="useImperial">
+          Use Imperial Units (miles, mph)
+        </label>
+      </div>
+      
+      <div class="input-group">
+        <label for="mas" id="masLabel">Maximal Aerobic Speed (km/h):</label>
+        <input type="number" id="mas" step="0.1" min="1" placeholder="e.g., 16.0">
+        <div id="mas-error" class="error" style="display: none;"></div>
+      </div>
+      
+      <div class="input-group">
+        <label for="mss" id="mssLabel">Maximal Sprint Speed (km/h):</label>
+        <input type="number" id="mss" step="0.1" min="1" placeholder="e.g., 30.0">
+        <div id="mss-error" class="error" style="display: none;"></div>
+      </div>
+      
+      <div class="input-group">
+        <label for="trainingOptions">Training Options:</label>
+        <select id="trainingOptions">
+          <option value="none" selected>Select Training Category</option>
+          <option value="endurance">Endurance Pacing</option>
+          <option value="stamina-endurance">Stamina Pacing - Endurance</option>
+          <option value="stamina-continuous">Stamina Pacing - Continuous</option>
+          <option value="aerobic-speed">Aerobic Speed Intervals</option>
+          <option value="aerobic-sprint">Aerobic Sprint Endurance (Tempo)</option>
+        </select>
+      </div>
+      
+      <button id="calculateButton">Calculate</button>
+
+      <div class="section" id="physiological-results" style="display: none;">
+        <h2>Physiological Zone Results</h2>
+        <table id="zone-table">
+          <tr>
+            <th>Zone</th>
+            <th>% of MAS</th>
+            <th id="zone-speed-header">Speed (km/h)</th>
+            <th>Speed (m/s)</th>
+            <th id="zone-pace-header">Pace (min:sec/km)</th>
+          </tr>
+        </table>
+      </div>
+      
+      <div class="section" id="training-results" style="display: none;">
+        <h2>Training Options Results</h2>
+        
+        <div id="endurance-section" style="display: none;">
+          <h3>Endurance Pacing</h3>
+          <table id="endurance-table">
+            <tr>
+              <th>Training Type</th>
+              <th>% of MAS</th>
+              <th class="speed-header">Speed (km/h)</th>
+              <th class="pace-header">Pace (min:sec/km)</th>
+            </tr>
+          </table>
+        </div>
+        
+        <div id="stamina-endurance-section" style="display: none;">
+          <h3>Stamina Pacing - Endurance</h3>
+          <table id="stamina-endurance-table">
+            <tr>
+              <th>Training Type</th>
+              <th>% of MAS</th>
+              <th class="speed-header">Speed (km/h)</th>
+              <th class="pace-header">Pace (min:sec/km)</th>
+            </tr>
+          </table>
+        </div>
+        
+        <div id="stamina-continuous-section" style="display: none;">
+          <h3>Stamina Pacing - Continuous</h3>
+          <table id="stamina-continuous-table">
+            <tr>
+              <th>Training Type</th>
+              <th>% of MAS</th>
+              <th class="speed-header">Speed (km/h)</th>
+              <th class="pace-header">Pace (min:sec/km)</th>
+            </tr>
+          </table>
+        </div>
+        
+        <div id="aerobic-speed-section" style="display: none;">
+          <h3>Aerobic Speed Intervals</h3>
+          <table id="aerobic-speed-table">
+            <tr>
+              <th>Distance</th>
+              <th>% of MAS</th>
+              <th class="speed-header">Speed (km/h)</th>
+              <th class="pace-header">Pace (min:sec/km)</th>
+            </tr>
+          </table>
+        </div>
+        
+        <div id="aerobic-sprint-section" style="display: none;">
+          <h3>Aerobic Sprint Endurance (Tempo)</h3>
+          <table id="aerobic-sprint-table">
+            <tr>
+              <th>Distance</th>
+              <th>% of MAS</th>
+              <th>% of ASR</th>
+              <th class="speed-header">Speed (km/h)</th>
+              <th class="pace-header">Pace (min:sec/km)</th>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="program-builder">
+        <h2>Training Program Builder</h2>
+        
+        <div class="input-row">
+          <div class="input-group">
+            <label for="weeks">Program Duration (weeks):</label>
+            <input type="number" id="weeks" min="1" max="12" value="8" placeholder="e.g., 8">
+          </div>
+          
+          <div class="input-group">
+            <label for="sessionsPerWeek">Sessions per week:</label>
+            <input type="number" id="sessionsPerWeek" min="3" max="6" value="4" placeholder="e.g., 4">
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <label>Select Session Types (must equal sessions per week):</label>
+          <div class="day-selector">
+            <label><input type="checkbox" id="session-recovery" value="recovery"> Recovery</label>
+            <label><input type="checkbox" id="session-easy" value="easy" checked> Easy</label>
+            <label><input type="checkbox" id="session-long" value="long" checked> Long Run</label>
+            <label><input type="checkbox" id="session-tempo" value="tempo" checked> Tempo</label>
+            <label><input type="checkbox" id="session-intervals" value="intervals" checked> Intervals</label>
+            <label><input type="checkbox" id="session-speed" value="speed"> Speed Work</label>
+          </div>
+          <div id="session-type-error" class="error" style="display: none;"></div>
+        </div>
+        
+        <div class="input-group">
+          <label>Select Training Days:</label>
+          <div class="day-selector">
+            <label><input type="checkbox" id="day-monday" value="0" checked> Monday</label>
+            <label><input type="checkbox" id="day-tuesday" value="1"> Tuesday</label>
+            <label><input type="checkbox" id="day-wednesday" value="2" checked> Wednesday</label>
+            <label><input type="checkbox" id="day-thursday" value="3"> Thursday</label>
+            <label><input type="checkbox" id="day-friday" value="4" checked> Friday</label>
+            <label><input type="checkbox" id="day-saturday" value="5" checked> Saturday</label>
+            <label><input type="checkbox" id="day-sunday" value="6"> Sunday</label>
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <label for="maxHR">Max Heart Rate (optional):</label>
+          <input type="number" id="maxHR" min="120" max="220" placeholder="e.g., 190">
+        </div>
+        
+        <div class="input-group">
+          <label for="startDate">Start Date (Monday):</label>
+          <input type="date" id="startDate">
+        </div>
+        
+        <div class="input-group">
+          <label for="programFocus">Program Focus:</label>
+          <select id="programFocus">
+            <option value="mixed">Mixed Training</option>
+            <option value="endurance">Endurance Focus</option>
+            <option value="tempo">Tempo/Threshold Focus</option>
+            <option value="speed">Speed Focus</option>
+          </select>
+        </div>
+        
+        <div class="input-group">
+          <label>
+            <input type="checkbox" id="includeIntervals" checked> Include Intervals
+          </label>
+        </div>
+        
+        <div class="input-group" id="intervalOptions">
+          <label for="intervalType">Interval Type:</label>
+          <select id="intervalType">
+            <option value="mixed">Mixed Intervals</option>
+            <option value="long">Long Intervals (1200-2000m)</option>
+            <option valueM="medium">Medium Intervals (600-1000m)</option>
+            <option value="short">Short Intervals (400-800m)</option>
+          </select>
+        </div>
+        
+        <button id="generateProgram">Generate Training Program</button>
+        
+        <div id="program-calendar" style="display: none;">
+          <h3>Training Calendar</h3>
+          <div class="calendar-container">
+            <table id="calendar-table" class="calendar-table">
+            </table>
+          </div>
+        </div>
+        
+        <div id="program-output" class="program-output" style="display: none;"></div>
+        <button id="copyProgram" class="copy-btn" style="display: none;">Copy to Clipboard</button>
+      </div>
+    </div>
+    <div class="page-footer">
+        <img src="RPLOGO Psychedelic.gif" alt="RPLOGO Psychedelic">
+        <p><a href="dthconnect.html">Ideas? Questions? Stay in touch - DTH EMAIL LIST</a></p>
+    </div>
+
+    <div class="footer-notice">
+        This content is for personal use only. Please do not copy, re-upload, or distribute these videos without prior permission. Enjoy your training!
+    </div>
+    
+    <script>
+        // (NEW) Function to show the email
+function revealEmail() {
+    const emailDiv = document.getElementById('emailDisplay');
+    if (emailDiv) {
+        emailDiv.style.display = 'block';
+    }
+    const emailButton = document.getElementById('revealButton');
+    if (emailButton) {
+        emailButton.style.display = 'none'; // Hide the button after click
+    }
+}
+
+// ... your existing document.addEventListener... code goes after this
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // --- 1. DROPDOWN MENU LOGIC ---
+            const navItems = document.querySelectorAll('.main-nav .nav-item');
+            navItems.forEach(item => {
+                const link = item.querySelector('.nav-link');
+                if (item.querySelector('.dropdown-menu')) {
+                    link.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        const isActive = item.classList.contains('active');
+                        navItems.forEach(otherItem => {
+                            if (otherItem !== item) otherItem.classList.remove('active');
+                        });
+                        item.classList.toggle('active');
+                    });
+                }
+            });
+            document.addEventListener('click', () => navItems.forEach(item => item.classList.remove('active')));
+    
+            // --- 2. Other JS from Style Guide (not needed for calculator) ---
+            // ... (search, workout, video logic removed for clarity) ...
+        });
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set default start date to next Monday
+      const today = new Date();
+      const nextMonday = new Date(today);
+      const dayOfWeek = today.getDay(); // Sunday is 0, Monday is 1
+      const daysUntilMonday = (dayOfWeek === 1) ? 0 : (8 - dayOfWeek) % 7;
+      nextMonday.setDate(today.getDate() + daysUntilMonday);
+      
+      document.getElementById('startDate').value = nextMonday.toISOString().split('T')[0];
+      
+      document.getElementById('calculateButton').addEventListener('click', function() {
+        calculatePhysiologicalZones();
+        calculateTrainingOptions();
+      });
+      
+      document.getElementById('generateProgram').addEventListener('click', generateTrainingProgram);
+      document.getElementById('copyProgram').addEventListener('click', copyProgramToClipboard);
+      
+      document.getElementById('useImperial').addEventListener('change', updateUnitSystem);
+      
+      document.getElementById('includeIntervals').addEventListener('change', function() {
+        const intervalOptions = document.getElementById('intervalOptions');
+        intervalOptions.style.display = this.checked ? 'block' : 'none';
+      });
+      
+      // Update sessions per week when days are selected/deselected
+      document.querySelectorAll('[id^="day-"]').forEach(checkbox => {
+        checkbox.addEventListener('change', updateSessionsFromDays);
+      });
+      
+      // Update day selection when sessions per week changes
+      document.getElementById('sessionsPerWeek').addEventListener('change', updateDaysFromSessions);
+      
+      // Update session types when sessions per week changes
+      document.getElementById('sessionsPerWeek').addEventListener('change', updateSessionTypes);
+      
+      // Update sessions per week when session types are selected/deselected
+      document.querySelectorAll('[id^="session-"]').forEach(checkbox => {
+        checkbox.addEventListener('change', validateSessionTypes);
+      });
+    });
+
+    function updateUnitSystem() {
+      const useImperial = document.getElementById('useImperial').checked;
+      
+      const masLabel = document.getElementById('masLabel');
+      const mssLabel = document.getElementById('mssLabel');
+      const zoneSpeedHeader = document.getElementById('zone-speed-header');
+      const zonePaceHeader = document.getElementById('zone-pace-header');
+      
+      if (useImperial) {
+        masLabel.textContent = 'Maximal Aerobic Speed (mph):';
+        mssLabel.textContent = 'Maximal Sprint Speed (mph):';
+        zoneSpeedHeader.textContent = 'Speed (mph)';
+        zonePaceHeader.textContent = 'Pace (min:sec/mile)';
+        document.querySelectorAll('.speed-header').forEach(h => h.textContent = 'Speed (mph)');
+        document.querySelectorAll('.pace-header').forEach(h => h.textContent = 'Pace (min:sec/mile)');
+      } else {
+        masLabel.textContent = 'Maximal Aerobic Speed (km/h):';
+        mssLabel.textContent = 'Maximal Sprint Speed (km/h):';
+        zoneSpeedHeader.textContent = 'Speed (km/h)';
+        zonePaceHeader.textContent = 'Pace (min:sec/km)';
+        document.querySelectorAll('.speed-header').forEach(h => h.textContent = 'Speed (km/h)');
+        document.querySelectorAll('.pace-header').forEach(h => h.textContent = 'Pace (min:sec/km)');
+      }
+      
+      // Recalculate if values exist
+      if (document.getElementById('mas').value) {
+        calculatePhysiologicalZones();
+        calculateTrainingOptions();
+      }
+      if (document.getElementById('program-output').style.display !== 'none') {
+        generateTrainingProgram();
+      }
+    }
+    
+    function updateSessionsFromDays() {
+      const checkedDays = document.querySelectorAll('[id^="day-"]:checked');
+      document.getElementById('sessionsPerWeek').value = checkedDays.length;
+      validateSessionTypes(); // Validate session types as well
+    }
+    
+    function updateDaysFromSessions() {
+      const sessionsPerWeek = parseInt(document.getElementById('sessionsPerWeek').value);
+      const allDayCheckboxes = document.querySelectorAll('[id^="day-"]');
+      
+      // First uncheck all
+      allDayCheckboxes.forEach(cb => cb.checked = false);
+      
+      // Then check the appropriate number of days based on common patterns
+      const recommendedDays = {
+        3: [0, 2, 5], // Mon, Wed, Sat
+        4: [0, 2, 4, 5], // Mon, Wed, Fri, Sat  
+        5: [0, 1, 3, 4, 6], // Mon, Tue, Thu, Fri, Sun
+        6: [0, 1, 2, 4, 5, 6] // Mon, Tue, Wed, Fri, Sat, Sun
+      };
+      
+      const daysToCheck = recommendedDays[sessionsPerWeek] || [0,1,2,3,4,5,6].slice(0, sessionsPerWeek); // Default to first N days
+      daysToCheck.forEach(dayIndex => {
+        const checkbox = document.querySelector(`[id="day-${['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'][dayIndex]}"]`);
+        if (checkbox) checkbox.checked = true;
+      });
+    }
+    
+    function updateSessionTypes() {
+      const sessionsPerWeek = parseInt(document.getElementById('sessionsPerWeek').value);
+      const allSessionCheckboxes = document.querySelectorAll('[id^="session-"]');
+      
+      // First uncheck all
+      allSessionCheckboxes.forEach(cb => cb.checked = false);
+      
+      // Then check recommended session types based on sessions per week
+      const recommendedSessions = {
+        3: ['easy', 'tempo', 'long'],
+        4: ['easy', 'tempo', 'intervals', 'long'],
+        5: ['recovery', 'easy', 'tempo', 'intervals', 'long'],
+        6: ['recovery', 'easy', 'tempo', 'intervals', 'speed', 'long']
+      };
+      
+      const sessionsToCheck = recommendedSessions[sessionsPerWeek] || ['easy', 'tempo', 'long']; // Default
+      sessionsToCheck.forEach(sessionType => {
+        const checkbox = document.getElementById(`session-${sessionType}`);
+        if (checkbox) checkbox.checked = true;
+      });
+      
+      validateSessionTypes();
+    }
+    
+    function validateSessionTypes() {
+      const sessionsPerWeek = parseInt(document.getElementById('sessionsPerWeek').value);
+      const checkedSessions = document.querySelectorAll('[id^="session-"]:checked');
+      const errorElement = document.getElementById('session-type-error');
+      
+      if (checkedSessions.length !== sessionsPerWeek) {
+        errorElement.textContent = `Please select exactly ${sessionsPerWeek} session types to match sessions per week`;
+        errorElement.style.display = 'block';
+        return false;
+      } else {
+        errorElement.style.display = 'none';
+        return true;
+      }
+    }
+    
+    function showError(elementId, message) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+    
+    function hideError(elementId) {
+      document.getElementById(elementId).style.display = 'none';
+    }
+    
+    function formatTime(totalSeconds) {
+      if (isNaN(totalSeconds) || !isFinite(totalSeconds)) return "N/A";
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = Math.round(totalSeconds % 60);
+      return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    }
+    
+    function calculatePaceForPercentage(mas, percentage) {
+        const useImperial = document.getElementById('useImperial').checked;
+        const kmhToMph = 0.621371;
+        const speedKmh = mas * percentage;
+        const speedMph = speedKmh * kmhToMph;
+
+        let paceString, speedString;
+
+        if (useImperial) {
+            const secondsPerMile = 3600 / speedMph;
+            paceString = formatTime(secondsPerMile);
+            speedString = speedMph.toFixed(1);
+        } else {
+            const secondsPerKm = 3600 / speedKmh;
+            paceString = formatTime(secondsPerKm);
+            speedString = speedKmh.toFixed(1);
+        }
+
+        return {
+            kmh: speedKmh.toFixed(1),
+            mph: speedMph.toFixed(1),
+            ms: (speedKmh / 3.6).toFixed(2),
+            pace: paceString,
+            displaySpeed: speedString,
+        };
+    }
+    
+    function getMasInKmh() {
+      let mas = parseFloat(document.getElementById('mas').value);
+      if (isNaN(mas) || mas <= 0) return null;
+      if (document.getElementById('useImperial').checked) {
+        mas = mas / 0.621371; // Convert mph to km/h
+      }
+      return mas;
+    }
+    
+    function calculatePhysiologicalZones() {
+      hideError('mas-error');
+      const mas = getMasInKmh();
+      
+      if (!mas) {
+        showError('mas-error', 'Please enter a valid Maximal Aerobic Speed (greater than 0)');
+        return false;
+      }
+      
+      const physiologicalZones = [
+        { name: "Velocity @ VO2 Max", percentage: 1.10 },
+        { name: "Working VO2 Max", percentage: 1.00 },
+        { name: "Critical Velocity", percentage: 0.90 },
+        { name: "LT2 / VT2", percentage: 0.85 },
+        { name: "MLSS", percentage: 0.83 },
+        { name: "LT1 / FTP / Sweet Spot", percentage: 0.72 },
+        { name: "VT1 / Fat Max", percentage: 0.65 }
+      ];
+      
+      const table = document.getElementById('zone-table');
+      while (table.rows.length > 1) {
+        table.deleteRow(1);
+      }
+      
+      physiologicalZones.forEach(zone => {
+        const paceDetails = calculatePaceForPercentage(mas, zone.percentage);
+        const row = table.insertRow();
+        row.insertCell(0).textContent = zone.name;
+        row.insertCell(1).textContent = `${(zone.percentage * 100).toFixed(0)}%`;
+        row.insertCell(2).textContent = paceDetails.displaySpeed;
+        row.insertCell(3).textContent = paceDetails.ms;
+        row.insertCell(4).textContent = paceDetails.pace;
+      });
+      
+      document.getElementById('physiological-results').style.display = 'block';
+      return true;
+    }
+    
+    function calculateTrainingOptions() {
+      const selected = document.getElementById('trainingOptions').value;
+      
+      document.getElementById('endurance-section').style.display = 'none';
+      document.getElementById('stamina-endurance-section').style.display = 'none';
+      document.getElementById('stamina-continuous-section').style.display = 'none';
+      document.getElementById('aerobic-speed-section').style.display = 'none';
+      document.getElementById('aerobic-sprint-section').style.display = 'none';
+      
+      if (selected === 'none') {
+        document.getElementById('training-results').style.display = 'none';
+        return;
+      }
+      
+      document.getElementById('training-results').style.display = 'block';
+      
+      const mas = getMasInKmh();
+      const mssInput = parseFloat(document.getElementById('mss').value);
+      let mss = mssInput;
+      if (document.getElementById('useImperial').checked && !isNaN(mss)) {
+        mss = mssInput / 0.621371;
+      }
+      
+      hideError('mas-error');
+      hideError('mss-error');
+      
+      if (!mas) {
+        showError('mas-error', 'Please enter a valid Maximal Aerobic Speed (greater than 0)');
+        return;
+      }
+      
+      if (selected === 'aerobic-sprint' && (isNaN(mssInput) || mssInput <= 0)) {
+        showError('mss-error', 'Please enter a valid Maximal Sprint Speed (greater than 0)');
+        return;
+      }
+      
+      if (selected === 'aerobic-sprint' && mas >= mss) {
+        showError('mss-error', 'Maximal Sprint Speed must be greater than Maximal Aerobic Speed');
+        return;
+      }
+      
+      if (selected === 'endurance') processEndurancePacing(mas);
+      else if (selected === 'stamina-endurance') processStaminaEndurancePacing(mas);
+      else if (selected === 'stamina-continuous') processStaminaContinuousPacing(mas);
+      else if (selected === 'aerobic-speed') processAerobicSpeedPacing(mas);
+      else if (selected === 'aerobic-sprint') processAerobicSprintPacing(mas, mss);
+    }
+    
+    function populateTable(tableId, sectionId, options, mas, hasAsr = false, mss = 0) {
+      document.getElementById(sectionId).style.display = 'block';
+      const table = document.getElementById(tableId);
+      while (table.rows.length > 1) table.deleteRow(1);
+      
+      options.forEach(option => {
+        let paceDetails;
+        let speedForPaceCalc;
+        
+        if (hasAsr) {
+          const asr = mss - mas;
+          const midMasPercentage = (option.minMasPercentage + option.maxMasPercentage) / 2;
+          const midAsrPercentage = (option.minAsrPercentage + option.maxAsrPercentage) / 2;
+          speedForPaceCalc = (mas * midMasPercentage) + (asr * midAsrPercentage);
+        } else {
+          const midPercentage = (option.minPercentage + option.maxPercentage) / 2;
+          speedForPaceCalc = mas * midPercentage;
+        }
+
+        // We use the raw km/h speed to calculate pace, not a percentage of it
+        const useImperial = document.getElementById('useImperial').checked;
+        const kmhToMph = 0.621371;
+        const speedKmh = speedForPaceCalc;
+        const speedMph = speedKmh * kmhToMph;
+
+        let paceString, speedString;
+        if (useImperial) {
+            const secondsPerMile = 3600 / speedMph;
+            paceString = formatTime(secondsPerMile);
+            speedString = speedMph.toFixed(1);
+        } else {
+            const secondsPerKm = 3600 / speedKmh;
+            paceString = formatTime(secondsPerKm);
+            speedString = speedKmh.toFixed(1);
+        }
+        paceDetails = { pace: paceString, displaySpeed: speedString };
+        
+        const row = table.insertRow();
+        row.insertCell(0).textContent = option.name;
+        
+        if (hasAsr) {
+          row.insertCell(1).textContent = `${(option.minMasPercentage * 100).toFixed(0)}-${(option.maxMasPercentage * 100).toFixed(0)}%`;
+          row.insertCell(2).textContent = `${(option.minAsrPercentage * 100).toFixed(0)}-${(option.maxAsrPercentage * 100).toFixed(0)}%`;
+          row.insertCell(3).textContent = paceDetails.displaySpeed;
+          row.insertCell(4).textContent = paceDetails.pace;
+        } else {
+          row.insertCell(1).textContent = `${(option.minPercentage * 100).toFixed(0)}-${(option.maxPercentage * 100).toFixed(0)}%`;
+          row.insertCell(2).textContent = paceDetails.displaySpeed;
+          row.insertCell(3).textContent = paceDetails.pace;
+        }
+      });
+    }
+
+    function processEndurancePacing(mas) {
+        const options = [
+            { name: "Recovery Jog", minPercentage: 0.60, maxPercentage: 0.65 },
+            { name: "Easy Run", minPercentage: 0.65, maxPercentage: 0.70 },
+            { name: "Long Run - Fat Max / VT1", minPercentage: 0.65, maxPercentage: 0.75 }
+        ];
+        populateTable('endurance-table', 'endurance-section', options, mas);
+    }
+
+    function processStaminaEndurancePacing(mas) {
+        const options = [
+            { name: "Steady Run", minPercentage: 0.65, maxPercentage: 0.75 },
+            { name: "Sweet Spot Run / FTP / LT1", minPercentage: 0.70, maxPercentage: 0.75 },
+            { name: "Tempo Run 1 - Zone 3", minPercentage: 0.75, maxPercentage: 0.80 },
+            { name: "Tempo Run 2 - Threshold / Zone 4", minPercentage: 0.80, maxPercentage: 0.85 }
+        ];
+        populateTable('stamina-endurance-table', 'stamina-endurance-section', options, mas);
+    }
+
+    function processStaminaContinuousPacing(mas) {
+        const options = [
+            { name: "Tempo Intervals", minPercentage: 0.83, maxPercentage: 0.87 },
+            { name: "Lactate (Cruiser) Intervals", minPercentage: 0.82, maxPercentage: 0.88 },
+            { name: "Critical Velocity Intervals", minPercentage: 0.85, maxPercentage: 0.90 }
+        ];
+        populateTable('stamina-continuous-table', 'stamina-continuous-section', options, mas);
+    }
+
+    function processAerobicSpeedPacing(mas) {
+        const options = [
+            { name: "2000m", minPercentage: 0.83, maxPercentage: 0.86 },
+            { name: "1600m", minPercentage: 0.86, maxPercentage: 0.89 },
+            { name: "1200m", minPercentage: 0.87, maxPercentage: 0.93 },
+            { name: "1000m", minPercentage: 0.89, maxPercentage: 0.93 },
+            { name: "800m", minPercentage: 0.89, maxPercentage: 0.94 },
+            { name: "600m", minPercentage: 0.91, maxPercentage: 0.96 },
+            { name: "400m", minPercentage: 0.93, maxPercentage: 0.98 }
+        ];
+        populateTable('aerobic-speed-table', 'aerobic-speed-section', options, mas);
+    }
+
+    function processAerobicSprintPacing(mas, mss) {
+        const options = [
+            { name: "600m", minMasPercentage: 0.96, maxMasPercentage: 1.03, minAsrPercentage: 0.00, maxAsrPercentage: 0.05 },
+            { name: "400m", minMasPercentage: 0.98, maxMasPercentage: 1.12, minAsrPercentage: 0.00, maxAsrPercentage: 0.20 },
+            { name: "300m", minMasPercentage: 0.99, maxMasPercentage: 1.13, minAsrPercentage: 0.00, maxAsrPercentage: 0.22 },
+            { name: "200m", minMasPercentage: 1.03, maxMasPercentage: 1.15, minAsrPercentage: 0.05, maxAsrPercentage: 0.25 },
+            { name: "100m", minMasPercentage: 1.09, maxMasPercentage: 1.20, minAsrPercentage: 0.15, maxAsrPercentage: 0.35 }
+        ];
+        populateTable('aerobic-sprint-table', 'aerobic-sprint-section', options, mas, true, mss);
+    }
+
+    function generateTrainingProgram() {
+      const mas = getMasInKmh();
+      const weeks = parseInt(document.getElementById('weeks').value);
+      const sessionsPerWeek = parseInt(document.getElementById('sessionsPerWeek').value);
+      const startDate = document.getElementById('startDate').value;
+      const programFocus = document.getElementById('programFocus').value;
+      const includeIntervals = document.getElementById('includeIntervals').checked;
+      const intervalType = document.getElementById('intervalType').value;
+      const useImperial = document.getElementById('useImperial').checked;
+
+      if (!mas) {
+        showError('mas-error', 'Please enter a valid MAS value first');
+        return;
+      }
+      
+      if (!validateSessionTypes()) {
+        return;
+      }
+      
+      const selectedDays = getSelectedDays();
+      if (selectedDays.length === 0) {
+        alert('Please select at least one training day');
+        return;
+      }
+      
+      if (selectedDays.length !== sessionsPerWeek) {
+        alert(`Please select exactly ${sessionsPerWeek} training days or adjust the sessions per week`);
+        return;
+      }
+      
+      if (!weeks || weeks < 1 || weeks > 12) {
+        alert('Please enter a valid number of weeks (1-12)');
+        return;
+      }
+      
+      if (!startDate) {
+        alert('Please select a start date');
+        return;
+      }
+
+      const selectedSessionTypes = getSelectedSessionTypes();
+      createTrainingCalendar(mas, weeks, sessionsPerWeek, startDate, programFocus, includeIntervals, intervalType, selectedDays, selectedSessionTypes, useImperial);
+      const program = createTrainingProgramText(mas, weeks, sessionsPerWeek, startDate, programFocus, includeIntervals, intervalType, selectedDays, selectedSessionTypes, useImperial);
+      
+      document.getElementById('program-output').textContent = program;
+      document.getElementById('program-output').style.display = 'block';
+      document.getElementById('copyProgram').style.display = 'inline-block';
+      document.getElementById('program-calendar').style.display = 'block';
+    }
+    
+    function getSelectedDays() {
+      const selectedDays = [];
+      document.querySelectorAll('[id^="day-"]:checked').forEach(checkbox => {
+        selectedDays.push(parseInt(checkbox.value));
+      });
+      return selectedDays.sort((a, b) => a - b);
+    }
+    
+    function getSelectedSessionTypes() {
+      const selectedTypes = [];
+      document.querySelectorAll('[id^="session-"]:checked').forEach(checkbox => {
+        selectedTypes.push(checkbox.value);
+      });
+      return selectedTypes;
+    }
+
+    function getSessionDetails(mas, type, maxHR) {
+        const sessionTemplates = {
+            recovery: { percentage: 0.625, duration: "30-45min", color: "recovery", zone: "Zone 1", hrFactor: [0.5, 0.6] },
+            easy: { percentage: 0.675, duration: "45-60min", color: "easy", zone: "Zone 2", hrFactor: [0.6, 0.7] },
+            long: { percentage: 0.70, duration: "60-120min", color: "long", zone: "Zone 2-3", hrFactor: [0.65, 0.75] },
+            tempo: { percentage: 0.825, duration: "20-40min", color: "tempo", zone: "Zone 4", hrFactor: [0.8, 0.9] },
+            speed: { percentage: 1.05, duration: "6x200m", color: "speed", zone: "Zone 5+", hrFactor: [0.9, null] },
+            intervals: { percentage: 0.95, duration: "5x4min", color: "intervals", zone: "Zone 5", hrFactor: [0.9, 1.0] }
+        };
+
+        const template = sessionTemplates[type];
+        const paceDetails = calculatePaceForPercentage(mas, template.percentage);
+        
+        let hrRange = "N/A";
+        if (maxHR) {
+            const low = Math.round(maxHR * template.hrFactor[0]);
+            const high = template.hrFactor[1] ? Math.round(maxHR * template.hrFactor[1]) : null;
+            hrRange = high ? `${low}-${high}` : `${low}+`;
+        }
+
+        return {
+            type: type.charAt(0).toUpperCase() + type.slice(1),
+            pace: paceDetails.pace,
+            duration: template.duration,
+            color: template.color,
+            speed: paceDetails.displaySpeed,
+            zone: template.zone,
+            hrRange: hrRange
+        };
+    }
+    
+    function createWeeklyPlan(week, selectedSessionTypes) {
+      // Apply deload modifications for week 4, 8, etc.
+      if (week > 0 && week % 4 === 0) {
+        return selectedSessionTypes.map(sessionType => 
+          (sessionType === 'intervals' || sessionType === 'speed' || sessionType === 'tempo') ? 'easy' : sessionType
+        );
+      }
+      return [...selectedSessionTypes];
+    }
+
+    function createTrainingCalendar(mas, weeks, sessionsPerWeek, startDate, focus, includeIntervals, intervalType, selectedDays, selectedSessionTypes, useImperial) {
+      const table = document.getElementById('calendar-table');
+      table.innerHTML = '';
+      
+      const start = new Date(startDate + 'T00:00:00'); // Ensure it's treated as local
+      const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const maxHR = parseInt(document.getElementById('maxHR').value) || null;
+      
+      const headerRow = document.createElement('tr');
+      headerRow.innerHTML = '<th class="week-header">Session</th>';
+      
+      for (let week = 1; week <= weeks; week++) {
+        headerRow.innerHTML += `<th>Week ${week}</th>`;
+      }
+      table.appendChild(headerRow);
+      
+      // Create a map of selected days to session types
+      const sessionDayMap = {};
+      selectedSessionTypes.forEach((type, index) => {
+          // This is a simple assignment, better logic could be applied
+          // e.g., long run on Sat/Sun, intervals on Tue/Thu
+          sessionDayMap[selectedDays[index]] = type;
+      });
+
+      // Ensure all 7 days are processed, even rest days
+      for(let dayIndex = 0; dayIndex < 7; dayIndex++) {
+        const row = document.createElement('tr');
+        const dayName = daysOfWeek[dayIndex];
+        
+        // Determine if this day is a session day
+        const sessionType = sessionDayMap[dayIndex];
+        
+        row.innerHTML = `<td class="week-header">${dayName}</td>`;
+        
+        for (let week = 1; week <= weeks; week++) {
+          const sessionDate = new Date(start);
+          sessionDate.setDate(start.getDate() + ((week - 1) * 7) + dayIndex);
+          const dateStr = `${sessionDate.getDate()}/${sessionDate.getMonth() + 1}`;
+          
+          const cell = document.createElement('td');
+          cell.className = `session-cell`;
+          
+          if (sessionType) {
+            const weeklyPlan = createWeeklyPlan(week, selectedSessionTypes);
+            // Find the original index of this session type to map to the correct day
+            const originalIndex = selectedSessionTypes.indexOf(sessionType);
+            
+            // Check if the original index is valid (it should be)
+            if (originalIndex !== -1 && originalIndex < weeklyPlan.length) {
+                const currentWeekSessionType = weeklyPlan[originalIndex];
+                const session = getSessionDetails(mas, currentWeekSessionType, maxHR);
+                
+                cell.classList.add(session.color);
+                cell.innerHTML = `
+                  <div class="session-date">${dateStr}</div>
+                  <div class="session-type">${session.type}</div>
+                  <div class="session-pace">${session.pace}</div>
+                  <div class="session-zone">${session.zone}</div>
+                  <div class="session-hr">${session.hrRange} bpm</div>
+                  <div class="session-speed">${session.speed} ${useImperial ? 'mph' : 'km/h'}</div>
+                  <div class="session-duration">${session.duration}</div>
+                `;
+            } else {
+                 // Fallback or error, though this shouldn't happen with valid logic
+                cell.classList.add('rest');
+                cell.innerHTML = `<div class="session-date">${dateStr}</div><div class="session-type">Error</div>`;
+            }
+          } else {
+            // This is a rest day
+            cell.classList.add('rest');
+            cell.innerHTML = `
+              <div class="session-date">${dateStr}</div>
+              <div class="session-type">Rest</div>
+            `;
+          }
+          row.appendChild(cell);
+        }
+        table.appendChild(row);
+      }
+    }
+
+    function createTrainingProgramText(mas, weeks, sessionsPerWeek, startDate, focus, includeIntervals, intervalType, selectedDays, selectedSessionTypes, useImperial) {
+      let program = "";
+      
+      const start = new Date(startDate + 'T00:00:00');
+      const maxHR = parseInt(document.getElementById('maxHR').value) || null;
+      const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      
+      // Create a map of selected days to session types
+      const sessionDayMap = {};
+      selectedSessionTypes.forEach((type, index) => {
+          sessionDayMap[selectedDays[index]] = type;
+      });
+
+      for (let week = 1; week <= weeks; week++) {
+        program += `Week ${week}\n`;
+        program += "DATE\tDAY\tRUN TYPE\tPACE\tZONE\tHR TARGET\tSPEED\tTIME\tNOTES\n";
+
+        const weeklyPlan = createWeeklyPlan(week, selectedSessionTypes);
+        
+        for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+            const sessionDate = new Date(start);
+            sessionDate.setDate(start.getDate() + ((week - 1) * 7) + dayIndex);
+            const dateStr = `${sessionDate.getDate()}/${sessionDate.getMonth() + 1}/${sessionDate.getFullYear()}`;
+            const dayName = daysOfWeek[dayIndex];
+            
+            const sessionType = sessionDayMap[dayIndex];
+            
+            if (sessionType) {
+                // Find the original index of this session type to map to the correct day
+                const originalIndex = selectedSessionTypes.indexOf(sessionType);
+
+                if (originalIndex !== -1 && originalIndex < weeklyPlan.length) {
+                    const currentWeekSessionType = weeklyPlan[originalIndex];
+                    const session = getSessionDetails(mas, currentWeekSessionType, maxHR);
+                    const speedUnit = useImperial ? 'mph' : 'km/h';
+                    
+                    program += `${dateStr}\t${dayName}\t${session.type}\t${session.pace}\t${session.zone}\t${session.hrRange}\t${session.speed} ${speedUnit}\t${session.duration}\t\n`;
+                } else {
+                    program += `${dateStr}\t${dayName}\tError\t-\t-\t-\t-\t-\t\n`;
+                }
+            } else {
+                program += `${dateStr}\t${dayName}\tRest\t-\t-\t-\t-\t-\t\n`;
+            }
+        }
+        program += "\n"; // Add a blank line between weeks
+      }
+      
+      program += "\n\nInstructions for Google Sheets:\n";
+      program += "1. Copy this text\n";
+      program += "2. Open Google Sheets\n";
+      program += "3. Paste into cell A1\n";
+      program += "4. Go to Data > Split text to columns\n";
+      program += "5. Choose 'Tab' as the separator\n";
+      
+      return program;
+    }
+
+    function copyProgramToClipboard() {
+      const programText = document.getElementById('program-output').textContent;
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(programText).then(() => {
+          const button = document.getElementById('copyProgram');
+          const originalText = button.textContent;
+          button.textContent = 'Copied!';
+          button.style.backgroundColor = 'var(--brand-green)';
+          
+          setTimeout(() => {
+            button.textContent = originalText;
+            button.style.backgroundColor = 'var(--brand-blue)';
+          }, 2000);
+        }).catch(err => {
+          fallbackCopyTextToClipboard(programText);
+        });
+      } else {
+        fallbackCopyTextToClipboard(programText);
+      }
+    }
+
+    function fallbackCopyTextToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.position = "fixed";
+      
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          const button = document.getElementById('copyProgram');
+          const originalText = button.textContent;
+          button.textContent = 'Copied!';
+          button.style.backgroundColor = 'var(--brand-green)';
+          
+          setTimeout(() => {
+            button.textContent = originalText;
+            button.style.backgroundColor = 'var(--brand-blue)';
+          }, 2000);
+        }
+      } catch (err) {
+        alert('Copy failed. Please manually select and copy the text.');
+      }
+      
+      document.body.removeChild(textArea);
+    }
+    </script>
+
+</body>
+</html>

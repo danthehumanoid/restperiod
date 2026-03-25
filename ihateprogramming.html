@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT Exercise Program Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .filters-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .program-section {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-group {
+            margin-bottom: 25px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            min-width: 140px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+
+        .exercise-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .exercise-item {
+            padding: 15px;
+            border-bottom: 1px solid #e1e8ed;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .exercise-item:hover {
+            background: #f1f3f4;
+            transform: translateX(5px);
+        }
+
+        .exercise-item:last-child {
+            border-bottom: none;
+        }
+
+        .exercise-name {
+            font-weight: 500;
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .exercise-details {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-left: 15px;
+        }
+
+        .program-list {
+            min-height: 300px;
+            border: 2px dashed #e1e8ed;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .program-exercise {
+            background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .program-exercise-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .export-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        #exportOutput {
+            width: 100%;
+            height: 200px;
+            margin-top: 10px;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Exercise Program Generator</h1>
+            <p>Create customized workout programs for your PT clients</p>
+        </div>
+
+        <div class="main-content">
+            <div class="filters-section">
+                <h2 class="section-title">Exercise Filters</h2>
+                
+                <div class="filter-group">
+                    <label for="bodyPart">Body Part/Joint:</label>
+                    <select id="bodyPart">
+                        <option value="">All Body Parts</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="equipment">Equipment:</label>
+                    <select id="equipment">
+                        <option value="">All Equipment</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="movement">Movement Pattern:</label>
+                    <select id="movement">
+                        <option value="">All Movements</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="searchInput">Search Exercises:</label>
+                    <input type="text" id="searchInput" placeholder="Type to search exercises...">
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <span class="stat-number" id="totalExercises">0</span>
+                        <span class="stat-label">Total Exercises</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="filteredExercises">0</span>
+                        <span class="stat-label">Filtered Results</span>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Available Exercises</h3>
+                <div class="exercise-list" id="exerciseList">
+                    <div class="empty-state">Loading exercises...</div>
+                </div>
+            </div>
+
+            <div class="program-section">
+                <h2 class="section-title">Program Builder</h2>
+                
+                <div class="filter-group">
+                    <label for="programName">Program Name:</label>
+                    <input type="text" id="programName" placeholder="e.g., Lower Body Strength, Rehab Week 1" value="My Custom Program">
+                </div>
+
+                <div class="program-list" id="programList">
+                    <div class="empty-state">Click exercises from the left to add them to your program</div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn btn-secondary" onclick="clearProgram()">Clear Program</button>
+                    <button class="btn btn-export" onclick="exportToGoogleSheets()">Export to Google Sheets</button>
+                </div>
+
+                <div class="export-section">
+                    <h3>Google Sheets Export:</h3>
+                    <textarea id="exportOutput" placeholder="Your program will appear here in Google Sheets format..." readonly></textarea>
+                    <button class="btn" onclick="copyToClipboard()">Copy to Clipboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Exercise database
+        let exercises = [];
+        let program = [];
+        let filteredExercises = [];
+
+        // Parse the exercise data
+        function parseExerciseData() {
+            const rawData = `Joint Involvement  Movement    Equipment Type  Modality    Exerc use type  Body Part
+Ankle   Foot bounce alternate level 1   Ball            
+Ankle   Foot bounce alterante level 2   Ball            
+Ankle   Foot bounce and catch   Ball            
+Ankle   SL ball alterante juggle    Ball            
+Ankle   SL ball hackey and bounce alternate Ball            
+Ankle   SL ball juggle  Ball            
+Ankle   SL ball juggle and catch    Ball            
+Ankle   SL Foot bounce  Ball            
+Hip Super flap  Ball            
+Hip, Spine  bosu ball bosch MB drop and catch hip lock  Ball            
+Hip, Spine  bosu ball bosch MD drop & catch to hip rock Ball            
+Multi-joint MB pass lateral hop to pop  Ball            
+Multi-joint MB pass lateral hop to pop  Ball            
+Multi-joint SL balance pad stand - mb rotation  Ball            
+Shoulder, Elbow Behind back throw and catch Ball            
+Shoulder, Elbow Bounce and V catch  Ball            
+Shoulder, Elbow Column throw    Ball            
+Shoulder, Elbow Double bounce LLRR  Ball            
+Shoulder, Elbow Double paradiddle LRLRLLRLRLRR  Ball            
+Shoulder, Elbow Double throw LLRR   Ball            
+Shoulder, Elbow Hand to elbow  catch    Ball            
+Shoulder, Elbow Hand to elbow V catch   Ball            
+Shoulder, Elbow One ball bounce and catch   Ball            
+Shoulder, Elbow One ball dribble    Ball            
+Shoulder, Elbow Over under catch    Ball            
+Shoulder, Elbow Pyramid bounce  Ball            
+Shoulder, Elbow Pyramid throw   Ball            
+Shoulder, Elbow Rainbow throw   Ball            
+Shoulder, Elbow Single bounce LRLR  Ball            
+Shoulder, Elbow Single paradiddle LRLLRLRR  Ball            
+Shoulder, Elbow Single paradiddle LRLLRR    Ball            
+Shoulder, Elbow Single throw LRLR   Ball            
+Shoulder, Elbow Single paradiddle LRLLRLRR  Ball            
+Shoulder, Elbow Syncronised throw   Ball            
+Shoulder, Elbow Throw and catch behing back Ball            
+Shoulder, Elbow Throw and Clap  Ball            
+Shoulder, Elbow Throw and V catch   Ball            
+Shoulder, Elbow Throw left to right V catch Ball            
+Shoulder, Elbow Throw up bounce down    Ball            
+Shoulder, Elbow Throw V catch, bounce V catch   Ball            
+Shoulder, Elbow Two ball alternate bounce   Ball            
+Shoulder, Elbow Two ball alternate bounce and catch Ball            
+Shoulder, Elbow Two ball bounce and catch   Ball            
+Shoulder, Elbow Waterfall throw Ball            
+Shoulder, Spine bosu ball MB bounce to wall pass    Ball            
+Shoulder, Spine bosu ball small ball wall throw Ball            
+Shoulder, Spine mb circles  Ball            
+Hip BB F-E hip thruster Barbell         
+Hip BB hip thurster Barbell         
+Hip, Knee   BB RDL  Barbell         
+Hip, Knee   SL BB RDL   Barbell         
+Hip, Knee   SS BB RDL   Barbell         
+Hip, Knee, Ankle    BB back squat   Barbell         
+Hip, Knee, Ankle    BB back squat to box    Barbell         
+Hip, Knee, Ankle    BB box jump 30kg    Barbell         
+Hip, Knee, Ankle    BB Bulgarian split squat ipsilateral    Barbell         
+Hip, Knee, Ankle    BB elevated cossack squat   Barbell         
+Hip, Knee, Ankle    BB jump squat   Barbell         
+Hip, Knee, Ankle    BB Low box squat    Barbell         
+Hip, Knee, Ankle    BB pause backsquat banded   Barbell         
+Hip, Knee, Ankle    BB rebound jump Barbell         
+Hip, Knee, Ankle    BB safety bar squat Barbell         
+Hip, Knee, Ankle    BB SL squat Barbell         
+Hip, Knee, Ankle    BB split squat  Barbell         
+Hip, Knee, Ankle    BB squat isometric  Barbell         
+Hip, Knee, Ankle    BB SS + band    Barbell         
+Hip, Knee, Ankle    BB SS + band pause method   Barbell         
+Hip, Knee, Ankle    BB Sumo (wide stance) squat Barbell         
+Hip, Knee, Ankle    Safety Bar split squat  Barbell         
+Hip, Knee, Ankle, Shoulder  BB O/H squat    Barbell         
+Hip, Knee, Ankle, Shoulder  snatch squat    Barbell         
+Hip, Knee, Ankle, Shoulder  Snatch Squat - Isometric    Barbell         
+Hip, Knee, Ankle, Spine BB front squat  Barbell         
+Hip, Knee, Ankle, Spine Landmind rotation split squat   Barbell         
+Hip, Knee, Shoulder BB RDL to knee + power shrug    Barbell         
+Hip, Knee, Shoulder Hang high pull/speed    Barbell         
+Hip, Knee, Shoulder Pause control - floor/knee/mid thigh shrug  Barbell         
+Hip, Knee, Shoulder Power pulls - straight arm pause method Barbell         
+Hip, Knee, Shoulder Rack pull 2/3 shin  Barbell         
+Hip, Knee, Shoulder SG 3stage pause control floor/knee/midthigh - shrug Barbell         
+Hip, Knee, Shoulder SG High pull from floor Barbell         
+Hip, Knee, Shoulder SG high  pull   Barbell         
+Hip, Knee, Shoulder SG Shrug pull from floor    Barbell         
+Hip, Knee, Shoulder SS RDL to high pull Barbell         
+Hip, Spine  BB unilteral good morning to step up    Barbell         
+Multi-joint barbel lift with foam roller    Barbell         
+Multi-joint C&J Barbell         
+Multi-joint Sna Barbell         
+Multi-joint Snatch balance  Barbell         
+Multi-joint Squat clean Barbell         
+Multi-joint Squat clean from floor  Barbell         
+Shoulder, Elbow BB bench press  Barbell         
+Shoulder, Elbow BB bench pull   Barbell         
+Shoulder, Elbow BB bradford press   Barbell         
+Shoulder, Elbow BB decline press    Barbell         
+Shoulder, Elbow BB horizontal bench press   Barbell         
+Shoulder, Elbow BB horizontal bench pull    Barbell         
+Shoulder, Elbow BB larson press Barbell         
+Shoulder, Elbow Behind the neck press   Barbell         
+Shoulder, Elbow Bench pull 2sec iso Barbell         
+Shoulder, Elbow Bent over row HIMA  Barbell         
+Shoulder, Elbow Incline bench press Barbell         
+Shoulder, Elbow Incline press   Barbell         
+Shoulder, Elbow Incline pull    Barbell         
+Shoulder, Elbow Klaklov press   Barbell         
+Shoulder, Elbow Klaklov press HIMA  Barbell         
+Shoulder, Elbow Klokov press    Barbell         
+Shoulder, Elbow Military press  Barbell         
+Shoulder, Elbow One arm press   Barbell         
+Shoulder, Elbow pause method bench press - banded   Barbell         
+Shoulder, Elbow Pendlay row pulling iso Barbell         
+Shoulder, Elbow Seated BB oversoming ISO    Barbell         
+Shoulder, Elbow, Hip    EZ bar power pull   Barbell         
+Shoulder, Elbow, Hip    power rack pull knee hight  Barbell         
+Shoulder, Elbow, Hip    Power rack pull - knee height   Barbell         
+Shoulder, Elbow, Hip, Knee, Ankle   BB push press   Barbell         
+Shoulder, Elbow, Hip, Knee, Ankle   Push jerk   Barbell         
+Shoulder, Elbow, Spine  BB dead bug press   Barbell         
+Shoulder, Elbow, Spine  BB dead bug pull    Barbell         
+Shoulder, Elbow, Spine  Kneeling BB overhead press  Barbell         
+Shoulder, Elbow, Spine  Kneeling high incline landmine press    Barbell         
+Shoulder, Elbow, Spine  Landmine press  Barbell         
+Shoulder, Elbow, Wrist, Spine   OC/SL BB carry  Barbell         
+Spine   Landmine strict rotation    Barbell         
+Spine   landmine power rotation Barbell         
+Spine, Hip  BB hold jackknife   Barbell         
+Spine, Hip  BB hyper ext back loaded    Barbell         
+Spine, Hip  BB hyper ext SG Barbell         
+Ankle   30 degree leaning calf raise iso    Bodyweight          
+Ankle   30 degree leaning calf raises   Bodyweight          
+Ankle   Ankle flicks    Bodyweight          
+Ankle   hallux lifts    Bodyweight          
+Ankle   inversion pumps Bodyweight          
+Ankle   L1 calf raises  Bodyweight          
+Ankle   L1 calf raises pulsing  Bodyweight          
+Ankle   L2 calf raises  Bodyweight          
+Ankle   L2 calf raises  pulsing Bodyweight          
+Ankle   L3 calf raises  Bodyweight          
+Ankle   L3 calf raises  pulsing Bodyweight          
+Ankle   Plantarfelxion to Inversion + eversion to dorsiflexion  Bodyweight          
+Ankle   Pogo jumps  Bodyweight          
+Ankle   Pogo jumps 45 degree angle  Bodyweight          
+Ankle   pogo jump complex   Bodyweight          
+Ankle   Pogo jumps forwards Bodyweight          
+Ankle   Pogo jumps fwd moving   Bodyweight          
+Ankle   static heel-toe with hallux pressure    Bodyweight          
+Ankle   tib ant raises  Bodyweight          
+Ankle   tib bar raises  Bodyweight          
+Ankle   Tibial rotations    Bodyweight          
+Ankle   toe elevated ankle rocker   Bodyweight          
+Ankle   Toe pikes   Bodyweight          
+Ankle   Toe pikes with toe extension    Bodyweight          
+Ankle   toe pops    Bodyweight          
+Ankle   toe spreads Bodyweight          
+Ankle   tow waves   Bodyweight          
+Elbow   elbow flex/ext  Bodyweight          
+Elbow   tricep push down iso    Bodyweight          
+Elbow   Tricep extension isometric  Bodyweight          
+Hip active pigeon int/ext rot iso   Bodyweight          
+Hip butterfly on back   Bodyweight          
+Hip Clam corkscrew  Bodyweight          
+Hip Clamshell iso   Bodyweight          
+Hip comerford hip complex   Bodyweight          
+Hip comerford/reverse comerford Bodyweight          
+Hip deficit hip drop series Bodyweight          
+Hip Donkey kick Bodyweight          
+Hip fwd,back,side leg lifts & kicks Bodyweight          
+Hip gate-closers    Bodyweight          
+Hip gate-openers    Bodyweight          
+Hip Glute bridge floor  Bodyweight          
+Hip Glute bridge heels on box   Bodyweight          
+Hip Glute bridge paralell   Bodyweight          
+Hip glute bridge hip rot    Bodyweight          
+Hip Glute med clam pulses   Bodyweight          
+Hip half pancake lowers Bodyweight          
+Hip Hamstring bridge H-IMASL JOP ( spot, side and rotate)   Bodyweight          
+Hip Hip flexor complex (bent knee straight leg & diagonal)  Bodyweight          
+Hip Hip flexor HIMA inner ROM   Bodyweight          
+Hip Leg swings front    Bodyweight          
+Hip Leg swings lateral  Bodyweight          
+Hip pigeon clock lowers Bodyweight          
+Hip RDL pancake stretch Bodyweight          
+Hip Sangbag hinge drop and stick    Bodyweight          
+Hip SL glute bridge iso Bodyweight          
+Hip Straight leg glute iso  Bodyweight          
+Hip wall resisted hip rocker    Bodyweight          
+Hip, Ankle  1-leg toe hurdles   Bodyweight          
+Hip, Ankle  arabesque to calf raise Bodyweight          
+Hip, Ankle  couch streetch - vert shin  Bodyweight          
+Hip, Ankle  foot elevated hip/calf stretch  Bodyweight          
+Hip, Ankle  SL RDL to calf raise    Bodyweight          
+Hip, Knee   1 leg hamstring power slide out Bodyweight          
+Hip, Knee   60 degree razor curl    Bodyweight          
+Hip, Knee   Butt flicks Bodyweight          
+Hip, Knee   Hammy razor curl iso (bent knee nordic) Bodyweight          
+Hip, Knee   Hamstring Iso switch    Bodyweight          
+Hip, Knee   hammy flush Bodyweight          
+Hip, Knee   Hamstring sweeps    Bodyweight          
+Hip, Knee   heel flicks Bodyweight          
+Hip, Knee   high knee to RDL    Bodyweight          
+Hip, Knee   High knee drive Bodyweight          
+Hip, Knee   High knees kick butt    Bodyweight          
+Hip, Knee   High knees out front    Bodyweight          
+Hip, Knee   jefferson knee drops    Bodyweight          
+Hip, Knee   razor curl ecc only Bodyweight          
+Hip, Knee   SB hamstring tantrum    Bodyweight          
+Hip, Knee   SB tantrums Bodyweight          
+Hip, Knee   SL jefferson knee drops Bodyweight          
+Hip, Knee   Straight leg iso    Bodyweight          
+Hip, Knee, Ankle    1 leg glute jumps   Bodyweight          
+Hip, Knee, Ankle    1 leg hurdle hop - high hip Bodyweight          
+Hip, Knee, Ankle    1 leg hurdle jump mid height    Bodyweight          
+Hip, Knee, Ankle    1 leg squat iso off box Bodyweight          
+Hip, Knee, Ankle    1m Depth Jump x5 Fast return    Bodyweight          
+Hip, Knee, Ankle    2m side shuffle FAST    Bodyweight          
+Hip, Knee, Ankle    A skip  Bodyweight          
+Hip, Knee, Ankle    Accelerated SS jumps    Bodyweight          
+Hip, Knee, Ankle    B Skip  Bodyweight          
+Hip, Knee, Ankle    B-skip  Bodyweight          
+Hip, Knee, Ankle    Block starts 70%    Bodyweight          
+Hip, Knee, Ankle    Block starts 80%    Bodyweight          
+Hip, Knee, Ankle    Block starts 90%    Bodyweight          
+Hip, Knee, Ankle    Borzov drop and stick   Bodyweight          
+Hip, Knee, Ankle    Box jump    Bodyweight          
+Hip, Knee, Ankle    Box Jump Squat  Bodyweight          
+Hip, Knee, Ankle    Bulgarian split squat   Bodyweight          
+Hip, Knee, Ankle    Bulgarian split squat 1 1/2 oscilation  Bodyweight          
+Hip, Knee, Ankle    Bulgarian SS (RFE)  Bodyweight          
+Hip, Knee, Ankle    C skip  Bodyweight          
+Hip, Knee, Ankle    carioca Bodyweight          
+Hip, Knee, Ankle    Concentric 3/4 squat    Bodyweight          
+Hip, Knee, Ankle    Cossack power push to crossover power step  Bodyweight          
+Hip, Knee, Ankle    Cossack power push to Xover power step  Bodyweight          
+Hip, Knee, Ankle    Cross (shape) jump to box   Bodyweight          
+Hip, Knee, Ankle    crossover skip  Bodyweight          
+Hip, Knee, Ankle    Deadstop plie to lateral step up    Bodyweight          
+Hip, Knee, Ankle    Decel hop to medial jump    Bodyweight          
+Hip, Knee, Ankle    decline squat iso   Bodyweight          
+Hip, Knee, Ankle    Decline iso squat   Bodyweight          
+Hip, Knee, Ankle    Decel hop to medial jump    Bodyweight          
+Hip, Knee, Ankle    Deficit split squat Bodyweight          
+Hip, Knee, Ankle    Deficit SS  Bodyweight          
+Hip, Knee, Ankle    depth jump (absorb) Bodyweight          
+Hip, Knee, Ankle    depth jump 1 leg    Bodyweight          
+Hip, Knee, Ankle    DL drop and stick   Bodyweight          
+Hip, Knee, Ankle    Downards stair walking concentric focus Bodyweight          
+Hip, Knee, Ankle    FFE Bodyweight          
+Hip, Knee, Ankle    FFE Bulgarian Split squat   Bodyweight          
+Hip, Knee, Ankle    Front foot arch Bodyweight          
+Hip, Knee, Ankle    Front loaded Cossack squat  Bodyweight          
+Hip, Knee, Ankle    Front loaded split squat    Bodyweight          
+Hip, Knee, Ankle    Grapevine   Bodyweight          
+Hip, Knee, Ankle    Horizontal CMJ  Bodyweight          
+Hip, Knee, Ankle    Horizontal NCMJ Bodyweight          
+Hip, Knee, Ankle    Jogging forwards 20m-40 mshuttle run    Bodyweight          
+Hip, Knee, Ankle    Jogging forwards and backwards  Bodyweight          
+Hip, Knee, Ankle    Jumping knee tucks  Bodyweight          
+Hip, Knee, Ankle    Kneeling drop and stick Bodyweight          
+Hip, Knee, Ankle    Kneeling Drop and stick Bodyweight          
+Hip, Knee, Ankle    Kneeling drop and stick - falling   Bodyweight          
+Hip, Knee, Ankle    Low box squat   Bodyweight          
+Hip, Knee, Ankle    Over the gate walking backwards Bodyweight          
+Hip, Knee, Ankle    Over the gates walking forwards Bodyweight          
+Hip, Knee, Ankle    Pause method skater jump    Bodyweight          
+Hip, Knee, Ankle    Pause method stair jump Bodyweight          
+Hip, Knee, Ankle    power skip  Bodyweight          
+Hip, Knee, Ankle    Reverse backwards stair walking eccentric focus Bodyweight          
+Hip, Knee, Ankle    Side shuffle    Bodyweight          
+Hip, Knee, Ankle    Side to side irradiation    Bodyweight          
+Hip, Knee, Ankle    Skater jumps    Bodyweight          
+Hip, Knee, Ankle    SL + hops   Bodyweight          
+Hip, Knee, Ankle    SL decline squat    Bodyweight          
+Hip, Knee, Ankle    SL drop and stick - box Bodyweight          
+Hip, Knee, Ankle    SL drop squats  pulsing Bodyweight          
+Hip, Knee, Ankle    SL horizontal squat jump    Bodyweight          
+Hip, Knee, Ankle    SL

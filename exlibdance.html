@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>#THRIVE Dance Sport Academy</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <h1 class="header" id="top">#THRIVE Dance Sport Academy</h1>
+    
+    <div class="controls-container">
+        <input type="text" id="search-bar" placeholder="Filter/Search videos...">
+        <div id="workout-section">
+            <h2 id="workout-title" contenteditable="true"></h2> 
+            <textarea id="workout-notes" placeholder="Notes..." contenteditable="true"></textarea>
+            <ul id="workout-list">
+                </ul>
+            <div class="workout-controls">
+                <button id="clear-workout">Clear Workout</button>
+                <button id="share-workout">Share Link</button>
+                <button id="export-csv">Export CSV</button>
+            </div>
+        </div>
+    </div>
+    <div class="category-header" id="cat-cha-cha"><h2>CHA-CHA</h2><a href="#top" class="back-to-top">↑ back to top</a></div>
+    <div class="category-header" id="cat-cha-cha"><h4>Feet 12:55pm, check, tall, small steps, spine stacked, flick hands, snap back heel down, begin on 2 count</h4><a href="#top" class="back-to-top">↑ back to top</a></div>
+
+    
+    <div class="subcategory-header" id="cat-cha-cha-routines"><h3>Cha-Cha Routines</h3><a href="#top" class="back-to-top">↑ back to top</a></div>
+    <h4 class="equipment-header" id="cat-cha-cha-routines-bw">Partner</h4>
+    <div class="video-grid">
+        <div class="video-item" id="chacharut-2"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/CHACHARUT2.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">CHA-CHA ROUTINE 2</div></div>
+    </div>
+    
+    <div class="subcategory-header" id="cat-cha-cha-moves"><h3>Cha-Cha Moves</h3><a href="#top" class="back-to-top">↑ back to top</a></div>
+    <h4 class="equipment-header" id="cat-cha-cha-moves-bw">Partner</h4>
+    <div class="video-grid">
+        <div class="video-item" id="chachamve-1"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/CHACHAMVE1.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">CHA-CHA MOVE 1</div></div>
+        <div class="video-item" id="chachamve-newyorker"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/CHACHAMVENewyorker.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">CHA-CHA MOVE NEW YORKER</div></div>
+    </div>
+
+    <div class="category-header" id="cat-waltz"><h2>WALTZ</h2><a href="#top" class="back-to-top">↑ back to top</a></div>
+    
+    <div class="subcategory-header" id="cat-waltz-routines"><h3>Waltz Routines</h3><a href="#top" class="back-to-top">↑ back to top</a></div>
+    <h4 class="equipment-header" id="cat-waltz-routines-bw">Partner</h4>
+    <div class="video-grid">
+        </div>
+    
+    <div class="subcategory-header" id="cat-waltz-moves"><h3>Waltz Moves</h3><a href="#top" class="back-to-top">↑ back to top</a></div>
+    <h4 class="equipment-header" id="cat-waltz-moves-bw">Partner</h4>
+    <div class="video-grid">
+        <div class="video-item" id="waltzmve-1"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/WALTZMVE1.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">WALTZ MOVE 1</div></div>
+        <div class="video-item" id="waltzmve-2"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/WALTZMVE2.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">WALTZ MOVE 2</div></div>
+    </div>
+
+    <div class="page-footer">
+        <img src="RPLOGO Psychedelic.gif" alt="RPLOGO Psychedelic">
+        <p><a href="dthconnect.html">Ideas? Questions? Stay in touch - DTH EMAIL LIST</a></p>
+    </div>
+
+    <div class="footer-notice">
+        This content is for personal use only. Please do not copy, re-upload, or distribute these videos without prior permission. Enjoy your training!
+    </div>
+    
+   <script>
+// (NEW) Function to show the email - Ensure it's in the global scope if called inline
+window.revealEmail = function() {
+    const emailDiv = document.getElementById('emailDisplay');
+    if (emailDiv) {
+        emailDiv.style.display = 'block';
+    }
+    const emailButton = document.getElementById('revealButton');
+    if (emailButton) {
+        emailButton.style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    
+    // --- 1. Variable Declarations ---
+    const navItems = document.querySelectorAll('.main-nav .nav-item');
+    const searchBar = document.getElementById('search-bar');
+    const videoItems = document.querySelectorAll('.video-item');
+    const workoutSection = document.getElementById('workout-section');
+    const workoutList = document.getElementById('workout-list');
+    const workoutNotes = document.getElementById('workout-notes');
+    // Note: 'addBlankExerciseBtn' is not needed yet since we're skipping Step 2.
+    let programNotes = '';
+    const clearWorkoutBtn = document.getElementById('clear-workout');
+    const shareWorkoutBtn = document.getElementById('share-workout');
+    const exportCsvBtn = document.getElementById('export-csv');
+    let workoutItemsList = [];
+    
+    // --- 2. Core Functions ---
+    function moveItem(index, direction) {
+        if (direction === 'up' && index > 0) {
+            [workoutItemsList[index], workoutItemsList[index - 1]] = [workoutItemsList[index - 1], workoutItemsList[index]];
+        } else if (direction === 'down' && index < workoutItemsList.length - 1) {
+            [workoutItemsList[index], workoutItemsList[index + 1]] = [workoutItemsList[index + 1], workoutItemsList[index]];
+        }
+        renderWorkout();
+        saveWorkout();
+    }
+    
+    function saveWorkout() {
+        localStorage.setItem('workoutPlan', JSON.stringify(workoutItemsList));
+        localStorage.setItem('programNotes', programNotes);
+    }
+
+    function loadWorkout() {
+        const savedWorkout = localStorage.getItem('workoutPlan');
+        const savedNotes = localStorage.getItem('programNotes');
+        if (savedWorkout) {
+            workoutItemsList = JSON.parse(savedWorkout);
+            renderWorkout();
+        }
+        if (savedNotes) {
+            programNotes = savedNotes;
+            workoutNotes.value = programNotes;
+        }
+    }
+
+    // Function to render the workout list (Handles collapse button state)
+    function renderWorkout() {
+        workoutList.innerHTML = '';
+        if (workoutItemsList.length > 0) {
+            const currentPage = window.location.pathname.split('/').pop();
+            workoutSection.style.display = 'block';
+            
+            workoutItemsList.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'workout-item';
+                
+                // If you want items to start expanded on desktop, uncomment this:
+                // li.classList.add('active'); 
+                
+                const itemUrl = `${item.page || currentPage}#${item.id}`;
+                
+                li.innerHTML = `
+                    <div class="reorder-controls">
+                        <button class="reorder-btn up" data-index="${index}">↑</button>
+                        <button class="reorder-btn down" data-index="${index}">↓</button>
+                    </div>
+                    <div class="workout-item-title"><a href="${itemUrl}">${item.title}</a></div>
+                    
+                    <button class="details-toggle-btn" data-index="${index}">${li.classList.contains('active') ? '▲' : '▼'}</button>
+
+                    <div class="collapsible-details">
+                        <div class="workout-item-inputs">
+                            <div class="input-group"><label>Grouping</label><input type="text" id="grouping-${index}" placeholder="A1" value="${item.grouping || ''}"></div>
+                            <div class="input-group"><label>Sets</label><input type="text" id="sets-${index}" placeholder="3" value="${item.sets || ''}"></div>
+                            <div class="input-group"><label>Reps</label><input type="text" id="reps-${index}" placeholder="8-12" value="${item.reps || ''}"></div>
+                            <div class="input-group"><label>Load</label><input type="text" id="load-${index}" placeholder="50kg" value="${item.load || ''}"></div>
+                            <div class="input-group"><label>Tempo</label><input type="text" id="tempo-${index}" placeholder="2010" value="${item.tempo || ''}"></div>
+                            <div class="input-group"><label>Notes</label><input type="text" id="notes-${index}" placeholder="Notes..." value="${item.notes || ''}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="workout-item-controls"><button class="workout-item-remove" data-index="${index}">×</button></div>
+                `;
+                
+                workoutList.appendChild(li);
+            });
+        } else {
+            workoutSection.style.display = 'none';
+        }
+    }
+
+    // --- 3. Event Listeners ---
+
+    // Navigation Dropdown Logic (Existing)
+    navItems.forEach(item => {
+        const link = item.querySelector('.nav-link');
+        if (item.querySelector('.dropdown-menu')) {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                navItems.forEach(otherItem => {
+                    if (otherItem !== item) otherItem.classList.remove('active');
+                });
+                item.classList.toggle('active');
+            });
+        }
+    });
+    document.addEventListener('click', () => navItems.forEach(item => item.classList.remove('active')));
+
+    // Search Bar Live Filtering (Existing)
+    searchBar.addEventListener('input', function () {
+        const query = this.value.toLowerCase().trim();
+        videoItems.forEach(item => {
+            const title = item.querySelector('.video-title').textContent.toLowerCase();
+            item.style.display = title.includes(query) ? '' : 'none';
+        });
+    });
+
+    // Video Hover Play/Pause (Existing)
+    videoItems.forEach(item => {
+        const video = item.querySelector('video');
+        if (video) {
+            item.addEventListener('mouseenter', () => video.play());
+            item.addEventListener('mouseleave', () => video.pause());
+        }
+    });
+    
+    // Program Notes Save (Existing)
+    workoutNotes.addEventListener('input', function() {
+        programNotes = this.value;
+        saveWorkout();
+    });
+
+    // Save Input Changes (Sets, Reps, Load, etc.) (Existing)
+    workoutList.addEventListener('input', function(e) {
+        if (e.target.tagName === 'INPUT' && e.target.closest('.workout-item')) {
+            const li = e.target.closest('.workout-item');
+            const index = parseInt(li.querySelector('.workout-item-remove').dataset.index, 10);
+            const inputType = e.target.id.split('-')[0];
+            if (workoutItemsList[index] && typeof workoutItemsList[index][inputType] !== 'undefined') {
+                workoutItemsList[index][inputType] = e.target.value;
+                saveWorkout();
+            }
+        }
+    });
+
+    // --- CONSOLIDATED WORKOUT LIST CLICK LISTENER (FIXED) ---
+    workoutList.addEventListener('click', function(e) {
+        const target = e.target;
+        const index = parseInt(target.dataset.index, 10);
+
+        // 1. COLLAPSE/EXPAND LOGIC (Step 1)
+        if (target.classList.contains('details-toggle-btn')) {
+            const item = target.closest('.workout-item');
+            item.classList.toggle('active');
+            target.textContent = item.classList.contains('active') ? '▲' : '▼';
+            e.stopPropagation();
+            return; 
+        }
+
+        // 2. REMOVE/REORDER LOGIC
+        if (!isNaN(index)) {
+            if (target.classList.contains('workout-item-remove')) {
+                workoutItemsList.splice(index, 1);
+                renderWorkout();
+                saveWorkout();
+            }
+            if (target.classList.contains('up')) moveItem(index, 'up');
+            if (target.classList.contains('down')) moveItem(index, 'down');
+        }
+        
+        // NOTE: If you add the custom exercise rename logic later, it will go here.
+    });
+    // --- END CONSOLIDATED CLICK LISTENER ---
+
+    // Clear Workout Button (Existing)
+    clearWorkoutBtn.addEventListener('click', () => {
+        if (confirm('Are you sure?')) {
+            workoutItemsList = [];
+            programNotes = '';
+            document.getElementById('workout-title').textContent = '';
+            workoutNotes.value = '';
+            renderWorkout();
+            saveWorkout();
+        }
+    });
+    
+    // Share Workout Button (Existing)
+    shareWorkoutBtn.addEventListener('click', () => {
+        if (workoutItemsList.length === 0) return alert("Workout plan is empty!");
+        const name = document.getElementById('workout-title').textContent.trim();
+        const notes = programNotes.trim();
+        
+        const data = workoutItemsList.map(i => [i.id, i.page, i.title, i.grouping, i.sets, i.reps, i.load, i.tempo, i.notes].map(f => encodeURIComponent(f || '')).join('|')).join(';');
+        
+        const url = `${location.origin}${location.pathname.replace(/\/[^/]*$/, '/')}${workoutItemsList[0].page}?workout=${btoa(data)}${name ? `&name=${btoa(name)}` : ''}${notes ? `&mainnotes=${btoa(notes)}` : ''}`;
+        navigator.clipboard.writeText(url).then(() => alert('Workout link copied!'));
+    });
+    
+    // Export CSV Button (Existing)
+    exportCsvBtn.addEventListener('click', () => {
+        const name = document.getElementById('workout-title').textContent.trim() || 'workout_plan';
+        const programNotesText = programNotes.trim(); 
+
+        const headers = ["Exercise", "Grouping", "Sets", "Reps", "Load", "Tempo", "Notes", "URL"];
+        const baseUrl = `${location.origin}${location.pathname.replace(/\/[^/]*$/, '/')}`;
+        
+        let csvContent = '';
+        if (programNotesText) {
+            csvContent += `"PROGRAM NOTES: ${programNotesText.replace(/"/g, '""')}"\r\n`;
+            csvContent += ' \r\n';
+        }
+
+        csvContent += headers.join(',') + '\r\n';
+        const rows = workoutItemsList.map(i => [i.title, i.grouping, i.sets, i.reps, i.load, i.tempo, i.notes, `${baseUrl}${i.page}#${i.id}`].map(f => `"${(f || '').replace(/"/g, '""')}"`).join(','));
+        csvContent += rows.join('\r\n');
+        
+        const csv = `data:text/csv;charset=utf-8,${encodeURI(csvContent)}`;
+        
+        const link = document.createElement("a");
+        link.setAttribute("href", csv);
+        link.setAttribute("download", `${name}.xls`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+    
+    // Load workout from URL parameters (Existing)
+    function loadWorkoutFromURL() {
+        const params = new URLSearchParams(location.search);
+        const data = params.get('workout');
+        const name = params.get('name');
+        const mainNotes = params.get('mainnotes');
+
+        if (name) try { document.getElementById('workout-title').textContent = atob(name); } catch(e){}
+
+        if (mainNotes) {
+            try {
+                programNotes = atob(mainNotes);
+                workoutNotes.value = programNotes;
+                saveWorkout();
+            } catch(e) { console.error("Failed to load main notes from URL"); }
+        }
+        
+        if (data) {
+            try {
+                workoutItemsList = atob(data).split(';').map(s => {
+                    const [id, page, title, grouping, sets, reps, load, tempo, notes] = s.split('|').map(p => decodeURIComponent(p));
+                    return { id, page, title, grouping, sets, reps, load, tempo, notes };
+                }).filter(i => i && i.id);
+                renderWorkout();
+                saveWorkout();
+                history.pushState({}, '', location.pathname + location.hash);
+                setTimeout(() => workoutSection.scrollIntoView({ behavior: 'smooth' }), 100);
+            } catch (e) { console.error("Failed to load workout from URL"); }
+        }
+    }
+
+    // Highlight Exercise from URL Hash (Existing)
+    function highlightExerciseFromURL() {
+        if(location.hash) {
+            const el = document.getElementById(location.hash.substring(1));
+            if(el) {
+                setTimeout(() => {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.classList.add('highlight');
+                    setTimeout(() => el.classList.remove('highlight'), 30000);
+                }, 250);
+            }
+        }
+    }
+
+    // Global Video Controls (Existing)
+    window.addToWorkout = function(button) {
+        const videoItem = button.closest('.video-item');
+        const id = videoItem.id;
+        const title = videoItem.querySelector('.video-title').textContent;
+        const pageName = window.location.pathname.split('/').pop();
+        if (!workoutItemsList.some(item => item.id === id)) {
+            workoutItemsList.push({ id, title, page: pageName, grouping: '', sets: '', reps: '', load: '', tempo: '', notes: '' });
+            renderWorkout();
+            saveWorkout();
+            button.textContent = 'ADDED ✔';
+            button.classList.add('active');
+            button.disabled = true;
+        }
+        const newWorkoutItem = workoutList.lastElementChild;
+        if (newWorkoutItem) {
+            newWorkoutItem.classList.add('highlight');
+            setTimeout(() => newWorkoutItem.classList.remove('highlight'), 3000);
+        }
+    };
+    window.shareVideo = btn => navigator.clipboard.writeText(`${location.origin}${location.pathname}#${btn.closest('.video-item').id}`).then(() => alert('Link copied!'));
+    window.toggleFocus = btn => {
+        const vc = btn.closest('.video-container');
+        vc.classList.toggle('focus-mode');
+        btn.textContent = vc.classList.contains('focus-mode') ? 'EXIT' : 'FULL';
+    };
+    window.toggleLoop = btn => {
+        const v = btn.closest('.video-container').querySelector('video');
+        v.loop = !v.loop;
+        btn.classList.toggle('active', v.loop);
+    };
+    
+    // --- Initial Load ---
+    loadWorkout();
+    loadWorkoutFromURL();
+    highlightExerciseFromURL();
+});
+</script>
+</body>
+</html>

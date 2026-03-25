@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Dashboard | RestPeriod</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
+        
+        :root { 
+            --brand-bg: #020c12; --card-bg: #0e1b24; --brand-accent: #26C6DA;
+            --brand-secondary: #2E7D32; --text-main: #E0F7FA; --brand-danger: #ff5252;
+        }
+
+        body { 
+            margin: 0; font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); height: 100vh; overflow: hidden;
+        }
+
+        /* Nav */
+        .nav-top { 
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; 
+            background: #000; border-bottom: 1px solid #004d7a; 
+        }
+        .nav-links a { color: #888; text-decoration: none; margin-left: 20px; font-family: 'Montserrat'; font-weight: 700; font-size: 0.8rem; }
+        .nav-links a.active { color: white; border-bottom: 2px solid var(--brand-accent); }
+
+        /* 3-Column Layout */
+        .dashboard-grid {
+            display: grid; grid-template-columns: 300px 1fr 380px; gap: 0; height: calc(100vh - 65px);
+        }
+
+        .col { border-right: 1px solid #1a2a35; padding: 20px; overflow-y: auto; height: 100%; }
+        .col:last-child { border-right: none; }
+
+        /* UI Elements */
+        .card { background: var(--card-bg); padding: 15px; border-radius: 8px; border: 1px solid #1a2a35; margin-bottom: 15px; }
+        h3 { font-family: 'Montserrat'; font-size: 0.75rem; color: var(--brand-accent); margin-top: 0; letter-spacing: 1px; text-transform: uppercase; }
+        
+        /* Roster Items */
+        .client-item { 
+            padding: 12px; border-radius: 6px; cursor: pointer; border-bottom: 1px solid #1a2a35; transition: 0.2s;
+        }
+        .client-item:hover { background: #152733; }
+        .client-item.active { background: var(--brand-accent); color: black; font-weight: 800; }
+
+        /* Inputs */
+        input, textarea { 
+            width: 100%; background: #050d12; border: 1px solid #1a2a35; color: white; padding: 10px; border-radius: 4px; font-family: inherit; margin-bottom: 10px;
+        }
+        .medical-box { border-left: 4px solid var(--brand-danger); background: rgba(255, 82, 82, 0.05); }
+
+        /* Buttons */
+        .btn { border: none; padding: 10px; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; font-family: 'Montserrat'; font-size: 0.7rem; width: 100%; }
+        .btn-green { background: var(--brand-secondary); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); }
+
+        /* Timeline Feed */
+        .note-entry { padding: 10px; border-bottom: 1px solid #1a2a35; font-size: 0.8rem; }
+        .note-date { font-size: 0.65rem; color: var(--brand-accent); margin-bottom: 4px; }
+
+        .prog-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: #050d12; padding: 10px; margin-bottom: 5px; border-radius: 4px; font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-top">
+        <div style="font-weight:800; font-size:1.2rem; font-family:'Montserrat';">REST <span style="color:var(--brand-accent)">PERIOD</span></div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="active">DASHBOARD</a>
+            <a href="builder.html">BUILDER</a>
+            <a href="library.html">LIBRARY</a>
+            <a href="#" onclick="handleLogout()">LOGOUT</a>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="col">
+            <h3>👥 Clients</h3>
+            <input type="text" id="search-roster" placeholder="Search..." onkeyup="filterClients()">
+            <div id="roster-list">
+                </div>
+        </div>
+
+        <div class="col" id="middle-col" style="visibility: hidden;">
+            <div class="card profile-header">
+                <h2 id="display-name" style="margin:0; font-family:'Montserrat';">Select a Client</h2>
+                <p id="display-email" style="margin:5px 0 0 0; opacity:0.5; font-size:0.8rem;"></p>
+            </div>
+
+            <div class="card medical-box">
+                <h3 style="color:var(--brand-danger);"><i class="fas fa-file-medical"></i> Medical & Injury Notes</h3>
+                <textarea id="medical-notes" style="height:120px;" placeholder="List surgeries, contraindications, or current injuries..." onchange="updateMedical()"></textarea>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-dumbbell"></i> Active Programs</h3>
+                <div id="active-progs-list"></div>
+                <button class="btn btn-outline" style="margin-top:10px;" onclick="window.location.href='builder.html'">+ OPEN BUILDER</button>
+            </div>
+        </div>
+
+        <div class="col" id="right-col" style="visibility: hidden;">
+            <div class="card">
+                <h3><i class="fas fa-pen"></i> New Session Note</h3>
+                <textarea id="new-note-content" style="height:80px;" placeholder="How did today's session go?"></textarea>
+                <button class="btn btn-green" onclick="saveNewNote()">Post to Timeline</button>
+            </div>
+
+            <h3><i class="fas fa-history"></i> Coach's Timeline</h3>
+            <div id="notes-timeline">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        const pb = new PocketBase('https://restperiod.org');
+        let selectedClientId = null;
+
+        window.onload = async () => {
+            if(!pb.authStore.isValid) window.location.href = 'index.html';
+            loadClients();
+        };
+
+        async function loadClients() {
+            try {
+                const users = await pb.collection('users').getList(1, 100, { filter: 'role="client"', sort: 'name' });
+                document.getElementById('roster-list').innerHTML = users.items.map(u => `
+                    <div class="client-item" id="client-${u.id}" onclick="selectClient('${u.id}')">
+                        ${u.name}
+                    </div>
+                `).join('');
+            } catch(e) { console.error(e); }
+        }
+
+        async function selectClient(id) {
+            selectedClientId = id;
+            
+            // UI Toggle
+            document.querySelectorAll('.client-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`client-${id}`).classList.add('active');
+            document.getElementById('middle-col').style.visibility = 'visible';
+            document.getElementById('right-col').style.visibility = 'visible';
+
+            try {
+                // Fetch User (for Medical Notes)
+                const user = await pb.collection('users').getOne(id);
+                document.getElementById('display-name').innerText = user.name.toUpperCase();
+                document.getElementById('display-email').innerText = user.email;
+                document.getElementById('medical-notes').value = user.medical_notes || "";
+
+                // Fetch Programs
+                const progs = await pb.collection('programs').getList(1, 10, {
+                    filter: `client="${id}" && archived=false`,
+                    sort: '-created'
+                });
+                document.getElementById('active-progs-list').innerHTML = progs.items.map(p => `
+                    <div class="prog-row">
+                        <span>${p.name}</span>
+                        <span style="font-size:0.7rem; opacity:0.5;">Started: ${new Date(p.created).toLocaleDateString()}</span>
+                    </div>
+                `).join('') || '<p style="font-size:0.8rem; opacity:0.5;">No active programs.</p>';
+
+                // Load Timeline
+                loadTimeline(id);
+
+            } catch(e) { console.error(e); }
+        }
+
+        async function updateMedical() {
+            if(!selectedClientId) return;
+            const content = document.getElementById('medical-notes').value;
+            try {
+                await pb.collection('users').update(selectedClientId, { medical_notes: content });
+            } catch(e) { alert("Save failed"); }
+        }
+
+        async function loadTimeline(id) {
+            const notes = await pb.collection('notes').getList(1, 50, {
+                filter: `client="${id}"`, sort: '-created'
+            });
+            document.getElementById('notes-timeline').innerHTML = notes.items.map(n => `
+                <div class="note-entry">
+                    <div class="note-date">${new Date(n.created).toLocaleString()}</div>
+                    <div>${n.content}</div>
+                </div>
+            `).join('') || '<p style="font-size:0.8rem; padding:10px; opacity:0.5;">No history yet.</p>';
+        }
+
+        async function saveNewNote() {
+            const content = document.getElementById('new-note-content').value;
+            if(!content || !selectedClientId) return;
+
+            try {
+                await pb.collection('notes').create({
+                    client: selectedClientId,
+                    content: content,
+                    coach: pb.authStore.model.id
+                });
+                document.getElementById('new-note-content').value = "";
+                loadTimeline(selectedClientId);
+            } catch(e) { alert("Note failed to save"); }
+        }
+
+        function filterClients() {
+            const q = document.getElementById('search-roster').value.toLowerCase();
+            document.querySelectorAll('.client-item').forEach(el => {
+                el.style.display = el.innerText.toLowerCase().includes(q) ? 'block' : 'none';
+            });
+        }
+
+        function handleLogout() { pb.authStore.clear(); window.location.href = 'index.html'; }
+    </script>
+</body>
+</html>

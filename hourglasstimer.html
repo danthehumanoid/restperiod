@@ -1,0 +1,2658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rest Period - Epic Timer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: radial-gradient(circle at center, #0a0a2e, #16213e, #000000);
+            font-family: 'Courier New', monospace;
+            color: #00d4ff;
+            overflow: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        #container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            filter: contrast(1.2) saturate(1.3);
+        }
+        
+        #controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(206, 1, 4, 0.95);
+            border: 3px solid #ce0104;
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(15px);
+            z-index: 100;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 40px rgba(206, 1, 4, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        #controls.hidden {
+            transform: translateX(-120%) scale(0.8);
+            opacity: 0;
+        }
+        
+        body.fullscreen #controls {
+            display: none;
+        }
+        
+        body.fullscreen #toggle-controls {
+            display: none;
+        }
+        
+        body.fullscreen #countdown {
+            bottom: 10px;
+            right: 10px;
+            font-size: 18px;
+            padding: 10px;
+        }
+        
+        h1 {
+            color: #ffde59;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-shadow: 0 0 30px #ffde59;
+            animation: etherealGlow 3s ease-in-out infinite alternate;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes etherealGlow {
+            from { 
+                text-shadow: 0 0 30px #ffde59, 0 0 40px #ffcc33; 
+                color: #ffde59;
+            }
+            to { 
+                text-shadow: 0 0 40px #ffde59, 0 0 60px #ffee77, 0 0 80px #ffff99; 
+                color: #ffee77;
+            }
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(206, 1, 4, 0.08);
+            border-radius: 12px;
+            border: 2px solid rgba(206, 1, 4, 0.2);
+            box-shadow: inset 0 0 20px rgba(206, 1, 4, 0.1);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: #ffcccc;
+            text-shadow: 0 0 15px #ce0104;
+            font-weight: bold;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ce0104;
+            border-radius: 8px;
+            color: #ce0104;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(206, 1, 4, 0.5);
+            background: rgba(20, 0, 0, 0.9);
+        }
+        
+        select option {
+            background: #001122;
+            color: #00d4ff;
+        }
+        
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .time-input {
+            text-align: center;
+        }
+        
+        .time-input label {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .time-input input {
+            padding: 8px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .slider-container {
+            margin-bottom: 15px;
+        }
+        
+        .value-display {
+            color: #ffcccc;
+            font-weight: bold;
+            float: right;
+            text-shadow: 0 0 10px #ce0104;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 30px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(90deg, #220000, #ce0104);
+            outline: none;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #ce0104;
+            cursor: pointer;
+            box-shadow: 0 0 20px #ce0104;
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #ce0104;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 20px #ce0104;
+        }
+        
+        button {
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc, #006699);
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: 'Courier New', monospace;
+            margin: 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        button:hover {
+            transform: scale(1.05) rotateX(5deg);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #00ff88, #00cc66, #009944);
+        }
+        
+        .stop-btn {
+            background: linear-gradient(135deg, #ff4444, #cc2222, #991111);
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, #ffaa00, #cc8800, #996600);
+        }
+        
+        .fullscreen-btn {
+            background: linear-gradient(135deg, #8844ff, #6622cc, #441199);
+        }
+        
+        #countdown {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00d4ff;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 0 0 20px #00d4ff;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+            z-index: 99;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        #toggle-controls {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 212, 255, 0.15);
+            border: 3px solid #00d4ff;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 101;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.2);
+        }
+        
+        #toggle-controls:hover {
+            background: rgba(0, 212, 255, 0.3);
+            transform: scale(1.15) rotate(180deg);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+        }
+        
+        #toggle-controls::after {
+            content: "⚙️";
+            font-size: 28px;
+            filter: hue-rotate(180deg) brightness(1.5);
+        }
+        
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            animation: statusPulse 2.5s infinite;
+            letter-spacing: 1px;
+        }
+        
+        .status.ready {
+            background: rgba(0, 255, 136, 0.15);
+            border: 2px solid #00ff88;
+            color: #00ff88;
+        }
+        
+        .status.running {
+            background: rgba(0, 212, 255, 0.15);
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+        }
+        
+        .status.finished {
+            background: rgba(255, 136, 0, 0.15);
+            border: 2px solid #ff8800;
+            color: #ff8800;
+            animation: finishedPulse 1s infinite;
+        }
+        
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+        
+        @keyframes finishedPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            #controls {
+                max-width: 90vw;
+                left: 5vw;
+                top: 15px;
+                padding: 20px;
+                max-height: 85vh;
+            }
+            
+            #countdown {
+                bottom: 20px;
+                right: 20px;
+                font-size: 20px;
+                padding: 15px;
+                min-width: 150px;
+            }
+            
+            #toggle-controls {
+                top: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            #controls {
+                padding: 15px;
+                max-height: 95vh;
+            }
+            
+            .control-group {
+                margin-bottom: 15px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="hourglass"></canvas>
+    </div>
+    
+    <div id="controls">
+        <h1>⏳ REST PERIOD ⏳</h1>
+        
+        <div class="control-group">
+            <label>Set Timer Duration:</label>
+            <div class="time-inputs">
+                <div class="time-input">
+                    <label>Hours</label>
+                    <input type="number" id="hours" min="0" max="99" value="0">
+                </div>
+                <div class="time-input">
+                    <label>Minutes</label>
+                    <input type="number" id="minutes" min="0" max="59" value="5">
+                </div>
+                <div class="time-input">
+                    <label>Seconds</label>
+                    <input type="number" id="seconds" min="0" max="59" value="0">
+                </div>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label>Falling Object Type:</label>
+            <select id="particle-type">
+                <option value="stardust">✨ Cosmic Stardust</option>
+                <option value="fire">🔥 Mystical Fire</option>
+                <option value="water">💧 Liquid Crystal</option>
+                <option value="energy">⚡ Pure Energy</option>
+                <option value="sand">🏺 Ancient Sand</option>
+                <option value="snow">❄️ Frozen Light</option>
+                <option value="petals">🌸 Cherry Blossoms</option>
+                <option value="gems">💎 Precious Gems</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <label>Color Theme:</label>
+            <select id="color-theme">
+                <option value="cosmic">🌌 Cosmic Blue</option>
+                <option value="fire">🔥 Phoenix Fire</option>
+                <option value="forest">🌲 Enchanted Forest</option>
+                <option value="sunset">🌅 Golden Sunset</option>
+                <option value="aurora">🌌 Aurora Borealis</option>
+                <option value="ocean">🌊 Deep Ocean</option>
+                <option value="cherry">🌸 Cherry Blossom</option>
+                <option value="amethyst">💜 Amethyst Dreams</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <div class="slider-container">
+                <label>Background Activity: <span class="value-display" id="background-value">50</span></label>
+                <input type="range" id="background-slider" min="0" max="100" value="50">
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label>Completion Sound:</label>
+            <select id="completion-sound">
+                <option value="simple">🔔 Simple Bell</option>
+                <option value="harmonic">🎵 Harmonic Chime</option>
+                <option value="cosmic">✨ Cosmic Tone</option>
+                <option value="meditation">🧘 Meditation Bell</option>
+                <option value="none">🔇 Silent</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <button id="start-btn" class="start-btn">🚀 Start Timer</button>
+            <button id="stop-btn" class="stop-btn">⏹️ Stop Timer</button>
+            <button id="reset-btn" class="reset-btn">🔄 Reset Timer</button>
+            <button id="fullscreen-btn" class="fullscreen-btn">🌌 Fullscreen</button>
+        </div>
+        
+        <div class="status ready" id="status">
+            Ready to begin cosmic meditation
+        </div>
+    </div>
+    
+    <div id="countdown">
+        00:05:00
+    </div>
+    
+    <div id="toggle-controls"></div>
+
+    <script>
+        // Core variables
+        let canvas, ctx, animationId;
+        let isRunning = false, isPaused = false;
+        let totalDuration = 0, remainingTime = 0;
+        let startTime = 0;
+        let fallingObjects = [], settledObjects = [];
+        let topChamberMatter = [], bottomChamberMatter = [];
+        let backgroundIntensity = 50;
+        let totalMatterCount = 0;
+        
+        // Configuration
+        let config = {
+            particleType: 'stardust',
+            colorTheme: 'cosmic',
+            completionSound: 'simple',
+            backgroundActivity: 50
+        };
+        
+        // Hourglass dimensions (responsive)
+        let hourglassConfig = {
+            centerX: 0,
+            centerY: 0,
+            width: 300,
+            height: 400,
+            neckWidth: 30,
+            glassThickness: 8
+        };
+        
+        // Color themes
+        const colorThemes = {
+            cosmic: {
+                primary: [120, 180, 255],
+                secondary: [80, 150, 255],
+                accent: [150, 200, 255],
+                background: [10, 20, 40]
+            },
+            fire: {
+                primary: [255, 120, 40],
+                secondary: [255, 80, 0],
+                accent: [255, 200, 100],
+                background: [40, 15, 5]
+            },
+            forest: {
+                primary: [100, 255, 150],
+                secondary: [50, 200, 100],
+                accent: [150, 255, 200],
+                background: [10, 30, 20]
+            },
+            sunset: {
+                primary: [255, 180, 50],
+                secondary: [255, 120, 80],
+                accent: [255, 220, 150],
+                background: [40, 20, 10]
+            },
+            aurora: {
+                primary: [150, 255, 200],
+                secondary: [100, 255, 150],
+                accent: [200, 255, 220],
+                background: [5, 25, 20]
+            },
+            ocean: {
+                primary: [50, 150, 255],
+                secondary: [20, 120, 255],
+                accent: [150, 220, 255],
+                background: [0, 20, 40]
+            },
+            cherry: {
+                primary: [255, 150, 200],
+                secondary: [255, 100, 150],
+                accent: [255, 200, 220],
+                background: [30, 10, 20]
+            },
+            amethyst: {
+                primary: [200, 100, 255],
+                secondary: [150, 80, 255],
+                accent: [220, 180, 255],
+                background: [20, 10, 40]
+            }
+        };
+        
+        function getThemeColor(type, intensity = 1, alpha = 1) {
+            const theme = colorThemes[config.colorTheme];
+            const color = theme[type] || theme.primary;
+            const [r, g, b] = color.map(c => Math.floor(c * intensity));
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', init);
+        
+        function init() {
+            canvas = document.getElementById('hourglass');
+            ctx = canvas.getContext('2d');
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            setupControls();
+            render();
+        }
+        
+        function resizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            ctx.scale(dpr, dpr);
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            
+            updateHourglassConfig();
+        }
+        
+        function updateHourglassConfig() {
+            hourglassConfig.centerX = window.innerWidth / 2;
+            hourglassConfig.centerY = window.innerHeight / 2;
+            
+            const minDimension = Math.min(window.innerWidth, window.innerHeight);
+            const scaleFactor = minDimension < 600 ? 0.6 : minDimension < 900 ? 0.8 : 1;
+            
+            hourglassConfig.width = 300 * scaleFactor;
+            hourglassConfig.height = 400 * scaleFactor;
+            hourglassConfig.neckWidth = 30 * scaleFactor;
+            hourglassConfig.glassThickness = 8 * scaleFactor;
+        }
+        
+        function setupControls() {
+            document.getElementById('particle-type').addEventListener('change', function(e) {
+                config.particleType = e.target.value;
+            });
+            
+            document.getElementById('color-theme').addEventListener('change', function(e) {
+                config.colorTheme = e.target.value;
+            });
+            
+            document.getElementById('background-slider').addEventListener('input', function(e) {
+                config.backgroundActivity = parseInt(e.target.value);
+                document.getElementById('background-value').textContent = config.backgroundActivity;
+            });
+            
+            document.getElementById('completion-sound').addEventListener('change', function(e) {
+                config.completionSound = e.target.value;
+            });
+            
+            document.getElementById('start-btn').addEventListener('click', startTimer);
+            document.getElementById('stop-btn').addEventListener('click', stopTimer);
+            document.getElementById('reset-btn').addEventListener('click', resetTimer);
+            document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
+            
+            document.getElementById('toggle-controls').addEventListener('click', function() {
+                const controls = document.getElementById('controls');
+                controls.classList.toggle('hidden');
+            });
+            
+            const timeInputs = ['hours', 'minutes', 'seconds'];
+            timeInputs.forEach(function(inputId) {
+                document.getElementById(inputId).addEventListener('input', function() {
+                    if (!isRunning) {
+                        previewMatterDistribution();
+                    }
+                });
+            });
+            
+            setTimeout(function() { previewMatterDistribution(); }, 100);
+            
+            document.addEventListener('keydown', function(e) {
+                switch(e.key.toLowerCase()) {
+                    case ' ':
+                        e.preventDefault();
+                        if (isRunning) stopTimer();
+                        else startTimer();
+                        break;
+                    case 'r':
+                        resetTimer();
+                        break;
+                    case 'f':
+                        toggleFullscreen();
+                        break;
+                    case 'escape':
+                        exitFullscreen();
+                        break;
+                }
+            });
+        }
+        
+        function render() {
+            drawBackground();
+            updateMatterFlow();
+            
+            topChamberMatter.forEach(function(matter) { matter.draw(); });
+            bottomChamberMatter.forEach(function(matter) { matter.draw(); });
+            
+            spawnFallingObjects();
+            
+            fallingObjects.forEach(function(obj, index) {
+                obj.update();
+                obj.draw();
+                
+                if (obj.y > canvas.height + 100 && !obj.settled) {
+                    fallingObjects.splice(index, 1);
+                }
+            });
+            
+            settledObjects.forEach(function(obj) {
+                obj.draw();
+            });
+            
+            drawHourglass();
+            drawProgressRing();
+            updateTimer();
+            
+            requestAnimationFrame(render);
+        }
+        
+        // Placeholder functions - will add full implementations
+        function previewMatterDistribution() {
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('seconds').value) || 0;
+            
+            const previewDuration = (hours * 3600 + minutes * 60 + seconds) * 1000;
+            
+            if (previewDuration > 0) {
+                const durationMinutes = previewDuration / (1000 * 60);
+                totalMatterCount = Math.min(300, Math.max(50, Math.floor(durationMinutes * 20)));
+                
+                topChamberMatter = [];
+                bottomChamberMatter = [];
+                fillTopChamber();
+            }
+        }
+        
+        function fillTopChamber() {
+            const centerX = hourglassConfig.centerX;
+            const centerY = hourglassConfig.centerY;
+            const topChamberY = centerY - hourglassConfig.height/2;
+            const chamberWidth = hourglassConfig.width * 0.7;
+            const chamberHeight = hourglassConfig.height * 0.35;
+            
+            const particleSize = 4;
+            const particlesPerRow = Math.floor(chamberWidth / (particleSize * 1.5));
+            const rows = Math.ceil(totalMatterCount / particlesPerRow);
+            
+            let particleIndex = 0;
+            
+            for (let row = 0; row < rows && particleIndex < totalMatterCount; row++) {
+                const rowY = topChamberY + chamberHeight - (row * particleSize * 1.2) - 10;
+                const particlesInThisRow = Math.min(particlesPerRow, totalMatterCount - particleIndex);
+                const rowWidth = Math.max(particleSize * 2, chamberWidth - (row * particleSize * 0.3));
+                
+                for (let col = 0; col < particlesInThisRow; col++) {
+                    const colX = centerX - rowWidth/2 + (col * (rowWidth / particlesInThisRow)) + (Math.random() - 0.5) * particleSize;
+                    const colY = rowY + (Math.random() - 0.5) * particleSize * 0.5;
+                    
+                    const matter = new MatterParticle(colX, colY, 'top');
+                    topChamberMatter.push(matter);
+                    particleIndex++;
+                }
+            }
+        }
+        
+        function updateMatterFlow() {
+            if (!isRunning || isPaused) return;
+            
+            const progress = (totalDuration - remainingTime) / totalDuration;
+            const targetMatterMoved = Math.floor(totalMatterCount * progress);
+            const currentMatterMoved = bottomChamberMatter.length;
+            
+            if (currentMatterMoved < targetMatterMoved && topChamberMatter.length > 0) {
+                const matterToMove = Math.min(3, targetMatterMoved - currentMatterMoved);
+                
+                for (let i = 0; i < matterToMove && topChamberMatter.length > 0; i++) {
+                    let highestY = -Infinity;
+                    let highestIndex = -1;
+                    
+                    topChamberMatter.forEach(function(matter, index) {
+                        if (matter.y > highestY) {
+                            highestY = matter.y;
+                            highestIndex = index;
+                        }
+                    });
+                    
+                    if (highestIndex !== -1) {
+                        const matter = topChamberMatter.splice(highestIndex, 1)[0];
+                        addToBottomChamberPyramid(matter);
+                    }
+                }
+            }
+        }
+        
+        function addToBottomChamberPyramid(matter) {
+            const centerX = hourglassConfig.centerX;
+            const centerY = hourglassConfig.centerY;
+            const bottomChamberY = centerY + hourglassConfig.height/2;
+            const chamberWidth = hourglassConfig.width * 0.7;
+            const particleSize = 4;
+            
+            const currentCount = bottomChamberMatter.length;
+            const particlesPerRow = Math.floor(chamberWidth / (particleSize * 1.5));
+            
+            let rowFromBottom = 0;
+            let particlesInLowerRows = 0;
+            let particlesInCurrentRow = particlesPerRow;
+            
+            while (particlesInLowerRows + particlesInCurrentRow <= currentCount) {
+                particlesInLowerRows += particlesInCurrentRow;
+                rowFromBottom++;
+                particlesInCurrentRow = Math.max(1, particlesPerRow - rowFromBottom * 2);
+            }
+            
+            const positionInRow = currentCount - particlesInLowerRows;
+            const currentRowWidth = particlesInCurrentRow * particleSize * 1.5;
+            
+            const x = centerX - currentRowWidth/2 + (positionInRow * (currentRowWidth / particlesInCurrentRow)) + (Math.random() - 0.5) * particleSize * 0.5;
+            const y = bottomChamberY - 20 - (rowFromBottom * particleSize * 1.2) + (Math.random() - 0.5) * particleSize * 0.3;
+            
+            matter.x = x;
+            matter.y = y;
+            matter.chamber = 'bottom';
+            matter.color = matter.generateColor();
+            
+            bottomChamberMatter.push(matter);
+        }
+        
+        function spawnFallingObjects() {
+            if (!isRunning || isPaused) return;
+            
+            const progress = (totalDuration - remainingTime) / totalDuration;
+            const baseSpawnRate = Math.max(0.5, Math.min(5, 60000 / totalDuration));
+            const topMatterRatio = topChamberMatter.length / totalMatterCount;
+            const spawnRate = baseSpawnRate * topMatterRatio * 0.3;
+            
+            if (Math.random() < spawnRate * 0.02) {
+                fallingObjects.push(new FallingObject());
+            }
+            
+            if (fallingObjects.length > 50) {
+                fallingObjects = fallingObjects.slice(-30);
+            }
+        }
+        
+        function drawBackground() {
+            const gradient = ctx.createRadialGradient(
+                canvas.width/2, canvas.height/2, 0,
+                canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)
+            );
+            
+            const intensity = config.backgroundActivity / 100;
+            gradient.addColorStop(0, getThemeColor('background', 0.3 * intensity, 0.1));
+            gradient.addColorStop(0.7, getThemeColor('background', 0.8 * intensity, 0.05));
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            if (config.backgroundActivity > 0) {
+                const starCount = Math.floor(config.backgroundActivity * 2);
+                const time = Date.now() * 0.001;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const x = (i * 137.508) % canvas.width;
+                    const y = (i * 73.614) % canvas.height;
+                    const brightness = (Math.sin(time + i) + 1) / 2;
+                    const size = brightness * 2 * intensity;
+                    
+                    if (size > 0.1) {
+                        ctx.fillStyle = getThemeColor('accent', brightness * intensity, brightness * intensity);
+                        ctx.shadowBlur = size * 4;
+                        ctx.shadowColor = getThemeColor('accent', brightness * intensity);
+                        ctx.beginPath();
+                        ctx.arc(x, y, size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+        
+        function drawHourglass() {
+            const centerX = hourglassConfig.centerX;
+            const centerY = hourglassConfig.centerY;
+            const width = hourglassConfig.width;
+            const height = hourglassConfig.height;
+            const neckWidth = hourglassConfig.neckWidth;
+            const thickness = hourglassConfig.glassThickness;
+            
+            ctx.save();
+            
+            ctx.strokeStyle = getThemeColor('primary', 1, 0.9);
+            ctx.lineWidth = thickness;
+            ctx.shadowBlur = 25;
+            ctx.shadowColor = getThemeColor('accent', 1, 0.8);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            ctx.beginPath();
+            ctx.moveTo(centerX - width/2, centerY - height/2);
+            ctx.lineTo(centerX + width/2, centerY - height/2);
+            ctx.lineTo(centerX + width/2, centerY - 30);
+            ctx.lineTo(centerX + neckWidth/2, centerY);
+            ctx.lineTo(centerX + width/2, centerY + 30);
+            ctx.lineTo(centerX + width/2, centerY + height/2);
+            ctx.lineTo(centerX - width/2, centerY + height/2);
+            ctx.lineTo(centerX - width/2, centerY + 30);
+            ctx.lineTo(centerX - neckWidth/2, centerY);
+            ctx.lineTo(centerX - width/2, centerY - 30);
+            ctx.closePath();
+            
+            ctx.stroke();
+            
+            ctx.strokeStyle = getThemeColor('accent', 1, 0.4);
+            ctx.lineWidth = thickness / 2;
+            ctx.shadowBlur = 15;
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+        
+        function drawProgressRing() {
+            if (!isRunning && !isPaused) return;
+            
+            const centerX = hourglassConfig.centerX;
+            const centerY = hourglassConfig.centerY;
+            const radius = Math.min(canvas.width, canvas.height) * 0.4;
+            const progress = remainingTime > 0 ? (totalDuration - remainingTime) / totalDuration : 1;
+            
+            ctx.save();
+            
+            ctx.strokeStyle = getThemeColor('background', 1, 0.3);
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            ctx.strokeStyle = getThemeColor('primary', 1, 0.8);
+            ctx.lineWidth = 6;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = getThemeColor('accent');
+            ctx.lineCap = 'round';
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, -Math.PI/2, -Math.PI/2 + (progress * Math.PI * 2));
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+        
+        function updateTimer() {
+            if (!isRunning || isPaused) return;
+            
+            const elapsed = Date.now() - startTime;
+            remainingTime = Math.max(0, totalDuration - elapsed);
+            
+            document.getElementById('countdown').textContent = formatTime(remainingTime);
+            
+            if (remainingTime <= 0) {
+                timerFinished();
+            }
+        }
+        
+        function startTimer() {
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('seconds').value) || 0;
+            
+            totalDuration = (hours * 3600 + minutes * 60 + seconds) * 1000;
+            
+            if (totalDuration <= 0) {
+                alert('Please set a valid timer duration!');
+                return;
+            }
+            
+            if (!isRunning) {
+                startTime = Date.now();
+                remainingTime = totalDuration;
+                fallingObjects = [];
+                settledObjects = [];
+                initializeMatterChambers();
+            } else {
+                startTime = Date.now() - (totalDuration - remainingTime);
+            }
+            
+            isRunning = true;
+            isPaused = false;
+            
+            document.getElementById('status').textContent = '⏳ Timer Running';
+            document.getElementById('status').className = 'status running';
+            document.getElementById('start-btn').textContent = '⏸️ Pause Timer';
+        }
+        
+        function initializeMatterChambers() {
+            topChamberMatter = [];
+            bottomChamberMatter = [];
+            
+            const durationMinutes = totalDuration / (1000 * 60);
+            totalMatterCount = Math.min(300, Math.max(50, Math.floor(durationMinutes * 20)));
+            
+            fillTopChamber();
+        }
+        
+        function stopTimer() {
+            if (isRunning && !isPaused) {
+                isPaused = true;
+                
+                document.getElementById('status').textContent = '⏸️ Timer Paused';
+                document.getElementById('status').className = 'status ready';
+                document.getElementById('start-btn').textContent = '▶️ Resume Timer';
+            } else if (isPaused) {
+                startTimer();
+            } else {
+                isRunning = false;
+                document.getElementById('status').textContent = 'Ready to begin cosmic meditation';
+                document.getElementById('status').className = 'status ready';
+                document.getElementById('start-btn').textContent = '🚀 Start Timer';
+            }
+        }
+        
+        function resetTimer() {
+            isRunning = false;
+            isPaused = false;
+            remainingTime = 0;
+            fallingObjects = [];
+            settledObjects = [];
+            
+            previewMatterDistribution();
+            
+            const minutes = document.getElementById('minutes').value || 5;
+            document.getElementById('countdown').textContent = formatTime(minutes * 60 * 1000);
+            document.getElementById('status').textContent = 'Ready to begin cosmic meditation';
+            document.getElementById('status').className = 'status ready';
+            document.getElementById('start-btn').textContent = '🚀 Start Timer';
+        }
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+                document.body.classList.add('fullscreen');
+                document.getElementById('fullscreen-btn').textContent = '🪟 Exit Fullscreen';
+            } else {
+                exitFullscreen();
+            }
+        }
+        
+        function exitFullscreen() {
+            if (document.fullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+            document.body.classList.remove('fullscreen');
+            document.getElementById('fullscreen-btn').textContent = '🌌 Fullscreen';
+            document.getElementById('controls').classList.remove('hidden');
+        }
+        
+        function timerFinished() {
+            isRunning = false;
+            
+            document.getElementById('status').textContent = '✨ Timer Complete! ✨';
+            document.getElementById('status').className = 'status finished';
+            document.getElementById('start-btn').textContent = '🚀 Start Timer';
+            
+            playCompletionSound();
+        }
+        
+        function formatTime(milliseconds) {
+            const totalSeconds = Math.ceil(milliseconds / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            if (hours > 0) {
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+        
+        function playCompletionSound() {
+            if (config.completionSound === 'none') return;
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                switch(config.completionSound) {
+                    case 'simple':
+                        playSimpleBell(audioContext);
+                        break;
+                    case 'harmonic':
+                        playHarmonicChime(audioContext);
+                        break;
+                    case 'cosmic':
+                        playCosmicTone(audioContext);
+                        break;
+                    case 'meditation':
+                        playMeditationBell(audioContext);
+                        break;
+                }
+            } catch (error) {
+                console.log('Audio not available');
+            }
+        }
+        
+        function playSimpleBell(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 1.5);
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 2);
+        }
+        
+        function playHarmonicChime(audioContext) {
+            const frequencies = [523, 659, 784];
+            
+            frequencies.forEach(function(freq, index) {
+                setTimeout(function() {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 1.5);
+                }, index * 150);
+            });
+        }
+        
+        function playCosmicTone(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(440, audioContext.currentTime + 0.5);
+            oscillator.frequency.linearRampToValueAtTime(330, audioContext.currentTime + 1.5);
+            oscillator.type = 'triangle';
+            
+            gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 2);
+        }
+        
+        function playMeditationBell(audioContext) {
+            const fundamental = 256;
+            const harmonics = [1, 2, 3, 4];
+            
+            harmonics.forEach(function(harmonic, index) {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = fundamental * harmonic;
+                oscillator.type = 'sine';
+                
+                const amplitude = 0.15 / harmonic;
+                gainNode.gain.setValueAtTime(amplitude, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 3);
+            });
+        }
+        
+        // Matter particle class
+        class MatterParticle {
+            constructor(x, y, chamber = 'top') {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 2;
+                this.color = this.generateColor();
+                this.settled = true;
+                this.chamber = chamber;
+                this.opacity = 0.8 + Math.random() * 0.2;
+                this.rotation = Math.random() * Math.PI * 2;
+            }
+            
+            generateColor() {
+                const intensity = 0.6 + Math.random() * 0.4;
+                const alpha = 0.7 + Math.random() * 0.3;
+                return getThemeColor('primary', intensity, alpha);
+            }
+            
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity;
+                
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * 2;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+        }
+        
+        // Falling object class
+        class FallingObject {
+            constructor() {
+                this.reset();
+                this.id = Math.random();
+            }
+            
+            reset() {
+                const topChamberY = hourglassConfig.centerY - hourglassConfig.height/2 + 50;
+                const topChamberWidth = hourglassConfig.width * 0.8;
+                
+                this.x = hourglassConfig.centerX + (Math.random() - 0.5) * topChamberWidth;
+                this.y = topChamberY + Math.random() * 50;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = 0;
+                this.size = Math.random() * 4 + 3;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+                this.color = this.generateColor();
+                this.settled = false;
+                this.life = 0;
+                this.trail = [];
+            }
+            
+            generateColor() {
+                const intensity = 0.7 + Math.random() * 0.3;
+                const alpha = 0.8 + Math.random() * 0.2;
+                return getThemeColor('primary', intensity, alpha);
+            }
+            
+            update() {
+                if (this.settled) return;
+                
+                this.life++;
+                
+                const gravity = isRunning ? this.calculateGravity() : 0.02;
+                this.vy += gravity;
+                
+                this.applyParticleBehavior();
+                
+                this.x += this.vx;
+                this.y += this.vy;
+                this.rotation += this.rotationSpeed;
+                
+                if (this.vy > 0.5) {
+                    this.trail.push({x: this.x, y: this.y, life: 15});
+                    if (this.trail.length > 6) this.trail.shift();
+                }
+                this.trail.forEach(function(point) { point.life--; });
+                this.trail = this.trail.filter(function(point) { return point.life > 0; });
+                
+                this.handleHourglassPhysics();
+            }
+            
+            calculateGravity() {
+                if (totalDuration <= 0) return 0.02;
+                
+                const baseGravity = 0.01;
+                const maxGravity = 0.3;
+                const timerFactor = Math.min(1, 60000 / totalDuration);
+                return baseGravity + (maxGravity - baseGravity) * timerFactor;
+            }
+            
+            applyParticleBehavior() {
+                switch(config.particleType) {
+                    case 'fire':
+                        this.vy -= 0.005;
+                        this.vx += (Math.random() - 0.5) * 0.02;
+                        break;
+                    case 'water':
+                        this.vy += 0.01;
+                        this.vx *= 0.98;
+                        break;
+                    case 'energy':
+                        this.vx += Math.sin(this.life * 0.1) * 0.01;
+                        break;
+                    case 'snow':
+                        this.vx += Math.sin(this.life * 0.05) * 0.015;
+                        this.vy *= 0.95;
+                        break;
+                    case 'petals':
+                        this.vx += Math.sin(this.life * 0.03) * 0.02;
+                        this.rotationSpeed = 0.02;
+                        break;
+                }
+            }
+            
+            handleHourglassPhysics() {
+                const centerX = hourglassConfig.centerX;
+                const centerY = hourglassConfig.centerY;
+                const relativeY = this.y - centerY;
+                
+                const hourglassHalfHeight = hourglassConfig.height / 2;
+                if (Math.abs(relativeY) > hourglassHalfHeight) {
+                    if (this.y > centerY + hourglassHalfHeight + 50) {
+                        this.reset();
+                    }
+                    return;
+                }
+                
+                const neckWidth = hourglassConfig.neckWidth;
+                const maxWidth = hourglassConfig.width / 2;
+                
+                let boundaryWidth;
+                if (Math.abs(relativeY) < 20) {
+                    boundaryWidth = neckWidth;
+                    
+                    if (Math.abs(this.x - centerX) > neckWidth * 0.3) {
+                        this.vx += (centerX - this.x) * 0.002;
+                    }
+                } else {
+                    const expansion = Math.abs(relativeY) / hourglassHalfHeight;
+                    boundaryWidth = neckWidth + (maxWidth - neckWidth) * expansion;
+                }
+                
+                const distanceFromCenter = Math.abs(this.x - centerX);
+                if (distanceFromCenter > boundaryWidth) {
+                    this.vx *= -0.3;
+                    this.x = centerX + Math.sign(this.x - centerX) * boundaryWidth;
+                }
+                
+                if (relativeY > 100) {
+                    const bottomY = centerY + hourglassHalfHeight - 20;
+                    const settledHeight = this.calculateSettledHeight();
+                    
+                    if (this.y >= bottomY - settledHeight) {
+                        this.settle(bottomY - settledHeight);
+                    }
+                }
+            }
+            
+            calculateSettledHeight() {
+                const objectsInArea = settledObjects.filter(function(obj) {
+                    return Math.abs(obj.x - this.x) < this.size * 2;
+                }, this).length;
+                
+                return objectsInArea * this.size * 0.8;
+            }
+            
+            settle(settleY) {
+                this.settled = true;
+                this.y = settleY;
+                this.vy = 0;
+                this.vx *= 0.1;
+                settledObjects.push(this);
+            }
+            
+            draw() {
+                ctx.save();
+                
+                this.trail.forEach(function(point, index) {
+                    const alpha = (point.life / 15) * 0.4;
+                    const size = this.size * (point.life / 15) * 0.6;
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }, this);
+                
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.settled ? 0.8 : 1;
+                
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * 3;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+        }
+        
+        document.addEventListener('fullscreenchange', function() {
+            if (!document.fullscreenElement) {
+                exitFullscreen();
+            }
+        });
+        
+        document.addEventListener('webkitfullscreenchange', function() {
+            if (!document.webkitFullscreenElement) {
+                exitFullscreen();
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const minutes = document.getElementById('minutes').value || 5;
+            document.getElementById('countdown').textContent = formatTime(minutes * 60 * 1000);
+        });
+    </script>
+        
+        // Configuration
+        let config = {
+            particleType: 'stardust',
+            colorTheme: 'cosmic',
+            completionSound: 'simple',
+            backgroundActivity: 50
+        };
+        
+        // Hourglass dimensions (responsive)
+        let hourglassConfig = {
+            centerX: 0,
+            centerY: 0,
+            width: 300,
+            height: 400,
+            neckWidth: 30,
+            glassThickness: 8
+        };
+        
+        // Color themes
+        const colorThemes = {
+            cosmic: {
+                primary: [120, 180, 255],
+                secondary: [80, 150, 255],
+                accent: [150, 200, 255],
+                background: [10, 20, 40]
+            },
+            fire: {
+                primary: [255, 120, 40],
+                secondary: [255, 80, 0],
+                accent: [255, 200, 100],
+                background: [40, 15, 5]
+            },
+            forest: {
+                primary: [100, 255, 150],
+                secondary: [50, 200, 100],
+                accent: [150, 255, 200],
+                background: [10, 30, 20]
+            },
+            sunset: {
+                primary: [255, 180, 50],
+                secondary: [255, 120, 80],
+                accent: [255, 220, 150],
+                background: [40, 20, 10]
+            },
+            aurora: {
+                primary: [150, 255, 200],
+                secondary: [100, 255, 150],
+                accent: [200, 255, 220],
+                background: [5, 25, 20]
+            },
+            ocean: {
+                primary: [50, 150, 255],
+                secondary: [20, 120, 255],
+                accent: [150, 220, 255],
+                background: [0, 20, 40]
+            },
+            cherry: {
+                primary: [255, 150, 200],
+                secondary: [255, 100, 150],
+                accent: [255, 200, 220],
+                background: [30, 10, 20]
+            },
+            amethyst: {
+                primary: [200, 100, 255],
+                secondary: [150, 80, 255],
+                accent: [220, 180, 255],
+                background: [20, 10, 40]
+            }
+        };
+        
+        function getThemeColor(type, intensity = 1, alpha = 1) {
+            const theme = colorThemes[config.colorTheme];
+            const color = theme[type] || theme.primary;
+            const [r, g, b] = color.map(c => Math.floor(c * intensity));
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+        
+        // Matter particle for static display in chambers
+        class MatterParticle {
+            constructor(x, y, chamber = 'top') {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 2;
+                this.color = this.generateColor();
+                this.settled = true;
+                this.chamber = chamber;
+                this.opacity = 0.8 + Math.random() * 0.2;
+                this.rotation = Math.random() * Math.PI * 2;
+            }
+            
+            generateColor() {
+                const intensity = 0.6 + Math.random() * 0.4;
+                const alpha = 0.7 + Math.random() * 0.3;
+                return getThemeColor('primary', intensity, alpha);
+            }
+            
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity;
+                
+                switch(config.particleType) {
+                    case 'stardust':
+                        this.drawStardust();
+                        break;
+                    case 'fire':
+                        this.drawFire();
+                        break;
+                    case 'water':
+                        this.drawWater();
+                        break;
+                    case 'energy':
+                        this.drawEnergy();
+                        break;
+                    case 'sand':
+                        this.drawSand();
+                        break;
+                    case 'snow':
+                        this.drawSnow();
+                        break;
+                    case 'petals':
+                        this.drawPetal();
+                        break;
+                    case 'gems':
+                        this.drawGem();
+                        break;
+                }
+                
+                ctx.restore();
+            }
+            
+            drawStardust() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * 2;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            drawFire() {
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size * 1.5);
+                gradient.addColorStop(0, getThemeColor('accent', 1, 0.8));
+                gradient.addColorStop(0.5, getThemeColor('primary', 1, 0.6));
+                gradient.addColorStop(1, getThemeColor('secondary', 1, 0.1));
+                
+                ctx.fillStyle = gradient;
+                ctx.shadowBlur = this.size * 3;
+                ctx.shadowColor = getThemeColor('accent');
+                
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            drawWater() {
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);
+                gradient.addColorStop(0, getThemeColor('primary', 1, 0.8));
+                gradient.addColorStop(1, getThemeColor('secondary', 1, 0.3));
+                
+                ctx.fillStyle = gradient;
+                ctx.shadowBlur = this.size;
+                ctx.shadowColor = getThemeColor('accent', 1, 0.5);
+                
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            drawEnergy() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * 4;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size * 0.8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            drawSand() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * 0.5;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            drawSnow() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * 2;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            drawPetal() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * 1.5;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            drawGem() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * 3;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size);
+                ctx.lineTo(this.size * 0.7, 0);
+                ctx.lineTo(0, this.size);
+                ctx.lineTo(-this.size * 0.7, 0);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+        class FallingObject {
+            constructor() {
+                this.reset();
+                this.id = Math.random();
+            }
+            
+            reset() {
+                // Start in top chamber
+                const topChamberY = hourglassConfig.centerY - hourglassConfig.height/2 + 50;
+                const topChamberWidth = hourglassConfig.width * 0.8;
+                
+                this.x = hourglassConfig.centerX + (Math.random() - 0.5) * topChamberWidth;
+                this.y = topChamberY + Math.random() * 50;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = 0;
+                this.size = Math.random() * 4 + 3;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+                this.color = this.generateColor();
+                this.settled = false;
+                this.life = 0;
+                this.trail = [];
+            }
+            
+            generateColor() {
+                const intensity = 0.7 + Math.random() * 0.3;
+                const alpha = 0.8 + Math.random() * 0.2;
+                return getThemeColor('primary', intensity, alpha);
+            }
+            
+            update() {
+                if (this.settled) {
+                    return;
+                }
+                
+                this.life++;
+                
+                // Physics based on timer progress
+                const gravity = isRunning ? this.calculateGravity() : 0.02;
+                this.vy += gravity;
+                
+                // Particle-specific behavior
+                this.applyParticleBehavior();
+                
+                // Update position
+                this.x += this.vx;
+                this.y += this.vy;
+                this.rotation += this.rotationSpeed;
+                
+                // Trail effect
+                if (this.vy > 0.5) {
+                    this.trail.push({x: this.x, y: this.y, life: 15});
+                    if (this.trail.length > 6) this.trail.shift();
+                }
+                this.trail.forEach(point => point.life--);
+                this.trail = this.trail.filter(point => point.life > 0);
+                
+                // Hourglass collision and flow
+                this.handleHourglassPhysics();
+            }
+            
+            calculateGravity() {
+                // Gravity speed matches timer - faster falling for shorter timers
+                if (totalDuration <= 0) {
+                    return 0.02;
+                }
+                
+                const baseGravity = 0.01;
+                const maxGravity = 0.3;
+                
+                // Objects fall faster for shorter timers
+                const timerFactor = Math.min(1, 60000 / totalDuration); // 1 minute as reference
+                return baseGravity + (maxGravity - baseGravity) * timerFactor;
+            }
+            
+            applyParticleBehavior() {
+                switch(config.particleType) {
+                    case 'fire':
+                        this.vy -= 0.005; // Fire rises slightly
+                        this.vx += (Math.random() - 0.5) * 0.02;
+                        break;
+                    case 'water':
+                        this.vy += 0.01; // Water falls faster
+                        this.vx *= 0.98; // Less horizontal drift
+                        break;
+                    case 'energy':
+                        this.vx += Math.sin(this.life * 0.1) * 0.01;
+                        break;
+                    case 'snow':
+                        this.vx += Math.sin(this.life * 0.05) * 0.015;
+                        this.vy *= 0.95; // Snow falls slowly
+                        break;
+                    case 'petals':
+                        this.vx += Math.sin(this.life * 0.03) * 0.02;
+                        this.rotationSpeed = 0.02;
+                        break;
+                }
+            }
+            
+            handleHourglassPhysics() {
+                const centerX = hourglassConfig.centerX;
+                const centerY = hourglassConfig.centerY;
+                const relativeY = this.y - centerY;
+                
+                // Check if in hourglass area
+                const hourglassHalfHeight = hourglassConfig.height / 2;
+                if (Math.abs(relativeY) > hourglassHalfHeight) {
+                    if (this.y > centerY + hourglassHalfHeight + 50) {
+                        this.reset(); // Reset if too far below
+                    }
+                    return;
+                }
+                
+                // Calculate hourglass boundary
+                const neckWidth = hourglassConfig.neckWidth;
+                const maxWidth = hourglassConfig.width / 2;
+                
+                let boundaryWidth;
+                if (Math.abs(relativeY) < 20) {
+                    // Neck area - narrow passage
+                    boundaryWidth = neckWidth;
+                    
+                    // Funnel effect at neck
+                    if (Math.abs(this.x - centerX) > neckWidth * 0.3) {
+                        this.vx += (centerX - this.x) * 0.002;
+                    }
+                } else {
+                    // Expanding areas
+                    const expansion = Math.abs(relativeY) / hourglassHalfHeight;
+                    boundaryWidth = neckWidth + (maxWidth - neckWidth) * expansion;
+                }
+                
+                // Wall collision
+                const distanceFromCenter = Math.abs(this.x - centerX);
+                if (distanceFromCenter > boundaryWidth) {
+                    this.vx *= -0.3;
+                    this.x = centerX + Math.sign(this.x - centerX) * boundaryWidth;
+                }
+                
+                // Settle in bottom chamber
+                if (relativeY > 100) {
+                    const bottomY = centerY + hourglassHalfHeight - 20;
+                    const settledHeight = this.calculateSettledHeight();
+                    
+                    if (this.y >= bottomY - settledHeight) {
+                        this.settle(bottomY - settledHeight);
+                    }
+                }
+            }
+            
+            calculateSettledHeight() {
+                // Calculate how high the settled objects should be
+                const objectsInArea = settledObjects.filter(obj => 
+                    Math.abs(obj.x - this.x) < this.size * 2
+                ).length;
+                
+                return objectsInArea * this.size * 0.8;
+            }
+            
+            settle(settleY) {
+                this.settled = true;
+                this.y = settleY;
+                this.vy = 0;
+                this.vx *= 0.1;
+                settledObjects.push(this);
+            }
+            
+            draw() {
+                ctx.save();
+                
+                // Draw trail
+                this.trail.forEach((point, index) => {
+                    const alpha = (point.life / 15) * 0.4;
+                    const size = this.size * (point.life / 15) * 0.6;
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                
+                // Draw main object
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.settled ? 0.8 : 1;
+                
+                this.drawParticleType();
+                
+                ctx.restore();
+            }
+            
+            drawParticleType() {
+                const glowIntensity = this.settled ? 0.5 : 1;
+                
+                switch(config.particleType) {
+                    case 'stardust':
+                        this.drawStardust(glowIntensity);
+                        break;
+                    case 'fire':
+                        this.drawFire(glowIntensity);
+                        break;
+                    case 'water':
+                        this.drawWater(glowIntensity);
+                        break;
+                    case 'energy':
+                        this.drawEnergy(glowIntensity);
+                        break;
+                    case 'sand':
+                        this.drawSand(glowIntensity);
+                        break;
+                    case 'snow':
+                        this.drawSnow(glowIntensity);
+                        break;
+                    case 'petals':
+                        this.drawPetal(glowIntensity);
+                        break;
+                    case 'gems':
+                        this.drawGem(glowIntensity);
+                        break;
+                }
+            }
+            
+            drawStardust(intensity) {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * 3 * intensity;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Star points
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 1;
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i / 5) * Math.PI * 2;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(Math.cos(angle) * this.size * 1.5, Math.sin(angle) * this.size * 1.5);
+                    ctx.stroke();
+                }
+            }
+            
+            drawFire(intensity) {
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size * 2);
+                gradient.addColorStop(0, getThemeColor('accent', 1, 0.9 * intensity));
+                gradient.addColorStop(0.5, getThemeColor('primary', 1, 0.7 * intensity));
+                gradient.addColorStop(1, getThemeColor('secondary', 1, 0.1 * intensity));
+                
+                ctx.fillStyle = gradient;
+                ctx.shadowBlur = this.size * 4 * intensity;
+                ctx.shadowColor = getThemeColor('accent');
+                
+                ctx.beginPath();
+                ctx.moveTo(0, this.size);
+                ctx.quadraticCurveTo(-this.size, 0, 0, -this.size * 2);
+                ctx.quadraticCurveTo(this.size, 0, 0, this.size);
+                ctx.fill();
+            }
+            
+            drawWater(intensity) {
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);
+                gradient.addColorStop(0, getThemeColor('primary', 1, 0.8 * intensity));
+                gradient.addColorStop(1, getThemeColor('secondary', 1, 0.3 * intensity));
+                
+                ctx.fillStyle = gradient;
+                ctx.shadowBlur = this.size * 2 * intensity;
+                ctx.shadowColor = getThemeColor('accent', 1, 0.5);
+                
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Highlight
+                ctx.fillStyle = getThemeColor('accent', 1, 0.6 * intensity);
+                ctx.beginPath();
+                ctx.arc(-this.size * 0.3, -this.size * 0.3, this.size * 0.4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            drawEnergy(intensity) {
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = this.size * 5 * intensity;
+                ctx.shadowColor = this.color;
+                
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i / 6) * Math.PI * 2 + this.life * 0.1;
+                    const length = this.size * (1 + Math.sin(this.life * 0.2 + i) * 0.5);
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(Math.cos(angle) * length, Math.sin(angle) * length);
+                    ctx.stroke();
+                }
+            }
+            
+            drawSand(intensity) {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * intensity;
+                ctx.shadowColor = this.color;
+                
+                ctx.beginPath();
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i / 8) * Math.PI * 2;
+                    const radius = this.size * (0.7 + Math.random() * 0.6);
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            drawSnow(intensity) {
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 1;
+                ctx.shadowBlur = this.size * 2 * intensity;
+                ctx.shadowColor = this.color;
+                
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i / 6) * Math.PI * 2;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(Math.cos(angle) * this.size * 2, Math.sin(angle) * this.size * 2);
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(Math.cos(angle) * this.size, Math.sin(angle) * this.size);
+                    ctx.lineTo(Math.cos(angle + Math.PI/3) * this.size * 0.5, Math.sin(angle + Math.PI/3) * this.size * 0.5);
+                    ctx.stroke();
+                }
+            }
+            
+            drawPetal(intensity) {
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);
+                gradient.addColorStop(0, getThemeColor('accent', 1, 0.8 * intensity));
+                gradient.addColorStop(0.7, getThemeColor('primary', 1, 0.6 * intensity));
+                gradient.addColorStop(1, getThemeColor('secondary', 1, 0.2 * intensity));
+                
+                ctx.fillStyle = gradient;
+                ctx.shadowBlur = this.size * 2 * intensity;
+                ctx.shadowColor = getThemeColor('primary', 1, 0.4);
+                
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size);
+                ctx.quadraticCurveTo(this.size * 0.7, -this.size * 0.3, this.size * 0.3, this.size * 0.5);
+                ctx.quadraticCurveTo(0, this.size * 0.8, -this.size * 0.3, this.size * 0.5);
+                ctx.quadraticCurveTo(-this.size * 0.7, -this.size * 0.3, 0, -this.size);
+                ctx.fill();
+            }
+            
+            drawGem(intensity) {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = this.size * 4 * intensity;
+                ctx.shadowColor = this.color;
+                
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size);
+                ctx.lineTo(this.size * 0.7, 0);
+                ctx.lineTo(0, this.size);
+                ctx.lineTo(-this.size * 0.7, 0);
+                ctx.closePath();
+                ctx.fill();
+                
+                ctx.fillStyle = getThemeColor('accent', 1, 0.3 * intensity);
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size);
+                ctx.lineTo(this.size * 0.3, -this.size * 0.3);
+                ctx.lineTo(0, 0);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+        
+        function init() {
+            canvas = document.getElementById('hourglass');
+            ctx = canvas.getContext('2d');
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            setupControls();
+            render();
+        }
+        
+        function resizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            ctx.scale(dpr, dpr);
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            
+            updateHourglassConfig();
+        }
+        
+        function updateHourglassConfig() {
+            hourglassConfig.centerX = window.innerWidth / 2;
+            hourglassConfig.centerY = window.innerHeight / 2;
+            
+            // Responsive sizing
+            const minDimension = Math.min(window.innerWidth, window.innerHeight);
+            const scaleFactor = minDimension < 600 ? 0.6 : minDimension < 900 ? 0.8 : 1;
+            
+            hourglassConfig.width = 300 * scaleFactor;
+            hourglassConfig.height = 400 * scaleFactor;
+            hourglassConfig.neckWidth = 30 * scaleFactor;
+            hourglassConfig.glassThickness = 8 * scaleFactor;
+        }
+        
+        function setupControls() {
+            // Particle type selector
+            document.getElementById('particle-type').addEventListener('change', (e) => {
+                config.particleType = e.target.value;
+                fallingObjects.forEach(obj => obj.color = obj.generateColor());
+                topChamberMatter.forEach(matter => matter.color = matter.generateColor());
+                bottomChamberMatter.forEach(matter => matter.color = matter.generateColor());
+            });
+            
+            // Color theme selector
+            document.getElementById('color-theme').addEventListener('change', (e) => {
+                config.colorTheme = e.target.value;
+                fallingObjects.forEach(obj => obj.color = obj.generateColor());
+                settledObjects.forEach(obj => obj.color = obj.generateColor());
+                topChamberMatter.forEach(matter => matter.color = matter.generateColor());
+                bottomChamberMatter.forEach(matter => matter.color = matter.generateColor());
+            });
+            
+            // Background activity slider
+            document.getElementById('background-slider').addEventListener('input', (e) => {
+                config.backgroundActivity = parseInt(e.target.value);
+                document.getElementById('background-value').textContent = config.backgroundActivity;
+            });
+            
+            // Completion sound selector
+            document.getElementById('completion-sound').addEventListener('change', (e) => {
+                config.completionSound = e.target.value;
+            });
+            
+            // Control buttons
+            document.getElementById('start-btn').addEventListener('click', startTimer);
+            document.getElementById('stop-btn').addEventListener('click', stopTimer);
+            document.getElementById('reset-btn').addEventListener('click', resetTimer);
+            document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
+            
+            // Initialize matter display immediately when timer inputs change
+            const timeInputs = ['hours', 'minutes', 'seconds'];
+            timeInputs.forEach(inputId => {
+                document.getElementById(inputId).addEventListener('input', () => {
+                    if (!isRunning) {
+                        previewMatterDistribution();
+                    }
+                });
+            });
+            
+            // Initialize preview on load
+            setTimeout(() => previewMatterDistribution(), 100);
+            
+            // Toggle controls
+            document.getElementById('toggle-controls').addEventListener('click', () => {
+                const controls = document.getElementById('controls');
+                controls.classList.toggle('hidden');
+            });
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                switch(e.key.toLowerCase()) {
+                    case ' ':
+                        e.preventDefault();
+                        if (isRunning) stopTimer();
+                        else startTimer();
+                        break;
+                    case 'r':
+                        resetTimer();
+                        break;
+                    case 'f':
+                        toggleFullscreen();
+                        break;
+                    case 'escape':
+                        exitFullscreen();
+                        break;
+                }
+            });
+        }
+        
+        function startTimer() {
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('seconds').value) || 0;
+            
+            totalDuration = (hours * 3600 + minutes * 60 + seconds) * 1000;
+            
+            if (totalDuration <= 0) {
+                alert('Please set a valid timer duration!');
+                return;
+            }
+            
+            if (!isRunning) {
+                startTime = Date.now();
+                remainingTime = totalDuration;
+                fallingObjects = [];
+                settledObjects = [];
+                
+                // Initialize matter in chambers
+                initializeMatterChambers();
+            } else {
+                startTime = Date.now() - (totalDuration - remainingTime);
+            }
+            
+            isRunning = true;
+            isPaused = false;
+            
+            document.getElementById('status').textContent = '⏳ Timer Running';
+            document.getElementById('status').className = 'status running';
+            document.getElementById('start-btn').textContent = '⏸️ Pause Timer';
+        }
+        
+        function stopTimer() {
+            if (isRunning && !isPaused) {
+                isPaused = true;
+                
+                document.getElementById('status').textContent = '⏸️ Timer Paused';
+                document.getElementById('status').className = 'status ready';
+                document.getElementById('start-btn').textContent = '▶️ Resume Timer';
+            } else if (isPaused) {
+                startTimer();
+            } else {
+                isRunning = false;
+                document.getElementById('status').textContent = 'Ready to begin cosmic meditation';
+                document.getElementById('status').className = 'status ready';
+                document.getElementById('start-btn').textContent = '🚀 Start Timer';
+            }
+        }
+        
+        function resetTimer() {
+            isRunning = false;
+            isPaused = false;
+            remainingTime = 0;
+            fallingObjects = [];
+            settledObjects = [];
+            
+            // Reset to preview state
+            previewMatterDistribution();
+            
+            const minutes = document.getElementById('minutes').value || 5;
+            document.getElementById('countdown').textContent = formatTime(minutes * 60 * 1000);
+            document.getElementById('status').textContent = 'Ready to begin cosmic meditation';
+            document.getElementById('status').className = 'status ready';
+            document.getElementById('start-btn').textContent = '🚀 Start Timer';
+        }
+        
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+                document.body.classList.add('fullscreen');
+                document.getElementById('fullscreen-btn').textContent = '🪟 Exit Fullscreen';
+            } else {
+                exitFullscreen();
+            }
+        }
+        
+        function exitFullscreen() {
+            if (document.fullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+            document.body.classList.remove('fullscreen');
+            document.getElementById('fullscreen-btn').textContent = '🌌 Fullscreen';
+            document.getElementById('controls').classList.remove('hidden');
+        }
+        
+        function updateTimer() {
+            if (!isRunning || isPaused) {
+                return;
+            }
+            
+            const elapsed = Date.now() - startTime;
+            remainingTime = Math.max(0, totalDuration - elapsed);
+            
+            document.getElementById('countdown').textContent = formatTime(remainingTime);
+            
+            if (remainingTime <= 0) {
+                timerFinished();
+            }
+        }
+        
+        function timerFinished() {
+            isRunning = false;
+            
+            document.getElementById('status').textContent = '✨ Timer Complete! ✨';
+            document.getElementById('status').className = 'status finished';
+            document.getElementById('start-btn').textContent = '🚀 Start Timer';
+            
+            playCompletionSound();
+            
+            // Celebration effect
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const celebrationObject = new FallingObject();
+                    celebrationObject.x = Math.random() * canvas.width;
+                    celebrationObject.y = Math.random() * canvas.height / 3;
+                    celebrationObject.vx = (Math.random() - 0.5) * 5;
+                    celebrationObject.vy = (Math.random() - 0.5) * 5;
+                    fallingObjects.push(celebrationObject);
+                }, i * 100);
+            }
+        }
+        
+        function formatTime(milliseconds) {
+            const totalSeconds = Math.ceil(milliseconds / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            if (hours > 0) {
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+        
+        function playCompletionSound() {
+            if (config.completionSound === 'none') {
+                return;
+            }
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Simple, MacBook-compatible sounds
+                switch(config.completionSound) {
+                    case 'simple':
+                        playSimpleBell(audioContext);
+                        break;
+                    case 'harmonic':
+                        playHarmonicChime(audioContext);
+                        break;
+                    case 'cosmic':
+                        playCosmicTone(audioContext);
+                        break;
+                    case 'meditation':
+                        playMeditationBell(audioContext);
+                        break;
+                }
+            } catch (error) {
+                console.log('Audio not available');
+            }
+        }
+        
+        function playSimpleBell(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 1.5);
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 2);
+        }
+        
+        function playHarmonicChime(audioContext) {
+            const frequencies = [523, 659, 784]; // C, E, G
+            
+            frequencies.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 1.5);
+                }, index * 150);
+            });
+        }
+        
+        function playCosmicTone(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(440, audioContext.currentTime + 0.5);
+            oscillator.frequency.linearRampToValueAtTime(330, audioContext.currentTime + 1.5);
+            oscillator.type = 'triangle';
+            
+            gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 2);
+        }
+        
+        function playMeditationBell(audioContext) {
+            const fundamental = 256;
+            const harmonics = [1, 2, 3, 4];
+            
+            harmonics.forEach((harmonic, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = fundamental * harmonic;
+                oscillator.type = 'sine';
+                
+                const amplitude = 0.15 / harmonic;
+                gainNode.gain.setValueAtTime(amplitude, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 3);
+            });
+        }
+        
+        function initializeMatterChambers() {
+            topChamberMatter = [];
+            bottomChamberMatter = [];
+            
+            // Calculate matter count based on timer duration (more matter for longer timers)
+            const durationMinutes = totalDuration / (1000 * 60);
+            totalMatterCount = Math.min(300, Math.max(50, Math.floor(durationMinutes * 20)));
+            
+            // Fill top chamber with matter
+            const centerX = hourglassConfig.centerX;
+            const centerY = hourglassConfig.centerY;
+            const topChamberY = centerY - hourglassConfig.height/2;
+            const chamberWidth = hourglassConfig.width * 0.7;
+            const chamberHeight = hourglassConfig.height * 0.35;
+            
+            for (let i = 0; i < totalMatterCount; i++) {
+                // Create layered matter in top chamber
+                const layer = Math.floor(i / (chamberWidth / 6));
+                const x = centerX + (Math.random() - 0.5) * (chamberWidth - layer * 4);
+                const y = topChamberY + chamberHeight - (layer * 4) - Math.random() * 10;
+                
+                const matter = new MatterParticle(x, y, 'top');
+                topChamberMatter.push(matter);
+            }
+        }
+        
+        function updateMatterFlow() {
+            if (!isRunning || isPaused) return;
+            
+            // Calculate how much matter should have moved based on progress
+            const progress = (totalDuration - remainingTime) / totalDuration;
+            const targetMatterMoved = Math.floor(totalMatterCount * progress);
+            const currentMatterMoved = bottomChamberMatter.length;
+            
+            // Move matter from top to bottom chamber
+            if (currentMatterMoved < targetMatterMoved && topChamberMatter.length > 0) {
+                const matterToMove = Math.min(3, targetMatterMoved - currentMatterMoved);
+                
+                for (let i = 0; i < matterToMove && topChamberMatter.length > 0; i++) {
+                    // Remove from top chamber (from bottom layer first)
+                    const matterIndex = topChamberMatter.findIndex(matter => 
+                        matter.y > hourglassConfig.centerY - hourglassConfig.height/2 + 200
+                    );
+                    
+                    if (matterIndex !== -1) {
+                        const matter = topChamberMatter.splice(matterIndex, 1)[0];
+                        
+                        // Add to bottom chamber
+                        const centerX = hourglassConfig.centerX;
+                        const centerY = hourglassConfig.centerY;
+                        const bottomChamberY = centerY + hourglassConfig.height/2;
+                        const chamberWidth = hourglassConfig.width * 0.7;
+                        
+                        // Calculate settled position in bottom chamber
+                        const stackHeight = Math.floor(bottomChamberMatter.length / (chamberWidth / 6)) * 4;
+                        const x = centerX + (Math.random() - 0.5) * (chamberWidth - stackHeight);
+                        const y = bottomChamberY - 20 - stackHeight - Math.random() * 5;
+                        
+                        matter.x = x;
+                        matter.y = y;
+                        matter.chamber = 'bottom';
+                        matter.color = matter.generateColor(); // Refresh color for new theme
+                        
+                        bottomChamberMatter.push(matter);
+                    }
+                }
+            }
+        }
+            if (!isRunning || isPaused) return;
+            
+            // Calculate spawn rate based on timer duration and progress
+            const progress = (totalDuration - remainingTime) / totalDuration;
+            const baseSpawnRate = Math.max(1, Math.min(10, 60000 / totalDuration)); // Spawn more for shorter timers
+            
+            // Spawn objects more frequently as time progresses
+            const spawnRate = baseSpawnRate * (1 + progress * 2);
+            
+            if (Math.random() < spawnRate * 0.02) {
+                fallingObjects.push(new FallingObject());
+            }
+            
+            // Limit total objects for performance
+            if (fallingObjects.length > 150) {
+                fallingObjects = fallingObjects.slice(-100);
+            }
+        }
+        
+        function drawHourglass() {
+            const centerX = hourglassConfig.centerX;
+            const centerY = hourglassConfig.centerY;
+            const width = hourglassConfig.width;
+            const height = hourglassConfig.height;
+            const neckWidth = hourglassConfig.neckWidth;
+            const thickness = hourglassConfig.glassThickness;
+            
+            ctx.save();
+            
+            // Outer hourglass outline
+            ctx.strokeStyle = getThemeColor('primary', 1, 0.9);
+            ctx.lineWidth = thickness;
+            ctx.shadowBlur = 25;
+            ctx.shadowColor = getThemeColor('accent', 1, 0.8);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            ctx.beginPath();
+            // Top chamber
+            ctx.moveTo(centerX - width/2, centerY - height/2);
+            ctx.lineTo(centerX + width/2, centerY - height/2);
+            ctx.lineTo(centerX + width/2, centerY - 30);
+            ctx.lineTo(centerX + neckWidth/2, centerY);
+            
+            // Bottom chamber
+            ctx.lineTo(centerX + width/2, centerY + 30);
+            ctx.lineTo(centerX + width/2, centerY + height/2);
+            ctx.lineTo(centerX - width/2, centerY + height/2);
+            ctx.lineTo(centerX - width/2, centerY + 30);
+            ctx.lineTo(centerX - neckWidth/2, centerY);
+            
+            // Back to top
+            ctx.lineTo(centerX - width/2, centerY - 30);
+            ctx.closePath();
+            
+            ctx.stroke();
+            
+            // Inner glass effect
+            ctx.strokeStyle = getThemeColor('accent', 1, 0.4);
+            ctx.lineWidth = thickness / 2;
+            ctx.shadowBlur = 15;
+            ctx.stroke();
+            
+            // Glass highlights
+            ctx.strokeStyle = getThemeColor('accent', 1, 0.6);
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 10;
+            
+            // Left highlight
+            ctx.beginPath();
+            ctx.moveTo(centerX - width/2 + 20, centerY - height/2 + 20);
+            ctx.lineTo(centerX - width/2 + 20, centerY - 40);
+            ctx.stroke();
+            
+            // Right highlight  
+            ctx.beginPath();
+            ctx.moveTo(centerX + width/2 - 20, centerY - height/2 + 20);
+            ctx.lineTo(centerX + width/2 - 20, centerY - 40);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+        
+        function drawProgressRing() {
+            if (!isRunning && !isPaused) {
+                return;
+            }
+            
+            const centerX = hourglassConfig.centerX;
+            const centerY = hourglassConfig.centerY;
+            const radius = Math.min(canvas.width, canvas.height) * 0.4;
+            const progress = remainingTime > 0 ? (totalDuration - remainingTime) / totalDuration : 1;
+            
+            ctx.save();
+            
+            // Background ring
+            ctx.strokeStyle = getThemeColor('background', 1, 0.3);
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Progress ring
+            ctx.strokeStyle = getThemeColor('primary', 1, 0.8);
+            ctx.lineWidth = 6;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = getThemeColor('accent');
+            ctx.lineCap = 'round';
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, -Math.PI/2, -Math.PI/2 + (progress * Math.PI * 2));
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+        
+        function drawBackground() {
+            // Clear with cosmic background
+            const gradient = ctx.createRadialGradient(
+                canvas.width/2, canvas.height/2, 0,
+                canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)
+            );
+            
+            const intensity = config.backgroundActivity / 100;
+            gradient.addColorStop(0, getThemeColor('background', 0.3 * intensity, 0.1));
+            gradient.addColorStop(0.7, getThemeColor('background', 0.8 * intensity, 0.05));
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add animated stars based on background intensity
+            if (config.backgroundActivity > 0) {
+                const starCount = Math.floor(config.backgroundActivity * 2);
+                const time = Date.now() * 0.001;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const x = (i * 137.508) % canvas.width;
+                    const y = (i * 73.614) % canvas.height;
+                    const brightness = (Math.sin(time + i) + 1) / 2;
+                    const size = brightness * 2 * intensity;
+                    
+                    if (size > 0.1) {
+                        ctx.fillStyle = getThemeColor('accent', brightness * intensity, brightness * intensity);
+                        ctx.shadowBlur = size * 4;
+                        ctx.shadowColor = getThemeColor('accent', brightness * intensity);
+                        ctx.beginPath();
+                        ctx.arc(x, y, size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+        
+        function render() {
+            // Background
+            drawBackground();
+            
+            // Update matter flow between chambers
+            updateMatterFlow();
+            
+            // Draw matter in chambers
+            topChamberMatter.forEach(matter => matter.draw());
+            bottomChamberMatter.forEach(matter => matter.draw());
+            
+            // Spawn falling objects
+            spawnFallingObjects();
+            
+            // Update and draw falling objects
+            fallingObjects.forEach((obj, index) => {
+                obj.update();
+                obj.draw();
+                
+                // Remove objects that are too far down
+                if (obj.y > canvas.height + 100 && !obj.settled) {
+                    fallingObjects.splice(index, 1);
+                }
+            });
+            
+            // Draw settled objects
+            settledObjects.forEach(obj => {
+                obj.draw();
+            });
+            
+            // Draw hourglass structure
+            drawHourglass();
+            
+            // Draw progress ring
+            drawProgressRing();
+            
+            // Update timer
+            updateTimer();
+            
+            requestAnimationFrame(render);
+        }
+        
+        // Fullscreen event listeners
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                exitFullscreen();
+            }
+        });
+        
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (!document.webkitFullscreenElement) {
+                exitFullscreen();
+            }
+        });
+        
+        // Initialize when page loads
+        window.addEventListener('load', init);
+        
+        // Set initial countdown display
+        document.addEventListener('DOMContentLoaded', () => {
+            const minutes = document.getElementById('minutes').value || 5;
+            document.getElementById('countdown').textContent = formatTime(minutes * 60 * 1000);
+        });
+    </script>
+</body>
+</html>

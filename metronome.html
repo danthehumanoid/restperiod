@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metronome with Background Playback YO</title>
+<link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary-color: #ffde59;
+            --background-color: #121212;
+            --surface-color: #1a1a1a;
+            --text-color: #ffffff;
+            --text-muted-color: #999;
+            --control-bg-color: #222;
+            --border-color: #333;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: var(--text-color);
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- Header Styles --- */
+        .page-header {
+            width: 100%;
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            max-width: 540px; 
+        }
+        .site-title a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 15px;
+        }
+        nav ul a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        nav ul a:hover {
+            color: var(--primary-color);
+        }
+        /* --- End Header Styles --- */
+
+        .metronome {
+            background-color: var(--background-color);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.05s ease-out;
+            margin: 20px;
+        }
+        .metronome.flash-accent { background-color: #2a2a2a; }
+        .metronome.flash-beat { background-color: #202020; }
+        .metronome.flash-sub { background-color: #181818; }
+
+        .dial-container {
+            position: relative;
+            margin-bottom: 5px;
+        }
+        .dial {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: #ce0104;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(206, 1, 4, 0.4);
+            transition: transform 0.2s ease;
+        }
+        .dial:active { cursor: grabbing; }
+        .dial-indicator {
+            position: absolute;
+            width: 4px;
+            height: 15px;
+            background-color: var(--text-color);
+            top: 10px;
+            left: 50%;
+            transform-origin: 50% 90px;
+            transform: translateX(-50%) rotate(0deg);
+        }
+        #bpm-display {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-color);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            line-height: 1;
+        }
+        #tempo-name-display {
+            font-size: 16px;
+            color: var(--primary-color);
+            font-weight: 500;
+            height: 20px;
+            margin-top: 5px;
+        }
+
+        .button-row { display: flex; gap: 15px; margin: 15px 0; }
+        .button {
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: 500;
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .button:hover { filter: brightness(1.1); }
+        .button:active { transform: translateY(2px); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
+        #play-button.playing { background-color: #C62828; color: white; }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            margin: 15px 0;
+        }
+        .control-group {
+              grid-column: span 1;
+        }
+        .control-group.full-width {
+            grid-column: span 2;
+        }
+        .control-group select, .control-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--control-bg-color);
+            color: var(--text-color);
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .control-group label {
+            font-size: 14px;
+            color: var(--text-muted-color);
+            margin-bottom: 5px;
+            display: block;
+            text-align: center;
+        }
+
+        .tempo-ramp-section {
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .section-title {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .ramp-controls, .ramp-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .ramp-controls .input-field { width: 70px; padding: 8px; font-size: 14px; }
+        .ramp-button {
+            flex-grow: 1;
+            padding: 8px 12px;
+            font-size: 14px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .ramp-button:hover { background-color: #555; }
+        .ramp-button.active { background-color: var(--primary-color); color: #000; font-weight: 700; }
+        #ramp-status {
+            color: #4CAF50;
+            font-size: 14px;
+            text-align: center;
+            min-height: 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<audio id="silent-audio" loop src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAAAAAD//w=="></audio>
+    
+    <header class="page-header">
+        <h1 class="site-title"><a href="#">DEE TEE HAYCH</a></h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="dthconnect.html">DTH Email List</a></li>
+            </ul>
+        </nav>
+    </header>
+    <p>
+        <p>
+    NOTES: 
+    <p> 
+    - Make sure silent notification on phone is turned off
+    <p> 
+    - Metronome will stop ticking if phone is locked (working on it) 
+    <p>
+    <div class="metronome" id="metronome-visualizer">
+        <div class="dial-container">
+            <div class="dial" id="dial">
+                 <div id="bpm-display">120</div>
+                 <div id="tempo-name-display"></div>
+            </div>
+             <div class="dial-indicator" id="dial-indicator"></div>
+        </div>
+
+        <div class="button-row">
+            <button id="tap-button" class="button">Tap</button>
+            <button id="play-button" class="button">Play</button>
+        </div>
+
+        <div class="controls-grid">
+            <div class="control-group">
+                <label for="time-signature-select">Time Signaturino</label>
+                <select id="time-signature-select">
+                    <option value="4/4" selected>4/4</option>
+                    <option value="3/4">3/4</option>
+                    <option value="2/4">2/4</option>
+                    <option value="5/4">5/4</option>
+                    <option value="6/8">6/8</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="subdivision-select">Subdivision</label>
+                <select id="subdivision-select">
+                    <option value="1" selected>Quarter (♩)</option>
+                    <option value="2">Eighth (♪)</option>
+                    <option value="3">Triplet (♫)</option>
+                    <option value="4">Sixteenth (♬)</option>
+                </select>
+            </div>
+             <div class="control-group full-width">
+                <label for="sound-select">Sound</label>
+                <select id="sound-select">
+                     <option value="click">Click</option>
+                     <option value="beep">Beep</option>
+                     <option value="tock">Tock</option>
+                     <option value="808kick">808 Kick</option>
+                     <option value="909kick">909 Kick</option>
+                     <option value="hihat">Hi-Hat</option>
+                     <option value="snare">Snare</option>
+                     <option value="cowbell">Cowbell</option>
+                     <option value="clave">Clave</option>
+                     <option value="woodblock">Woodblock</option>
+                     <option value="soundscape">Soundscape</option>
+                     <option value="shaker1">Shaker 1 (Shhh)</option>
+                     <option value="shaker2">Shaker 2 (Chhh)</option>
+                </select>
+            </div>
+             <div class="control-group full-width">
+                <label for="bpm-input">BPM Input</label>
+                <input type="number" id="bpm-input" min="1" max="1000" value="120">
+            </div>
+        </div>
+        
+        <div class="tempo-ramp-section">
+            <div class="section-title">Tempo Automation</div>
+            <div class="ramp-controls">
+                <select id="ramp-mode-select" class="input-field" style="width: auto;">
+                    <option value="time">Seconds</option>
+                    <option value="bars">Bars</option>
+                </select>
+                <input type="number" id="ramp-interval-input" class="input-field" value="8">
+                <span>by</span>
+                <input type="number" id="ramp-increment-input" class="input-field" value="2">
+                <span>BPM</span>
+            </div>
+            <div class="ramp-buttons">
+                <button id="slow-down-button" class="ramp-button">Decrease</button>
+                <button id="stop-ramp-button" class="ramp-button">Stop</button>
+                <button id="speed-up-button" class="ramp-button">Increase</button>
+            </div>
+            <div id="ramp-status"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- IMPROVED SHAKER SOUND GENERATOR ---
+        function createShaker(time, accentType, context, baseGain, soundType) {
+            const gainNode = context.createGain();
+            const bandpassFilter = context.createBiquadFilter();
+            const highpassFilter = context.createBiquadFilter();
+            const source = context.createBufferSource();
+            
+            // Generate White Noise Buffer
+            const bufferSize = context.sampleRate * 0.5; 
+            const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
+            const output = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+            source.buffer = buffer;
+            source.loop = true;
+
+            // --- Define parameters based on soundType ---
+            let duration = 0.08;
+            let startFreq, endFreq, bpQ;
+
+            if (soundType === 'shaker1') { // Shhhhh (longer, softer decay)
+                startFreq = 2000;
+                endFreq = 8000;
+                bpQ = 1;
+                duration = 0.12;
+            } else if (soundType === 'shaker2') { // Chhhhh (sharper, metallic)
+                startFreq = 4000;
+                endFreq = 9000;
+                bpQ = 5;
+                duration = 0.07;
+            }
+
+            // --- Connect Audio Nodes: Noise -> HPF -> BPF -> Gain -> Destination ---
+            highpassFilter.type = 'highpass';
+            highpassFilter.frequency.setValueAtTime(3000, time);
+
+            bandpassFilter.type = 'bandpass';
+            bandpassFilter.Q.setValueAtTime(bpQ, time); 
+
+            // --- Apply Envelopes ---
+
+            // 1. Filter Sweep (to mimic the moving shake)
+            bandpassFilter.frequency.setValueAtTime(startFreq, time);
+            bandpassFilter.frequency.linearRampToValueAtTime(endFreq, time + 0.01);
+            bandpassFilter.frequency.exponentialRampToValueAtTime(1000, time + duration);
+
+            // 2. Amplitude Envelope (Gain)
+            const accentMultiplier = accentType === 'accent' ? 1.5 : (accentType === 'beat' ? 1.0 : 0.7);
+            const peakGain = baseGain * accentMultiplier;
+
+            // Sharp Attack (for the "ch")
+            gainNode.gain.setValueAtTime(0.001, time);
+            gainNode.gain.linearRampToValueAtTime(peakGain, time + 0.005);
+
+            // Quick Decay (for the "shhh")
+            gainNode.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+            // Final connection and playback
+            source.connect(highpassFilter)
+                  .connect(bandpassFilter)
+                  .connect(gainNode)
+                  .connect(context.destination);
+
+            source.start(time);
+            source.stop(time + duration + 0.01); 
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Main UI Elements
+            const dial = document.getElementById('dial');
+            const dialIndicator = document.getElementById('dial-indicator');
+            const bpmDisplay = document.getElementById('bpm-display');
+            const tempoNameDisplay = document.getElementById('tempo-name-display');
+            const tapButton = document.getElementById('tap-button');
+            const playButton = document.getElementById('play-button');
+            const visualizer = document.getElementById('metronome-visualizer');
+            const silentAudio = document.getElementById('silent-audio');
+            
+            // Control Elements
+            const timeSignatureSelect = document.getElementById('time-signature-select');
+            const subdivisionSelect = document.getElementById('subdivision-select');
+            const soundSelect = document.getElementById('sound-select');
+            const bpmInput = document.getElementById('bpm-input');
+            
+            // Ramping UI Elements
+            const rampModeSelect = document.getElementById('ramp-mode-select');
+            const rampIntervalInput = document.getElementById('ramp-interval-input');
+            const rampIncrementInput = document.getElementById('ramp-increment-input');
+            const speedUpButton = document.getElementById('speed-up-button');
+            const slowDownButton = document.getElementById('slow-down-button');
+            const stopRampButton = document.getElementById('stop-ramp-button');
+            const rampStatus = document.getElementById('ramp-status');
+
+            // --- State Variables ---
+            let currentBPM = 120;
+            let timeSignature = { beats: 4, beatValue: 4 };
+            let subdivision = 1;
+            let beatInMeasure = 0;
+            let measureCount = 0;
+            let currentSound = 'click';
+            
+            let isPlaying = false;
+            let audioContext;
+            let schedulerId = null;
+            let nextNoteTime = 0.0;
+            let silentSource; 
+            
+            let rampIntervalId = null;
+            let rampConfig = { active: false, direction: 0 };
+            
+            const minBPM = 1;
+            const maxBPM = 1000;
+
+            const sounds = {
+                click: { hz: 1000, type: 'sine', gain: 1.0 },
+                beep: { hz: 1500, type: 'sine', gain: 0.8 },
+                tock: { hz: 500, type: 'square', gain: 0.6 },
+                '808kick': { hz: 55, type: 'sine', gain: 1.5 },
+                '909kick': { hz: 60, type: 'sine', gain: 1.5 },
+                hihat: { hz: 8000, type: 'triangle', gain: 0.3 },
+                snare: { hz: 300, type: 'triangle', gain: 0.8 },
+                cowbell: { hz: 440, type: 'square', gain: 0.5 },
+                clave: { hz: 2000, type: 'triangle', gain: 0.7 },
+                woodblock: { hz: 1800, type: 'sawtooth', gain: 0.6 },
+                soundscape: { hz: 220, type: 'sawtooth', gain: 0.4 },
+                shaker1: { isCustom: true, gain: 0.8 },
+                shaker2: { isCustom: true, gain: 0.7 }
+            };
+
+            const tempoMarkings = [
+                { bpm: 40, name: 'Grave' }, { bpm: 60, name: 'Largo' },
+                { bpm: 66, name: 'Larghetto' }, { bpm: 76, name: 'Adagio' },
+                { bpm: 108, name: 'Andante' }, { bpm: 120, name: 'Moderato' },
+                { bpm: 156, name: 'Allegro' }, { bpm: 176, name: 'Vivace' },
+                { bpm: 200, name: 'Presto' }, { bpm: 240, name: 'Prestissimo' }
+            ];
+
+            // --- Audio & Scheduler Logic ---
+            function initAudioContext() {
+                if (!audioContext || audioContext.state === 'closed') {
+                    try {
+                        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        // CRITICAL: Connect silent HTML audio to the Web Audio Context
+                        silentSource = audioContext.createMediaElementSource(silentAudio);
+                        // The gain node ensures the silent audio remains silent but active in the context chain
+                        const silentGain = audioContext.createGain(); 
+                        silentGain.gain.value = 0.0001; 
+                        silentSource.connect(silentGain).connect(audioContext.destination);
+                    } catch (e) { alert("Web Audio API not supported."); }
+                }
+            }
+
+            function playSound(time, accentType) {
+                if (!audioContext) return;
+                const sound = sounds[currentSound];
+                
+                if (sound.isCustom) {
+                    createShaker(time, accentType, audioContext, sound.gain, currentSound);
+                    return;
+                }
+
+                // Standard Oscillator Sound Logic
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                let duration = 0.1;
+
+                osc.type = sound.type;
+
+                const isKick = currentSound === '808kick' || currentSound === '909kick';
+
+                if (isKick) {
+                    duration = 0.2;
+                    const startPitch = 150;
+                    const endPitch = sound.hz;
+                    osc.frequency.setValueAtTime(startPitch, time);
+                    osc.frequency.exponentialRampToValueAtTime(endPitch, time + 0.08);
+                } else {
+                    const freq = accentType === 'accent' ? sound.hz * 1.2 : sound.hz;
+                    osc.frequency.setValueAtTime(freq, time);
+                }
+                
+                const baseGain = sound.gain || 1.0;
+                let finalGain = baseGain;
+                if (accentType === 'beat') finalGain *= 0.7;
+                if (accentType === 'sub') finalGain *= 0.4;
+                
+                gain.gain.setValueAtTime(finalGain, time);
+                gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+                osc.connect(gain).connect(audioContext.destination);
+                osc.start(time);
+                osc.stop(time + duration);
+            }
+            
+            function flashVisual(accentType) {
+                if (document.hidden) return;
+                const flashClass = `flash-${accentType}`;
+                visualizer.classList.add(flashClass);
+                setTimeout(() => visualizer.classList.remove(flashClass), 60);
+            }
+
+            const SCHEDULER_INTERVAL = 50; 
+            const LOOKAHEAD = 0.2; 
+
+            function scheduler() {
+                if (!audioContext || audioContext.state !== 'running') {
+                     if (audioContext && audioContext.state === 'suspended') {
+                        audioContext.resume();
+                        if (isPlaying) silentAudio.play();
+                     }
+                     return;
+                }
+                
+                while (nextNoteTime < audioContext.currentTime + LOOKAHEAD) {
+                    const beatType = timeSignature.beatValue === 8 ? subdivision / 1.5 : subdivision;
+                    const secondsPerBeat = 60.0 / currentBPM;
+                    
+                    const isFirstBeat = beatInMeasure % Math.floor(beatType * timeSignature.beats) === 0;
+                    if (isFirstBeat) {
+                        measureCount++;
+                        if (rampConfig.active && rampModeSelect.value === 'bars' && measureCount % rampIntervalInput.value === 0) {
+                            updateBPM(currentBPM + (Number(rampIncrementInput.value) * rampConfig.direction));
+                        }
+                    }
+
+                    const isPrimaryBeat = beatInMeasure % beatType === 0;
+                    let accentType = 'sub';
+                    if (isFirstBeat) accentType = 'accent';
+                    else if (isPrimaryBeat) accentType = 'beat';
+                    
+                    playSound(nextNoteTime, accentType);
+                    
+                    if (!document.hidden) flashVisual(accentType);
+                    
+                    nextNoteTime += secondsPerBeat / beatType;
+                    beatInMeasure++;
+                }
+            }
+            
+
+            function toggleMetronome() {
+                isPlaying = !isPlaying;
+                if (isPlaying) {
+                    initAudioContext();
+                    
+                    // CRITICAL: Resume audio context immediately on interaction
+                    if (audioContext.state !== 'running') {
+                         audioContext.resume();
+                    }
+                    
+                    // CRITICAL: Play silent HTML audio
+                    silentAudio.play().catch(e => {
+                        console.warn("Silent audio playback failed (may require explicit user interaction):", e);
+                    });
+
+                    beatInMeasure = 0;
+                    measureCount = 0;
+                    nextNoteTime = audioContext.currentTime;
+                    schedulerId = setInterval(scheduler, SCHEDULER_INTERVAL);
+                    playButton.textContent = 'Stop';
+                    playButton.classList.add('playing');
+                } else {
+                    silentAudio.pause();
+
+                    clearInterval(schedulerId);
+                    schedulerId = null;
+                    stopTempoRamp();
+                    playButton.textContent = 'Play';
+                    playButton.classList.remove('playing');
+                }
+            }
+            
+            // --- Resume context on screen wake-up / tab return ---
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible' && isPlaying && audioContext && audioContext.state !== 'running') {
+                    audioContext.resume().then(() => {
+                        console.log('AudioContext resumed after visibility change.');
+                        nextNoteTime = audioContext.currentTime;
+                    });
+                }
+            });
+
+
+            // --- UI Update & Sync Logic ---
+            function updateBPM(newBPM, updateSource = null) {
+                currentBPM = Math.max(minBPM, Math.min(maxBPM, Math.round(newBPM)));
+                
+                bpmDisplay.textContent = currentBPM;
+                if (updateSource !== 'input') {
+                    bpmInput.value = currentBPM;
+                }
+                
+                const angle = ((currentBPM - minBPM) / (maxBPM - minBPM)) * 360;
+                dialIndicator.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+                
+                const currentMarking = tempoMarkings.slice().reverse().find(t => currentBPM >= t.bpm);
+                tempoNameDisplay.textContent = currentMarking ? currentMarking.name : '';
+            }
+            updateBPM(120);
+
+            // --- Event Listeners ---
+            playButton.addEventListener('click', toggleMetronome);
+            
+            // Initialize audio context on the first user interaction 
+            playButton.addEventListener('click', initAudioContext, { once: true });
+            tapButton.addEventListener('click', initAudioContext, { once: true });
+            dial.addEventListener('mousedown', initAudioContext, { once: true });
+            dial.addEventListener('touchstart', initAudioContext, { once: true });
+
+            bpmInput.addEventListener('change', (e) => updateBPM(Number(e.target.value), 'input'));
+            
+            soundSelect.addEventListener('change', (e) => currentSound = e.target.value);
+
+            timeSignatureSelect.addEventListener('change', (e) => {
+                const [beats, beatValue] = e.target.value.split('/').map(Number);
+                timeSignature = { beats, beatValue };
+            });
+            subdivisionSelect.addEventListener('change', (e) => subdivision = Number(e.target.value));
+
+            // Tap Tempo
+            let tapTimes = [];
+            tapButton.addEventListener('click', () => {
+                const now = performance.now();
+                tapTimes.push(now);
+                if (tapTimes.length > 4) tapTimes.shift(); 
+                if (tapTimes.length > 1) {
+                    const avgInterval = (tapTimes[tapTimes.length - 1] - tapTimes[0]) / (tapTimes.length - 1);
+                    if (avgInterval > 2000) {
+                        tapTimes = [now]; 
+                    } else if (avgInterval > 0) {
+                         updateBPM(60000 / avgInterval, 'tap');
+                    }
+                }
+            });
+
+            // Rotational Dial (Desktop)
+            let isDragging = false, startAngle = 0, startBPM = 0;
+            dial.addEventListener('mousedown', (e) => {
+                e.preventDefault(); isDragging = true; startBPM = currentBPM;
+                const rect = dial.getBoundingClientRect();
+                startAngle = Math.atan2(e.clientY - (rect.top + rect.height/2), e.clientX - (rect.left + rect.width/2));
+                dial.style.cursor = 'grabbing';
+            });
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const rect = dial.getBoundingClientRect();
+                const currentAngle = Math.atan2(e.clientY - (rect.top + rect.height/2), e.clientX - (rect.left + rect.width/2));
+                updateBPM(startBPM + Math.round((currentAngle - startAngle) * 50), 'dial');
+            });
+            document.addEventListener('mouseup', () => { isDragging = false; dial.style.cursor = 'grab'; });
+            
+            // Rotational Dial (Touch)
+            dial.addEventListener('touchstart', (e) => {
+                e.preventDefault(); 
+                isDragging = true; startBPM = currentBPM;
+                const rect = dial.getBoundingClientRect();
+                const touch = e.touches[0];
+                startAngle = Math.atan2(touch.clientY - (rect.top + rect.height/2), touch.clientX - (rect.left + rect.width/2));
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const rect = dial.getBoundingClientRect();
+                const touch = e.touches[0];
+                const currentAngle = Math.atan2(touch.clientY - (rect.top + rect.height/2), touch.clientX - (rect.left + rect.width/2));
+                updateBPM(startBPM + Math.round((currentAngle - startAngle) * 50), 'dial');
+            });
+
+            document.addEventListener('touchend', () => { isDragging = false; });
+
+
+            // --- Tempo Automation Logic ---
+            function stopTempoRamp() {
+                if (rampIntervalId) clearInterval(rampIntervalId);
+                rampIntervalId = null;
+                rampConfig = { active: false, direction: 0 };
+                rampStatus.textContent = '';
+                [speedUpButton, slowDownButton].forEach(b => b.classList.remove('active'));
+            }
+
+            function startTempoRamp(direction) {
+                stopTempoRamp();
+                rampConfig = { active: true, direction };
+                const increment = Number(rampIncrementInput.value);
+                const interval = Number(rampIntervalInput.value);
+
+                if (rampModeSelect.value === 'time') {
+                    rampIntervalId = setInterval(() => {
+                        updateBPM(currentBPM + (increment * direction));
+                    }, interval * 1000);
+                }
+                
+                rampStatus.textContent = `${direction > 0 ? 'Increasing' : 'Decreasing'} by ${increment} BPM every ${interval} ${rampModeSelect.value === 'time' ? 'seconds' : 'bars'}...`;
+                (direction > 0 ? speedUpButton : slowDownButton).classList.add('active');
+            }
+
+            speedUpButton.addEventListener('click', () => startTempoRamp(1));
+            slowDownButton.addEventListener('click', () => startTempoRamp(-1));
+            stopRampButton.addEventListener('click', stopTempoRamp);
+        });
+    </script>
+</body>
+</html>

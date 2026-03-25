@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rest Period | Pro Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="hamburger" onclick="openNav()">&#9776;</div>
+
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="sidebar-search-container"><input type="text" id="sidebarFilter" placeholder="FILTER MENU..." onkeyup="filterSidebar()"></div>
+        <nav class="main-nav-container">
+            <a href="index.html" class="simple-link searchable">HOME</a>
+            <a href="settings.html" class="simple-link searchable">SETTINGS</a>
+            <a href="programs.html" class="simple-link searchable">MY PROGRAMS</a>
+            <a href="more.html" class="simple-link searchable">MORE</a>
+
+            <ul style="list-style:none; padding:0;">
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">CORE ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibcoreanterior.html">Anterior</a></li>
+                        <li><a href="exlibcoreposterior.html">Posterior</a></li>
+                        <li><a href="exlibcorestability.html">Total Core Stability</a></li>
+                        <li><a href="exlibcoreside.html">Side</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">HINGE ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibhingedouble.html">Double Leg</a></li>
+                        <li><a href="exlibhingesingle.html">Single Leg</a></li>
+                        <li><a href="exlibhingesplit.html">Split Stance</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">MOBILITY ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibmobilityfb.html">Full Body</a></li>
+                        <li><a href="exlibmobilitylb.html">Lower Body</a></li>
+                        <li><a href="exlibmobilityub.html">Upper Body</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">PLYOMETRICS ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibplyovertical.html">Vertical</a></li>
+                        <li><a href="exlibplyohorizontal.html">Horizontal</a></li>
+                        <li><a href="exlibplyolateral.html">Lateral</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">PRIMER ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibprimerfb.html">Full Body</a></li>
+                        <li><a href="exlibprimerlb.html">Lower Body</a></li>
+                        <li><a href="exlibprimerub.html">Upper Body</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">PULL ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibpullvertical.html">Vertical</a></li>
+                        <li><a href="exlibpullhorizontal.html">Horizontal</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">PUSH ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibpushvertical.html">Vertical</a></li>
+                        <li><a href="exlibpushhorizontal.html">Horizontal</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">RECOVER ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibrectis.html">Tissue</a></li>
+                        <li><a href="exlibrecdec.html">Decompress</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">RUN ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibrunhorizontal.html">Horizontal</a></li>
+                        <li><a href="exlibrunvertical.html">Vertical</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">SKILLS & DRILLS ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibskillsanddrillsball.html">Ball</a></li>
+                        <li><a href="exlibskillsanddrillsbw.html">Bodyweight</a></li>
+                        <li><a href="exlibskillsanddrillsstick.html">Stick</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item searchable"><a class="nav-link" onclick="toggleDropdown(this)">SQUAT ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="exlibsquatdouble.html">Double Leg</a></li>
+                        <li><a href="exlibsquatsingle.html">Single Leg</a></li>
+                        <li><a href="exlibsquatsplit.html">Split Squat</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <img src="RPLOGO Psychedelic.gif" class="logo-img">
+        <div class="dash-grid">
+            <div class="dash-card" onclick="openTool('daily')"><i class="fas fa-calendar-day"></i><span>Move Of Day</span></div>
+            <div class="dash-card" onclick="openTool('audio')"><i class="fas fa-headphones"></i><span>Audio</span></div>
+            <div class="dash-card" onclick="openTool('countdown')"><i class="fas fa-clock"></i><span>Countdown</span></div>
+            <div class="dash-card" onclick="openTool('interval')"><i class="fas fa-redo"></i><span>Intervals</span></div>
+        </div>
+
+        <div class="dash-card long-btn" onclick="openTool('workout')"><i class="fas fa-fire-alt"></i><span>Workout of the Week</span></div>
+        <div class="dash-card long-btn" onclick="openTool('global-search')"><i class="fas fa-search"></i><span>Search for Exercise</span></div>
+
+        <div class="dash-grid" style="margin-top:12px;">
+            <div class="dash-card" onclick="openTool('metronome')"><i class="fas fa-drum"></i><span>Metronome</span></div>
+            <div class="dash-card" onclick="openTool('pace')"><i class="fas fa-running"></i><span>Pace Calc</span></div>
+        </div>
+
+        <div class="slider-section">
+            <h4 style="color:var(--brand-yellow); font-family:monospace; font-size:0.8rem; margin-bottom:12px;">CONTINUE LISTENING</h4>
+            <div class="slider-track">
+                <a href="#" class="slide"><img src="thumb1.png"><span>Chapter 1: The Start</span></a>
+                <a href="#" class="slide"><img src="thumb2.png"><span>Chapter 2: Breath</span></a>
+                <a href="#" class="slide"><img src="thumb3.png"><span>Chapter 3: Power</span></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-nav">
+        <a href="index.html" class="mobile-nav-item active"><i class="fas fa-home"></i>HOME</a>
+        <a href="javascript:void(0)" onclick="openTool('global-search')" class="mobile-nav-item"><i class="fas fa-search"></i>SEARCH</a>
+        <a href="programs.html" class="mobile-nav-item"><i class="fas fa-dumbbell"></i>PROGRAMS</a>
+        <a href="javascript:void(0)" onclick="openNav()" class="mobile-nav-item"><i class="fas fa-ellipsis-h"></i>MORE</a>
+    </div>
+
+    <div id="masterModal" class="modal">
+        <div class="modal-body">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+
+            <div id="pace-tool" class="tool-content">
+                <h3>PACE CALCULATOR</h3>
+                <div class="input-wrapper"><label class="input-label">UNIT</label><select id="p-unit" onchange="updatePaceLabels()"><option value="km">Metric (KM/M)</option><option value="mi">Imperial (MI/YD)</option></select></div>
+                <div class="grid-inputs">
+                    <div class="input-wrapper"><label class="input-label" id="lbl-maj">KILOMETERS</label><input type="number" id="p-major" placeholder="Major"></div>
+                    <div class="input-wrapper"><label class="input-label" id="lbl-min">METERS</label><input type="number" id="p-minor" placeholder="Minor"></div>
+                </div>
+                <div class="grid-inputs">
+                    <div class="input-wrapper"><label class="input-label">SPEED (UNITS/HR)</label><input type="number" id="p-spd" placeholder="Speed"></div>
+                    <div class="input-wrapper"><label class="input-label">PACE (MM:SS)</label><input type="text" id="p-pace" placeholder="Pace"></div>
+                </div>
+                <div class="input-label">TOTAL TIME</div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+                    <input type="number" id="p-th" placeholder="H">
+                    <input type="number" id="p-tm" placeholder="M">
+                    <input type="number" id="p-ts" placeholder="S">
+                </div>
+                <button class="btn btn-blue" onclick="solvePace()" style="width:100%">SOLVE MISSING</button>
+                <div id="p-res" style="background:#222; padding:15px; margin-top:10px; border-radius:10px; font-family:monospace; text-align:left; font-size:0.75rem; white-space: pre-wrap;"></div>
+            </div>
+
+            <div id="interval-tool" class="tool-content">
+                <h3 style="color:var(--brand-yellow)">INTERVAL TIMER</h3>
+                <div class="grid-inputs">
+                    <div class="input-wrapper"><label class="input-label">WORK (MM:SS)</label><input type="text" id="in-w" value="00:30"></div>
+                    <div class="input-wrapper"><label class="input-label">REST (MM:SS)</label><input type="text" id="in-r" value="00:15"></div>
+                </div>
+                <div class="input-wrapper"><label class="input-label">SETS</label><input type="number" id="in-sets-in" value="8"></div>
+                <div id="in-phase" style="font-weight:bold; color:var(--brand-yellow);">READY</div>
+                <div id="int-display" class="timer-display">00:30</div>
+                <div id="in-set-count" style="font-family:monospace; margin-bottom:10px;">SET: 1 / 8</div>
+                <button class="btn btn-blue" id="in-go" onclick="toggleInterval()">START</button>
+                <button class="btn btn-red" onclick="resetInt()">RESET</button>
+            </div>
+
+            <div id="countdown-tool" class="tool-content">
+                <h3>COUNTDOWN</h3>
+                <div class="grid-inputs">
+                    <div class="input-wrapper"><label class="input-label">MINS</label><input type="number" id="cd-m" value="0"></div>
+                    <div class="input-wrapper"><label class="input-label">SECS</label><input type="number" id="cd-s" value="30"></div>
+                </div>
+                <div id="cd-display" class="timer-display">00:30.00</div>
+                <button class="btn btn-blue" id="cd-go" onclick="toggleCountdown()">START</button>
+                <button class="btn btn-red" onclick="resetCD()">RESET</button>
+            </div>
+
+            <div id="metronome-tool" class="tool-content">
+                <h3>METRONOME</h3>
+                <div id="bpm-display" style="font-size:4rem; font-weight:900; color:var(--brand-yellow);">60</div>
+                <input type="range" id="metro-slider" min="40" max="250" value="60" oninput="updateBPM(this.value)">
+                <select id="metro-snd" style="margin-bottom:15px;"><option value="click">Standard Click</option><option value="808">808 Kick</option></select>
+                <button class="btn btn-blue" id="metro-play-btn" onclick="toggleMetro()" style="width:100%">PLAY</button>
+            </div>
+
+            <div id="global-search-tool" class="tool-content">
+                <h3 style="color:var(--brand-yellow)">LIBRARY SEARCH</h3>
+                <input type="text" id="mainSearchInput" placeholder="TYPE MOVEMENT..." onkeyup="runGlobalSearch()">
+                <div id="searchResults"></div>
+                <div id="searchVideoDisplay" style="display:none; margin-top:15px;">
+                    <video id="search-v" controls autoplay muted loop playsinline style="width:100%; border-radius:10px; background:#000; border:1px solid #333;"></video>
+                    <p id="search-v-name" style="font-family:monospace; margin:10px 0; color:var(--brand-yellow);"></p>
+                    <button class="btn btn-red" onclick="backToSearchResults()" style="width:100%">BACK</button>
+                </div>
+            </div>
+
+            <div id="daily-tool" class="tool-content">
+                <h3>DAILY MOVEMENT</h3>
+                <video id="daily-v" controls autoplay muted loop playsinline style="width:100%; border-radius:10px; background:#000;"></video>
+                <p id="daily-v-name" style="font-family:monospace; margin-top:10px;"></p>
+            </div>
+
+            <div id="audio-tool" class="tool-content"><h3>WEEKLY AUDIO</h3><audio id="a-player" controls style="width:100%"></audio></div>
+
+            <div id="workout-tool" class="tool-content">
+                <h3 style="color:var(--brand-blue)">WORKOUT OF THE WEEK</h3>
+                <p style="font-family:monospace; margin-bottom:20px;">⏳ UPPER BODY MOBILITY</p>
+                <a href="https://dth.kiwi/exlibprimerlb.html?workout=..." class="btn btn-blue" style="width:100%; text-decoration:none; display:inline-block; line-height:35px;">START WORKOUT</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA (PASTE YOUR FULL 1000 LIST HERE) ---
+        const exerciseList = ["CORE ANT BND Banded prone scissor hold.mp4","CORE ANT BW Dead bug alternating press isometric leg straight.mp4","CORE ANT BW Deadbug alternating diagonal pushing isometric .mp4","CORE ANT BW Elbow plank.mp4","HINGE DL BB Barbell deadlift bent over row.mp4","SQUAT SS BB Barbell split squat.mp4","MOB FB worlds greatest stretch.mp4"];
+
+        function cleanTitle(f) {
+            let n = f.replace('.mp4','').replace('.m4v','');
+            const p = ["CORE","ANT","POS","SDE","TCS","DL","SL","SS","BW","BND","BB","DB","KB","TPB","WGT","MOB","FB","LB","UB","ANK","FOT","KNE","NEK","SHD","WRT","PLYO","HOR","VER","LAT","DA","SA","PRIMER","HGE","REC","DEC","TIS","RUN","SKILLSANDDRILLS","BALL","STICK","SQT","SQUAT"];
+            return n.split(' ').filter(word => !p.includes(word.toUpperCase())).join(' ').trim().toUpperCase();
+        }
+
+        // --- UI CORE ---
+        function toggleDropdown(el) { el.parentElement.classList.toggle('active-dropdown'); }
+        function openNav() { document.getElementById("mySidebar").style.width = "280px"; }
+        function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
+        function openTool(n) {
+            closeNav(); document.getElementById('masterModal').style.display = 'block';
+            document.querySelectorAll('.tool-content').forEach(c => c.classList.remove('active-tool'));
+            document.getElementById(n + '-tool').classList.add('active-tool');
+            if(n === 'daily') loadDaily();
+            if(n === 'audio') loadWeekly();
+        }
+        function closeModal() { document.getElementById('masterModal').style.display='none'; document.body.className=''; stopAllTimers(); }
+
+        function stopAllTimers() {
+            if(cdInterval) clearInterval(cdInterval); if(inInterval) clearInterval(inInterval);
+            if(isMetroOn) toggleMetro(); document.getElementById('a-player').pause();
+        }
+
+        // --- DAILY MOVE (Robust Logic) ---
+        function loadDaily() {
+            if(exerciseList.length === 0) return;
+            const seed = new Date().toISOString().slice(0,10).replace(/-/g,'');
+            const idx = parseInt(seed) % exerciseList.length;
+            const video = document.getElementById('daily-v');
+            video.src = `videos/Exercise/${exerciseList[idx]}`;
+            document.getElementById('daily-v-name').innerText = cleanTitle(exerciseList[idx]);
+        }
+
+        // --- INTERVAL TIMER ---
+        let inInterval, inP, inS, inT;
+        function toggleInterval() {
+            const btn = document.getElementById('in-go');
+            if(inInterval) { clearInterval(inInterval); inInterval = null; btn.innerText = "RESUME"; return; }
+            if(!inP) { inP = "WORK"; inS = 1; setupInt(); }
+            btn.innerText = "PAUSE";
+            let last = performance.now();
+            inInterval = setInterval(() => {
+                let now = performance.now(); inT -= (now - last); last = now;
+                if(inT <= 0) {
+                    if(inP === "WORK") { inP = "REST"; setupInt(); }
+                    else { inS++; if(inS > document.getElementById('in-sets-in').value) { clearInterval(inInterval); resetInt(); alert("Finished!"); return; } inP = "WORK"; setupInt(); }
+                }
+                let m = Math.floor(inT/60000).toString().padStart(2,'0'), s = Math.floor((inT%60000)/1000).toString().padStart(2,'0');
+                document.getElementById('int-display').innerText = `${m}:${s}`;
+                document.getElementById('in-set-count').innerText = `SET: ${inS} / ${document.getElementById('in-sets-in').value}`;
+            }, 100);
+        }
+        function setupInt() {
+            let w = document.getElementById('in-w').value.split(':'), r = document.getElementById('in-r').value.split(':');
+            inT = (inP==="WORK")?(parseInt(w[0])*60000 + (parseInt(w[1])||0)*1000):(parseInt(r[0])*60000 + (parseInt(r[1])||0)*1000);
+            document.body.className = (inP==="WORK")?"work-phase":"rest-phase";
+            document.getElementById('in-phase').innerText = inP;
+        }
+        function resetInt() { clearInterval(inInterval); inInterval = null; inP = null; document.body.className = ""; document.getElementById('int-display').innerText="00:00"; document.getElementById('in-go').innerText="START"; }
+
+        // --- COUNTDOWN TIMER ---
+        let cdInterval, cdRem = 0;
+        function toggleCountdown() {
+            const btn = document.getElementById('cd-go');
+            if(cdInterval) { clearInterval(cdInterval); cdInterval = null; btn.innerText = "RESUME"; return; }
+            if(cdRem <= 0) cdRem = (parseInt(document.getElementById('cd-m').value)||0)*60000 + (parseInt(document.getElementById('cd-s').value)||0)*1000;
+            btn.innerText = "PAUSE";
+            let last = performance.now();
+            cdInterval = setInterval(() => {
+                let now = performance.now(); cdRem -= (now - last); last = now;
+                if(cdRem <= 0) { clearInterval(cdInterval); cdRem = 0; resetCD(); alert("Time!"); return; }
+                let m = Math.floor(cdRem/60000).toString().padStart(2,'0'), s = Math.floor((cdRem%60000)/1000).toString().padStart(2,'0'), ms = Math.floor((cdRem%1000)/10).toString().padStart(2,'0');
+                document.getElementById('cd-display').innerText = `${m}:${s}.${ms}`;
+            }, 35);
+        }
+        function resetCD() { clearInterval(cdInterval); cdInterval = null; cdRem = 0; document.getElementById('cd-display').innerText="00:00.00"; document.getElementById('cd-go').innerText="START"; }
+
+        // --- PACE SOLVER ---
+        function updatePaceLabels() {
+            let u = document.getElementById('p-unit').value;
+            document.getElementById('lbl-maj').innerText = u==='km'?'KILOMETERS':'MILES';
+            document.getElementById('lbl-min').innerText = u==='km'?'METERS':'YARDS';
+        }
+        function solvePace() {
+            let u = document.getElementById('p-unit').value;
+            let maj = parseFloat(document.getElementById('p-major').value)||0, min = parseFloat(document.getElementById('p-minor').value)||0;
+            let spd = parseFloat(document.getElementById('p-spd').value)||0;
+            let pS = document.getElementById('p-pace').value;
+            let th = parseFloat(document.getElementById('p-th').value)||0, tm = parseFloat(document.getElementById('p-tm').value)||0, ts = parseFloat(document.getElementById('p-ts').value)||0;
+            let dist = u==='km' ? (maj + min/1000) : (maj + min/1760);
+            let tH = th + tm/60 + ts/3600;
+            let pM = 0; if(pS.includes(':')) { let p=pS.split(':'); pM = parseInt(p[0]) + parseInt(p[1])/60; }
+
+            if(dist > 0 && tH > 0 && spd === 0) { spd = dist/tH; pM = 60/spd; }
+            else if(dist > 0 && spd > 0) { tH = dist/spd; pM = 60/spd; }
+            else if(dist > 0 && pM > 0) { spd = 60/pM; tH = dist/spd; }
+
+            let h=Math.floor(tH), m=Math.floor((tH*60)%60), s=Math.round((tH*3600)%60);
+            let pm=Math.floor(pM), ps=Math.round((pM*60)%60);
+            document.getElementById('p-res').innerText = `SOLVED:\nDist: ${dist.toFixed(2)} ${u}\nSpeed: ${spd.toFixed(2)} ${u}/h\nPace: ${pm}:${ps.toString().padStart(2,'0')}/${u}\nTime: ${h}h ${m}m ${s}s`;
+        }
+
+        // --- METRONOME ---
+        let aCtx, isMetroOn = false, nextTk = 0, mBpm = 60, mTick;
+        function updateBPM(v) { mBpm = v; document.getElementById('bpm-display').innerText = v; }
+        function toggleMetro() {
+            if(!aCtx) aCtx = new AudioContext(); isMetroOn = !isMetroOn;
+            if(isMetroOn) { nextTk = aCtx.currentTime; sch(); document.getElementById('metro-play-btn').innerText="STOP"; }
+            else { clearTimeout(mTick); document.getElementById('metro-play-btn').innerText="PLAY"; }
+        }
+        function sch() { while(nextTk < aCtx.currentTime + 0.1) { pk(nextTk); nextTk += 60/mBpm; } mTick = setTimeout(sch, 25); }
+        function pk(t) {
+            const o = aCtx.createOscillator(), g = aCtx.createGain(), s = document.getElementById('metro-snd').value;
+            if(s==='808') { o.frequency.setValueAtTime(150,t); o.frequency.exponentialRampToValueAtTime(40,t+0.4); g.gain.exponentialRampToValueAtTime(0.001,t+0.4); }
+            else { o.frequency.value = 1000; g.gain.exponentialRampToValueAtTime(0.001,t+0.1); }
+            o.connect(g).connect(aCtx.destination); o.start(t); o.stop(t+0.5);
+        }
+
+        // --- SEARCH MOVEMENTS ---
+        function runGlobalSearch() {
+            let q = document.getElementById('mainSearchInput').value.toLowerCase();
+            let res = document.getElementById('searchResults');
+            res.innerHTML = ""; if(q.length < 2) return;
+            exerciseList.filter(ex => ex.toLowerCase().includes(q)).forEach(ex => {
+                let div = document.createElement('div'); div.className='search-item'; div.innerHTML=`<i class="fas fa-play"></i> ${cleanTitle(ex)}`;
+                div.onclick = () => {
+                    document.getElementById('mainSearchInput').style.display="none"; res.style.display="none";
+                    document.getElementById('searchVideoDisplay').style.display="block";
+                    document.getElementById('search-v').src = `videos/Exercise/${ex}`;
+                    document.getElementById('search-v-name').innerText = cleanTitle(ex);
+                };
+                res.appendChild(div);
+            });
+        }
+        function backToSearchResults() { document.getElementById('searchVideoDisplay').style.display="none"; document.getElementById('searchResults').style.display="grid"; document.getElementById('mainSearchInput').style.display="block"; }
+
+        function filterSidebar() {
+            let q = document.getElementById('sidebarFilter').value.toLowerCase();
+            document.querySelectorAll('.searchable').forEach(l => l.style.display = l.innerText.toLowerCase().includes(q) ? "block" : "none");
+        }
+
+        window.onclick = e => { if(e.target.className==='modal') closeModal(); };
+    </script>
+</body>
+</html>

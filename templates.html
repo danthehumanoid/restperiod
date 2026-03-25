@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Builder | RestPeriod</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
+        
+        :root { 
+            --brand-bg: #020c12; 
+            --card-bg: #0e1b24; 
+            --brand-accent: #26C6DA; 
+            --brand-blue: #007bff;
+            --text-main: #E0F7FA;
+            --input-bg: #002840;
+        }
+
+        body { margin: 0; font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); padding-bottom: 50px; }
+        * { box-sizing: border-box; }
+
+        /* NAV */
+        .nav-top { display: flex; justify-content: space-between; padding: 15px 25px; background: #000; border-bottom: 1px solid #004d7a; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .nav-links a { color: #888; text-decoration: none; margin-left: 20px; font-family: 'Montserrat'; font-weight: 700; font-size: 0.9rem; transition: 0.2s; }
+        .nav-links a:hover { color: var(--brand-accent); }
+        .nav-links a.active { color: white; border-bottom: 2px solid var(--brand-accent); }
+
+        /* LAYOUT */
+        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px; }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+
+        /* CARDS */
+        .card { background: var(--card-bg); padding: 25px; border-radius: 8px; border: 1px solid #004d7a; height: fit-content; }
+        h3 { color: var(--brand-accent); font-family: 'Montserrat'; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* INPUTS */
+        input, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #004d7a; color: white; border-radius: 4px; margin-bottom: 15px; font-size: 0.9rem; }
+        label { font-size: 0.7rem; color: #aaa; text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 5px; }
+
+        /* BUTTONS */
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-family: 'Montserrat'; transition: 0.2s; }
+        .btn-green { background: #2E7D32; color: white; }
+        .btn-green:hover { background: #388E3C; }
+        .btn-outline { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); }
+        .btn-small { padding: 6px 12px; font-size: 0.7rem; width: auto; }
+
+        /* BUILDER ITEM */
+        .builder-item { background: #001a2c; padding: 15px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #333; position: relative; }
+        .item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .ex-title { font-family: 'Montserrat'; font-weight: 800; color: white; font-size: 1.1rem; }
+        
+        .metrics-grid { display: grid; grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 0.3fr; gap: 8px; align-items: center; margin-top: 5px; }
+        .metric-col { text-align: center; }
+        .metric-col label { font-size: 0.55rem; color: var(--brand-accent); margin-bottom: 2px; display: block; }
+        .metric-col input { text-align: center; padding: 8px; margin-bottom: 0; }
+
+        /* LIBRARY */
+        .filter-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .filter-btn { background: transparent; border: 1px solid var(--brand-blue); color: var(--brand-blue); padding: 5px 10px; font-size: 0.7rem; font-weight: 800; cursor: pointer; border-radius: 4px; }
+        .filter-btn.active { background: var(--brand-blue); color: white; }
+        
+        .lib-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #222; transition: 0.2s; }
+        .lib-item:hover { background: rgba(255,255,255,0.05); }
+        .lib-name { font-size: 0.9rem; font-weight: 600; color: #ddd; }
+        .add-btn { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); padding: 4px 10px; font-size: 0.65rem; font-weight: 800; cursor: pointer; border-radius: 3px; }
+        .add-btn:hover { background: var(--brand-accent); color: black; }
+
+        /* SAVED LIST */
+        .saved-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #333; align-items: center; }
+        .saved-tag { font-size: 0.6rem; padding: 2px 6px; background: #333; border-radius: 3px; margin-right: 8px; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-top">
+        <div style="font-weight:800; font-size:1.4rem;">REST <span style="color:var(--brand-accent)">PERIOD</span></div>
+        <div class="nav-links">
+            <a href="index.html">DASHBOARD</a>
+            <a href="builder.html" class="active">BUILDER</a>
+            <a href="library.html">LIBRARY</a>
+            <a href="#" onclick="pb.authStore.clear(); window.location.href='index.html'">LOGOUT</a>
+        </div>
+    </div>
+
+    <div class="container">
+        
+       <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+        <h3 style="margin:0;">VAULT</h3>
+        <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:0.6rem;" onclick="openModal('addExModal')">+ NEW TO LIB</button>
+    </div>
+    <input type="text" id="search-input" placeholder="Search exercises..." onkeyup="renderLibrary()">
+    
+    <div id="filter-area" class="filter-grid"></div>
+
+    <div id="library-list" style="height: 600px; overflow-y: auto; border-top: 1px solid #333;"></div>
+</div>
+
+        <div>
+            <div class="card" style="position: sticky; top: 80px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>Construct Template</h3>
+                    <button class="btn btn-green btn-small" style="width: auto;" onclick="resetBuilder()">Clear All</button>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-top:15px;">
+                    <div>
+                        <label>Template Name</label>
+                        <input type="text" id="template-name" placeholder="e.g. Leg Day Primer">
+                    </div>
+                    <div>
+                        <label>Template Description</label>
+                        <input type="text" id="template-name" placeholder="e.g. Leg Day Primer">
+                    </div>
+                    <div>
+                        <label>Section Type</label>
+                        <select id="template-type">
+                            <option value="warmup">Warm Up</option>
+                            <option value="workout">Main Workout</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="builder-area" style="min-height: 200px; margin-bottom: 20px;">
+                    <div style="text-align:center; color:#555; padding: 40px; border: 2px dashed #333; border-radius: 6px;">
+                        Add exercises from the Vault to start building.
+                    </div>
+                </div>
+
+                <button class="btn btn-green" onclick="saveTemplateToDB()">💾 SAVE TO DATABASE</button>
+
+                <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+                    <h4 style="color:#888; text-transform: uppercase;">Existing Templates</h4>
+                    <div id="saved-templates-list"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Builder | RestPeriod</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
+        
+        :root { 
+            --brand-bg: #020c12; 
+            --card-bg: #0e1b24; 
+            --brand-accent: #26C6DA; 
+            --brand-blue: #007bff;
+            --text-main: #E0F7FA;
+            --input-bg: #002840;
+        }
+
+        body { margin: 0; font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); padding-bottom: 50px; }
+        * { box-sizing: border-box; }
+
+        /* NAV */
+        .nav-top { display: flex; justify-content: space-between; padding: 15px 25px; background: #000; border-bottom: 1px solid #004d7a; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .nav-links a { color: #888; text-decoration: none; margin-left: 20px; font-family: 'Montserrat'; font-weight: 700; font-size: 0.9rem; transition: 0.2s; }
+        .nav-links a:hover { color: var(--brand-accent); }
+        .nav-links a.active { color: white; border-bottom: 2px solid var(--brand-accent); }
+
+        /* LAYOUT */
+        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px; }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+
+        /* CARDS */
+        .card { background: var(--card-bg); padding: 25px; border-radius: 8px; border: 1px solid #004d7a; height: fit-content; }
+        h3 { color: var(--brand-accent); font-family: 'Montserrat'; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* INPUTS */
+        input, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #004d7a; color: white; border-radius: 4px; margin-bottom: 15px; font-size: 0.9rem; }
+        label { font-size: 0.7rem; color: #aaa; text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 5px; }
+
+        /* BUTTONS */
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-family: 'Montserrat'; transition: 0.2s; }
+        .btn-green { background: #2E7D32; color: white; }
+        .btn-green:hover { background: #388E3C; }
+        .btn-outline { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); }
+        .btn-small { padding: 6px 12px; font-size: 0.7rem; width: auto; }
+
+        /* BUILDER ITEM */
+        .builder-item { background: #001a2c; padding: 15px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #333; position: relative; }
+        .item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .ex-title { font-family: 'Montserrat'; font-weight: 800; color: white; font-size: 1.1rem; }
+        
+        /* GRID FOR SETS */
+        .metrics-grid { display: grid; grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 0.3fr; gap: 8px; align-items: center; margin-top: 5px; }
+        .metric-col { text-align: center; }
+        .metric-col label { font-size: 0.55rem; color: var(--brand-accent); margin-bottom: 2px; display: block; }
+        .metric-col input { text-align: center; padding: 8px; margin-bottom: 0; }
+
+        /* LIBRARY SEARCH RESULTS */
+        .search-result { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #222; transition: 0.2s; }
+        .search-result:hover { background: rgba(255, 255, 255, 0.05); }
+        .res-title { font-size: 0.85rem; font-weight: 600; color: #E0F7FA; flex: 1; }
+        .add-small { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); padding: 4px 8px; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 3px; margin-left: 5px; }
+        .add-small:hover { background: var(--brand-accent); color: #000; }
+
+        /* FILTER BUTTONS */
+        .filter-btn { background: transparent; border: 1px solid var(--brand-blue); color: var(--brand-blue); padding: 5px 10px; font-size: 0.7rem; font-weight: 800; cursor: pointer; border-radius: 4px; margin-bottom: 5px; margin-right: 5px; transition: 0.2s; }
+        .filter-btn.active { background: var(--brand-blue); color: white; box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); }
+        
+        .quad-title { font-size: 0.7rem; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .saved-row { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #222; align-items: center; }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; z-index: 5000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); overflow: auto; }
+        .modal-content { background: var(--card-bg); margin: 5% auto; padding: 30px; border: 1px solid var(--brand-accent); width: 95%; max-width: 600px; border-radius: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-top">
+        <div style="font-weight:800; font-size:1.4rem;">REST <span style="color:var(--brand-accent)">PERIOD</span></div>
+        <div class="nav-links">
+            <a href="index.html">DASHBOARD</a>
+            <a href="builder.html" class="active">BUILDER</a>
+            <a href="library.html">LIBRARY</a>
+            <a href="#" onclick="pb.authStore.clear(); location.reload();">LOGOUT</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                <h3 style="margin:0;">VAULT</h3>
+                <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:0.6rem;" onclick="openModal('addExModal')">+ NEW TO LIB</button>
+            </div>
+            <input type="text" id="search-input" placeholder="Search exercises..." onkeyup="renderLibrary()">
+            <div id="filter-area" style="margin-bottom: 15px;"></div>
+            <div id="library-list" style="height: 600px; overflow-y: auto; border-top: 1px solid #333;"></div>
+        </div>
+
+        <div>
+            <div class="card" style="position: sticky; top: 80px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>Construct Template</h3>
+                    <button class="btn btn-green btn-small" style="width: auto;" onclick="resetBuilder()">Clear All</button>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-top:15px;">
+                    <div>
+                        <label>Template Name</label>
+                        <input type="text" id="template-name" placeholder="e.g. Leg Day Primer">
+                    </div>
+                    <div>
+                        <label>Section Type</label>
+                        <select id="template-type">
+                            <option value="warmup">Warm Up</option>
+                            <option value="workout">Main Workout</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="builder-area" style="min-height: 200px; margin-bottom: 20px;"></div>
+
+                <button class="btn btn-green" id="save-btn" onclick="saveTemplateToDB()">💾 SAVE TO DATABASE</button>
+
+                <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+                    <h4 style="color:#888; text-transform: uppercase;">Existing Templates</h4>
+                    <div id="saved-templates-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addExModal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeModal('addExModal')" style="float:right; cursor:pointer; font-size:1.5rem;">&times;</span>
+            <h3 style="text-align: center;">ADD NEW TO VAULT</h3>
+            <label>Exercise Name</label>
+            <input type="text" id="new-ex-name" placeholder="e.g. Goblet Squat">
+            <label>Select Tags (Tap to apply)</label>
+            <div id="modal-tag-groups" style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; margin-bottom: 15px; max-height: 300px; overflow-y: auto; border: 1px solid #333;"></div>
+            <label>Video URL (Optional)</label>
+            <input type="text" id="new-ex-video" placeholder="Youtube/Vimeo link">
+            <button class="btn btn-green" onclick="saveNewExerciseToLib()">SAVE TO DATABASE</button>
+        </div>
+    </div>
+
+   <script>
+    const pb = new PocketBase('https://restperiod.org');
+
+    // 1. DATA STATE
+    let builderList = []; 
+    let activeFilters = [];
+    let modalActiveTags = []; 
+    let editingTemplateId = null;
+
+    // 2. MASTER FILTER CATEGORIES (Source of Truth for sidebar AND modal)
+    const filterGroups = {
+        "MOVEMENT": { "PUSH": "PUSH", "PULL": "PULL", "SQUAT": "SQUAT", "HINGE": "HINGE" },
+        "ANGLE": { "HOR": "HORIZONTAL", "VER": "VERTICAL" },
+        "LIMBS": { "DA": "DOUBLE ARM", "DL": "DOUBLE LEG", "SA": "SINGLE ARM", "SL": "SINGLE LEG" },
+        "EQUIPMENT": { "BB": "BARBELL", "DB": "DUMBBELL", "BW": "BODYWEIGHT", "BND": "BAND" },
+        "TYPE": { "MOB": "MOBILITY", "PRIMER": "PRIMER" },
+        "BODY PART": { "UB": "UPPER BODY", "LB": "LOWER BODY" }
+    };
+
+    window.onload = async () => {
+        if(!pb.authStore.isValid) window.location.href = 'index.html';
+        setupFilters();
+        await loadCustomExercises();
+        await fetchSavedTemplates();
+        renderLibrary();
+    };
+
+    // --- MODAL & TAG LOGIC ---
+    function openModal(id) {
+        document.getElementById(id).style.display = 'block';
+        if (id === 'addExModal') {
+            modalActiveTags = []; 
+            buildModalTags();
+        }
+    }
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function buildModalTags() {
+        const container = document.getElementById('modal-tag-groups');
+        let html = '';
+        for (const [groupName, options] of Object.entries(filterGroups)) {
+            html += `
+                <div style="margin-bottom: 10px;">
+                    <div style="font-size: 0.5rem; color: var(--brand-accent); font-weight: 800; margin-bottom: 5px;">${groupName}</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                        ${Object.entries(options).map(([tag, label]) => `
+                            <button class="filter-btn" type="button" onclick="toggleModalTag('${tag}', this)" style="font-size: 0.55rem; padding: 4px 8px;">${label}</button>
+                        `).join('')}
+                    </div>
+                </div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function toggleModalTag(tag, btn) {
+        if (modalActiveTags.includes(tag)) {
+            modalActiveTags = modalActiveTags.filter(t => t !== tag);
+            btn.classList.remove('active');
+        } else {
+            modalActiveTags.push(tag);
+            btn.classList.add('active');
+        }
+    }
+
+    async function saveNewExerciseToLib() {
+        const name = document.getElementById('new-ex-name').value;
+        const video = document.getElementById('new-ex-video').value;
+        if (!name) return alert("Please enter a name.");
+
+        const finalSearchStr = (name + " " + modalActiveTags.join(" ")).toUpperCase();
+        try {
+            await pb.collection('custom_exercises').create({ title: name, searchStr: finalSearchStr, video: video });
+            alert("Added to Vault!");
+            location.reload(); 
+        } catch(e) { alert("Error: " + e.message); }
+    }
+
+    // --- VAULT SIDEBAR LOGIC ---
+    function setupFilters() {
+        const container = document.getElementById('filter-area');
+        let html = '';
+        for (const [groupName, options] of Object.entries(filterGroups)) {
+            html += `
+                <div style="width: 100%;">
+                    <div style="font-size: 0.5rem; color: var(--brand-accent); font-weight: 800; margin-bottom: 5px; letter-spacing: 1px;">${groupName}</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom:10px;">
+                        ${Object.entries(options).map(([tag, label]) => `
+                            <button class="filter-btn" id="f-${tag}" onclick="toggleFilter('${tag}')">${label}</button>
+                        `).join('')}
+                    </div>
+                </div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function toggleFilter(f) {
+        const btn = document.getElementById(`f-${f}`);
+        if(activeFilters.includes(f)) {
+            activeFilters = activeFilters.filter(i => i !== f);
+            btn.classList.remove('active');
+        } else {
+            activeFilters.push(f);
+            btn.classList.add('active');
+        }
+        renderLibrary();
+    }
+
+    function renderLibrary() {
+        const q = document.getElementById('search-input').value.toLowerCase();
+        const results = exerciseDatabase.filter(e => {
+            const matchesText = e.title.toLowerCase().includes(q) || e.searchStr.toLowerCase().includes(q);
+            const matchesTags = activeFilters.every(tag => e.searchStr.toUpperCase().includes(tag));
+            return matchesText && matchesTags;
+        });
+
+        document.getElementById('library-list').innerHTML = results.slice(0, 50).map(e => `
+            <div class="search-result">
+                <div class="res-title">${e.title.replace(/^([A-Z0-9-]{2,}\s*)+/, '')}</div>
+                <button class="add-small" onclick="addToBuilder('${e.title.replace(/'/g, "\\'")}')">ADD +</button>
+            </div>`).join('');
+    }
+
+    // --- BUILDER ACTIONS ---
+    function addToBuilder(name) {
+        // Strip prefixes like "PUSH BB" before adding to the builder list
+        const cleanName = name.replace(/^([A-Z0-9-]{2,}\s*)+/, '');
+        builderList.push({
+            name: cleanName,
+            grouping: "",
+            setsData: [{ reps: "10", weight: "0", tempo: "3010", rpe: "7" }],
+            notes: ""
+        });
+        renderBuilder();
+    }
+
+    function renderBuilder() {
+        const container = document.getElementById('builder-area');
+        if(builderList.length === 0) {
+            container.innerHTML = `<div style="text-align:center; color:#555; padding: 40px; border: 2px dashed #333; border-radius: 6px;">Add exercises from the Vault to start building.</div>`;
+            return;
+        }
+        container.innerHTML = builderList.map((ex, i) => `
+            <div class="builder-item">
+                <div class="item-header">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <div style="display:flex; flex-direction:column; gap:2px;">
+                            <i class="fas fa-chevron-up" style="cursor:pointer; font-size:0.7rem; color:var(--brand-accent);" onclick="moveItem(${i}, -1)"></i>
+                            <i class="fas fa-chevron-down" style="cursor:pointer; font-size:0.7rem; color:var(--brand-accent);" onclick="moveItem(${i}, 1)"></i>
+                        </div>
+                        <div class="ex-title" style="color:var(--brand-accent); font-weight:800;">${ex.name}</div>
+                    </div>
+                    <i class="fas fa-trash" style="color:#d32f2f; cursor:pointer;" onclick="builderList.splice(${i},1); renderBuilder();"></i>
+                </div>
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <input type="text" placeholder="Group (e.g. A1)" value="${ex.grouping || ''}" onchange="builderList[${i}].grouping = this.value" style="width:120px; padding:6px; margin-bottom:0;">
+                    <input type="text" placeholder="Notes..." value="${ex.notes || ''}" onchange="builderList[${i}].notes = this.value" style="flex:1; padding:6px; margin-bottom:0;">
+                </div>
+                ${ex.setsData.map((set, sIndex) => `
+                    <div class="metrics-grid" style="display: grid; grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 0.3fr; gap: 5px; margin-top: 5px; align-items:center;">
+                        <div class="metric-col"><label style="font-size:0.5rem; color:var(--brand-accent);">SET ${sIndex+1}</label></div>
+                        <div class="metric-col"><input type="text" value="${set.reps}" onchange="builderList[${i}].setsData[${sIndex}].reps = this.value" style="padding:4px; text-align:center;"></div>
+                        <div class="metric-col"><input type="text" value="${set.weight}" onchange="builderList[${i}].setsData[${sIndex}].weight = this.value" style="padding:4px; text-align:center;"></div>
+                        <div class="metric-col"><input type="text" value="${set.tempo}" onchange="builderList[${i}].setsData[${sIndex}].tempo = this.value" style="padding:4px; text-align:center;"></div>
+                        <div class="metric-col"><input type="text" value="${set.rpe}" onchange="builderList[${i}].setsData[${sIndex}].rpe = this.value" style="padding:4px; text-align:center;"></div>
+                        <i class="fas fa-minus-circle" style="color:#d32f2f; cursor:pointer;" onclick="builderList[${i}].setsData.splice(${sIndex},1); renderBuilder();"></i>
+                    </div>`).join('')}
+                <button class="btn btn-outline btn-small" style="margin-top:10px; width:auto; padding:4px 10px;" onclick="builderList[${i}].setsData.push({...builderList[${i}].setsData.slice(-1)[0]}); renderBuilder();">+ ADD SET</button>
+            </div>`).join('');
+    }
+
+    // --- TEMPLATE PERSISTENCE ---
+    async function fetchSavedTemplates() {
+        try {
+            const records = await pb.collection('templates').getFullList({ sort: '-created' });
+            const container = document.getElementById('saved-templates-list');
+            const warmups = records.filter(r => (r.type||'').toLowerCase() === 'warmup');
+            const workouts = records.filter(r => (r.type||'').toLowerCase() === 'workout');
+
+            const renderRow = (r) => `
+                <div class="saved-row" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #222; align-items:center;">
+                    <span style="font-size:0.85rem; color:#eee;">${r.name}</span>
+                    <div style="display:flex; gap:12px;">
+                        <i class="fas fa-edit" style="color:var(--brand-accent); cursor:pointer;" onclick="loadTemplateIntoBuilder('${r.id}')"></i>
+                        <i class="fas fa-trash" style="color:#d32f2f; cursor:pointer;" onclick="deleteTemplate('${r.id}')"></i>
+                    </div>
+                </div>`;
+
+            container.innerHTML = `
+                <div class="quad-title" style="color:#ff9800; font-size:0.7rem; font-weight:800; margin-top:15px; border-bottom:1px solid #333; padding-bottom:3px;">🔥 WARMUPS</div>
+                ${warmups.length ? warmups.map(renderRow).join('') : '<div style="color:#444; font-size:0.7rem; padding:5px;">No Warmups found</div>'}
+                <div class="quad-title" style="color:var(--brand-accent); font-size:0.7rem; font-weight:800; margin-top:20px; border-bottom:1px solid #333; padding-bottom:3px;">💪 MAIN SESSIONS</div>
+                ${workouts.length ? workouts.map(renderRow).join('') : '<div style="color:#444; font-size:0.7rem; padding:5px;">No Sessions found</div>'}`;
+        } catch(e) { console.error("Template fetch error:", e); }
+    }
+
+    async function loadTemplateIntoBuilder(id) {
+        try {
+            const record = await pb.collection('templates').getOne(id);
+            editingTemplateId = record.id;
+            builderList = (typeof record.workout_data === 'string') ? JSON.parse(record.workout_data) : record.workout_data;
+            document.getElementById('template-name').value = record.name;
+            document.getElementById('template-type').value = record.type;
+            
+            // Switch button to Update mode
+            const saveBtn = document.getElementById('save-btn');
+            if (saveBtn) saveBtn.innerText = "🆙 UPDATE EXISTING TEMPLATE";
+            
+            renderBuilder();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        } catch(e) { alert("Load Error: " + e.message); }
+    }
+
+    async function saveTemplateToDB() {
+        const name = document.getElementById('template-name').value;
+        const type = document.getElementById('template-type').value;
+        if(!name || builderList.length === 0) return alert("Need name and exercises.");
+
+        const data = { name, type, workout_data: builderList, creator: pb.authStore.model.id };
+        try {
+            if(editingTemplateId) await pb.collection('templates').update(editingTemplateId, data);
+            else await pb.collection('templates').create(data);
+            alert("Template saved successfully!");
+            location.reload();
+        } catch(e) { alert("Save Error: " + e.message); }
+    }
+
+    function moveItem(i, dir) {
+        if(i+dir < 0 || i+dir >= builderList.length) return;
+        [builderList[i], builderList[i+dir]] = [builderList[i+dir], builderList[i]];
+        renderBuilder();
+    }
+
+    async function loadCustomExercises() { 
+        try { 
+            const recs = await pb.collection('custom_exercises').getFullList(); 
+            recs.forEach(r => { if(!exerciseDatabase.some(e=>e.id===r.id)) exerciseDatabase.push({id:r.id, title:r.title, searchStr:r.searchStr||r.title}); }); 
+        } catch(e){} 
+    }
+
+    async function deleteTemplate(id) { if(confirm("Permanently delete this template?")) { await pb.collection('templates').delete(id); fetchSavedTemplates(); } }
+    function resetBuilder() { if(confirm("Clear current construction?")) { builderList=[]; editingTemplateId=null; document.getElementById('template-name').value=""; renderBuilder(); } }
+
+</script>
+</body>
+</html>

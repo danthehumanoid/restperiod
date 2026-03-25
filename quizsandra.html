@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Quiz</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand-yellow: #ffde18;
+            --brand-red: #ce0104;
+        }
+        
+        body {
+            font-family: 'Lato', sans-serif;
+            font-weight: 400;
+            color: var(--brand-yellow);
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #quiz-container {
+            background-color: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 2em;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--brand-red);
+            text-align: center;
+            margin-bottom: 1.5em;
+        }
+
+        .question {
+            margin-bottom: 2em;
+            border-bottom: 1px solid #444;
+            padding-bottom: 1.5em;
+        }
+
+        .question:last-of-type {
+            border-bottom: none;
+        }
+
+        .question p {
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            font-size: 1.2em;
+            margin-bottom: 1em;
+            color: var(--brand-yellow);
+        }
+
+        .question label {
+            display: block;
+            margin-bottom: 0.8em;
+            font-size: 1.1em;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
+            border: 1px solid transparent;
+            color: #ccc;
+        }
+        .question label:hover {
+            background-color: #2a2a2a;
+        }
+
+        /* Styling for correct and incorrect answers */
+        .correct {
+            background-color: #1a4d1a;
+            border-color: #2a5d2a;
+            color: #d4edda;
+        }
+        .incorrect {
+            background-color: #4d1a1a;
+            border-color: #5d2a2a;
+            color: #f8d7da;
+        }
+        .correct::after {
+            content: ' ✔';
+            color: #d4edda;
+            font-weight: bold;
+        }
+        .incorrect::after {
+            content: ' ✖';
+            color: #f8d7da;
+            font-weight: bold;
+        }
+
+
+        input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: var(--brand-yellow);
+        }
+
+        #submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.2em;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 1em;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: var(--brand-yellow);
+            color: #000;
+            border: none;
+        }
+
+        #submit-btn:hover {
+            background-color: #ffd842;
+        }
+
+        #results {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-top: 1.5em;
+            padding: 1em;
+            background-color: #2a2a2a;
+            border: 2px solid #333;
+            border-radius: 12px;
+            display: none;
+            color: var(--brand-yellow); 
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <h1>A Little Quiz Just For You</h1>
+        <form id="quiz-form">
+            <div class="question">
+                <p>1. What month were you born?</p>
+                <label><input type="radio" name="q1" value="a"> October</label>
+                <label><input type="radio" name="q1" value="b"> July</label>
+                <label><input type="radio" name="q1" value="c"> March</label>
+                <label><input type="radio" name="q1" value="d"> January</label>
+            </div>
+
+            <div class="question">
+                <p>2. What year were you born?</p>
+                <label><input type="radio" name="q2" value="a"> 1948</label>
+                <label><input type="radio" name="q2" value="b"> 1955</label>
+                <label><input type="radio" name="q2" value="c"> 1950</label>
+                <label><input type="radio" name="q2" value="d"> 1961</label>
+            </div>
+
+            <div class="question">
+                <p>3. What is the name of the street you live on?</p>
+                <label><input type="radio" name="q3" value="a"> Main Road</label>
+                <label><input type="radio" name="q3" value="b"> Military Road</label>
+                <label><input type="radio" name="q3" value="c"> Station Street</label>
+                <label><input type="radio" name="q3" value="d"> The Terrace</label>
+            </div>
+
+            <div class="question">
+                <p>4. What is your house number?</p>
+                <label><input type="radio" name="q4" value="a"> 22b</label>
+                <label><input type="radio" name="q4" value="b"> 7</label>
+                <label><input type="radio" name="q4" value="c"> 31c</label>
+                <label><input type="radio" name="q4" value="d"> 14a</label>
+            </div>
+
+            <div class="question">
+                <p>5. How many sisters do you have?</p>
+                <label><input type="radio" name="q5" value="a"> 1 sister</label>
+                <label><input type="radio" name="q5" value="b"> 2 sisters</label>
+                <label><input type="radio" name="q5" value="c"> 1 brother</label>
+                <label><input type="radio" name="q5" value="d"> No siblings</label>
+            </div>
+
+            <div class="question">
+                <p>6. What brand was your first car?</p>
+                <label><input type="radio" name="q6" value="a"> Audi</label>
+                <label><input type="radio" name="q6" value="b"> Mercedes</label>
+                <label><input type="radio" name="q6" value="c"> Ford</label>
+                <label><input type="radio" name="q6" value="d"> Honda</label>
+            </div>
+
+            <div class="question">
+                <p>7. Where were you born?</p>
+                <label><input type="radio" name="q7" value="a"> Wellington Hospital</label>
+                <label><input type="radio" name="q7" value="b"> Hutt Hospital</label>
+                <label><input type="radio" name="q7" value="c"> Lower Hutt Hospital</label>
+                <label><input type="radio" name="q7" value="d"> Kenepuru Hospital</label>
+            </div>
+
+            <div class="question">
+                <p>8. What is the brand of your first car?</p>
+                <label><input type="radio" name="q8" value="a"> Ferrari</label>
+                <label><input type="radio" name="q8" value="b"> Porsche</label>
+                <label><input type="radio" name="q8" value="c"> Mercedes</label>
+                <label><input type="radio" name="q8" value="d"> Lamborghini</label>
+            </div>
+
+            <div class="question">
+                <p>9. How many countries have you visited?</p>
+                <label><input type="radio" name="q9" value="a"> 5</label>
+                <label><input type="radio" name="q9" value="b"> 12</label>
+                <label><input type="radio" name="q9" value="c"> 9</label>
+                <label><input type="radio" name="q9" value="d"> 2</label>
+            </div>
+
+            <div class="question">
+                <p>10. Who is the current Prime Minister of New Zealand?</p>
+                <label><input type="radio" name="q10" value="a"> Chris Hipkins</label>
+                <label><input type="radio" name="q10" value="b"> Jacinda Ardern</label>
+                <label><input type="radio" name="q10" value="c"> Christopher Luxon</label>
+                <label><input type="radio" name="q10" value="d"> Winston Peters</label>
+            </div>
+
+             <!-- Dynamic questions will be inserted here by JavaScript -->
+
+            <button type="button" id="submit-btn">Check My Answers</button>
+        </form>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // --- Static Quiz Answers ---
+        const correctAnswers = {
+            q1: 'b', // Correct: July
+            q2: 'c', // Correct: 1950
+            q3: 'b', // Correct: Military Road
+            q4: 'd', // Correct: 14a
+            q5: 'a', // Correct: 1 sister
+            q6: 'b', // Correct: Mercedes
+            q7: 'c', // Correct: Lower Hutt Hospital
+            q8: 'c', // Correct: Mercedes
+            q9: 'c', // Correct: 9
+            q10: 'c' // Correct: Christopher Luxon
+        };
+
+        // --- Dynamic Question Generation ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const quizForm = document.getElementById('quiz-form');
+            const submitButton = document.getElementById('submit-btn');
+
+            // --- Question 11: Day of the week ---
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const correctDay = days[today.getDay()];
+            let dayOptions = [correctDay, days[(today.getDay() + 2) % 7], days[(today.getDay() + 4) % 7], days[(today.getDay() + 6) % 7]];
+            dayOptions.sort(() => Math.random() - 0.5); // Shuffle options
+            correctAnswers.q11 = String.fromCharCode(97 + dayOptions.indexOf(correctDay));
+
+            // --- Question 12: Current Year ---
+            const correctYear = today.getFullYear();
+            let yearOptions = [correctYear, correctYear - 1, correctYear + 1, correctYear - 2];
+            yearOptions.sort(() => Math.random() - 0.5);
+            correctAnswers.q12 = String.fromCharCode(97 + yearOptions.indexOf(correctYear));
+
+            // --- Question 13: Full Date ---
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const correctDate = `${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
+            let dateOptions = [
+                correctDate,
+                `${months[today.getMonth()]} ${today.getDate() + 1}, ${today.getFullYear()}`,
+                `${months[(today.getMonth() + 1) % 12]} ${today.getDate()}, ${today.getFullYear()}`,
+                `${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear() - 1}`
+            ];
+            dateOptions.sort(() => Math.random() - 0.5);
+            correctAnswers.q13 = String.fromCharCode(97 + dateOptions.indexOf(correctDate));
+
+            // --- Create and Insert HTML for Dynamic Questions ---
+            const dynamicQuestionsHTML = `
+                <div class="question">
+                    <p>11. What day is it today?</p>
+                    ${dayOptions.map((opt, i) => `<label><input type="radio" name="q11" value="${String.fromCharCode(97 + i)}"> ${opt}</label>`).join('')}
+                </div>
+                <div class="question">
+                    <p>12. What year is it?</p>
+                    ${yearOptions.map((opt, i) => `<label><input type="radio" name="q12" value="${String.fromCharCode(97 + i)}"> ${opt}</label>`).join('')}
+                </div>
+                <div class="question">
+                    <p>13. What is the date today?</p>
+                    ${dateOptions.map((opt, i) => `<label><input type="radio" name="q13" value="${String.fromCharCode(97 + i)}"> ${opt}</label>`).join('')}
+                </div>
+            `;
+            
+            submitButton.insertAdjacentHTML('beforebegin', dynamicQuestionsHTML);
+        });
+
+
+        // --- Quiz Submission Logic ---
+        const submitButton = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results');
+        const quizForm = document.getElementById('quiz-form');
+
+        submitButton.addEventListener('click', function() {
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+
+            // Clear previous results styling
+            const allLabels = quizForm.querySelectorAll('label');
+            allLabels.forEach(label => {
+                label.classList.remove('correct', 'incorrect');
+            });
+
+            // Check answers and apply styling
+            for (let i = 1; i <= totalQuestions; i++) {
+                const qName = 'q' + i;
+                if(quizForm.elements[qName]) {
+                    const userAnswer = quizForm.elements[qName].value;
+                    const correctAnswer = correctAnswers[qName];
+
+                    if (userAnswer) { // Only proceed if an answer was selected
+                        const selectedRadio = quizForm.querySelector(`input[name="${qName}"][value="${userAnswer}"]`);
+                        const selectedLabel = selectedRadio.parentElement;
+
+                        if (userAnswer === correctAnswer) {
+                            selectedLabel.classList.add('correct');
+                            score++;
+                        } else {
+                            selectedLabel.classList.add('incorrect');
+                            const correctRadio = quizForm.querySelector(`input[name="${qName}"][value="${correctAnswer}"]`);
+                            if (correctRadio) {
+                               correctRadio.parentElement.classList.add('correct');
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Display results
+            resultsContainer.style.display = 'block'; 
+            if (score === totalQuestions) {
+                resultsContainer.innerHTML = `You got ${totalQuestions} out of ${totalQuestions} correct! Perfect! ✨`;
+            } else {
+                resultsContainer.innerHTML = `You got ${score} out of ${totalQuestions} correct. Well done! 😊`;
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#26C6DA">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EVERY DAY ATHLETES</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
+        
+        :root {
+            --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA;
+            --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24;
+            --border-color: #004d7a; --input-bg: #002840;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); padding-bottom: 90px; overflow-x: hidden; }
+
+        /* --- MOBILE BOTTOM NAV --- */
+        .mobile-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #000;
+            border-top: 1px solid var(--brand-accent); display: flex; justify-content: space-around;
+            align-items: center; padding: 10px 0; z-index: 3000;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom));
+        }
+        .nav-item { color: #888; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.6rem; font-weight: 700; font-family: 'Montserrat'; gap: 4px; }
+        .nav-item i { font-size: 1.2rem; }
+        .nav-item.active { color: var(--brand-accent); }
+
+        @media (min-width: 769px) { .mobile-nav { display: none; } }
+        @media (max-width: 768px) { .hamburger { display: none; } body { padding-bottom: 100px; } }
+
+        /* --- DASHBOARD --- */
+        .main-content { padding: 60px 20px; max-width: 800px; margin: 0 auto; text-align: center; }
+        .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .dash-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .dash-card:hover { border-color: var(--brand-accent); transform: translateY(-2px); }
+        .dash-card i { font-size: 2rem; margin-bottom: 10px; color: var(--brand-accent); }
+        .dash-card span { font-family: 'Montserrat'; font-size: 0.8rem; font-weight: 700; color: white; text-transform: uppercase; }
+
+        /* --- SIDEBAR --- */
+        .hamburger { font-size: 30px; cursor: pointer; position: fixed; top: 15px; left: 20px; z-index: 1001; color: var(--brand-accent); }
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 4000; top: 0; left: 0; background: #000; overflow-x: hidden; transition: 0.3s; padding-top: 60px; border-right: 1px solid var(--border-color); }
+        .sidebar a { padding: 10px 32px; text-decoration: none; font-size: 13px; color: #818181; display: block; font-family: 'Montserrat'; text-transform: uppercase; }
+        .sidebar .closebtn { position: absolute; top: 10px; right: 25px; font-size: 36px; color: var(--brand-accent); }
+
+        /* --- MODALS --- */
+        .modal { display: none; position: fixed; z-index: 5000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); }
+        .modal-body { background: var(--card-bg); margin: 5% auto; padding: 20px; border: 1px solid var(--brand-accent); width: 92%; max-width: 500px; border-radius: 15px; max-height: 90vh; overflow-y: auto; position: relative; }
+        .modal-close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .tool-content { display: none; text-align: center; }
+        .quadrant { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; margin-bottom: 10px; text-align: left; }
+        .quad-title { font-family: 'Montserrat'; font-size: 0.7rem; color: var(--brand-accent); margin-bottom: 8px; text-transform: uppercase; }
+        
+        input, select { width: 100%; padding: 12px; background: #001a2c; border: 1px solid var(--border-color); color: white; border-radius: 6px; font-size: 1rem; }
+        .btn { border: none; padding: 15px; border-radius: 6px; font-weight: 800; cursor: pointer; width: 100%; font-family: 'Montserrat'; text-transform: uppercase; margin-top: 10px; }
+        .btn-blue { background: var(--brand-primary); color: white; }
+        .btn-green { background: var(--brand-secondary); color: white; }
+        .btn-red { background: #b71c1c; color: white; }
+        
+        .timer-display { font-size: 3.5rem; font-family: 'Courier New', monospace; font-weight: bold; margin: 15px 0; color: #fff; }
+        .rm-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #222; padding: 6px 0; font-size: 0.85rem; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+</head>
+<body>
+
+<nav class="mobile-nav">
+    <a href="index.html" class="nav-item active"><i class="fas fa-th-large"></i><span>DASHBOARD</span></a>
+    <a href="program.html" class="nav-item"><i class="fas fa-dumbbell"></i><span>PROGRAM</span></a>
+    <a href="builder.html" class="nav-item"><i class="fas fa-hammer"></i><span>BUILDER</span></a>
+    <a href="library.html" class="nav-item"><i class="fas fa-book"></i><span>LIBRARY</span></a>
+    <a href="#" id="mobile-auth-btn" class="nav-item" onclick="handleNavAuth()"><i class="fas fa-user"></i><span id="mobile-auth-text">LOGIN</span></a>
+</nav>
+
+<div class="hamburger" onclick="openNav()">&#9776;</div>
+
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="index.html">DASHBOARD</a>
+    <a href="program.html">MY PROGRAMS</a>
+    <a href="builder.html">PROGRAM BUILDER</a>
+    <a href="checkin.html">WEEKLY CHECK-IN</a>
+    <a href="library.html">EXERCISE LIBRARY</a>
+    <a href="#" id="menu-auth-btn" onclick="handleNavAuth()">LOGIN</a>
+</div>
+
+<div class="main-content">
+   <div style="margin-bottom: 10px;">
+    <img id="daily-logo" src="RPLOGO_Monday.gif" alt="RP Logo" style="width: 80px; height: 80px; border-radius: 25%;">
+</div>
+
+<h2>REST <span style="color:var(--brand-accent)">PERIOD</span></h2>
+    <div class="dash-grid">
+        <div class="dash-card" onclick="openTool('library')"><i class="fas fa-search"></i><span>SEARCH LIBRARY</span></div>
+        <div class="dash-card" onclick="openTool('countdown')"><i class="fas fa-clock"></i><span>Countdown</span></div>
+        <div class="dash-card" onclick="openTool('interval')"><i class="fas fa-redo"></i><span>Intervals</span></div>
+        <div class="dash-card" onclick="openTool('metronome')"><i class="fas fa-drum"></i><span>Metronome</span></div>
+        <div class="dash-card" onclick="openTool('pace')"><i class="fas fa-running"></i><span>Pace Calc</span></div>
+        <div class="dash-card" onclick="openTool('onerm')"><i class="fas fa-dumbbell"></i><span>1RM Pro</span></div>
+    </div>
+</div>
+
+<div id="masterModal" class="modal">
+    <div class="modal-body">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+
+        <div id="login-tool" class="tool-content">
+            <h3>CLIENT ACCESS</h3>
+            <div id="login-view">
+                <div class="quadrant">
+                    <div class="quad-title">EMAIL ADDRESS</div>
+                    <input type="email" id="login-email" placeholder="coach@restperiod.com">
+                    <div class="quad-title" style="margin-top:10px;">PASSWORD</div>
+                    <input type="password" id="login-pass" placeholder="••••••••">
+                </div>
+                <button class="btn btn-green" onclick="clientLogin()">SECURE LOGIN</button>
+                <div id="login-status" style="margin-top:15px; font-size:0.8rem;"></div>
+            </div>
+            <div id="user-view" style="display: none;">
+                <div class="quadrant" style="border-color: #00ff00;">
+                    <div class="quad-title" style="color: #00ff00;">WELCOME BACK</div>
+                    <p id="user-email-display"></p>
+                </div>
+                <a href="program.html" class="btn btn-blue" style="text-decoration:none; display:block;">VIEW MY PROGRAM</a>
+                <button class="btn" style="background: #333;" onclick="clientLogout()">LOG OUT</button>
+            </div>
+        </div>
+
+        <div id="pace-tool" class="tool-content">
+            <h3>PACE SOLVER</h3>
+            <div class="quadrant">
+                <div class="quad-title">Distance & Unit</div>
+                <div style="display:flex; gap:10px;">
+                    <input type="number" id="p-dist" placeholder="0.00">
+                    <select id="p-unit" style="flex:0.6;"><option value="km">KM</option><option value="mi">MI</option></select>
+                </div>
+            </div>
+            <div class="quadrant">
+                <div class="quad-title">Total Time (H:M:S)</div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px;">
+                    <input type="number" id="p-h" placeholder="H"><input type="number" id="p-m" placeholder="M"><input type="number" id="p-s" placeholder="S">
+                </div>
+            </div>
+            <button class="btn btn-blue" onclick="solvePace()">CALCULATE</button>
+            <div id="p-output" style="margin-top:15px; padding:15px; background:rgba(0,0,0,0.3); border-radius:8px; display:none; text-align:left;"></div>
+        </div>
+
+        <div id="onerm-tool" class="tool-content">
+            <h3>1RM</h3>
+            <div class="quadrant">
+                <div class="quad-title">Weight & Reps</div>
+                <div style="display:flex; gap:10px;"><input type="number" id="rm-w" placeholder="KG"><input type="number" id="rm-r" placeholder="REPS"></div>
+            </div>
+            <button class="btn btn-blue" onclick="calc1RM()">CALCULATE</button>
+            <div id="rm-results" style="margin-top:15px; display:none;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                    <div style="background:#001a2c; padding:10px; border-radius:8px;">EPLEY: <b id="res-epley"></b></div>
+                    <div style="background:#001a2c; padding:10px; border-radius:8px;">BRZYCKI: <b id="res-brzycki"></b></div>
+                </div>
+                <div id="rm-chart" style="text-align:left;"></div>
+            </div>
+        </div>
+
+        <div id="metronome-tool" class="tool-content">
+            <h3>METRONOME</h3>
+            <div id="bpm-val" style="font-size:4rem; font-weight:900; color:var(--brand-accent);">120</div>
+            <input type="range" id="m-slider" min="40" max="240" value="120" style="width:100%; margin:20px 0;" oninput="syncBPM(this.value)">
+            <button class="btn btn-blue" id="m-btn" onclick="toggleMetronome()">START</button>
+        </div>
+
+        <div id="interval-tool" class="tool-content">
+            <h3>INTERVAL TIMER</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div><label class="quad-title">Work</label><input type="number" id="int-w" value="30"></div>
+                <div><label class="quad-title">Rest</label><input type="number" id="int-r" value="15"></div>
+            </div>
+            <div id="int-phase" style="color:var(--brand-accent); font-weight:bold; margin-top:20px;">READY</div>
+            <div id="int-display" class="timer-display">00:30</div>
+            <button class="btn btn-blue" id="int-btn" onclick="toggleInterval()">START</button>
+        </div>
+
+        <div id="countdown-tool" class="tool-content">
+            <h3>COUNTDOWN</h3>
+            <div id="cd-display" class="timer-display">00:00.00</div>
+            <button class="btn btn-blue" id="cd-btn" onclick="toggleCountdown()">START</button>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    function setDailyLogo() {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const today = days[new Date().getDay()]; // Detects day (0-6)
+    const logoImg = document.getElementById('daily-logo');
+    
+    if (logoImg) {
+        // Construct the filename based on your naming convention
+        logoImg.src = `RPLOGO_${today}.gif`;
+    }
+}
+    const pb = new PocketBase('https://restperiod.org');
+    let audioCtx = null;
+    let mIdx, mActive = false;
+    let intT, intRem, intW=true, intRunning=false;
+    let cdInt, cdRunning=false;
+
+    window.onload = async function() {
+    // 1. Set the correct GIF for today
+    setDailyLogo();
+
+    // 2. Refresh Auth (Your existing stay-logged-in logic)
+    if (pb.authStore.isValid) {
+        try { await pb.collection('users').authRefresh(); } 
+        catch (err) { pb.authStore.clear(); }
+    }
+    updateLoginUI();
+};
+    function updateLoginUI() {
+        const loginView = document.getElementById('login-view');
+        const userView = document.getElementById('user-view');
+        const emailDisp = document.getElementById('user-email-display');
+        const menuBtn = document.getElementById('menu-auth-btn');
+        const mobBtnText = document.getElementById('mobile-auth-text');
+
+        if (pb.authStore.isValid) {
+            if(loginView) loginView.style.display = 'none';
+            if(userView) userView.style.display = 'block';
+            if(emailDisp) emailDisp.textContent = pb.authStore.model.email;
+            if(menuBtn) { menuBtn.innerText = "LOGOUT"; menuBtn.onclick = clientLogout; }
+            if(mobBtnText) mobBtnText.innerText = "LOGOUT";
+        } else {
+            if(loginView) loginView.style.display = 'block';
+            if(userView) userView.style.display = 'none';
+            if(menuBtn) { menuBtn.innerText = "LOGIN"; menuBtn.onclick = handleNavAuth; }
+            if(mobBtnText) mobBtnText.innerText = "LOGIN";
+        }
+    }
+
+    async function clientLogin() {
+        const email = document.getElementById('login-email').value;
+        const pass = document.getElementById('login-pass').value;
+        const status = document.getElementById('login-status');
+        try {
+            await pb.collection('users').authWithPassword(email, pass);
+            status.innerHTML = "<span style='color:#00ff00'>SUCCESS!</span>";
+            setTimeout(() => { updateLoginUI(); closeModal(); }, 1000);
+        } catch (err) { status.innerHTML = "<span style='color:#ff4444'>Login Failed.</span>"; }
+    }
+
+    function clientLogout() { pb.authStore.clear(); location.reload(); }
+
+    function openTool(id) {
+        document.querySelectorAll('.tool-content').forEach(t => t.style.display = 'none');
+        document.getElementById(id + '-tool').style.display = 'block';
+        document.getElementById('masterModal').style.display = 'block';
+    }
+
+    function handleNavAuth() { openTool('login'); }
+    function closeModal() { document.getElementById('masterModal').style.display = 'none'; stopMetronome(); }
+    function openNav() { document.getElementById("mySidebar").style.width = "280px"; }
+    function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
+
+    // --- TOOL LOGIC ---
+
+    function solvePace() {
+        const dist = parseFloat(document.getElementById('p-dist').value);
+        const h = parseInt(document.getElementById('p-h').value) || 0;
+        const m = parseInt(document.getElementById('p-m').value) || 0;
+        const s = parseInt(document.getElementById('p-s').value) || 0;
+        const totalSec = (h * 3600) + (m * 60) + s;
+        if(!dist || !totalSec) return;
+        const paceSec = totalSec / dist;
+        const pM = Math.floor(paceSec / 60);
+        const pS = Math.round(paceSec % 60);
+        const out = document.getElementById('p-output');
+        out.style.display = 'block';
+        out.innerHTML = `<b>PACE:</b> ${pM}:${pS.toString().padStart(2,'0')} per unit<br><b>SPEED:</b> ${(dist / (totalSec/3600)).toFixed(2)} units/hr`;
+    }
+
+    function calc1RM() {
+        const w = parseFloat(document.getElementById('rm-w').value);
+        const r = parseFloat(document.getElementById('rm-r').value);
+        if(!w || !r) return;
+        const epley = Math.round(w * (1 + (r / 30)));
+        const brzycki = Math.round(w * (36 / (37 - r)));
+        document.getElementById('rm-results').style.display = 'block';
+        document.getElementById('res-epley').innerText = epley + "kg";
+        document.getElementById('res-brzycki').innerText = brzycki + "kg";
+        let html = `<div class="quad-title" style="margin-top:15px">Load Chart</div>`;
+        for(let i=1; i<=10; i++) {
+            let load = Math.round(((epley+brzycki)/2) / (1 + (i / 30)));
+            html += `<div class="rm-row"><span>${i} Reps</span> <b>${load}kg</b></div>`;
+        }
+        document.getElementById('rm-chart').innerHTML = html;
+    }
+
+    function syncBPM(v) { document.getElementById('bpm-val').innerText = v; if(mActive) { stopMetronome(); toggleMetronome(); } }
+    function toggleMetronome() {
+        if(mActive) return stopMetronome();
+        mActive = true; document.getElementById('m-btn').innerText = 'STOP';
+        mIdx = setInterval(() => synthClick(880), 60000 / document.getElementById('m-slider').value);
+    }
+    function stopMetronome() { clearInterval(mIdx); mActive = false; if(document.getElementById('m-btn')) document.getElementById('m-btn').innerText = 'START'; }
+
+    function toggleInterval() {
+        if(intRunning) { clearInterval(intT); intRunning = false; document.getElementById('int-btn').innerText="START"; return; }
+        intRem = parseInt(document.getElementById('int-w').value);
+        intRunning = true; document.getElementById('int-btn').innerText="STOP";
+        intT = setInterval(() => {
+            intRem--;
+            if(intRem < 0) {
+                intW = !intW;
+                intRem = intW ? parseInt(document.getElementById('int-w').value) : parseInt(document.getElementById('int-r').value);
+                synthClick(intW ? 880 : 440);
+            }
+            document.getElementById('int-display').innerText = `00:${intRem.toString().padStart(2,'0')}`;
+            document.getElementById('int-phase').innerText = intW ? "WORK" : "REST";
+        }, 1000);
+    }
+
+    function toggleCountdown() {
+        if(cdRunning) { clearInterval(cdInt); cdRunning=false; document.getElementById('cd-btn').innerText="START"; return; }
+        let start = Date.now();
+        cdRunning = true; document.getElementById('cd-btn').innerText = "STOP";
+        cdInt = setInterval(() => {
+            let diff = Date.now() - start;
+            let m = Math.floor(diff / 60000);
+            let s = Math.floor((diff % 60000) / 1000);
+            let ms = Math.floor((diff % 1000) / 10);
+            document.getElementById('cd-display').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${ms.toString().padStart(2,'0')}`;
+        }, 10);
+    }
+
+    function synthClick(f) {
+        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.frequency.value = f; g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.1);
+        o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1);
+    }
+
+    setInterval(() => {
+        const c = document.getElementById('analog-clock'); if(!c) return;
+        const ctx = c.getContext('2d'); ctx.clearRect(0,0,100,100); ctx.save(); ctx.translate(50,50);
+        ctx.rotate(new Date().getSeconds()*Math.PI/30); ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-40);
+        ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); ctx.restore();
+    }, 1000);
+</script>
+</body>
+</html>

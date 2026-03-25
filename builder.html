@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Dashboard | RestPeriod</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
+    
+    <style>
+/* Container for each search result item */
+.search-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #222;
+    transition: 0.2s;
+}
+
+.search-result:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* The Exercise Title in the list */
+.res-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #E0F7FA;
+    flex: 1;
+}
+
+/* The Buttons (+Warm Up / +Workout) */
+.add-small {
+    background: transparent;
+    border: 1px solid var(--brand-accent);
+    color: var(--brand-accent);
+    padding: 4px 8px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-left: 5px;
+    transition: 0.2s;
+}
+
+.add-small:hover {
+    background: var(--brand-accent);
+    color: #000;
+}
+        /* Vertical Stack for Filter Groups */
+        .filter-grid { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            margin: 15px 0; 
+            background: rgba(0,0,0,0.3); 
+            padding: 15px; 
+            border-radius: 6px; 
+            border: 1px solid #222;
+        }
+
+        /* Blue Outline Buttons */
+        .filter-btn { 
+            padding: 6px 12px; 
+            background: transparent; 
+            border: 1px solid var(--brand-blue); 
+            color: var(--brand-blue); 
+            border-radius: 4px; 
+            font-size: 0.65rem; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            text-transform: uppercase;
+        }
+
+        .filter-btn.active { 
+            background: var(--brand-blue); 
+            color: white; 
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
+        
+        :root { 
+            --brand-primary: #003B5C; 
+            --brand-secondary: #2E7D32; 
+            --brand-accent: #26C6DA; 
+            --brand-bg: #020c12; 
+            --text-main: #E0F7FA; 
+            --card-bg: #0e1b24; 
+            --input-bg: #002840;
+            --brand-blue: #007bff;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Open Sans', sans-serif; 
+            background: var(--brand-bg); 
+            color: var(--text-main); 
+            padding-bottom: 90px; 
+            overflow-x: hidden; 
+        }
+
+        * { box-sizing: border-box; }
+
+        /* HEADER & NAV */
+        .nav-top { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 15px 25px; 
+    background: #000; 
+    border-bottom: 1px solid #004d7a; 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+}
+
+.nav-links a { 
+    color: #888; 
+    text-decoration: none; 
+    margin-left: 20px; 
+    font-family: 'Montserrat'; 
+    font-weight: 700; 
+    font-size: 0.9rem; 
+}
+
+.nav-links a:hover { color: var(--brand-accent); }
+.nav-links a.active { color: white; border-bottom: 2px solid var(--brand-accent); }        .hamburger { cursor: pointer; font-size: 1.8rem; color: var(--brand-accent); transition: 0.3s; }
+        .hamburger:hover { color: white; }
+
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 4000; top: 0; right: 0; background-color: #000; overflow-x: hidden; transition: 0.4s; padding-top: 60px; border-left: 1px solid var(--brand-accent); }
+        .sidebar a { padding: 10px 20px; text-decoration: none; font-size: 1.1rem; color: #818181; display: block; transition: 0.3s; font-family: 'Montserrat'; font-weight: 700; }
+        .sidebar a:hover { color: var(--brand-accent); background: rgba(38, 198, 218, 0.05); }
+        .sidebar .closebtn { position: absolute; top: 0; right: 25px; font-size: 36px; cursor:pointer; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 1100px) { .container { grid-template-columns: 1fr; } }
+
+        /* CARDS */
+        .card { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid #004d7a; margin-bottom: 20px; transition: 0.3s; }
+        h3 { color: var(--brand-accent); text-transform: uppercase; font-family: 'Montserrat'; margin-top: 0; letter-spacing: 1px; }
+        
+        .client-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .client-table th { text-align: left; color: #666; font-size: 0.7rem; padding: 10px; border-bottom: 1px solid #333; }
+        .client-table td { padding: 12px 10px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
+        .client-table tr:hover { background: #002840; }
+
+        input, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #004d7a; color: white; border-radius: 4px; margin-bottom: 10px; font-size: 0.9rem; }
+        label { font-size: 0.65rem; color: #aaa; text-transform: uppercase; display: block; margin-bottom: 4px; font-weight: 800; }
+        
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 5px; text-align: center; transition: 0.2s; font-family: 'Montserrat'; }
+        .btn-green { background: var(--brand-secondary); color: white; }
+        .btn-green:hover { background: #388E3C; transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); }
+        .btn-outline:hover { background: var(--brand-accent); color: #000; }
+
+        /* BUILDER ITEMS - DRAG & DROP & ARROWS */
+        .section-divider { background: #000; padding: 12px 15px; border-radius: 4px; margin: 20px 0 10px 0; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--brand-accent); cursor: pointer; transition: 0.2s; }
+        .section-divider:hover { background: #050505; }
+        
+        .exercise-item { background: #001a2c; padding: 15px; border-radius: 6px; border: 1px solid #333; margin-bottom: 15px; position: relative; transition: transform 0.2s, border-color 0.2s; cursor: grab; }
+        .exercise-item:active { cursor: grabbing; transform: scale(1.01); border-color: var(--brand-accent); }
+        .exercise-item.dragging { opacity: 0.4; border: 2px dashed var(--brand-accent); }
+
+        .move-controls { display: flex; flex-direction: column; gap: 4px; margin-right: 12px; align-items: center; }
+        .move-arrow { cursor: pointer; color: var(--brand-accent); font-size: 0.9rem; opacity: 0.5; transition: 0.2s; }
+        .move-arrow:hover { opacity: 1; transform: scale(1.2); }
+
+        .exercise-name-title { font-size: 1.15rem; color: var(--brand-accent); font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; }
+        
+        .metrics-grid { display: grid; grid-template-columns: 0.6fr 1fr 1fr 1fr 1fr 0.4fr; gap: 5px; margin-top: 10px; }
+        .metric-unit { display: flex; flex-direction: column; align-items: center; }
+        .metric-unit label { font-size: 0.5rem; margin-bottom: 2px; color: var(--brand-accent); font-weight: 800; }
+        .metric-unit input { font-size: 0.85rem; text-align: center; background: #000; border: 1px solid #004d7a; width: 100%; padding: 6px; color: white; border-radius: 4px; }
+
+        /* TAB SYSTEM */
+        .tab-container { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; }
+        .tab { padding: 10px 18px; background: #001a2c; border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.85rem; color: #888; transition: 0.2s; font-weight: 700; white-space: nowrap; }
+        .tab.active { background: var(--brand-accent); color: black; font-weight: 800; box-shadow: 0 0 10px var(--brand-accent); }
+        
+        .modal { display: none; position: fixed; z-index: 5000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); overflow: auto; animation: fadeIn 0.3s; }
+        .modal-content { background: var(--card-bg); margin: 5% auto; padding: 30px; border: 1px solid var(--brand-accent); width: 95%; max-width: 500px; border-radius: 12px; text-align: center; }
+
+        .history-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #222; transition: 0.2s; }
+        .history-row:hover { background: rgba(255,255,255,0.03); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+   <div class="nav-top">
+    <div style="font-weight:800; font-size:1.4rem;">REST <span style="color:var(--brand-accent)">PERIOD</span></div>
+    <div class="nav-links">
+        <a href="index.html">DASHBOARD</a>
+        <a href="builder.html" class="active">BUILDER</a>
+        <a href="library.html">LIBRARY</a>
+        <a href="templates.html" class="active">TEMPLATES</a>
+        <a href="#" onclick="handleLogout()">LOGOUT</a>
+    </div>
+</div>
+
+    <div class="container">
+        <div class="card" style="grid-column: 1 / -1;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>📊 Client Roster</h3>
+                <button class="btn btn-outline" style="width:auto; padding:6px 15px; font-size:0.7rem;" onclick="openModal('addClientModal')">+ NEW CLIENT</button>
+            </div>
+            <table class="client-table"><tbody id="client-table-body"></tbody></table>
+        </div>
+
+        <div>
+            <div class="card">
+                <label>Active Client</label>
+                <select id="client-select" onchange="loadProgramHistory()"><option value="">-- Select --</option></select>
+                
+                <div id="history-panel" style="display:none; margin-top:20px;">
+                    <button class="btn btn-green" onclick="startNewProgram()">+ CREATE NEW TRAINING BLOCK</button>
+                    <div id="history-list" style="margin-top:10px;"></div>
+                </div>
+                
+               <div id="program-info-area" style="margin-top:20px; display:none;">
+    <label>Block Name</label>
+    <input type="text" id="prog-name" placeholder="e.g. Hypertrophy Phase 1">
+    
+    <label style="margin-top:10px;">Session Description</label>
+    <input type="text" id="prog-desc" placeholder="e.g. Focus on control and depth today.">
+</div>
+</div>
+
+            <div class="card" id="schedule-card" style="display:none;">
+                <div class="tab-container" id="week-tabs-container"></div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                    <button class="btn btn-outline" onclick="undo()"><i class="fas fa-undo"></i> Undo</button>
+                    <button class="btn btn-outline" onclick="redo()"><i class="fas fa-redo"></i> Redo</button>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
+                    <button class="btn btn-outline" style="font-size:0.7rem;" onclick="duplicateWeek()">Copy Prev Week</button>
+                    <button class="btn btn-outline" style="font-size:0.7rem; border-color:#ff4d4d; color:#ff4d4d;" onclick="deleteWeek()">Delete Week</button>
+                </div>
+                
+                <div class="section-divider">
+                    <span onclick="toggleWarmupCollapse()" style="flex:1;"><i class="fas fa-fire"></i> WARM UP <i id="warmup-chevron" class="fas fa-chevron-down"></i></span>
+                    <span class="save-sec-btn" onclick="saveSectionTemplate('warmup')" style="font-size: 0.6rem; color: #666; cursor: pointer; margin-left: 10px;"><i class="fas fa-star"></i> SAVE AS TEMPLATE</span>
+                </div>
+                <div id="warmup-list"></div>
+
+                <div class="section-divider" style="border-left-color: var(--brand-secondary);">
+                    <span style="flex:1;"><i class="fas fa-dumbbell"></i> MAIN WORKOUT</span>
+                    <span class="save-sec-btn" onclick="saveSectionTemplate('exercises')" style="font-size: 0.6rem; color: #666; cursor: pointer; margin-left: 10px;"><i class="fas fa-star"></i> SAVE AS TEMPLATE</span>
+                </div>
+                <div id="workout-list"></div>
+
+                <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:10px; margin-top:30px;">
+                    <button class="btn btn-green" onclick="saveProgramToDB()">💾 PUBLISH PROGRAM</button>
+                    <button class="btn btn-outline" onclick="saveAsTemplate()">🧬 TEMPLATE</button>
+                </div>
+            </div>
+        </div>
+
+     <div id="library-col" style="display:none;">
+            <div class="card" style="position:sticky; top:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                    <h3 style="margin:0;">VAULT</h3>
+                    <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:0.6rem;" onclick="openModal('addExModal')">+ NEW TO LIB</button>
+                </div>
+                
+                <label>📂 Load Full Training Block (All Weeks)</label>
+                <select id="full-template-select" onchange="loadFullProgramTemplate(this.value)" style="border-color: var(--brand-secondary); margin-bottom: 20px;">
+                    <option value="">-- Choose a Training Block --</option>
+                </select>
+
+                <label>Load Section Template</label>
+                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 15px;">
+                    <select id="section-template-select" onchange="loadSectionTemplate(this.value)" style="margin-bottom:0;">
+                        <option value="">-- Choose a template --</option>
+                    </select>
+                    <i class="fas fa-trash-alt" style="color: #ff4d4d; cursor:pointer;" onclick="deleteSectionTemplate()"></i>
+                </div>
+
+                <input type="text" id="lib-search-text" placeholder="Search exercises..." onkeyup="runLibrarySearch()">
+                <div class="filter-grid" id="filter-container"></div>
+                <div id="lib-results" style="max-height: 600px; overflow-y: auto; border: 1px solid #333; margin-top:10px;"></div>
+            </div>
+        </div>
+
+    <div id="addClientModal" class="modal"><div class="modal-content">
+        <span onclick="closeModal('addClientModal')" style="float:right; cursor:pointer;">&times;</span>
+        <h3>CREATE CLIENT ACCOUNT</h3>
+        <label>Name</label><input type="text" id="new-client-name">
+        <label>Email</label><input type="email" id="new-client-email">
+        <label>Password</label><input type="text" id="new-client-pass">
+        <button class="btn btn-green" onclick="saveNewClient()">CREATE CLIENT</button>
+    </div></div>
+
+  <div id="addExModal" class="modal">
+    <div class="modal-content">
+        <span onclick="closeModal('addExModal')" style="float:right; cursor:pointer;">&times;</span>
+        <h3>ADD NEW TO VAULT</h3>
+        <label>Exercise Name</label>
+        <input type="text" id="new-ex-name">
+        
+        <label>Select Tags</label>
+        <div id="modal-tag-groups" style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 4px; margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 5px;">
+            </div>
+
+        <label>Video URL</label>
+        <input type="text" id="new-ex-video">
+        <button class="btn btn-green" onclick="saveNewExerciseToLib()">SAVE TO DATABASE</button>
+    </div>
+</div>
+
+    <script>
+        async function deleteProgram(id) {
+    // 1. Confirm with the user (Safety First!)
+    if (!confirm("Are you sure you want to permanently delete this training block? This cannot be undone.")) {
+        return;
+    }
+
+    try {
+        // 2. Execute the delete command in PocketBase
+        await pb.collection('programs').delete(id);
+        
+        // 3. UI Cleanup: If the program being deleted is the one currently open, reset the builder
+        if (editingProgramId === id) {
+            editingProgramId = null;
+            programData = [{weekNum: 1, warmup: [], exercises: []}];
+            document.getElementById('prog-name').value = "";
+            renderTabs();
+            renderLists();
+            // Hide the cards if nothing is being edited anymore
+            document.getElementById('schedule-card').style.display = 'none';
+        }
+
+        // 4. Refresh the history list so the deleted program disappears
+        alert("Program deleted successfully.");
+        await loadProgramHistory(); 
+
+    } catch (e) {
+        console.error("Delete Error:", e);
+        alert("Error deleting program: " + e.message);
+    }
+}
+        function deleteWeek() {
+    // 1. Safety Check: Don't allow deleting if only one week exists
+    if (programData.length <= 1) {
+        alert("A program must have at least one week.");
+        return;
+    }
+
+    // 2. Confirmation prompt to avoid accidental deletions
+    if (confirm(`Are you sure you want to delete Week ${programData[currentWeekIndex].weekNum}?`)) {
+        
+        // 3. Remove the current week from the array
+        programData.splice(currentWeekIndex, 1);
+
+        // 4. Renumber remaining weeks so they are always 1, 2, 3, etc.
+        programData.forEach((week, index) => {
+            week.weekNum = index + 1;
+        });
+
+        // 5. Adjust currentWeekIndex so it doesn't point to a non-existent week
+        if (currentWeekIndex >= programData.length) {
+            currentWeekIndex = programData.length - 1;
+        }
+
+        // 6. Update the App State and UI
+        saveHistory();  // For Undo/Redo support
+        renderTabs();   // Refresh the Week Tabs at the top
+        renderLists();  // Refresh the Warmup/Workout lists below
+    }
+}
+        function duplicateWeek() {
+    // 1. Check if there is a previous week to copy from
+    if (currentWeekIndex === 0) {
+        alert("Cannot copy previous week: You are on Week 1.");
+        return;
+    }
+
+    // 2. Get the data from the previous week
+    const prevWeek = programData[currentWeekIndex - 1];
+
+    // 3. Create a deep copy of the warmup and exercises
+    // We use JSON.parse(JSON.stringify()) to ensure we don't accidentally link the weeks
+    const newWarmup = JSON.parse(JSON.stringify(prevWeek.warmup));
+    const newExercises = JSON.parse(JSON.stringify(prevWeek.exercises));
+
+    // 4. Overwrite the current week's data
+    programData[currentWeekIndex].warmup = newWarmup;
+    programData[currentWeekIndex].exercises = newExercises;
+
+    // 5. Update UI and History
+    saveHistory();
+    renderLists();
+    alert(`Copied data from Week ${prevWeek.weekNum} into the current week.`);
+}
+
+        const pb = new PocketBase('https://restperiod.org');
+        let modalActiveTags = [];
+        let programData = [{weekNum:1, warmup: [], exercises:[]}];
+        let currentWeekIndex = 0;
+        let editingProgramId = null;
+        let activeFilters = [];
+        let warmupCollapsed = false;
+        let draggedItemIndex = null;
+        let draggedType = null;
+
+        let history = [];
+        let historyIndex = -1;
+
+        const filterGroups = {
+            "MOVEMENT": { "PUSH": "PUSH", "PULL": "PULL", "SQUAT": "SQUAT", "HINGE": "HINGE" },
+            "ANGLE": { "HOR": "HORIZONTAL", "VER": "VERTICAL" },
+            "LIMBS": { "DA": "DOUBLE ARM", "DL": "DOUBLE LEG", "SA": "SINGLE ARM", "SL": "SINGLE LEG" },
+            "EQUIPMENT": { "BB": "BARBELL", "DB": "DUMBBELL", "BW": "BODYWEIGHT", "BND": "BAND" },
+            "TYPE": { "MOB": "MOBILITY", "PRIMER": "PRIMER" },
+            "BODY PART": { "UB": "UPPER BODY", "LB": "LOWER BODY" }
+        };
+
+        window.onload = async () => {
+            if(!pb.authStore.isValid) window.location.href = 'index.html';
+            setupFilters();
+            await loadDashboard();
+            await loadCustomExercises();
+            await fetchSectionTemplates();
+            runLibrarySearch();
+        };
+
+        // --- DASHBOARD & ROSTER ---
+        async function loadDashboard() {
+            try {
+                const users = await pb.collection('users').getList(1, 100, { filter: 'role="client"', sort: 'name' });
+                const tableBody = document.getElementById('client-table-body');
+                const dropdown = document.getElementById('client-select');
+                
+                dropdown.innerHTML = '<option value="">-- Select Client --</option>' + 
+                    users.items.map(u => `<option value="${u.id}">${u.name}</option>`).join('');
+
+                tableBody.innerHTML = users.items.map(u => `
+                    <tr onclick="selectClient('${u.id}')">
+                        <td>${u.name}</td>
+                        <td style="text-align:right; color:#555;">Active</td>
+                    </tr>`).join('');
+            } catch(e) { console.error("Roster Error:", e); }
+        }
+
+        function selectClient(id) {
+            document.getElementById('client-select').value = id;
+            loadProgramHistory();
+        }
+
+        // 1. Fetch only NON-archived programs for the main list
+async function loadProgramHistory() {
+    const cid = document.getElementById('client-select').value;
+    if(!cid) return;
+    document.getElementById('history-panel').style.display = 'block';
+    try {
+        // We added the filter: archived = false
+        const progs = await pb.collection('programs').getList(1, 50, { 
+            filter: `client="${cid}" && archived=false`, 
+            sort: '-created' 
+        });
+        
+        document.getElementById('history-list').innerHTML = progs.items.map(p => `
+            <div class="history-row" style="display:flex; justify-content:space-between; align-items:center;">
+                <span onclick="loadProgram('${p.id}')" style="cursor:pointer; font-weight:600;">${p.name}</span>
+                <div style="display:flex; gap:12px;">
+                    <i class="fas fa-archive" title="Archive" style="color:var(--brand-accent); cursor:pointer;" onclick="archiveProgram('${p.id}', true)"></i>
+                    <i class="fas fa-trash" title="Permanent Delete" style="color:#ff4d4d; cursor:pointer;" onclick="deleteProgram('${p.id}')"></i>
+                </div>
+            </div>`).join('') || '<div style="color:#555; font-size:0.8rem; padding:10px;">No active programs.</div>';
+            
+    } catch(e) { console.error("History Error:", e); }
+}
+
+// 2. The Toggling Function
+async function archiveProgram(id, shouldArchive) {
+    const action = shouldArchive ? "Archive" : "Restore";
+    if(!confirm(`${action} this program?`)) return;
+
+    try {
+        await pb.collection('programs').update(id, { archived: shouldArchive });
+        
+        // If archiving the currently open program, clear the builder
+        if (shouldArchive && editingProgramId === id) {
+            startNewProgram();
+            document.getElementById('schedule-card').style.display = 'none';
+        }
+        
+        alert(`Program ${action}d!`);
+        loadProgramHistory(); // Refresh the list
+    } catch(e) {
+        alert("Error: " + e.message);
+    }
+}
+
+        // --- TEMPLATE LOGIC ---
+   async function fetchSectionTemplates() {
+    try {
+        // We fetch everything from the templates collection
+        const records = await pb.collection('templates').getFullList({ 
+            sort: '-created' 
+        });
+        
+        console.log("Templates fetched:", records); // DEBUG: Open F12 console to see if data arrives
+
+        const sectionSelect = document.getElementById('section-template-select');
+        const fullSelect = document.getElementById('full-template-select');
+
+        // 1. Fill the "Full Training Block" Dropdown (type: 'full')
+        const blocks = records.filter(r => r.type === 'full');
+        fullSelect.innerHTML = '<option value="">-- Choose a Training Block --</option>' + 
+            blocks.map(r => {
+                // Determine week count for the label
+                const weekCount = Array.isArray(r.workout_data) ? r.workout_data.length : 1;
+                return `<option value="${r.id}">${r.name} (${weekCount} Wks)</option>`;
+            }).join('');
+
+        // 2. Fill the "Section" Dropdown (type: warmup or workout)
+        const sections = records.filter(r => r.type === 'warmup' || r.type === 'workout');
+        sectionSelect.innerHTML = '<option value="">-- Load Saved Section --</option>' + 
+            sections.map(r => `<option value="${r.id}">[${r.type.toUpperCase()}] ${r.name}</option>`).join('');
+
+    } catch(e) { 
+        console.error("Fetch Templates Error:", e); 
+    }
+}
+        async function saveSectionTemplate(type) {
+            const list = programData[currentWeekIndex][type];
+            if(list.length === 0) return alert("Section is empty!");
+            const name = prompt("Template Name:");
+            if(!name) return;
+            try {
+                await pb.collection('templates').create({
+                    name: name,
+                    type: type === 'warmup' ? 'warmup' : 'workout',
+                    workout_data: JSON.stringify(list)
+                });
+                alert("Section Template Saved!");
+                await fetchSectionTemplates();
+            } catch(e) { alert("Save Error: " + e.message); }
+        }
+
+        async function deleteSectionTemplate() {
+            const templateId = document.getElementById('section-template-select').value;
+            if (!templateId) return alert("Select a template first.");
+            try {
+                await pb.collection('templates').delete(templateId);
+                await fetchSectionTemplates();
+            } catch (e) { alert("Delete Error: " + e.message); }
+        }
+
+     async function loadSectionTemplate(id) {
+    if(!id) return;
+    try {
+        const record = await pb.collection('templates').getOne(id);
+        
+        // Smart Parse: handles both string and object data
+        let data = record.workout_data;
+        if (typeof data === 'string') {
+            data = JSON.parse(data);
+        }
+
+        // Determine where to put it based on the Template Type
+        // If type is 'warmup', it goes to warmup. Otherwise, it goes to exercises.
+        const targetSection = record.type === 'warmup' ? 'warmup' : 'exercises';
+        
+        // Append the template data to the existing list for the current week
+        programData[currentWeekIndex][targetSection] = [
+            ...programData[currentWeekIndex][targetSection], 
+            ...data
+        ];
+
+        saveHistory(); 
+        renderLists();
+        
+        // Reset the select menu so you can add another one if you want
+        document.getElementById('section-template-select').value = "";
+        
+        console.log(`Successfully loaded ${record.name} into ${targetSection}`);
+    } catch(e) { 
+        console.error("Load Error:", e);
+        alert("Load Error: " + e.message); 
+    }
+}
+async function loadFullProgramTemplate(id) {
+    if(!id) return;
+    if(!confirm("This will replace all current weeks. Continue?")) {
+        document.getElementById('full-template-select').value = "";
+        return;
+    }
+    
+    try {
+        const record = await pb.collection('templates').getOne(id);
+        let incoming = record.workout_data;
+        
+        // 1. Convert string to object if needed
+        if (typeof incoming === 'string') incoming = JSON.parse(incoming);
+
+        // 2. DEEP SEARCH: Look for the array of weeks
+        // Check if it's the array itself, or if it's inside 'schedule' or 'weeks'
+        let finalData = null;
+        if (Array.isArray(incoming)) {
+            finalData = incoming;
+        } else if (incoming.schedule && Array.isArray(incoming.schedule)) {
+            finalData = incoming.schedule;
+        } else if (incoming.weeks && Array.isArray(incoming.weeks)) {
+            finalData = incoming.weeks;
+        }
+
+        if (!finalData) {
+            throw new Error("Could not find a valid list of weeks in this template.");
+        }
+
+        // 3. Apply and Refresh
+        programData = finalData; 
+        currentWeekIndex = 0; 
+        
+        saveHistory();
+        renderTabs();
+        renderLists();
+        
+        alert(`Loaded: ${record.name}`);
+        document.getElementById('full-template-select').value = "";
+    } catch(e) {
+        console.error("Detailed Load Error:", e);
+        alert("Load Error: " + e.message);
+        document.getElementById('full-template-select').value = "";
+    }
+}
+        // --- FILTER SETUP ---
+        function setupFilters() {
+            const container = document.getElementById('filter-container');
+            let html = '';
+            for (const [groupName, options] of Object.entries(filterGroups)) {
+                html += `
+                    <div style="width: 100%;">
+                        <div style="font-size: 0.55rem; color: var(--brand-accent); font-weight: 800; margin-bottom: 5px; letter-spacing: 1px;">${groupName}</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom:10px;">
+                            ${Object.entries(options).map(([tag, label]) => `
+                                <button class="filter-btn" id="f-${tag}" onclick="toggleFilter('${tag}')">${label}</button>
+                            `).join('')}
+                        </div>
+                    </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function toggleFilter(f) {
+            const btn = document.getElementById(`f-${f}`);
+            if(activeFilters.includes(f)) {
+                activeFilters = activeFilters.filter(i => i !== f);
+                btn.classList.remove('active');
+            } else {
+                activeFilters.push(f);
+                btn.classList.add('active');
+            }
+            runLibrarySearch();
+        }
+
+        // --- CORE LOGIC ---
+        function saveHistory() {
+            if (historyIndex < history.length - 1) history = history.slice(0, historyIndex + 1);
+            history.push(JSON.stringify(programData));
+            if (history.length > 50) history.shift();
+            historyIndex = history.length - 1;
+        }
+
+        function undo() {
+            if (historyIndex > 0) { historyIndex--; programData = JSON.parse(history[historyIndex]); renderLists(); renderTabs(); }
+        }
+
+        function redo() {
+            if (historyIndex < history.length - 1) { historyIndex++; programData = JSON.parse(history[historyIndex]); renderLists(); renderTabs(); }
+        }
+
+        async function loadProgram(id) {
+    try {
+        const p = await pb.collection('programs').getOne(id);
+        editingProgramId = p.id;
+        
+        // Fill the inputs
+        document.getElementById('prog-name').value = p.name || "";
+        document.getElementById('prog-desc').value = p.description || ""; // Added this line
+        
+        let data = typeof p.workout_data === 'string' ? JSON.parse(p.workout_data) : p.workout_data;
+        programData = data.schedule || data;
+        
+        // ... rest of your existing logic (forEach, showUI, etc.)
+        programData.forEach(w => {
+            if(!w.warmup) w.warmup = [];
+            if(!w.exercises) w.exercises = [];
+        });
+        
+        showUI(); 
+        renderTabs(); 
+        renderLists(); 
+        saveHistory();
+    } catch(e) { alert("Load Error: " + e.message); }
+}
+
+        function renderLists() {
+            renderListMarkup('warmup-list', programData[currentWeekIndex].warmup, 'warmup');
+            renderListMarkup('workout-list', programData[currentWeekIndex].exercises, 'exercises');
+        }
+
+        function renderListMarkup(id, list, type) {
+            const container = document.getElementById(id);
+            container.innerHTML = list.map((ex, i) => `
+                <div class="exercise-item" draggable="true" 
+                     ondragstart="draggedItemIndex=${i}; draggedType='${type}';" 
+                     ondragover="event.preventDefault(); this.style.borderTop='2px solid var(--brand-accent)';"
+                     ondragleave="this.style.borderTop='none';"
+                     ondrop="handleDrop(event, ${i}, '${type}')">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; align-items:center;">
+                            <div class="move-controls">
+                                <i class="fas fa-chevron-up move-arrow" onclick="moveElement(${i}, '${type}', -1)"></i>
+                                <i class="fas fa-chevron-down move-arrow" onclick="moveElement(${i}, '${type}', 1)"></i>
+                            </div>
+                            <strong class="exercise-name-title">${ex.name}</strong>
+                        </div>
+                        <i class="fas fa-trash-alt" style="color:#555; cursor:pointer;" onclick="programData[currentWeekIndex].${type}.splice(${i}, 1); saveHistory(); renderLists();"></i>
+                    </div>
+                    <input type="text" value="${ex.grouping||''}" placeholder="Group (e.g. A1)" onchange="programData[currentWeekIndex].${type}[${i}].grouping=this.value; saveHistory();">
+                    ${ex.setsData.map((s, si) => `
+                        <div class="metrics-grid">
+                            <div class="metric-unit"><label>SET ${si+1}</label></div>
+                            <div class="metric-unit"><label>REPS</label><input type="text" value="${s.reps}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].reps=this.value; saveHistory();"></div>
+                            <div class="metric-unit"><label>KG</label><input type="text" value="${s.weight}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].weight=this.value; saveHistory();"></div>
+                            <div class="metric-unit"><label>TEMPO</label><input type="text" value="${s.tempo}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].tempo=this.value; saveHistory();"></div>
+                            <div class="metric-unit"><label>RPE</label><input type="text" value="${s.rpe}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rpe=this.value; saveHistory();"></div>
+                            <i class="fas fa-minus-circle" style="color:#b71c1c; cursor:pointer; align-self:center;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.splice(${si}, 1); saveHistory(); renderLists();"></i>
+                        </div>`).join('')}
+                    <button class="btn btn-outline" style="padding:6px; font-size:0.6rem; width:auto; margin-top:12px;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.push({...programData[currentWeekIndex].${type}[${i}].setsData.slice(-1)[0]}); saveHistory(); renderLists();">+ SET</button>
+                </div>`).join('');
+        }
+
+        // --- POSITION & SEARCH ---
+        function moveElement(idx, type, dir) {
+            const list = programData[currentWeekIndex][type];
+            if(idx + dir < 0 || idx + dir >= list.length) return;
+            [list[idx], list[idx+dir]] = [list[idx+dir], list[idx]];
+            saveHistory(); renderLists();
+        }
+
+        function handleDrop(e, targetIdx, targetType) {
+            e.currentTarget.style.borderTop = 'none';
+            if(draggedType !== targetType) return;
+            const list = programData[currentWeekIndex][targetType];
+            const movedItem = list.splice(draggedItemIndex, 1)[0];
+            list.splice(targetIdx, 0, movedItem);
+            saveHistory(); renderLists();
+        }
+
+        function runLibrarySearch() {
+            const q = document.getElementById('lib-search-text').value.toLowerCase();
+            const res = exerciseDatabase.filter(e => {
+                const textMatch = e.title.toLowerCase().includes(q) || e.searchStr.toLowerCase().includes(q);
+                const filterMatch = activeFilters.every(f => e.searchStr.toUpperCase().includes(f));
+                return textMatch && filterMatch;
+            });
+
+            document.getElementById('lib-results').innerHTML = res.slice(0, 40).map(e => `
+                <div class="search-result">
+                    <div class="res-title">${e.title.replace(/^([A-Z0-9-]{2,}\s*)+/, '')}</div>
+                    <div class="res-actions">
+                        <button class="add-small" onclick="addEx('${e.title.replace(/'/g, "\\'")}', 'warmup')">+ Warm Up</button>
+                        <button class="add-small" onclick="addEx('${e.title.replace(/'/g, "\\'")}', 'exercises')">+ Workout</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        function addEx(name, type) {
+            const clean = name.replace(/^([A-Z0-9-]{2,}\s*)+/, '');
+            programData[currentWeekIndex][type].push({ name: clean, grouping: "", setsData: [{reps: "10", weight: "0", tempo: "//", rpe: "7"}], notes: "" });
+            saveHistory(); renderLists();
+        }
+
+        // --- SYSTEM ---
+        function startNewProgram() { 
+    editingProgramId = null; 
+    programData = [{weekNum:1, warmup: [], exercises:[]}]; 
+    document.getElementById('prog-name').value = ""; 
+    document.getElementById('prog-desc').value = ""; // Added this line
+    showUI(); 
+    renderTabs(); 
+    renderLists(); 
+    saveHistory(); 
+}
+        function showUI() { document.getElementById('schedule-card').style.display = 'block'; document.getElementById('program-info-area').style.display = 'block'; document.getElementById('library-col').style.display = 'block'; }
+        function renderTabs() {
+    const container = document.getElementById('week-tabs-container');
+    if (!container) return;
+
+    // SAFETY CHECK: If programData is not an array, fix it instantly
+    if (!Array.isArray(programData)) {
+        console.error("programData was not an array! Resetting to default.");
+        programData = [{weekNum:1, warmup: [], exercises:[]}];
+    }
+    
+    container.innerHTML = programData.map((w, i) => `
+        <div class="tab ${i === currentWeekIndex ? 'active' : ''}" 
+             onclick="currentWeekIndex=${i}; renderTabs(); renderLists();">
+             Wk ${w.weekNum}
+        </div>`).join('') + 
+    `<div class="tab" onclick="programData.push({weekNum: programData.length+1, warmup:[], exercises:[]}); saveHistory(); renderTabs();">+</div>`;
+}
+        function toggleWarmupCollapse() { warmupCollapsed = !warmupCollapsed; document.getElementById('warmup-list').style.display = warmupCollapsed ? 'none' : 'block'; document.getElementById('warmup-chevron').className = warmupCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-down'; }
+        async function loadCustomExercises() { try { const recs = await pb.collection('custom_exercises').getFullList(); recs.forEach(r => { if(!exerciseDatabase.some(e=>e.id===r.id)) exerciseDatabase.push({id:r.id, title:r.title, searchStr:r.searchStr||r.title, video:r.video}); }); } catch(e){} }
+       async function saveNewExerciseToLib() {
+    const name = document.getElementById('new-ex-name').value;
+    const video = document.getElementById('new-ex-video').value;
+
+    if (!name) return alert("Please enter a name.");
+
+    // We combine the name and the toggled tags into the search string
+    const finalSearchStr = (name + " " + modalActiveTags.join(" ")).toUpperCase();
+
+    const data = { 
+        title: name, 
+        searchStr: finalSearchStr, 
+        video: video 
+    };
+
+    try {
+        await pb.collection('custom_exercises').create(data);
+        alert("Added to Vault!");
+        location.reload(); 
+    } catch(e) {
+        alert("Error: " + e.message);
+    }
+}
+        async function saveNewClient() { await pb.collection('users').create({ email: document.getElementById('new-client-email').value, password: document.getElementById('new-client-pass').value, passwordConfirm: document.getElementById('new-client-pass').value, name: document.getElementById('new-client-name').value, role: "client" }); location.reload(); }
+        async function deleteProgram(id) { if(confirm("Delete block?")) { await pb.collection('programs').delete(id); loadProgramHistory(); } }
+        async function saveProgramToDB() { 
+    const cid = document.getElementById('client-select').value;
+    if(!cid) return alert("Please select a client first.");
+
+    const payload = { 
+        workout_data: JSON.stringify({ schedule: programData }), 
+        client: cid, 
+        name: document.getElementById('prog-name').value,
+        description: document.getElementById('prog-desc').value // Added this line
+    }; 
+
+    if(editingProgramId) {
+        await pb.collection('programs').update(editingProgramId, payload); 
+    } else {
+        await pb.collection('programs').create(payload); 
+    }
+    alert("PUBLISHED!"); 
+}
+       async function saveAsTemplate() {
+            const name = prompt("Name this Full Program Template (e.g., 4-Week Strength Block):");
+            if (!name) return;
+
+            const payload = {
+    "name": name,
+    "type": 'full',
+    "workout_data": programData,
+    "creator": pb.authStore.model.id // This links the template to YOU
+};
+
+            try {
+                await pb.collection('templates').create(payload);
+                alert(`Training Block "${name}" saved!`);
+                await fetchSectionTemplates(); 
+            } catch (e) {
+                console.error(e);
+                alert("Error saving: " + e.message);
+            }
+        }
+
+        function openNav() { document.getElementById("mySidebar").style.width = "300px"; }
+        function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
+        function handleLogout() { pb.authStore.clear(); location.reload(); }
+        function openModal(id) {
+    document.getElementById(id).style.display = 'block';
+    if (id === 'addExModal') {
+        modalActiveTags = []; // Reset tags
+        buildModalTags();     // Create buttons
+    }
+}
+
+function buildModalTags() {
+    const container = document.getElementById('modal-tag-groups');
+    let html = '';
+    // This uses the exact filterGroups object you already have at the top of your script
+    for (const [groupName, options] of Object.entries(filterGroups)) {
+        html += `
+            <div style="margin-bottom: 10px;">
+                <div style="font-size: 0.5rem; color: var(--brand-accent); font-weight: 800; margin-bottom: 5px;">${groupName}</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                    ${Object.entries(options).map(([tag, label]) => `
+                        <button class="filter-btn" type="button" data-tag="${tag}" onclick="toggleModalTag('${tag}', this)" style="font-size: 0.55rem; padding: 4px 8px;">${label}</button>
+                    `).join('')}
+                </div>
+            </div>`;
+    }
+    container.innerHTML = html;
+}
+
+function toggleModalTag(tag, btn) {
+    if (modalActiveTags.includes(tag)) {
+        modalActiveTags = modalActiveTags.filter(t => t !== tag);
+        btn.classList.remove('active');
+    } else {
+        modalActiveTags.push(tag);
+        btn.classList.add('active');
+    }
+}
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    </script>
+</body>
+</html>

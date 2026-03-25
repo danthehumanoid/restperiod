@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primer Lower Body Exercises</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+
+    <div id="top"></div>
+
+    <div class="header">
+        <a href="index.html"><img src="RPLOGO Psychedelic.gif" alt="RPLOGO Psychedelic"></a>
+        
+        <nav class="top-nav-container">
+            <ul class="top-nav">
+                <li class="nav-item"><a href="index.html" class="nav-link">HOME - DTH</a></li>
+                <li class="nav-item"><a href="exlibindex.html" class="nav-link">HOME - EXERCISE LIBRARY</a></li>
+            </ul>
+        </nav>
+
+        <nav class="main-nav-container">
+            <ul class="main-nav">
+                <li class="nav-item"><a class="nav-link">CORE ▼</a><ul class="dropdown-menu"><li><a href="exlibcoreanterior.html">Anterior</a></li><li><a href="exlibcoreposterior.html">Posterior</a></li><li><a href="exlibcorestability.html">Total Core Stability</a></li><li><a href="exlibcoreside.html">Side</a></li></ul></li>
+                <li class="nav-item"><a class="nav-link">HINGE ▼</a><ul class="dropdown-menu"><li><a href="exlibhingedouble.html">Double Leg</a></li><li><a href="exlibhingesingle.html">Single Leg</a></li><li><a href="exlibhingesplit.html">Split Stance</a></li></ul></li>
+                <li class="nav-item"><a class="nav-link">MOBILITY ▼</a><ul class="dropdown-menu"><li><a href="exlibmobilityfb.html">Full Body</a></li><li><a href="exlibmobilitylb.html">Lower Body</a></li><li><a href="exlibmobilityub.html">Upper Body</a></li></ul></li>
+                <li class="nav-item"><a class="nav-link">PLYOMETRICS ▼</a><ul class="dropdown-menu"><li><a href="exlibplyovertical.html">Vertical</a></li><li><a href="exlibplyolateral.html">Lateral</a></li></ul></li>
+                <li class="nav-item"><a class="nav-link">PRIMER ▼</a><ul class="dropdown-menu"><li><a href="exlibprimerfb.html">Full Body</a></li><li><a href="exlibprimerlb.html">Lower Body</a></li><li><a href="exlibprimerub.html">Upper Body</a></li></ul></li>
+                <li class="nav-item"><a class="nav-link">PULL ▼</a><ul class="dropdown-menu"><li><a href="exlibpullvertical.html">Vertical</a></li><li><a href="exlibpullhorizontal.html">Horizontal</a></li></ul></li>
+                <li class="nav-item"><a class="nav-link">PUSH ▼</a><ul class="dropdown-menu"><li><a href="exlibpushvertical.html">Vertical</a></li><li><a href="exlibpushhorizontal.html">Horizontal</a></li></ul></li>
+                <li class="nav-item"><a class="nav-link">RECOVER ▼</a><ul class="dropdown-menu"><li><a href="exlibrectis.html">TISSUE</a></li><li><a href="exlibrecdec.html">DECOMPRESS</a></li></ul></li>
+                <li class="nav-item"><a class="nav-link">RUN ▼</a><ul class="dropdown-menu"><li><a href="exlibrunhorizontal.html">Horizontal</a></li><li><a href="exlibrunvertical.html">Vertical</a></li></ul></li>
+                <li class="nav-item"><a class="nav-link">SKILLS & DRILLS ▼</a><ul class="dropdown-menu"><li><a href="exlibskillsanddrillsball.html">BALL</a></li><li><a href="exlibskillsanddrillsbw.html">BODYWEIGHT</a></li><li><a href="exlibskillsanddrillsstick.html">STICK</a></li></ul></li>
+                <li class="nav-item"><a class="nav-link">SQUAT ▼</a><ul class="dropdown-menu"><li><a href="exlibsquatdouble.html">Double Leg</a></li><li><a href="exlibsquatsingle.html">Single Leg</a></li><li><a href="exlibsquatsplit.html">Split Squat</a></li></ul></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="email-container">
+        <button id="revealButton" onclick="revealEmail()">QUESTIONS? EMAIL ME</button>
+        <div id="emailDisplay">
+            <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="https://www.instagram.com/dan.thehuman/" target="_blank"><img src="InstagramDTH.png" alt="Follow Dan The Human on Instagram" style="width: 100px; height: 100px; margin: 0 5px;"></a>
+        <a href="https://buymeacoffee.com/deeteehacyh" target="_blank"><img src="dthsupport.png" alt="Support DTH" style="width: 100px; height: 100px; margin: 0 5px;"></a>
+        <a href="dthconnect.html" target="_blank"><img src="dthemaillist.png" alt="DTH emaillist" style="width: 100px; height: 100px; margin: 0 5px;"></a>
+    </div>
+
+    <div class="controls-container">
+        <input type="text" id="search-bar" placeholder="Search for a lower body primer exercise...">
+        <div id="workout-section">
+            <h3 id="workout-title" contenteditable="true"></h3>
+            <textarea id="workout-notes" placeholder="Add a summary or general program notes here..."></textarea>
+            <ul id="workout-list"></ul>
+            
+            <button id="add-blank-exercise" style="background: #555; color: white; border: none; padding: 10px 18px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 15px; margin-right: 10px;">ADD BLANK EXERCISE</button>
+
+            <div class="workout-controls">
+                <button id="expand-all-btn">EXPAND ALL</button>
+                <button id="collapse-all-btn">COLLAPSE ALL</button>
+                <button id="share-workout">SHARE PLAN</button>
+                <button id="export-csv">EXPORT</button>
+                <button id="clear-workout">CLEAR</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="category-header" id="cat-primer-lb"><h2>PRIMER - LOWER BODY</h2><a href="#top" class="back-to-top">↑ back to top</a></div>
+
+    <div class="subcategory-header" id="cat-primer-ank"><h3>Ankle</h3><a href="#top" class="back-to-top">↑ back to top</a></div>
+    <h4 class="equipment-header" id="cat-primer-ank-bw">Bodyweight (BW)</h4>
+    <div class="video-grid">
+        <div class="video-item" id="primer-ank-bw-feet-together-calf-raise-eyes-closed"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BW Feet together calf raise eyes closed.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Feet Together Calf Raise Eyes Closed</div></div>
+        <div class="video-item" id="primer-ank-bw-feet-together-calf-raise-eyes-open"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BW Feet together calf raise eyes open.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Feet Together Calf Raise Eyes Open</div></div>
+        <div class="video-item" id="primer-ank-bw-feet-together-eyes-closed"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BW Feet together eyes closed.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Feet Together Eyes Closed</div></div>
+        <div class="video-item" id="primer-ank-bw-feet-together-eyes-open"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BW Feet together eyes open.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Feet Together Eyes Open</div></div>
+        <div class="video-item" id="primer-ank-bw-single-leg-calf-raise-fast-drop-and-fast-raise"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BW Single leg calf raise fast drop and fast raise.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Single Leg Calf Raise Fast Drop and Fast Raise</div></div>
+        <div class="video-item" id="primer-ank-bw-single-leg-calf-raise-fast-drop"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BW Single leg calf raise fast drop.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Single Leg Calf Raise Fast Drop</div></div>
+        <div class="video-item" id="primer-ank-bw-single-leg-calf-raise-pulses"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BW Single leg calf raise pulses.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Single Leg Calf Raise Pulses</div></div>
+        <div class="video-item" id="primer-ank-bw-tib-raises"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BW Tib raises.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Tib Raises</div></div>
+        <div class="video-item" id="primer-ank-bw-tib-window-wipers"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BW Tib window wipers.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Tib Window Wipers</div></div>
+    </div>
+    <h4 class="equipment-header" id="cat-primer-ank-bnd">Band (BND)</h4>
+    <div class="video-grid">
+        <div class="video-item" id="primer-ank-bnd-banded-ankle-inversion-eversion"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BND Banded ankle inversion eversion.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Banded Ankle Inversion Eversion</div></div>
+        <div class="video-item" id="primer-ank-bnd-banded-ankle-isometric-holds"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BND Banded ankle isometric holds.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Banded Ankle Isometric Holds</div></div>
+        <div class="video-item" id="primer-ank-bnd-banded-ankle-plantarflexion-dorsiflexion"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BND Banded ankle plantarflexion dorsiflexion.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Banded Ankle Plantarflexion Dorsiflexion</div></div>
+        <div class="video-item" id="primer-ank-bnd-banded-lying-calf-flicks"><div class="video-container"><video muted loop controlslist="nodownload" controls src="videos/Exercise/PRIMER LB ANK BND Banded lying calf flicks.mp4"></video><div class="watermark"><img src="RPLOGO Psychedelic.gif" alt="Watermark"></div><div class="hover-controls"><button class="hover-btn" onclick="shareVideo(this)">SHARE</button><button class="hover-btn" onclick="addToWorkout(this)">ADD</button><button class="hover-btn" onclick="toggleFocus(this)">FULL</button><button class="hover-btn active" onclick="toggleLoop(this)">LOOP</button></div></div><div class="video-title">Banded Lying Calf Flicks</div></div>
+    </div>
+
+    <div class="page-footer">
+        <img src="RPLOGO Psychedelic.gif" alt="RPLOGO Psychedelic">
+        <p><a href="dthconnect.html">Ideas? Questions? Stay in touch - DTH EMAIL LIST</a></p>
+    </div>
+
+    <div class="footer-notice">
+        This content is for personal use only. Please do not copy, re-upload, or distribute these videos without prior permission. Enjoy your training!
+    </div>
+
+    <div id="videoModal" class="video-modal-overlay">
+        <div class="modal-header">
+            <h3 id="modalTitle" class="modal-title">Exercise Title</h3>
+            <button class="close-modal-btn" id="closeModalBtn">CLOSE (X)</button>
+        </div>
+        <div class="modal-content-wrapper">
+            <video id="modalVideoPlayer" controls controlslist="nodownload" loop playsinline>
+                <source id="modalVideoSource" src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+    
+ <script>
+// Function to show the email
+window.revealEmail = function() {
+    const emailDiv = document.getElementById('emailDisplay');
+    if (emailDiv) emailDiv.style.display = 'block';
+    const emailButton = document.getElementById('revealButton');
+    if (emailButton) emailButton.style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    
+    // --- 1. Variable Declarations ---
+    const navItems = document.querySelectorAll('.main-nav .nav-item');
+    const searchBar = document.getElementById('search-bar');
+    const videoItems = document.querySelectorAll('.video-item');
+    const workoutSection = document.getElementById('workout-section');
+    const workoutList = document.getElementById('workout-list');
+    const workoutNotes = document.getElementById('workout-notes');
+    let programNotes = '';
+    const clearWorkoutBtn = document.getElementById('clear-workout');
+    const shareWorkoutBtn = document.getElementById('share-workout');
+    const exportCsvBtn = document.getElementById('export-csv');
+    let workoutItemsList = [];
+    
+    const expandAllBtn = document.getElementById('expand-all-btn');
+    const collapseAllBtn = document.getElementById('collapse-all-btn');
+    const addBlankExerciseBtn = document.getElementById('add-blank-exercise');
+
+    // --- MODAL ELEMENTS ---
+    const modal = document.getElementById('videoModal');
+    const modalPlayer = document.getElementById('modalVideoPlayer');
+    const modalTitleEl = document.getElementById('modalTitle');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // --- MODAL LOGIC ---
+    function openModalInternal(videoSrc, title) {
+        if (!videoSrc) {
+            alert("Video source not found for this exercise. Please delete and re-add it.");
+            return;
+        }
+        modalTitleEl.textContent = title;
+        modalPlayer.src = videoSrc;
+        modal.style.display = 'flex'; // Force display flex
+        setTimeout(() => modal.classList.add('active'), 10); // Small delay for animation
+        modalPlayer.play();
+    }
+
+    function closeModalInternal() {
+        modal.classList.remove('active');
+        setTimeout(() => modal.style.display = 'none', 300); // Wait for animation
+        modalPlayer.pause();
+        modalPlayer.currentTime = 0;
+        modalPlayer.src = ""; 
+    }
+
+    closeModalBtn.addEventListener('click', closeModalInternal);
+    
+    modal.addEventListener('click', function(e) {
+        if(e.target === modal) closeModalInternal();
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") closeModalInternal();
+    });
+    
+    // --- 2. Core Functions ---
+    function moveItem(index, direction) {
+        if (direction === 'up' && index > 0) {
+            [workoutItemsList[index], workoutItemsList[index - 1]] = [workoutItemsList[index - 1], workoutItemsList[index]];
+        } else if (direction === 'down' && index < workoutItemsList.length - 1) {
+            [workoutItemsList[index], workoutItemsList[index + 1]] = [workoutItemsList[index + 1], workoutItemsList[index]];
+        }
+        renderWorkout();
+        saveWorkout();
+    }
+    
+    function saveWorkout() {
+        localStorage.setItem('workoutPlan', JSON.stringify(workoutItemsList));
+        localStorage.setItem('programNotes', programNotes);
+    }
+
+    function loadWorkout() {
+        const savedWorkout = localStorage.getItem('workoutPlan');
+        const savedNotes = localStorage.getItem('programNotes');
+        if (savedWorkout) {
+            workoutItemsList = JSON.parse(savedWorkout);
+            renderWorkout();
+        }
+        if (savedNotes) {
+            programNotes = savedNotes;
+            workoutNotes.value = programNotes;
+        }
+    }
+
+    function toggleAll(action) {
+        const items = document.querySelectorAll('.workout-item');
+        items.forEach(item => {
+            const toggleBtn = item.querySelector('.details-toggle-btn');
+            if (action === 'expand') {
+                item.classList.add('active');
+                if (toggleBtn) toggleBtn.textContent = '▲';
+            } else if (action === 'collapse') {
+                item.classList.remove('active');
+                if (toggleBtn) toggleBtn.textContent = '▼';
+            }
+        });
+    }
+    
+    function addBlankExercise() {
+        const blankId = 'custom-' + Date.now();
+        const blankTitle = 'Custom Exercise (Click to Rename)';
+        const pageName = window.location.pathname.split('/').pop();
+
+        workoutItemsList.push({
+            id: blankId,
+            title: blankTitle,
+            page: pageName,
+            grouping: '', sets: '', reps: '', load: '', tempo: '', notes: ''
+        });
+
+        renderWorkout();
+        saveWorkout();
+
+        const newWorkoutItem = workoutList.lastElementChild;
+        if (newWorkoutItem) {
+            newWorkoutItem.classList.add('highlight', 'active');
+            newWorkoutItem.querySelector('.details-toggle-btn').textContent = '▲';
+            setTimeout(() => newWorkoutItem.classList.remove('highlight'), 3000);
+            newWorkoutItem.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // Function to render the workout list
+    function renderWorkout() {
+        workoutList.innerHTML = '';
+        if (workoutItemsList.length > 0) {
+            workoutSection.style.display = 'block';
+            
+            workoutItemsList.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'workout-item';
+                
+                const isCustom = item.id.startsWith('custom-');
+                
+                // Determine Video Source
+                let finalSrc = item.videoSrc;
+
+                // Fallback for current page items if not saved
+                if (!finalSrc && !isCustom) {
+                    const onPageElement = document.getElementById(item.id);
+                    if (onPageElement) {
+                        const videoTag = onPageElement.querySelector('video');
+                        if (videoTag) finalSrc = videoTag.getAttribute('src');
+                    }
+                }
+
+                // If no source found, use a visual indicator
+                let linkHtml = '';
+                if (finalSrc && !isCustom) {
+                    // Button logic prevents default link jumping
+                    linkHtml = `<button class="workout-title-btn modal-trigger" data-video-src="${finalSrc}" data-video-title="${item.title.replace(/"/g, '&quot;')}">${item.title}</button>`;
+                } else if (isCustom) {
+                    linkHtml = `<button class="workout-title-btn custom-exercise-title">${item.title}</button>`;
+                } else {
+                    // This is the fallback for BROKEN items (old items from other pages)
+                    // We warn them they need to re-add it
+                    linkHtml = `<span style="color:red; cursor:help;" title="Video link missing. Please delete and re-add this exercise.">${item.title} (Re-add me)</span>`;
+                }
+                
+                li.innerHTML = `
+                    <div class="reorder-controls">
+                        <button class="reorder-btn up" data-index="${index}">↑</button>
+                        <button class="reorder-btn down" data-index="${index}">↓</button>
+                    </div>
+                    <div class="workout-item-title">${linkHtml}</div>
+                    
+                    <button class="details-toggle-btn" data-index="${index}">${li.classList.contains('active') ? '▲' : '▼'}</button>
+
+                    <div class="collapsible-details">
+                        <div class="workout-item-inputs">
+                            <div class="input-group"><label>Grouping</label><input type="text" id="grouping-${index}" placeholder="A1" value="${item.grouping || ''}"></div>
+                            <div class="input-group"><label>Sets</label><input type="text" id="sets-${index}" placeholder="3" value="${item.sets || ''}"></div>
+                            <div class="input-group"><label>Reps</label><input type="text" id="reps-${index}" placeholder="8-12" value="${item.reps || ''}"></div>
+                            <div class="input-group"><label>Load</label><input type="text" id="load-${index}" placeholder="50kg" value="${item.load || ''}"></div>
+                            <div class="input-group"><label>Tempo</label><input type="text" id="tempo-${index}" placeholder="2010" value="${item.tempo || ''}"></div>
+                            <div class="input-group"><label>Notes</label><input type="text" id="notes-${index}" placeholder="Notes..." value="${item.notes || ''}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="workout-item-controls"><button class="workout-item-remove" data-index="${index}">×</button></div>
+                `;
+                
+                workoutList.appendChild(li);
+            });
+        } else {
+            workoutSection.style.display = 'none';
+        }
+    }
+
+    // --- 3. Event Listeners ---
+    navItems.forEach(item => {
+        const link = item.querySelector('.nav-link');
+        if (item.querySelector('.dropdown-menu')) {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                navItems.forEach(otherItem => {
+                    if (otherItem !== item) otherItem.classList.remove('active');
+                });
+                item.classList.toggle('active');
+            });
+        }
+    });
+    document.addEventListener('click', () => navItems.forEach(item => item.classList.remove('active')));
+
+    searchBar.addEventListener('input', function () {
+        const query = this.value.toLowerCase().trim();
+        videoItems.forEach(item => {
+            const title = item.querySelector('.video-title').textContent.toLowerCase();
+            item.style.display = title.includes(query) ? '' : 'none';
+        });
+    });
+
+    videoItems.forEach(item => {
+        const video = item.querySelector('video');
+        if (video) {
+            item.addEventListener('mouseenter', () => video.play());
+            item.addEventListener('mouseleave', () => video.pause());
+        }
+    });
+    
+    workoutNotes.addEventListener('input', function() {
+        programNotes = this.value;
+        saveWorkout();
+    });
+
+    workoutList.addEventListener('input', function(e) {
+        if (e.target.tagName === 'INPUT' && e.target.closest('.workout-item')) {
+            const li = e.target.closest('.workout-item');
+            const index = parseInt(li.querySelector('.workout-item-remove').dataset.index, 10);
+            const inputType = e.target.id.split('-')[0];
+            if (workoutItemsList[index]) {
+                workoutItemsList[index][inputType] = e.target.value;
+                saveWorkout();
+            }
+        }
+    });
+    
+    if (addBlankExerciseBtn) {
+        addBlankExerciseBtn.addEventListener('click', addBlankExercise);
+    }
+    
+    // --- MAIN CLICK HANDLER ---
+    workoutList.addEventListener('click', function(e) {
+        const target = e.target;
+        
+        // 1. POPUP VIDEO CLICK
+        const modalTrigger = target.closest('.modal-trigger');
+        if (modalTrigger) {
+            e.preventDefault(); // Stop any jump
+            const src = modalTrigger.getAttribute('data-video-src');
+            const title = modalTrigger.getAttribute('data-video-title');
+            if(src) openModalInternal(src, title);
+            return;
+        }
+
+        const index = parseInt(target.closest('.workout-item')?.querySelector('.workout-item-remove')?.dataset.index, 10);
+
+        // 2. COLLAPSE/EXPAND
+        if (target.classList.contains('details-toggle-btn')) {
+            const item = target.closest('.workout-item');
+            item.classList.toggle('active');
+            target.textContent = item.classList.contains('active') ? '▲' : '▼';
+            e.stopPropagation();
+            return; 
+        }
+        
+        // 3. RENAME CUSTOM EXERCISE
+        if (target.classList.contains('custom-exercise-title') && !isNaN(index)) {
+            const item = workoutItemsList[index];
+            const newTitle = prompt("Enter a new name for this exercise:", item.title);
+            if (newTitle && newTitle.trim()) {
+                item.title = newTitle.trim();
+                renderWorkout();
+                saveWorkout();
+            }
+        }
+
+        // 4. REMOVE/REORDER
+        if (!isNaN(index)) {
+            if (target.classList.contains('workout-item-remove')) {
+                workoutItemsList.splice(index, 1);
+                renderWorkout();
+                saveWorkout();
+            }
+            if (target.classList.contains('up')) moveItem(index, 'up');
+            if (target.classList.contains('down')) moveItem(index, 'down');
+        }
+    });
+    
+    if (expandAllBtn) expandAllBtn.addEventListener('click', () => toggleAll('expand'));
+    if (collapseAllBtn) collapseAllBtn.addEventListener('click', () => toggleAll('collapse'));
+
+    clearWorkoutBtn.addEventListener('click', () => {
+        if (confirm('Are you sure?')) {
+            workoutItemsList = [];
+            programNotes = '';
+            document.getElementById('workout-title').textContent = '';
+            workoutNotes.value = '';
+            renderWorkout();
+            saveWorkout();
+        }
+    });
+    
+    shareWorkoutBtn.addEventListener('click', () => {
+        if (workoutItemsList.length === 0) return alert("Workout plan is empty!");
+        const name = document.getElementById('workout-title').textContent.trim();
+        const notes = programNotes.trim();
+        // Include videoSrc in share data
+        const data = workoutItemsList.map(i => [i.id, i.page, i.title, i.grouping, i.sets, i.reps, i.load, i.tempo, i.notes, i.videoSrc || ''].map(f => encodeURIComponent(f || '')).join('|')).join(';');
+        const url = `${location.origin}${location.pathname.replace(/\/[^/]*$/, '/')}${workoutItemsList[0].page}?workout=${btoa(data)}${name ? `&name=${btoa(name)}` : ''}${notes ? `&mainnotes=${btoa(notes)}` : ''}`;
+        navigator.clipboard.writeText(url).then(() => alert('Workout link copied!'));
+    });
+    
+    exportCsvBtn.addEventListener('click', () => {
+        const name = document.getElementById('workout-title').textContent.trim() || 'workout_plan';
+        const programNotesText = programNotes.trim(); 
+        const headers = ["Exercise", "Grouping", "Sets", "Reps", "Load", "Tempo", "Notes", "Video Path"];
+        let csvContent = '';
+        if (programNotesText) {
+            csvContent += `"PROGRAM NOTES: ${programNotesText.replace(/"/g, '""')}"\r\n \r\n`;
+        }
+        csvContent += headers.join(',') + '\r\n';
+        const rows = workoutItemsList.map(i => [i.title, i.grouping, i.sets, i.reps, i.load, i.tempo, i.notes, i.videoSrc].map(f => `"${(f || '').replace(/"/g, '""')}"`).join(','));
+        csvContent += rows.join('\r\n');
+        const csv = `data:text/csv;charset=utf-8,${encodeURI(csvContent)}`;
+        const link = document.createElement("a");
+        link.setAttribute("href", csv);
+        link.setAttribute("download", `${name}.xls`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+    
+    function loadWorkoutFromURL() {
+        const params = new URLSearchParams(location.search);
+        const data = params.get('workout');
+        const name = params.get('name');
+        const mainNotes = params.get('mainnotes');
+
+        if (name) try { document.getElementById('workout-title').textContent = atob(name); } catch(e){}
+        if (mainNotes) {
+            try {
+                programNotes = atob(mainNotes);
+                workoutNotes.value = programNotes;
+                saveWorkout();
+            } catch(e) { console.error("Failed notes load"); }
+        }
+        if (data) {
+            try {
+                workoutItemsList = atob(data).split(';').map(s => {
+                    const parts = s.split('|').map(p => decodeURIComponent(p));
+                    // Handle old share links (9 parts) vs new share links (10 parts)
+                    const [id, page, title, grouping, sets, reps, load, tempo, notes, videoSrc] = parts;
+                    return { id, page, title, grouping, sets, reps, load, tempo, notes, videoSrc: videoSrc || '' };
+                }).filter(i => i && i.id);
+                renderWorkout();
+                saveWorkout();
+                history.pushState({}, '', location.pathname + location.hash);
+                setTimeout(() => workoutSection.scrollIntoView({ behavior: 'smooth' }), 100);
+            } catch (e) { console.error("Failed workout load"); }
+        }
+    }
+
+    function highlightExerciseFromURL() {
+        if(location.hash) {
+            const el = document.getElementById(location.hash.substring(1));
+            if(el) {
+                setTimeout(() => {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.classList.add('highlight');
+                    setTimeout(() => el.classList.remove('highlight'), 30000);
+                }, 250);
+            }
+        }
+    }
+
+    // --- ADD FUNCTION UPDATED TO SAVE VIDEO PATH ---
+    window.addToWorkout = function(button) {
+        const videoItem = button.closest('.video-item');
+        const id = videoItem.id;
+        const title = videoItem.querySelector('.video-title').textContent;
+        const videoEl = videoItem.querySelector('video');
+        const videoSrc = videoEl ? videoEl.getAttribute('src') : ''; // CRITICAL: Save the source
+        const pageName = window.location.pathname.split('/').pop();
+
+        if (!workoutItemsList.some(item => item.id === id)) {
+            workoutItemsList.push({ id, title, videoSrc, page: pageName, grouping: '', sets: '', reps: '', load: '', tempo: '', notes: '' });
+            renderWorkout();
+            saveWorkout();
+            button.textContent = 'ADDED ✔';
+            button.classList.add('active');
+            button.disabled = true;
+        }
+        const newWorkoutItem = workoutList.lastElementChild;
+        if (newWorkoutItem) {
+            newWorkoutItem.classList.add('highlight');
+            setTimeout(() => newWorkoutItem.classList.remove('highlight'), 3000);
+        }
+    };
+    
+    window.shareVideo = btn => navigator.clipboard.writeText(`${location.origin}${location.pathname}#${btn.closest('.video-item').id}`).then(() => alert('Link copied!'));
+    
+    window.toggleFocus = btn => {
+        const vc = btn.closest('.video-container');
+        vc.classList.toggle('focus-mode');
+        btn.textContent = vc.classList.contains('focus-mode') ? 'EXIT' : 'FULL';
+    };
+    
+    window.toggleLoop = btn => {
+        const v = btn.closest('.video-container').querySelector('video');
+        v.loop = !v.loop;
+        btn.classList.toggle('active', v.loop);
+    };
+    
+    loadWorkout();
+    loadWorkoutFromURL();
+    highlightExerciseFromURL();
+});
+</script>
+</body>
+</html>

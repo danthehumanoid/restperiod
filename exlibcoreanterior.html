@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anterior Core | Exercise Library</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo"><img src="RPLOGO Psychedelic.gif" alt="Logo"></div>
+        <nav class="sidebar-nav">
+            <span class="side-label">Navigation</span>
+            <a href="index.html" class="side-link">HOME</a>
+            <a href="exlibindex.html" class="side-link">LIBRARY</a>
+            <span class="side-label">Categories</span>
+            <a href="exlibcoreanterior.html" class="side-link active">Anterior Core</a>
+            <a href="exlibcoreposterior.html" class="side-link">Posterior Core</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="controls-container">
+            <input type="text" id="search-bar" placeholder="Search Anterior Core...">
+            
+            <section id="workout-section" style="display:none;">
+                <h3 id="workout-title" contenteditable="true">Program Name</h3>
+                <ul id="workout-list"></ul>
+                <button onclick="clearWorkout()" class="hover-btn">CLEAR PLAN</button>
+            </section>
+        </header>
+
+        <h4 class="equipment-header">Bodyweight</h4>
+        <div class="video-grid">
+            <div class="video-item" id="core-ant-bw-plank">
+                <div class="video-container">
+                    <video muted loop src="videos/Exercise/CORE ANT BW Elbow plank.mp4"></video>
+                    <div class="hover-controls">
+    <button class="hover-btn" onclick="addToWorkout(this)">ADD</button>
+    <button class="hover-btn" onclick="shareVideo(this)">SHARE</button> </div>
+                </div>
+                <div class="video-title">Elbow Plank</div>
+            </div>
+            </div>
+    </main>
+
+</body>
+</html>

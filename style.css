@@ -1,0 +1,178 @@
+/* --- 1. Global Reset & Variables --- */
+:root {
+    --accent: #00ffcc; /* Psychedelic Cyan */
+    --bg-dark: #0a0a0a;
+    --sidebar-bg: #111111;
+    --card-bg: #1a1a1a;
+    --text-main: #ffffff;
+    --text-dim: #b0b0b0;
+    --border: #2a2a2a;
+    --sidebar-width: 250px;
+    --brand-red: #ce0104;
+    --brand-yellow: #ffde18;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- 2. Sidebar Layout --- */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar-logo { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); }
+.sidebar-logo img { max-width: 120px; }
+
+.side-label {
+    display: block; padding: 15px 20px 5px;
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--accent); font-weight: bold;
+}
+
+.side-link {
+    display: block; padding: 10px 20px;
+    color: var(--text-dim); text-decoration: none; font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.side-link:hover { color: #fff; background: #222; }
+.side-link.active { color: var(--accent); border-left: 3px solid var(--accent); background: #1a1a1a; }
+
+/* --- 3. Main Content Area --- */
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 40px;
+    max-width: 1600px;
+}
+
+/* --- 4. Controls & Search --- */
+.controls-container { margin-bottom: 40px; }
+
+#search-bar {
+    width: 100%; padding: 15px 20px;
+    background: #000; border: 1px solid var(--border);
+    border-radius: 8px; color: white; font-size: 16px; outline: none;
+}
+#search-bar:focus { border-color: var(--accent); }
+
+/* --- 5. Workout Builder --- */
+#workout-section {
+    margin-top: 20px; background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+}
+
+.workout-item {
+    display: flex; flex-direction: column; 
+    gap: 10px; background: #222; padding: 15px;
+    border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--accent);
+}
+
+.workout-item-title { font-weight: bold; font-size: 1.1rem; }
+.workout-item-title a { color: var(--brand-yellow); text-decoration: none; }
+
+.workout-item-inputs { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; }
+.input-group { display: flex; flex-direction: column; gap: 4px; }
+.input-group label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
+
+.workout-item-inputs input {
+    width: 90px; background: #000; border: 1px solid #444;
+    color: white; padding: 8px; border-radius: 4px;
+}
+
+/* --- 6. Video Grid (VERTICAL FIX) --- */
+.category-header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid var(--accent); margin-bottom: 20px;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 20px;
+}
+
+.video-item {
+    background: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16 !important; 
+    background: #000;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block;
+}
+
+.video-title {
+    padding: 12px; font-size: 14px; font-weight: 500;
+    text-align: center; background: #222; min-height: 3em; display: flex; align-items: center; justify-content: center;
+}
+
+/* --- 7. Watermark & Hover Controls --- */
+.watermark { position: absolute; top: 10px; right: 10px; opacity: 0.4; pointer-events: none; }
+.watermark img { width: 40px; }
+
+.hover-controls {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.8); display: flex;
+    justify-content: space-around; padding: 12px;
+    opacity: 0; transition: opacity 0.3s;
+}
+.video-container:hover .hover-controls { opacity: 1; }
+
+.hover-btn {
+    background: var(--accent); border: none; color: #000;
+    padding: 6px 12px; border-radius: 4px; font-size: 10px;
+    font-weight: bold; cursor: pointer; text-transform: uppercase;
+}
+.hover-btn:hover { background: #fff; }
+
+/* --- 8. Focus & Highlight Styles --- */
+.focus-mode {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center;
+}
+
+.focus-mode video {
+    width: auto;
+    height: 90vh;
+    object-fit: contain;
+}
+
+@keyframes highlight-fade {
+    from { box-shadow: 0 0 15px 5px var(--accent); }
+    to { box-shadow: 0 0 0 0px transparent; }
+}
+.highlight { animation: highlight-fade 5s ease-out; }
+
+/* --- 9. Responsive Design --- */
+@media (max-width: 900px) {
+    body { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); }
+    .main-content { margin-left: 0; padding: 20px; }
+    .video-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+}
