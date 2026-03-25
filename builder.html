@@ -225,10 +225,10 @@
                 
                <div id="program-info-area" style="margin-top:20px; display:none;">
     <label>Block Name</label>
-    <input type="text" id="prog-name" placeholder="e.g. Hypertrophy Phase 1">
+    <input type="text" id="prog-name" placeholder="e.g. Hypertrophy Phase 1" oninput="triggerAutoSave()">
     
     <label style="margin-top:10px;">Session Description</label>
-    <input type="text" id="prog-desc" placeholder="e.g. Focus on control and depth today.">
+    <input type="text" id="prog-desc" placeholder="e.g. Focus on control and depth today." oninput="triggerAutoSave()">
 </div>
 </div>
 
@@ -696,11 +696,12 @@ async function loadFullProgramTemplate(id) {
 
         // --- CORE LOGIC ---
         function saveHistory() {
-            if (historyIndex < history.length - 1) history = history.slice(0, historyIndex + 1);
-            history.push(JSON.stringify(programData));
-            if (history.length > 50) history.shift();
-            historyIndex = history.length - 1;
-        }
+    if (historyIndex < history.length - 1) history = history.slice(0, historyIndex + 1);
+    history.push(JSON.stringify(programData));
+    if (history.length > 50) history.shift();
+    historyIndex = history.length - 1;
+    triggerAutoSave();
+}
 
         function undo() {
             if (historyIndex > 0) { historyIndex--; programData = JSON.parse(history[historyIndex]); renderLists(); renderTabs(); }
@@ -869,23 +870,65 @@ async function loadFullProgramTemplate(id) {
 }
         async function saveNewClient() { await pb.collection('users').create({ email: document.getElementById('new-client-email').value, password: document.getElementById('new-client-pass').value, passwordConfirm: document.getElementById('new-client-pass').value, name: document.getElementById('new-client-name').value, role: "client" }); location.reload(); }
         async function deleteProgram(id) { if(confirm("Delete block?")) { await pb.collection('programs').delete(id); loadProgramHistory(); } }
-        async function saveProgramToDB() { 
+        let autoSaveTimer = null;
+
+function triggerAutoSave() {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => saveProgramToDB(true), 1500);
+}
+
+async function saveProgramToDB(silent = false) { 
     const cid = document.getElementById('client-select').value;
-    if(!cid) return alert("Please select a client first.");
+    if (!cid) {
+        if (!silent) alert("Please select a client first.");
+        return;
+    }
 
     const payload = { 
         workout_data: JSON.stringify({ schedule: programData }), 
         client: cid, 
         name: document.getElementById('prog-name').value,
-        description: document.getElementById('prog-desc').value // Added this line
+        description: document.getElementById('prog-desc').value
     }; 
 
-    if(editingProgramId) {
-        await pb.collection('programs').update(editingProgramId, payload); 
-    } else {
-        await pb.collection('programs').create(payload); 
+    try {
+        if (editingProgramId) {
+            await pb.collection('programs').update(editingProgramId, payload);
+        } else {
+            const rec = await pb.collection('programs').create(payload);
+            editingProgramId = rec.id;
+        }
+
+        if (!silent) {
+            alert("PUBLISHED!");
+        } else {
+            // Show a subtle toast instead
+            showSaveToast();
+        }
+    } catch(e) {
+        if (!silent) alert("Save error: " + e.message);
     }
-    alert("PUBLISHED!"); 
+}
+
+function showSaveToast() {
+    let toast = document.getElementById('builder-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'builder-toast';
+        toast.style.cssText = `
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #052e16; border: 1px solid #166534;
+            color: #4ade80; padding: 8px 20px; border-radius: 50px;
+            font-size: 0.75rem; font-weight: 800; font-family: 'Montserrat', sans-serif;
+            z-index: 9999; opacity: 0; transition: opacity 0.3s;
+            pointer-events: none;
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.textContent = '✓ AUTO-SAVED';
+    toast.style.opacity = '1';
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(() => toast.style.opacity = '0', 2000);
 }
        async function saveAsTemplate() {
             const name = prompt("Name this Full Program Template (e.g., 4-Week Strength Block):");
