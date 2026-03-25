@@ -1096,11 +1096,15 @@ function solvePace() {
         ? `${tH}h ${tM}m ${tSS}s`
         : `${tM}m ${tSS}s`;
 
+   // Calculate m/s
+    const ms = (d * 1000) / t;
+
     out.innerHTML = `
         Distance: <strong style="color:var(--brand-accent)">${d.toFixed(2)} ${u}</strong><br>
         Time: <strong style="color:var(--brand-accent)">${timeStr}</strong><br>
         Pace: <strong style="color:var(--brand-accent)">${pM}:${String(pS).padStart(2,'0')} /${u}</strong><br>
-        Speed: <strong style="color:var(--brand-accent)">${sp.toFixed(2)} ${u}/h</strong>
+        Speed: <strong style="color:var(--brand-accent)">${sp.toFixed(2)} ${u}/h</strong><br>
+        Speed: <strong style="color:var(--brand-accent)">${ms.toFixed(2)} m/s</strong>
     `;
     out.style.display = 'block';
 }
