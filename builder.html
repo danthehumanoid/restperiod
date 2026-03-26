@@ -851,19 +851,41 @@ async function loadFullProgramTemplate(id) {
 
     if (!name) return alert("Please enter a name.");
 
-    // We combine the name and the toggled tags into the search string
     const finalSearchStr = (name + " " + modalActiveTags.join(" ")).toUpperCase();
 
-    const data = { 
-        title: name, 
-        searchStr: finalSearchStr, 
-        video: video 
-    };
+    const data = { title: name, searchStr: finalSearchStr, video: video };
 
     try {
-        await pb.collection('custom_exercises').create(data);
-        alert("Added to Vault!");
-        location.reload(); 
+        const rec = await pb.collection('custom_exercises').create(data);
+
+        // Add to local exercise database without reloading
+        exerciseDatabase.push({
+            id: rec.id,
+            title: name,
+            searchStr: finalSearchStr,
+            video: video,
+            src: video
+        });
+
+        // Clear the form
+        document.getElementById('new-ex-name').value = '';
+        document.getElementById('new-ex-video').value = '';
+        modalActiveTags = [];
+        document.querySelectorAll('#modal-tag-groups .filter-btn').forEach(b => b.classList.remove('active'));
+
+        // Close modal and refresh search results
+        closeModal('addExModal');
+        runLibrarySearch();
+
+        // Brief success flash on the + NEW TO LIB button
+        const btn = document.querySelector('[onclick="openModal(\'addExModal\')"]');
+        if (btn) {
+            const orig = btn.textContent;
+            btn.textContent = '✓ ADDED';
+            btn.style.color = '#4ade80';
+            setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+        }
+
     } catch(e) {
         alert("Error: " + e.message);
     }
