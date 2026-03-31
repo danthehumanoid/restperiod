@@ -637,8 +637,29 @@ async function finishSession() {
 }
 
     // --- UI HELPERS ---
-    function openTool(id) { document.querySelectorAll('.tool-content').forEach(el => el.style.display = 'none'); document.getElementById(id).style.display = 'block'; document.getElementById('toolModal').style.display = 'block'; }
-    function closeTool() { document.getElementById('toolModal').style.display = 'none'; isMetronomePlaying = false; clearTimeout(metroTimerID); }
+    // --- UI HELPERS ---
+const toolTitles = {
+    'pace-tool': '🏃 Pace Solver',
+    'onerm-tool': '🏋️ 1RM Calculator',
+    'metronome-tool': '🥁 Metronome',
+    'interval-tool': '🔁 Interval Timer',
+    'countdown-tool': '⏱ Countdown',
+    'stopwatch-tool': '⏲ Stopwatch'
+};
+
+function openTool(id) {
+    document.querySelectorAll('.tool-content').forEach(el => el.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+    document.getElementById('tool-modal-title').textContent = toolTitles[id] || '';
+    document.getElementById('toolModal').style.display = 'block';
+}
+
+function closeTool() {
+    document.getElementById('toolModal').style.display = 'none';
+    if (tMetroPlaying) tToggleMetronome();
+    if (tIntRunning) tToggleInterval();
+    if (tCdRunning) { clearInterval(tCdInterval); tCdRunning = false; }
+}
     function openNav() { document.getElementById("mySidebar").style.width = "300px"; }
     function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
     function toggleWarmup() {
@@ -647,41 +668,271 @@ async function finishSession() {
         c.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
     }
 
-    // --- TOOL CALCULATIONS ---
-    function calc1RM() {
-        const w = parseFloat(document.getElementById('rm-w').value), r = parseFloat(document.getElementById('rm-r').value);
-        if(!w || !r) return;
-        document.getElementById('res-epley').innerText = Math.round(w * (1 + r/30)) + "kg";
-        document.getElementById('res-brzycki').innerText = Math.round(w * (36/(37-r))) + "kg";
-        document.getElementById('rm-results').style.display = 'block';
+    // ── PACE SOLVER ───────────────────────────────────
+let tPaceUnit = 'km';
+
+function tSetPaceUnit(unit) {
+    tPaceUnit = unit;
+    document.getElementById('t-pace-km-btn').classList.toggle('active', unit === 'km');
+    document.getElementById('t-pace-mi-btn').classList.toggle('active', unit === 'mi');
+    document.getElementById('t-pace-dist-label').textContent = `Distance (${unit})`;
+    document.getElementById('t-pace-pace-label').textContent = `Pace (min:sec /${unit})`;
+    document.getElementById('t-pace-speed-label').textContent = `Speed (${unit}/h)`;
+    tClearPace();
+}
+
+function tClearPace() {
+    ['t-pace-dist','t-pace-min','t-pace-sec','t-pace-pace-min','t-pace-pace-sec','t-pace-speed'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
+    const out = document.getElementById('t-pace-output');
+    out.style.display = 'none'; out.innerHTML = '';
+}
+
+function tSolvePace() {
+    const dist  = document.getElementById('t-pace-dist').value;
+    const tMin  = document.getElementById('t-pace-min').value;
+    const tSec  = document.getElementById('t-pace-sec').value;
+    const pMin  = document.getElementById('t-pace-pace-min').value;
+    const pSec  = document.getElementById('t-pace-pace-sec').value;
+    const speed = document.getElementById('t-pace-speed').value;
+    const out   = document.getElementById('t-pace-output');
+    const u     = tPaceUnit;
+
+    const hasTime  = tMin !== '' || tSec !== '';
+    const hasPace  = pMin !== '' || pSec !== '';
+    const hasDist  = dist !== '';
+    const hasSpeed = speed !== '';
+
+    const totalTimeSec = hasTime  ? (parseFloat(tMin)||0)*60 + (parseFloat(tSec)||0) : null;
+    const paceSec      = hasPace  ? (parseFloat(pMin)||0)*60 + (parseFloat(pSec)||0) : null;
+    const distVal      = hasDist  ? parseFloat(dist) : null;
+    const speedVal     = hasSpeed ? parseFloat(speed) : null;
+
+    let d = distVal, t = totalTimeSec, p = paceSec, sp = speedVal;
+
+    if (d && t && !p)  p  = t / d;
+    if (d && t && !sp) sp = d / (t / 3600);
+    if (d && p && !t)  t  = d * p;
+    if (d && p && !sp) sp = 3600 / p;
+    if (d && sp && !t) t  = (d / sp) * 3600;
+    if (d && sp && !p) p  = 3600 / sp;
+    if (t && p && !d)  d  = t / p;
+    if (t && p && !sp) sp = 3600 / p;
+    if (t && sp && !d) d  = sp * (t / 3600);
+    if (t && sp && !p) p  = 3600 / sp;
+
+    if (!d || !t || !p || !sp) {
+        out.innerHTML = 'Fill in any 2 fields to solve.';
+        out.style.display = 'block'; return;
     }
-    function solvePace() {
-        const dist = parseFloat(document.getElementById('p-dist').value), h = parseInt(document.getElementById('p-h').value)||0, m = parseInt(document.getElementById('p-m').value)||0, s = parseInt(document.getElementById('p-s').value)||0;
-        const totalSec = (h*3600)+(m*60)+s; if(!dist || !totalSec) return;
-        const paceSec = totalSec / dist;
-        const out = document.getElementById('p-output'); out.style.display='block';
-        out.innerHTML = `Pace: ${Math.floor(paceSec/60)}:${Math.round(paceSec%60).toString().padStart(2,'0')} / ${document.getElementById('p-unit').value}`;
+
+    const pM = Math.floor(p/60), pS = Math.round(p%60);
+    const tH = Math.floor(t/3600), tM = Math.floor((t%3600)/60), tSS = Math.round(t%60);
+    const timeStr = tH > 0 ? `${tH}h ${tM}m ${tSS}s` : `${tM}m ${tSS}s`;
+    const ms = (d * 1000) / t;
+
+    out.innerHTML = `
+        Distance: <strong style="color:var(--brand-accent)">${d.toFixed(2)} ${u}</strong><br>
+        Time: <strong style="color:var(--brand-accent)">${timeStr}</strong><br>
+        Pace: <strong style="color:var(--brand-accent)">${pM}:${String(pS).padStart(2,'0')} /${u}</strong><br>
+        Speed: <strong style="color:var(--brand-accent)">${sp.toFixed(2)} ${u}/h</strong><br>
+        Speed: <strong style="color:var(--brand-accent)">${ms.toFixed(2)} m/s</strong>`;
+    out.style.display = 'block';
+}
+
+// ── 1RM CALCULATOR ────────────────────────────────
+let tRmUnit = 'kg';
+
+function tSetRMUnit(unit) {
+    tRmUnit = unit;
+    document.getElementById('t-rm-kg-btn').classList.toggle('active', unit === 'kg');
+    document.getElementById('t-rm-lb-btn').classList.toggle('active', unit === 'lb');
+    document.getElementById('t-rm-weight-label').textContent = `Weight (${unit})`;
+    tClear1RM();
+}
+
+function tClear1RM() {
+    document.getElementById('t-rm-weight').value = '';
+    document.getElementById('t-rm-reps').value = '';
+    document.getElementById('t-rm-output').style.display = 'none';
+    document.getElementById('t-rm-table-body').innerHTML = '';
+}
+
+function tCalc1RM() {
+    let w = parseFloat(document.getElementById('t-rm-weight').value);
+    const r = parseFloat(document.getElementById('t-rm-reps').value);
+    if (!w || !r || r < 1) return;
+    if (tRmUnit === 'lb') w = w / 2.2046;
+    const tbody = document.getElementById('t-rm-table-body');
+    tbody.innerHTML = '';
+    for (let reps = 1; reps <= 10; reps++) {
+        let epley = w * (1 + reps / 30);
+        let brzycki = reps < 37 ? w * (36 / (37 - reps)) : null;
+        if (tRmUnit === 'lb') { epley *= 2.2046; if (brzycki) brzycki *= 2.2046; }
+        const fmt = v => v ? `${Math.round(v)}${tRmUnit}` : '—';
+        const row = document.createElement('tr');
+        if (reps === Math.round(r)) { row.style.color = 'var(--brand-accent)'; row.style.fontWeight = '800'; }
+        row.innerHTML = `
+            <td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${reps}</td>
+            <td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${fmt(epley)}</td>
+            <td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${fmt(brzycki)}</td>`;
+        tbody.appendChild(row);
     }
-    function toggleStopwatch() {
-        const btn = document.getElementById('sw-btn');
-        if(swRunning) { clearInterval(swInt); swElapsed += Date.now()-swStart; swRunning=false; btn.innerText="START"; }
-        else { swStart=Date.now(); swRunning=true; btn.innerText="STOP"; swInt=setInterval(updateSW,10); }
+    document.getElementById('t-rm-output').style.display = 'block';
+}
+
+// ── METRONOME ─────────────────────────────────────
+let tAudioCtx = null, tMetroPlaying = false, tMetroTimerID = null, tNextTick = 0;
+
+function tMetroScheduler() {
+    const bpm = parseFloat(document.getElementById('t-m-slider').value);
+    const spb = 60.0 / bpm;
+    while (tNextTick < tAudioCtx.currentTime + 0.1) {
+        const osc = tAudioCtx.createOscillator();
+        const env = tAudioCtx.createGain();
+        osc.frequency.value = 1000;
+        env.gain.setValueAtTime(1, tNextTick);
+        env.gain.exponentialRampToValueAtTime(0.001, tNextTick + 0.025);
+        osc.connect(env); env.connect(tAudioCtx.destination);
+        osc.start(tNextTick); osc.stop(tNextTick + 0.03);
+        const delay = Math.max(0, (tNextTick - tAudioCtx.currentTime) * 1000);
+        setTimeout(() => {
+            const d = document.getElementById('t-bpm-val');
+            if (!d) return;
+            d.style.color = '#fff'; d.style.transform = 'scale(1.15)';
+            setTimeout(() => { d.style.color = 'var(--brand-accent)'; d.style.transform = 'scale(1)'; }, 60);
+        }, delay);
+        tNextTick += spb;
     }
-    function updateSW() {
-        const t = swElapsed + (Date.now()-swStart);
-        const m = Math.floor(t/60000), s = Math.floor((t%60000)/1000), ms = Math.floor((t%1000)/10);
-        document.getElementById('sw-display').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${ms.toString().padStart(2,'0')}`;
+    tMetroTimerID = setTimeout(tMetroScheduler, 25);
+}
+
+function tToggleMetronome() {
+    if (!tAudioCtx) tAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (tAudioCtx.state === 'suspended') tAudioCtx.resume();
+    const btn = document.getElementById('t-metro-btn');
+    tMetroPlaying = !tMetroPlaying;
+    if (tMetroPlaying) {
+        btn.textContent = 'Stop'; btn.classList.add('running');
+        tNextTick = tAudioCtx.currentTime; tMetroScheduler();
+    } else {
+        btn.textContent = 'Start'; btn.classList.remove('running');
+        clearTimeout(tMetroTimerID);
     }
-    function resetStopwatch() { clearInterval(swInt); swElapsed=0; swRunning=false; document.getElementById('sw-display').innerText="00:00.00"; document.getElementById('sw-btn').innerText="START"; }
-    function toggleCountdown() {
-        if(cdRunning) { clearInterval(cdInt); cdRunning=false; document.getElementById('cd-btn').innerText="START"; return; }
-        cdRunning = true; document.getElementById('cd-btn').innerText="STOP";
-        cdInt = setInterval(() => {
-            cdTime--;
-            if(cdTime <= 0) { clearInterval(cdInt); cdRunning=false; document.getElementById('cd-btn').innerText="START"; cdTime = 60; }
-            document.getElementById('cd-display').innerText = `00:${cdTime.toString().padStart(2,'0')}`;
+}
+
+// ── COUNTDOWN ─────────────────────────────────────
+let tCdRunning = false, tCdTime = 60, tCdInterval = null;
+
+function tUpdateCDDisplay() {
+    const m = Math.floor(tCdTime/60), s = tCdTime % 60;
+    document.getElementById('t-cd-display').textContent =
+        `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function tToggleCountdown() {
+    const btn = document.getElementById('t-cd-btn');
+    if (tCdRunning) {
+        clearInterval(tCdInterval); tCdRunning = false;
+        btn.textContent = 'Start'; btn.classList.remove('running');
+    } else {
+        tCdTime = parseInt(document.getElementById('t-cd-input').value) || 60;
+        tCdRunning = true; btn.textContent = 'Stop'; btn.classList.add('running');
+        tCdInterval = setInterval(() => {
+            tCdTime--; tUpdateCDDisplay();
+            if (tCdTime <= 0) {
+                clearInterval(tCdInterval); tCdRunning = false;
+                btn.textContent = 'Start'; btn.classList.remove('running');
+                tCdTime = parseInt(document.getElementById('t-cd-input').value) || 60;
+                tUpdateCDDisplay();
+            }
         }, 1000);
     }
+}
+
+// ── STOPWATCH ─────────────────────────────────────
+let tSwRunning = false, tSwStart = 0, tSwElapsed = 0, tSwInterval = null;
+
+function tToggleStopwatch() {
+    const btn = document.getElementById('t-sw-btn');
+    if (tSwRunning) {
+        clearInterval(tSwInterval); tSwElapsed += Date.now() - tSwStart;
+        tSwRunning = false; btn.textContent = 'Start'; btn.classList.remove('running');
+    } else {
+        tSwStart = Date.now(); tSwRunning = true;
+        btn.textContent = 'Stop'; btn.classList.add('running');
+        tSwInterval = setInterval(() => {
+            const t = tSwElapsed + (Date.now() - tSwStart);
+            const m = Math.floor(t/60000), s = Math.floor((t%60000)/1000), ms = Math.floor((t%1000)/10);
+            document.getElementById('t-sw-display').textContent =
+                `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms).padStart(2,'0')}`;
+        }, 50);
+    }
+}
+
+function tResetStopwatch() {
+    clearInterval(tSwInterval); tSwRunning = false; tSwElapsed = 0;
+    document.getElementById('t-sw-display').textContent = '00:00.00';
+    const btn = document.getElementById('t-sw-btn');
+    btn.textContent = 'Start'; btn.classList.remove('running');
+}
+
+// ── INTERVAL TIMER ────────────────────────────────
+let tIntRunning = false, tIntInterval = null, tIntPhase = 'idle';
+let tIntCurrentSet = 0, tIntTotalSets = 0, tIntTime = 0;
+
+function tUpdateIntDisplay() {
+    const m = Math.floor(tIntTime/60), s = tIntTime % 60;
+    document.getElementById('t-int-display').textContent =
+        `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function tSetIntPhase(phase, set, total) {
+    tIntPhase = phase;
+    const label = document.getElementById('t-int-phase');
+    const disp  = document.getElementById('t-int-display');
+    const sets  = document.getElementById('t-int-sets-label');
+    if (phase === 'warmup') {
+        label.textContent = 'WARM UP'; label.style.color = '#fb923c'; disp.style.color = '#fb923c'; sets.textContent = '';
+    } else if (phase === 'work') {
+        label.textContent = 'WORK'; label.style.color = '#4ade80'; disp.style.color = '#4ade80';
+        sets.textContent = `Set ${set} of ${total}`;
+    } else if (phase === 'rest') {
+        label.textContent = 'REST'; label.style.color = '#f87171'; disp.style.color = '#f87171';
+        sets.textContent = `Set ${set} of ${total}`;
+    } else if (phase === 'done') {
+        label.textContent = 'DONE 🔥'; label.style.color = 'var(--brand-accent)'; disp.style.color = 'white'; sets.textContent = '';
+    }
+}
+
+function tToggleInterval() {
+    const btn = document.getElementById('t-int-btn');
+    if (tIntRunning) {
+        clearInterval(tIntInterval); tIntRunning = false;
+        btn.textContent = 'Start'; btn.classList.remove('running');
+        tIntPhase = 'idle';
+        document.getElementById('t-int-phase').textContent = 'READY';
+        document.getElementById('t-int-phase').style.color = 'var(--brand-accent)';
+        document.getElementById('t-int-display').style.color = 'white';
+        document.getElementById('t-int-sets-label').textContent = '';
+        tIntTime = parseInt(document.getElementById('t-int-work').value) || 30;
+        tUpdateIntDisplay(); return;
+    }
+
+    const warmup = parseInt(document.getElementById('t-int-warmup').value) || 0;
+    const sets   = parseInt(document.getElementById('t-int-sets').value) || 5;
+    const work   = parseInt(document.getElementById('t-int-work').value) || 30;
+    const rest   = parseInt(document.getElementById('t-int-rest').value) || 15;
+
+    tIntTotalSets = sets; tIntCurrentSet = 1; tIntRunning = true;
+    btn.textContent = 'Stop'; btn.classList.add('running');
+
+    if (warmup > 0) { tIntTime = warmup; tSetIntPhase('warmup', 0, sets); }
+    else            { tIntTime = work;   tSetIntPhase('work', 1, sets); }
+    tUpdateIntDisplay();
+
+    tIntInte
 </script>
 </body>
 </html>
