@@ -932,7 +932,32 @@ function tToggleInterval() {
     else            { tIntTime = work;   tSetIntPhase('work', 1, sets); }
     tUpdateIntDisplay();
 
-    tIntInte
+    tIntInterval = setInterval(() => {
+        tIntTime--; tUpdateIntDisplay();
+        if (tIntTime > 0) return;
+        if (tIntPhase === 'warmup') {
+            tIntTime = work; tIntCurrentSet = 1; tSetIntPhase('work', 1, tIntTotalSets);
+        } else if (tIntPhase === 'work') {
+            if (rest > 0) {
+                tIntTime = rest; tSetIntPhase('rest', tIntCurrentSet, tIntTotalSets);
+            } else {
+                tIntCurrentSet++;
+                if (tIntCurrentSet > tIntTotalSets) {
+                    clearInterval(tIntInterval); tIntRunning = false;
+                    btn.textContent = 'Start'; btn.classList.remove('running');
+                    tIntTime = 0; tSetIntPhase('done', 0, 0); tUpdateIntDisplay();
+                } else { tIntTime = work; tSetIntPhase('work', tIntCurrentSet, tIntTotalSets); }
+            }
+        } else if (tIntPhase === 'rest') {
+            tIntCurrentSet++;
+            if (tIntCurrentSet > tIntTotalSets) {
+                clearInterval(tIntInterval); tIntRunning = false;
+                btn.textContent = 'Start'; btn.classList.remove('running');
+                tIntTime = 0; tSetIntPhase('done', 0, 0); tUpdateIntDisplay();
+            } else { tIntTime = work; tSetIntPhase('work', tIntCurrentSet, tIntTotalSets); }
+        }
+    }, 1000);
+}
 </script>
 </body>
 </html>
