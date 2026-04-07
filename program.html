@@ -545,16 +545,50 @@
 
     // --- PROGRAM LOGIC ---
     async function fetchUserPrograms() {
-    const records = await pb.collection('programs').getFullList({ filter: `client = "${pb.authStore.model.id}"`, sort: '-created' });
-    allPrograms = records;
-    if (records.length > 0) {
-        document.getElementById('program-selector').innerHTML = records.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-        const urlId = new URLSearchParams(window.location.search).get('id');
-        if (urlId && records.find(p => p.id === urlId)) {
-            document.getElementById('program-selector').value = urlId;
-        }
-        loadSelectedProgram();
+    const [clientRecs, templateRecs, freeRecs] = await Promise.all([
+        pb.collection('programs').getFullList({
+            filter: `client = "${pb.authStore.model.id}" && archived = false`,
+            sort: '-created',
+            requestKey: null
+        }),
+        pb.collection('programs').getFullList({
+            filter: 'is_template = true && is_free = false',
+            sort: 'name',
+            requestKey: null
+        }),
+        pb.collection('programs').getFullList({
+            filter: 'is_free = true',
+            sort: 'name',
+            requestKey: null
+        })
+    ]);
+
+    allPrograms = [...clientRecs, ...templateRecs, ...freeRecs];
+
+    let html = '';
+    if (clientRecs.length > 0) {
+        html += `<optgroup label="📋 Your Programs">`;
+        html += clientRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+        html += `</optgroup>`;
     }
+    if (templateRecs.length > 0) {
+        html += `<optgroup label="📚 Coach Programs">`;
+        html += templateRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+        html += `</optgroup>`;
+    }
+    if (freeRecs.length > 0) {
+        html += `<optgroup label="🆓 Free Programs">`;
+        html += freeRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+        html += `</optgroup>`;
+    }
+
+    document.getElementById('program-selector').innerHTML = html;
+
+    const urlId = new URLSearchParams(window.location.search).get('id');
+    if (urlId && allPrograms.find(p => p.id === urlId)) {
+        document.getElementById('program-selector').value = urlId;
+    }
+    if (allPrograms.length > 0) loadSelectedProgram();
 }
     function loadSelectedProgram() {
     const id = document.getElementById('program-selector').value;
