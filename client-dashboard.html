@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Dashboard | RestPeriod</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
+        :root {
+            --brand-primary: #003B5C;
+            --brand-secondary: #2E7D32;
+            --brand-accent: #26C6DA;
+            --brand-bg: #020c12;
+            --text-main: #E0F7FA;
+            --card-bg: #0e1b24;
+            --input-bg: #002840;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: 40px; }
+
+        /* NAV */
+        .nav-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: #000; border-bottom: 1px solid #004d7a; position: sticky; top: 0; z-index: 100; }
+        .nav-brand { font-family: 'Montserrat'; font-weight: 800; font-size: 1.1rem; }
+        .nav-brand span { color: var(--brand-accent); }
+        .nav-right { display: flex; align-items: center; gap: 10px; }
+        .nav-user { font-size: 0.75rem; color: #888; }
+        .btn-nav { background: none; border: 1px solid #1a2a35; color: #888; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat'; font-weight: 700; transition: 0.2s; }
+        .btn-nav:hover { color: var(--brand-accent); border-color: var(--brand-accent); }
+        .btn-nav.primary { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
+
+        /* GREETING */
+        .greeting { padding: 24px 20px 8px; }
+        .greeting h1 { font-family: 'Montserrat'; font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+        .greeting p { color: #888; font-size: 0.85rem; }
+        .greeting span { color: var(--brand-accent); }
+
+        /* CONTAINER */
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+        /* SECTION */
+        .section-title { font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px; }
+
+        /* PROGRAM CARDS */
+        .programs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 8px; }
+        .program-card { background: var(--card-bg); border: 1px solid #1a2a35; border-radius: 10px; padding: 16px; cursor: pointer; transition: 0.2s; position: relative; }
+        .program-card:hover { border-color: var(--brand-accent); transform: translateY(-2px); }
+        .program-card.active-card { border-color: var(--brand-secondary); }
+        .prog-name { font-family: 'Montserrat'; font-weight: 800; font-size: 0.95rem; margin-bottom: 6px; }
+        .prog-meta { font-size: 0.72rem; color: #888; margin-bottom: 12px; }
+        .prog-bar-bg { background: #050d12; border-radius: 10px; height: 6px; overflow: hidden; margin-bottom: 8px; }
+        .prog-bar-fill { height: 100%; background: linear-gradient(90deg, var(--brand-secondary), var(--brand-accent)); border-radius: 10px; transition: width 0.5s; }
+        .prog-pct { font-size: 0.65rem; color: #888; display: flex; justify-content: space-between; }
+        .prog-pct span { color: var(--brand-accent); font-weight: 800; }
+        .prog-last { font-size: 0.65rem; color: #555; margin-top: 8px; }
+        .prog-arrow { position: absolute; top: 16px; right: 16px; color: var(--brand-accent); font-size: 0.8rem; opacity: 0.5; }
+        .prog-weeks { font-size: 0.65rem; color: #555; margin-top: 4px; }
+        .no-programs { color: #555; font-size: 0.85rem; text-align: center; padding: 30px; background: var(--card-bg); border: 1px solid #1a2a35; border-radius: 10px; }
+
+        /* CALENDAR */
+        .cal-card { background: var(--card-bg); border: 1px solid #1a2a35; border-radius: 10px; padding: 16px; }
+        .cal-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+        .cal-toggle { display: flex; gap: 4px; background: #050d12; padding: 3px; border-radius: 6px; }
+        .cal-toggle-btn { padding: 5px 12px; border: none; border-radius: 4px; background: none; color: #555; font-family: 'Montserrat'; font-weight: 700; font-size: 0.65rem; cursor: pointer; transition: 0.2s; }
+        .cal-toggle-btn.active { background: var(--brand-accent); color: #000; }
+        .cal-nav { display: flex; align-items: center; gap: 8px; }
+        .cal-nav button { background: #050d12; border: 1px solid #1a2a35; color: var(--brand-accent); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; transition: 0.2s; }
+        .cal-nav button:hover { background: #0e1b24; }
+        .cal-period { font-family: 'Montserrat'; font-weight: 700; font-size: 0.8rem; color: white; }
+
+        /* MONTH GRID */
+        .cal-month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+        .cal-dow { text-align: center; font-size: 0.55rem; color: #555; font-weight: 800; font-family: 'Montserrat'; padding: 4px 0; text-transform: uppercase; }
+        .cal-mday { min-height: 56px; background: #050d12; border-radius: 4px; padding: 4px; border: 1px solid transparent; }
+        .cal-mday.today { border-color: var(--brand-accent) !important; }
+        .cal-mday.other-month .cal-mday-num { color: #222; }
+        .cal-mday.has-session { background: #0a1f0e; border-color: #1a3a1a; cursor: pointer; }
+        .cal-mday.has-session:hover { border-color: var(--brand-secondary); }
+        .cal-mday-num { font-size: 0.65rem; color: #444; margin-bottom: 3px; }
+        .cal-mday.today .cal-mday-num { color: var(--brand-accent); font-weight: 800; }
+        .cal-session-pill { background: var(--brand-secondary); border-radius: 3px; padding: 2px 4px; font-size: 0.48rem; color: white; font-weight: 800; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+
+        /* WEEK VIEW */
+        .cal-week-list { display: flex; flex-direction: column; gap: 6px; }
+        .cal-wday { background: #050d12; border-radius: 6px; padding: 10px 12px; border: 1px solid #1a2a35; }
+        .cal-wday.today { border-color: var(--brand-accent); }
+        .cal-wday-label { font-size: 0.62rem; color: #555; font-family: 'Montserrat'; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
+        .cal-wday-session { background: #0e2a1a; border: 1px solid #1a4a2a; border-radius: 4px; padding: 8px 10px; margin-bottom: 4px; }
+        .cal-wday-prog { font-size: 0.78rem; font-weight: 700; color: #4ade80; margin-bottom: 2px; }
+        .cal-wday-sub { font-size: 0.65rem; color: #555; }
+        .cal-wday-empty { color: #333; font-size: 0.65rem; }
+    </style>
+</head>
+<body>
+
+<div class="nav-top">
+    <div class="nav-brand">REST <span>PERIOD</span></div>
+    <div class="nav-right">
+        <span class="nav-user" id="nav-user"></span>
+        <button class="btn-nav primary" onclick="window.location.href='program.html'">▶ Train</button>
+        <button class="btn-nav" onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<div class="greeting container">
+    <h1>Hey, <span id="greeting-name"></span> 👋</h1>
+    <p id="greeting-sub">Here's your training overview.</p>
+</div>
+
+<div class="container">
+
+    <div class="section-title">📋 Your Programs</div>
+    <div class="programs-grid" id="programs-grid">
+        <div class="no-programs">Loading programs...</div>
+    </div>
+
+    <div class="section-title">📅 Training Calendar</div>
+    <div class="cal-card">
+        <div class="cal-controls">
+            <div class="cal-toggle">
+                <button class="cal-toggle-btn active" id="cal-month-btn" onclick="setCalView('month')">Month</button>
+                <button class="cal-toggle-btn" id="cal-week-btn" onclick="setCalView('week')">Week</button>
+            </div>
+            <div class="cal-nav">
+                <button onclick="moveCal(-1)">←</button>
+                <span class="cal-period" id="cal-period"></span>
+                <button onclick="moveCal(1)">→</button>
+            </div>
+        </div>
+        <div id="cal-content"><div style="color:#555;text-align:center;padding:30px;font-size:0.85rem;">Loading calendar...</div></div>
+    </div>
+
+</div>
+
+<script>
+const pb = new PocketBase('https://restperiod.org');
+
+let allPrograms = [];
+let sessionMap = {};
+let calView = 'month';
+let calDate = new Date();
+
+window.onload = async () => {
+    if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
+    const role = pb.authStore.model.role;
+    if (role === 'trainer' || role === 'admin') { window.location.href = 'dashboard.html'; return; }
+    if (role === 'free') { window.location.href = 'free.html'; return; }
+
+    const name = pb.authStore.model.name || pb.authStore.model.email;
+    document.getElementById('nav-user').textContent = name;
+    document.getElementById('greeting-name').textContent = name.split(' ')[0];
+
+    await loadPrograms();
+    buildSessionMap();
+    renderCalendar();
+};
+
+function logout() { pb.authStore.clear(); window.location.href = 'index.html'; }
+
+// ── PROGRAMS ──────────────────────────────────────
+async function loadPrograms() {
+    try {
+        const recs = await pb.collection('programs').getFullList({
+            filter: `client = "${pb.authStore.model.id}" && archived = false`,
+            sort: '-created'
+        });
+        allPrograms = recs;
+        renderPrograms();
+    } catch(e) {
+        console.error(e);
+        document.getElementById('programs-grid').innerHTML =
+            '<div class="no-programs">Could not load programs.</div>';
+    }
+}
+
+function renderPrograms() {
+    const grid = document.getElementById('programs-grid');
+    if (allPrograms.length === 0) {
+        grid.innerHTML = '<div class="no-programs">No programs yet — your coach will assign one soon.</div>';
+        document.getElementById('greeting-sub').textContent = 'Your coach hasn\'t assigned a program yet.';
+        return;
+    }
+
+    // Find most recently trained program
+    let latestDate = null, latestProgId = null;
+
+    grid.innerHTML = allPrograms.map(prog => {
+        let data = prog.workout_data;
+        if (typeof data === 'string') data = JSON.parse(data);
+        const schedule = data.schedule || data;
+
+        let totalSets = 0, doneSets = 0, lastSession = null, completedWeeks = 0;
+
+        schedule.forEach(week => {
+            [...(week.warmup||[]), ...(week.exercises||[])].forEach(ex => {
+                (ex.setsData||[]).forEach(s => {
+                    totalSets++;
+                    if (s.act_reps && s.act_weight) doneSets++;
+                });
+            });
+            if (week.sessionDate) {
+                completedWeeks++;
+                if (!lastSession || week.sessionDate > lastSession) lastSession = week.sessionDate;
+            }
+        });
+
+        if (lastSession && (!latestDate || lastSession > latestDate)) {
+            latestDate = lastSession;
+            latestProgId = prog.id;
+        }
+
+        const pct = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
+        const lastStr = lastSession
+            ? new Date(lastSession).toLocaleDateString([], { day: 'numeric', month: 'short' })
+            : 'Not started';
+        const totalWeeks = schedule.length;
+
+        return `<div class="program-card ${prog.id === latestProgId ? 'active-card' : ''}"
+            onclick="goToProgram('${prog.id}')">
+            <i class="fas fa-chevron-right prog-arrow"></i>
+            <div class="prog-name">${prog.name}</div>
+            <div class="prog-meta">${prog.description || ''}</div>
+            <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
+            <div class="prog-pct"><span>${pct}% complete</span><span style="color:#555">${doneSets}/${totalSets} sets</span></div>
+            <div class="prog-weeks">${completedWeeks} of ${totalWeeks} weeks logged</div>
+            <div class="prog-last">Last session: ${lastStr}</div>
+        </div>`;
+    }).join('');
+
+    const sessionsTotal = Object.keys(sessionMap).length;
+    document.getElementById('greeting-sub').textContent =
+        `${allPrograms.length} program${allPrograms.length !== 1 ? 's' : ''} · Keep it up!`;
+}
+
+function goToProgram(id) {
+    window.location.href = `program.html?id=${id}`;
+}
+
+// ── SESSION MAP ───────────────────────────────────
+function buildSessionMap() {
+    sessionMap = {};
+    allPrograms.forEach(prog => {
+        let data = prog.workout_data;
+        if (typeof data === 'string') data = JSON.parse(data);
+        const schedule = data.schedule || data;
+
+        schedule.forEach(week => {
+            if (!week.sessionDate) return;
+            const dateStr = week.sessionDate.substring(0, 10);
+
+            let total = 0, done = 0;
+            [...(week.warmup||[]), ...(week.exercises||[])].forEach(ex => {
+                (ex.setsData||[]).forEach(s => { total++; if (s.act_reps && s.act_weight) done++; });
+            });
+            const pct = total > 0 ? Math.round((done/total)*100) : 0;
+
+            if (!sessionMap[dateStr]) sessionMap[dateStr] = [];
+            sessionMap[dateStr].push({ programName: prog.name, weekNum: week.weekNum, pct });
+        });
+    });
+}
+
+// ── CALENDAR ──────────────────────────────────────
+function setCalView(view) {
+    calView = view;
+    document.getElementById('cal-month-btn').classList.toggle('active', view === 'month');
+    document.getElementById('cal-week-btn').classList.toggle('active', view === 'week');
+    renderCalendar();
+}
+
+function moveCal(dir) {
+    if (calView === 'month') calDate.setMonth(calDate.getMonth() + dir);
+    else calDate.setDate(calDate.getDate() + dir * 7);
+    renderCalendar();
+}
+
+function renderCalendar() {
+    if (calView === 'month') renderMonthView();
+    else renderWeekView();
+}
+
+function renderMonthView() {
+    const year = calDate.getFullYear();
+    const month = calDate.getMonth();
+    const today = new Date().toISOString().split('T')[0];
+
+    document.getElementById('cal-period').textContent =
+        calDate.toLocaleDateString([], { month: 'long', year: 'numeric' });
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDow = (firstDay.getDay() + 6) % 7;
+
+    let html = `<div class="cal-month-grid">`;
+    ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(d => {
+        html += `<div class="cal-dow">${d}</div>`;
+    });
+
+    for (let i = 0; i < startDow; i++) {
+        html += `<div class="cal-mday other-month"><div class="cal-mday-num"></div></div>`;
+    }
+
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const sessions = sessionMap[dateStr] || [];
+        const isToday = dateStr === today;
+
+        html += `<div class="cal-mday ${sessions.length ? 'has-session' : ''} ${isToday ? 'today' : ''}">
+            <div class="cal-mday-num">${d}</div>
+            ${sessions.map(s =>
+                `<div class="cal-session-pill" title="${s.programName} · Week ${s.weekNum} · ${s.pct}%">
+                    ${s.programName} · Wk${s.weekNum}
+                </div>`
+            ).join('')}
+        </div>`;
+    }
+
+    html += `</div>`;
+    document.getElementById('cal-content').innerHTML = html;
+}
+
+function renderWeekView() {
+    const today = new Date().toISOString().split('T')[0];
+    const dow = (calDate.getDay() + 6) % 7;
+    const monday = new Date(calDate);
+    monday.setDate(calDate.getDate() - dow);
+
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        days.push(d);
+    }
+
+    const startStr = days[0].toLocaleDateString([], { month: 'short', day: 'numeric' });
+    const endStr = days[6].toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+    document.getElementById('cal-period').textContent = `${startStr} – ${endStr}`;
+
+    const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+    let html = `<div class="cal-week-list">`;
+    days.forEach((day, i) => {
+        const dateStr = day.toISOString().split('T')[0];
+        const sessions = sessionMap[dateStr] || [];
+        const isToday = dateStr === today;
+
+        html += `<div class="cal-wday ${isToday ? 'today' : ''}">
+            <div class="cal-wday-label">${dayNames[i]} ${day.getDate()} ${day.toLocaleDateString([],{month:'short'})}</div>
+            ${sessions.length === 0
+                ? `<div class="cal-wday-empty">—</div>`
+                : sessions.map(s => `
+                    <div class="cal-wday-session">
+                        <div class="cal-wday-prog">${s.programName}</div>
+                        <div class="cal-wday-sub">Week ${s.weekNum} · ${s.pct}% complete</div>
+                    </div>`).join('')
+            }
+        </div>`;
+    });
+    html += `</div>`;
+    document.getElementById('cal-content').innerHTML = html;
+}
+</script>
+</body>
+</html>

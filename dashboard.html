@@ -366,7 +366,7 @@
                     ${hasSess ? `title="${sessions.map(s => `${s.programName} Wk${s.weekNum} (${s.pct}%)`).join(', ')}"` : ''}>
                     <div class="cal-day-num">${d}</div>
                     ${sessions.map(s =>
-                        `<div class="cal-session-dot" title="${s.programName} Wk${s.weekNum}">Wk${s.weekNum}</div>`
+                        `<div class="cal-session-dot" title="${s.programName} Wk${s.weekNum} (${s.pct}%)">${s.programName} · Wk${s.weekNum}</div>`
                     ).join('')}
                 </div>`;
             }
