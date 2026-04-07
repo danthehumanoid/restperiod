@@ -257,10 +257,18 @@
                 </div>
                 <div id="workout-list"></div>
 
-                <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:10px; margin-top:30px;">
-                    <button class="btn btn-green" onclick="saveProgramToDB()">💾 PUBLISH PROGRAM</button>
-                    <button class="btn btn-outline" onclick="saveAsTemplate()">🧬 TEMPLATE</button>
-                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:20px; margin-bottom:10px;">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.7rem;color:#888;">
+        <input type="checkbox" id="prog-is-template" style="width:auto;margin:0;" onchange="triggerAutoSave()"> Coach Template
+    </label>
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.7rem;color:#888;">
+        <input type="checkbox" id="prog-is-free" style="width:auto;margin:0;" onchange="triggerAutoSave()"> Free / Public
+    </label>
+</div>
+<div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:10px;">
+    <button class="btn btn-green" onclick="saveProgramToDB()">💾 PUBLISH PROGRAM</button>
+    <button class="btn btn-outline" onclick="saveAsTemplate()">🧬 TEMPLATE</button>
+</div>
             </div>
         </div>
 
@@ -719,7 +727,11 @@ async function loadFullProgramTemplate(id) {
         // Fill the inputs
         document.getElementById('prog-name').value = p.name || "";
         document.getElementById('prog-desc').value = p.description || ""; // Added this line
-        
+        const tmplBox = document.getElementById('prog-is-template');
+const freeBox = document.getElementById('prog-is-free');
+if (tmplBox) tmplBox.checked = p.is_template || false;
+if (freeBox) freeBox.checked = p.is_free || false;
+
         let data = typeof p.workout_data === 'string' ? JSON.parse(p.workout_data) : p.workout_data;
         programData = data.schedule || data;
         
@@ -907,11 +919,13 @@ async function saveProgramToDB(silent = false) {
     }
 
     const payload = { 
-        workout_data: JSON.stringify({ schedule: programData }), 
-        client: cid, 
-        name: document.getElementById('prog-name').value,
-        description: document.getElementById('prog-desc').value
-    }; 
+    workout_data: JSON.stringify({ schedule: programData }), 
+    client: cid, 
+    name: document.getElementById('prog-name').value,
+    description: document.getElementById('prog-desc').value,
+    is_template: document.getElementById('prog-is-template')?.checked || false,
+    is_free: document.getElementById('prog-is-free')?.checked || false
+};
 
     try {
         if (editingProgramId) {
