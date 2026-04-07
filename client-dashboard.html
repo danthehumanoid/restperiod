@@ -159,10 +159,13 @@ window.onload = async () => {
 function logout() { pb.authStore.clear(); window.location.href = 'index.html'; }
 
 // ── PROGRAMS ──────────────────────────────────────
-async function loadFreePrograms() {
-    masterExerciseList = [...allExercises];
+async function loadPrograms() {
     try {
-        const [templateRecs, freeRecs] = await Promise.all([
+        const [clientRecs, templateRecs, freeRecs] = await Promise.all([
+            pb.collection('programs').getFullList({
+                filter: `client = "${pb.authStore.model.id}" && archived = false`,
+                sort: '-created'
+            }),
             pb.collection('programs').getFullList({
                 filter: 'is_template = true && is_free = false',
                 sort: 'name'
@@ -173,91 +176,77 @@ async function loadFreePrograms() {
             })
         ]);
 
-        allPrograms = [...templateRecs, ...freeRecs];
-        const sel = document.getElementById('program-selector');
-
-        if (allPrograms.length === 0) {
-            sel.innerHTML = '<option value="">No programs available yet</option>';
-            return;
-        }
-
-        let html = '<option value="">-- Select a program --</option>';
-
-        if (templateRecs.length > 0) {
-            html += `<optgroup label="📚 Coach Programs">`;
-            html += templateRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            html += `</optgroup>`;
-        }
-
-        if (freeRecs.length > 0) {
-            html += `<optgroup label="🆓 Free Programs">`;
-            html += freeRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            html += `</optgroup>`;
-        }
-
-        sel.innerHTML = html;
+        allPrograms = [...clientRecs, ...templateRecs, ...freeRecs];
+        renderPrograms(clientRecs, templateRecs, freeRecs);
     } catch(e) {
-        console.error('Programs error:', e);
+        console.error(e);
+        document.getElementById('programs-grid').innerHTML =
+            '<div class="no-programs">Could not load programs.</div>';
     }
 }
 
-function renderPrograms() {
+function progCard(prog) {
+    let data = prog.workout_data;
+    if (typeof data === 'string') data = JSON.parse(data);
+    const schedule = data.schedule || data;
+
+    let totalSets = 0, doneSets = 0, lastSession = null, completedWeeks = 0;
+    schedule.forEach(week => {
+        [...(week.warmup||[]), ...(week.exercises||[])].forEach(ex => {
+            (ex.setsData||[]).forEach(s => {
+                totalSets++;
+                if (s.act_reps && s.act_weight) doneSets++;
+            });
+        });
+        if (week.sessionDate) {
+            completedWeeks++;
+            if (!lastSession || week.sessionDate > lastSession) lastSession = week.sessionDate;
+        }
+    });
+
+    const pct = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
+    const lastStr = lastSession
+        ? new Date(lastSession).toLocaleDateString([], { day: 'numeric', month: 'short' })
+        : 'Not started';
+
+    return `<div class="program-card" onclick="goToProgram('${prog.id}')">
+        <i class="fas fa-chevron-right prog-arrow"></i>
+        <div class="prog-name">${prog.name}</div>
+        <div class="prog-meta">${prog.description || ''}</div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
+        <div class="prog-pct"><span>${pct}% complete</span><span style="color:#555">${doneSets}/${totalSets} sets</span></div>
+        <div class="prog-weeks">${completedWeeks} of ${schedule.length} weeks logged</div>
+        <div class="prog-last">Last session: ${lastStr}</div>
+    </div>`;
+}
+
+function renderPrograms(clientProgs, templateProgs, freeProgs) {
     const grid = document.getElementById('programs-grid');
-    if (allPrograms.length === 0) {
-        grid.innerHTML = '<div class="no-programs">No programs yet — your coach will assign one soon.</div>';
-        document.getElementById('greeting-sub').textContent = 'Your coach hasn\'t assigned a program yet.';
-        return;
+    let html = '';
+
+    if (clientProgs.length > 0) {
+        html += `<div class="section-title" style="grid-column:1/-1;">📋 Your Programs</div>`;
+        html += clientProgs.map(progCard).join('');
+    } else {
+        html += `<div class="no-programs" style="grid-column:1/-1;">No custom programs yet — your coach will assign one soon.</div>`;
     }
 
-    // Find most recently trained program
-    let latestDate = null, latestProgId = null;
+    if (templateProgs.length > 0) {
+        html += `<div class="section-title" style="grid-column:1/-1; margin-top:20px;">📚 Coach Programs</div>`;
+        html += templateProgs.map(progCard).join('');
+    }
 
-    grid.innerHTML = allPrograms.map(prog => {
-        let data = prog.workout_data;
-        if (typeof data === 'string') data = JSON.parse(data);
-        const schedule = data.schedule || data;
+    if (freeProgs.length > 0) {
+        html += `<div class="section-title" style="grid-column:1/-1; margin-top:20px;">🆓 Free Programs</div>`;
+        html += freeProgs.map(progCard).join('');
+    }
 
-        let totalSets = 0, doneSets = 0, lastSession = null, completedWeeks = 0;
-
-        schedule.forEach(week => {
-            [...(week.warmup||[]), ...(week.exercises||[])].forEach(ex => {
-                (ex.setsData||[]).forEach(s => {
-                    totalSets++;
-                    if (s.act_reps && s.act_weight) doneSets++;
-                });
-            });
-            if (week.sessionDate) {
-                completedWeeks++;
-                if (!lastSession || week.sessionDate > lastSession) lastSession = week.sessionDate;
-            }
-        });
-
-        if (lastSession && (!latestDate || lastSession > latestDate)) {
-            latestDate = lastSession;
-            latestProgId = prog.id;
-        }
-
-        const pct = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
-        const lastStr = lastSession
-            ? new Date(lastSession).toLocaleDateString([], { day: 'numeric', month: 'short' })
-            : 'Not started';
-        const totalWeeks = schedule.length;
-
-        return `<div class="program-card ${prog.id === latestProgId ? 'active-card' : ''}"
-            onclick="goToProgram('${prog.id}')">
-            <i class="fas fa-chevron-right prog-arrow"></i>
-            <div class="prog-name">${prog.name}</div>
-            <div class="prog-meta">${prog.description || ''}</div>
-            <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
-            <div class="prog-pct"><span>${pct}% complete</span><span style="color:#555">${doneSets}/${totalSets} sets</span></div>
-            <div class="prog-weeks">${completedWeeks} of ${totalWeeks} weeks logged</div>
-            <div class="prog-last">Last session: ${lastStr}</div>
-        </div>`;
-    }).join('');
-
-    const sessionsTotal = Object.keys(sessionMap).length;
+    grid.innerHTML = html;
     document.getElementById('greeting-sub').textContent =
         `${allPrograms.length} program${allPrograms.length !== 1 ? 's' : ''} · Keep it up!`;
+
+    buildSessionMap();
+    renderCalendar();
 }
 
 function goToProgram(id) {
