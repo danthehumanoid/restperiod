@@ -228,7 +228,7 @@ function renderPrograms(clientProgs, templateProgs, freeProgs) {
     let html = '';
 
     if (clientProgs.length > 0) {
-        html += `<div class="section-title" style="grid-column:1/-1;">📋 Your Programs</div>`;
+        html += `<div class="section-title" style="grid-column:1/-1;">📋 YOUR PROGRAMS</div>`;
         html += clientProgs.map(progCard).join('');
     } else {
         html += `<div class="no-programs" style="grid-column:1/-1;">No custom programs yet — your coach will assign one soon.</div>`;
@@ -240,7 +240,7 @@ function renderPrograms(clientProgs, templateProgs, freeProgs) {
     }
 
     if (freeProgs.length > 0) {
-        html += `<div class="section-title" style="grid-column:1/-1; margin-top:20px;">Pre-Made</div>`;
+        html += `<div class="section-title" style="grid-column:1/-1; margin-top:20px;">PRE-MADE PROGRAMS</div>`;
         html += freeProgs.map(progCard).join('');
     }
 

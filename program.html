@@ -567,7 +567,7 @@
 
     let html = '';
     if (clientRecs.length > 0) {
-        html += `<optgroup label="📋 Your Programs">`;
+        html += `<optgroup label="📋 YOUR PROGRAMS">`;
         html += clientRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
         html += `</optgroup>`;
     }
@@ -577,7 +577,7 @@
         html += `</optgroup>`;
     }
     if (freeRecs.length > 0) {
-        html += `<optgroup label="Premade Programs">`;
+        html += `<optgroup label="PREMADE PROGRAMS">`;
         html += freeRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
         html += `</optgroup>`;
     }
