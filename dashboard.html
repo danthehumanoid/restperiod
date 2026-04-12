@@ -210,7 +210,13 @@
                 document.getElementById('active-progs-list').innerHTML = progs.items.map(p => `
                     <div class="prog-row">
                         <span>${p.name}</span>
-                        <span style="font-size:0.7rem; opacity:0.5;">${new Date(p.created).toLocaleDateString()}</span>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <span style="font-size:0.7rem; opacity:0.5;">${new Date(p.created).toLocaleDateString()}</span>
+                            <button onclick="window.location.href='program.html?id=${p.id}&clientId=${id}'"
+                                style="background:var(--brand-accent);color:#000;border:none;padding:4px 10px;border-radius:4px;font-size:0.65rem;font-weight:800;cursor:pointer;font-family:'Montserrat';">
+                                LOG
+                            </button>
+                        </div>
                     </div>
                 `).join('') || '<p style="font-size:0.8rem; opacity:0.5;">No active programs.</p>';
 
