@@ -545,9 +545,22 @@
 
     // --- PROGRAM LOGIC ---
     async function fetchUserPrograms() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlId = urlParams.get('id');
+    const clientId = urlParams.get('clientId');
+
+    // If trainer is logging for a client, show a banner
+    const targetId = clientId || pb.authStore.model.id;
+    if (clientId) {
+        const banner = document.createElement('div');
+        banner.style.cssText = 'background:#003B5C;border-bottom:1px solid #004d7a;padding:8px 20px;font-size:0.75rem;color:var(--brand-accent);display:flex;justify-content:space-between;align-items:center;';
+        banner.innerHTML = `<span>📋 Logging as client</span><a href="dashboard.html" style="color:#888;font-size:0.7rem;">← Back to Dashboard</a>`;
+        document.body.insertBefore(banner, document.body.firstChild);
+    }
+
     const [clientRecs, templateRecs, freeRecs] = await Promise.all([
         pb.collection('programs').getFullList({
-            filter: `client = "${pb.authStore.model.id}" && archived = false`,
+            filter: `client = "${targetId}" && archived = false`,
             sort: '-created',
             requestKey: null
         }),
@@ -567,7 +580,7 @@
 
     let html = '';
     if (clientRecs.length > 0) {
-        html += `<optgroup label="📋 YOUR PROGRAMS">`;
+        html += `<optgroup label="📋 Your Programs">`;
         html += clientRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
         html += `</optgroup>`;
     }
@@ -577,14 +590,13 @@
         html += `</optgroup>`;
     }
     if (freeRecs.length > 0) {
-        html += `<optgroup label="PREMADE PROGRAMS">`;
+        html += `<optgroup label="🆓 Free Programs">`;
         html += freeRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
         html += `</optgroup>`;
     }
 
     document.getElementById('program-selector').innerHTML = html;
 
-    const urlId = new URLSearchParams(window.location.search).get('id');
     if (urlId && allPrograms.find(p => p.id === urlId)) {
         document.getElementById('program-selector').value = urlId;
     }
