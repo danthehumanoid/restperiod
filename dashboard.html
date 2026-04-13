@@ -531,32 +531,109 @@
         }
 
         async function savePlan() {
-            const title = document.getElementById('plan-title').value.trim();
-            if (!title) return alert('Please enter a title');
-            const repeatVal = document.getElementById('plan-repeat').value;
-            const customDays = repeatVal === 'custom'
-                ? Array.from(document.querySelectorAll('.repeat-day-cb:checked')).map(cb => cb.value).join(',')
-                : '';
-            const payload = {
-                user: selectedClientId,
-                title,
-                date: document.getElementById('plan-date').value,
-                time: document.getElementById('plan-time').value,
-                type: document.getElementById('plan-type').value,
-                notes: document.getElementById('plan-notes').value,
-                repeat: repeatVal,
-                repeat_days: customDays,
-                repeat_until: document.getElementById('plan-repeat-until').value || null
-            };
-            try {
-                const id = document.getElementById('plan-id').value;
-                if (id) await pb.collection('planned_workouts').update(id, payload);
-                else await pb.collection('planned_workouts').create(payload);
-                closePlanModal();
-                clientPlanned = await pb.collection('planned_workouts').getFullList({ filter: `user="${selectedClientId}"`, sort: 'date', requestKey: null });
-                renderCalendar();
-            } catch(e) { alert('Save failed: ' + e.message); }
+    const title = document.getElementById('plan-title').value.trim();
+    if (!title) return alert('Please enter a title');
+
+    const repeatVal = document.getElementById('plan-repeat').value;
+    const customDays = repeatVal === 'custom'
+        ? Array.from(document.querySelectorAll('.repeat-day-cb:checked')).map(cb => cb.value).join(',')
+        : '';
+
+    const newDate = document.getElementById('plan-date').value;
+    const newTime = document.getElementById('plan-time').value;
+    const existingId = document.getElementById('plan-id').value;
+
+    const payload = {
+        user: typeof selectedClientId !== 'undefined' ? selectedClientId : pb.authStore.model.id,
+        title,
+        date: newDate,
+        time: newTime,
+        type: document.getElementById('plan-type').value,
+        notes: document.getElementById('plan-notes').value,
+        repeat: repeatVal,
+        repeat_days: customDays,
+        repeat_until: document.getElementById('plan-repeat-until').value || null
+    };
+
+    try {
+        if (existingId) {
+            const existing = (typeof clientPlanned !== 'undefined' ? clientPlanned : plannedWorkouts).find(p => p.id === existingId);
+            const isRepeating = existing && existing.repeat !== 'none';
+            const dateChanged = existing && existing.date?.substring(0,10) !== newDate;
+            const timeChanged = existing && existing.time !== newTime;
+
+            if (isRepeating && (dateChanged || timeChanged)) {
+                const choice = await showRepeatDialog();
+                if (choice === null) return; // cancelled
+
+                if (choice === 'one') {
+                    // Create a one-off exception with new date/time, keep original repeating
+                    await pb.collection('planned_workouts').create({
+                        ...payload,
+                        repeat: 'none',
+                        repeat_days: '',
+                        repeat_until: null
+                    });
+                    // Shorten original's repeat_until to day before new occurrence
+                    const dayBefore = new Date(existing.date);
+                    dayBefore.setDate(dayBefore.getDate() - 1);
+                    // Just update the non-date fields on the original
+                    await pb.collection('planned_workouts').update(existingId, {
+                        title: payload.title,
+                        type: payload.type,
+                        notes: payload.notes,
+                        repeat: payload.repeat,
+                        repeat_days: payload.repeat_days,
+                        repeat_until: payload.repeat_until
+                    });
+                } else {
+                    // Update all — just update the record
+                    await pb.collection('planned_workouts').update(existingId, payload);
+                }
+            } else {
+                await pb.collection('planned_workouts').update(existingId, payload);
+            }
+        } else {
+            await pb.collection('planned_workouts').create(payload);
         }
+
+        closePlanModal();
+        await refreshPlanned();
+        renderCalendar();
+    } catch(e) { alert('Save failed: ' + e.message); }
+}
+
+function showRepeatDialog() {
+    return new Promise(resolve => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;';
+        overlay.innerHTML = `
+            <div style="background:var(--card-bg);border:1px solid var(--brand-accent);border-radius:12px;padding:24px;max-width:340px;width:100%;">
+                <div style="font-family:'Montserrat';font-weight:800;font-size:0.9rem;color:var(--brand-accent);margin-bottom:10px;">Repeating Workout</div>
+                <p style="font-size:0.8rem;color:#888;margin-bottom:20px;line-height:1.6;">This is a repeating workout. Do you want to change just this one occurrence, or this and all future ones?</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                    <button id="repeat-one-btn" style="padding:10px;border:none;border-radius:6px;background:#1a2a35;color:var(--brand-accent);font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">JUST THIS ONE</button>
+                    <button id="repeat-all-btn" style="padding:10px;border:none;border-radius:6px;background:var(--brand-secondary);color:white;font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">ALL FUTURE</button>
+                </div>
+                <button id="repeat-cancel-btn" style="width:100%;padding:8px;border:none;border-radius:6px;background:none;color:#555;font-family:'Montserrat';font-weight:800;font-size:0.65rem;cursor:pointer;">CANCEL</button>
+            </div>`;
+        document.body.appendChild(overlay);
+        document.getElementById('repeat-one-btn').onclick = () => { document.body.removeChild(overlay); resolve('one'); };
+        document.getElementById('repeat-all-btn').onclick = () => { document.body.removeChild(overlay); resolve('all'); };
+        document.getElementById('repeat-cancel-btn').onclick = () => { document.body.removeChild(overlay); resolve(null); };
+    });
+}
+
+async function refreshPlanned() {
+    const userId = typeof selectedClientId !== 'undefined' && selectedClientId
+        ? selectedClientId
+        : pb.authStore.model.id;
+    const recs = await pb.collection('planned_workouts').getFullList({
+        filter: `user="${userId}"`, sort: 'date', requestKey: null
+    });
+    if (typeof clientPlanned !== 'undefined') clientPlanned = recs;
+    if (typeof plannedWorkouts !== 'undefined') plannedWorkouts = recs;
+}
 
         async function deletePlan() {
             const id = document.getElementById('plan-id').value;
