@@ -72,7 +72,7 @@
         .cal-mday.has-session { background: #0a1f0e; border-color: #1a3a1a; }
         .cal-mday.has-planned { border-color: #2a1a3a; }
         .cal-mday.has-session.has-planned { border-color: #1a3a4a; }
-        .cal-mday-num { font-size: 0.65rem; color: #444; margin-bottom: 3px; }
+        .cal-mday-num { font-size: 0.65rem; color: #444; margin-bottom: 3px; cursor: pointer; }
         .cal-mday.today .cal-mday-num { color: var(--brand-accent); font-weight: 800; }
         .cal-session-pill { border-radius: 3px; padding: 2px 4px; font-size: 0.48rem; color: white; font-weight: 800; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; background: var(--brand-secondary); cursor: pointer; }
         .cal-session-pill.planned { background: #4a1a6a; }
@@ -91,6 +91,25 @@
         .cal-wday-sub { font-size: 0.65rem; color: #555; }
         .cal-wday-empty { color: #333; font-size: 0.65rem; }
         .week-add-btn { background: none; border: 1px solid #1a2a35; color: var(--brand-accent); border-radius: 4px; padding: 2px 8px; font-size: 0.6rem; cursor: pointer; font-family: 'Montserrat'; font-weight: 800; }
+
+        /* DAY VIEW */
+        .cal-day-view { display: flex; flex-direction: column; }
+        .cal-day-slot { display: grid; grid-template-columns: 44px 1fr; min-height: 28px; border-bottom: 1px solid #0a0a0a; position: relative; }
+        .cal-day-slot:nth-child(4n+1) { border-bottom: 1px solid #1a2a35; }
+        .cal-slot-time { font-size: 0.5rem; color: #333; padding: 2px 4px; font-family: 'Montserrat'; font-weight: 700; line-height: 28px; text-align: right; }
+        .cal-day-slot:nth-child(4n+1) .cal-slot-time { color: #555; }
+        .cal-slot-content { position: relative; cursor: pointer; transition: 0.1s; }
+        .cal-slot-content:hover { background: rgba(38,198,218,0.04); }
+        .cal-slot-event { position: absolute; left: 2px; right: 2px; border-radius: 4px; padding: 3px 6px; font-size: 0.6rem; font-weight: 800; cursor: pointer; z-index: 2; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .cal-slot-event.session-event { background: var(--brand-secondary); color: white; cursor: default; }
+        .cal-slot-event.plan-event { cursor: grab; }
+        .cal-slot-event.plan-event:active { cursor: grabbing; opacity: 0.7; }
+        .cal-day-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 12px; }
+        .cal-day-title { font-family: 'Montserrat'; font-weight: 800; font-size: 0.9rem; color: white; }
+        .cal-day-subtitle { font-size: 0.65rem; color: #555; }
+        .cal-now-line { position: absolute; left: 44px; right: 0; height: 2px; background: var(--brand-danger); z-index: 3; pointer-events: none; }
+        .cal-now-line::before { content: ''; position: absolute; left: -4px; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-danger); }
+        .day-scroll-wrap { max-height: 600px; overflow-y: auto; position: relative; }
 
         /* CHECKINS */
         .checkin-card { background: var(--card-bg); border: 1px solid #1a2a35; border-radius: 10px; padding: 16px; margin-bottom: 10px; }
@@ -149,6 +168,7 @@
             <div class="cal-toggle">
                 <button class="cal-toggle-btn active" id="cal-month-btn" onclick="setCalView('month')">Month</button>
                 <button class="cal-toggle-btn" id="cal-week-btn" onclick="setCalView('week')">Week</button>
+                <button class="cal-toggle-btn" id="cal-day-btn" onclick="setCalView('day')">Day</button>
             </div>
             <div class="cal-nav">
                 <button onclick="moveCal(-1)">←</button>
@@ -238,6 +258,7 @@ let sessionMap = {};
 let plannedWorkouts = [];
 let calView = 'month';
 let calDate = new Date();
+let draggedPlanId = null;
 
 const typeColors = {
     strength: '#26C6DA', cardio: '#f87171', recovery: '#c084fc',
@@ -246,6 +267,7 @@ const typeColors = {
 const typeEmoji = {
     strength: '💪', cardio: '🏃', recovery: '🧘', mobility: '🤸', other: '⚡'
 };
+const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 window.onload = async () => {
     if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
@@ -379,14 +401,15 @@ function getPlannedForDate(dateStr) {
             const until = pw.repeat_until ? pw.repeat_until.substring(0,10) : '2099-12-31';
             if (dateStr >= pwDate && dateStr <= until) {
                 const days = (pw.repeat_days || '').split(',');
-                const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-                if (days.includes(dayNames[new Date(dateStr).getDay()])) results.push(pw);
+                const dNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+                if (days.includes(dNames[new Date(dateStr).getDay()])) results.push(pw);
             }
         }
     });
     return results;
 }
 
+// ── PLAN MODAL ────────────────────────────────────
 function openPlanModal(dateStr, existingId) {
     document.getElementById('plan-id').value = existingId || '';
     document.getElementById('plan-date').value = dateStr || new Date().toISOString().split('T')[0];
@@ -419,6 +442,11 @@ function openPlanModal(dateStr, existingId) {
     document.getElementById('plan-modal').classList.add('open');
 }
 
+function openPlanModalAtTime(dateStr, timeStr) {
+    openPlanModal(dateStr);
+    setTimeout(() => { document.getElementById('plan-time').value = timeStr; }, 50);
+}
+
 function closePlanModal() { document.getElementById('plan-modal').classList.remove('open'); }
 
 function toggleRepeatOptions() {
@@ -426,64 +454,38 @@ function toggleRepeatOptions() {
     document.getElementById('repeat-days-field').style.display = val === 'custom' ? 'block' : 'none';
     document.getElementById('repeat-until-field').style.display = val !== 'none' ? 'block' : 'none';
 }
+
 async function savePlan() {
     const title = document.getElementById('plan-title').value.trim();
     if (!title) return alert('Please enter a title');
-
     const repeatVal = document.getElementById('plan-repeat').value;
     const customDays = repeatVal === 'custom'
         ? Array.from(document.querySelectorAll('.repeat-day-cb:checked')).map(cb => cb.value).join(',')
         : '';
-
     const newDate = document.getElementById('plan-date').value;
     const newTime = document.getElementById('plan-time').value;
     const existingId = document.getElementById('plan-id').value;
-
     const payload = {
-        user: typeof selectedClientId !== 'undefined' ? selectedClientId : pb.authStore.model.id,
-        title,
-        date: newDate,
-        time: newTime,
+        user: pb.authStore.model.id,
+        title, date: newDate, time: newTime,
         type: document.getElementById('plan-type').value,
         notes: document.getElementById('plan-notes').value,
-        repeat: repeatVal,
-        repeat_days: customDays,
+        repeat: repeatVal, repeat_days: customDays,
         repeat_until: document.getElementById('plan-repeat-until').value || null
     };
-
     try {
         if (existingId) {
-            const existing = (typeof clientPlanned !== 'undefined' ? clientPlanned : plannedWorkouts).find(p => p.id === existingId);
+            const existing = plannedWorkouts.find(p => p.id === existingId);
             const isRepeating = existing && existing.repeat !== 'none';
             const dateChanged = existing && existing.date?.substring(0,10) !== newDate;
             const timeChanged = existing && existing.time !== newTime;
-
             if (isRepeating && (dateChanged || timeChanged)) {
                 const choice = await showRepeatDialog();
-                if (choice === null) return; // cancelled
-
+                if (choice === null) return;
                 if (choice === 'one') {
-                    // Create a one-off exception with new date/time, keep original repeating
-                    await pb.collection('planned_workouts').create({
-                        ...payload,
-                        repeat: 'none',
-                        repeat_days: '',
-                        repeat_until: null
-                    });
-                    // Shorten original's repeat_until to day before new occurrence
-                    const dayBefore = new Date(existing.date);
-                    dayBefore.setDate(dayBefore.getDate() - 1);
-                    // Just update the non-date fields on the original
-                    await pb.collection('planned_workouts').update(existingId, {
-                        title: payload.title,
-                        type: payload.type,
-                        notes: payload.notes,
-                        repeat: payload.repeat,
-                        repeat_days: payload.repeat_days,
-                        repeat_until: payload.repeat_until
-                    });
+                    await pb.collection('planned_workouts').create({ ...payload, repeat: 'none', repeat_days: '', repeat_until: null });
+                    await pb.collection('planned_workouts').update(existingId, { title: payload.title, type: payload.type, notes: payload.notes, repeat: payload.repeat, repeat_days: payload.repeat_days, repeat_until: payload.repeat_until });
                 } else {
-                    // Update all — just update the record
                     await pb.collection('planned_workouts').update(existingId, payload);
                 }
             } else {
@@ -492,11 +494,21 @@ async function savePlan() {
         } else {
             await pb.collection('planned_workouts').create(payload);
         }
-
         closePlanModal();
         await refreshPlanned();
         renderCalendar();
     } catch(e) { alert('Save failed: ' + e.message); }
+}
+
+async function deletePlan() {
+    const id = document.getElementById('plan-id').value;
+    if (!id || !confirm('Delete this planned workout?')) return;
+    try {
+        await pb.collection('planned_workouts').delete(id);
+        closePlanModal();
+        await refreshPlanned();
+        renderCalendar();
+    } catch(e) { alert('Delete failed: ' + e.message); }
 }
 
 function showRepeatDialog() {
@@ -506,7 +518,7 @@ function showRepeatDialog() {
         overlay.innerHTML = `
             <div style="background:var(--card-bg);border:1px solid var(--brand-accent);border-radius:12px;padding:24px;max-width:340px;width:100%;">
                 <div style="font-family:'Montserrat';font-weight:800;font-size:0.9rem;color:var(--brand-accent);margin-bottom:10px;">Repeating Workout</div>
-                <p style="font-size:0.8rem;color:#888;margin-bottom:20px;line-height:1.6;">This is a repeating workout. Do you want to change just this one occurrence, or this and all future ones?</p>
+                <p style="font-size:0.8rem;color:#888;margin-bottom:20px;line-height:1.6;">Do you want to change just this one occurrence, or this and all future ones?</p>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
                     <button id="repeat-one-btn" style="padding:10px;border:none;border-radius:6px;background:#1a2a35;color:var(--brand-accent);font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">JUST THIS ONE</button>
                     <button id="repeat-all-btn" style="padding:10px;border:none;border-radius:6px;background:var(--brand-secondary);color:white;font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">ALL FUTURE</button>
@@ -521,14 +533,68 @@ function showRepeatDialog() {
 }
 
 async function refreshPlanned() {
-    const userId = typeof selectedClientId !== 'undefined' && selectedClientId
-        ? selectedClientId
-        : pb.authStore.model.id;
-    const recs = await pb.collection('planned_workouts').getFullList({
-        filter: `user="${userId}"`, sort: 'date', requestKey: null
+    plannedWorkouts = await pb.collection('planned_workouts').getFullList({
+        filter: `user="${pb.authStore.model.id}"`, sort: 'date', requestKey: null
     });
-    if (typeof clientPlanned !== 'undefined') clientPlanned = recs;
-    if (typeof plannedWorkouts !== 'undefined') plannedWorkouts = recs;
+}
+
+// ── DRAG AND DROP ─────────────────────────────────
+function handleDragStart(event, planId) {
+    draggedPlanId = planId;
+    event.dataTransfer.effectAllowed = 'move';
+    event.stopPropagation();
+}
+
+async function handleDrop(event, newDateStr) {
+    event.preventDefault();
+    if (!draggedPlanId) return;
+    const pw = plannedWorkouts.find(p => p.id === draggedPlanId);
+    if (!pw) return;
+    if (pw.date?.substring(0,10) === newDateStr) return;
+    try {
+        if (pw.repeat !== 'none') {
+            const choice = await showRepeatDialog();
+            if (choice === null) { draggedPlanId = null; return; }
+            if (choice === 'one') {
+                await pb.collection('planned_workouts').create({ user: pw.user, title: pw.title, date: newDateStr, time: pw.time, type: pw.type, notes: pw.notes, repeat: 'none', repeat_days: '', repeat_until: null });
+            } else {
+                await pb.collection('planned_workouts').update(draggedPlanId, { date: newDateStr });
+            }
+        } else {
+            await pb.collection('planned_workouts').update(draggedPlanId, { date: newDateStr });
+        }
+        draggedPlanId = null;
+        await refreshPlanned();
+        renderCalendar();
+    } catch(e) { alert('Move failed: ' + e.message); draggedPlanId = null; }
+}
+
+async function handleDayDrop(event, newSlotIndex) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!draggedPlanId) return;
+    const pw = plannedWorkouts.find(p => p.id === draggedPlanId);
+    if (!pw) return;
+    const h = Math.floor(newSlotIndex / 4);
+    const m = (newSlotIndex % 4) * 15;
+    const newTime = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    try {
+        if (pw.repeat !== 'none') {
+            const choice = await showRepeatDialog();
+            if (choice === null) { draggedPlanId = null; return; }
+            if (choice === 'one') {
+                const dateStr = calDate.toISOString().split('T')[0];
+                await pb.collection('planned_workouts').create({ user: pw.user, title: pw.title, date: dateStr, time: newTime, type: pw.type, notes: pw.notes, repeat: 'none', repeat_days: '', repeat_until: null });
+            } else {
+                await pb.collection('planned_workouts').update(draggedPlanId, { time: newTime });
+            }
+        } else {
+            await pb.collection('planned_workouts').update(draggedPlanId, { time: newTime });
+        }
+        draggedPlanId = null;
+        await refreshPlanned();
+        renderDayView();
+    } catch(e) { alert('Move failed: ' + e.message); draggedPlanId = null; }
 }
 
 // ── CALENDAR ──────────────────────────────────────
@@ -536,18 +602,26 @@ function setCalView(view) {
     calView = view;
     document.getElementById('cal-month-btn').classList.toggle('active', view === 'month');
     document.getElementById('cal-week-btn').classList.toggle('active', view === 'week');
+    document.getElementById('cal-day-btn').classList.toggle('active', view === 'day');
     renderCalendar();
 }
 
 function moveCal(dir) {
     if (calView === 'month') calDate.setMonth(calDate.getMonth() + dir);
-    else calDate.setDate(calDate.getDate() + dir * 7);
+    else if (calView === 'week') calDate.setDate(calDate.getDate() + dir * 7);
+    else calDate.setDate(calDate.getDate() + dir);
     renderCalendar();
+}
+
+function jumpToDay(dateStr) {
+    calDate = new Date(dateStr + 'T12:00:00');
+    setCalView('day');
 }
 
 function renderCalendar() {
     if (calView === 'month') renderMonthView();
-    else renderWeekView();
+    else if (calView === 'week') renderWeekView();
+    else renderDayView();
 }
 
 function renderMonthView() {
@@ -568,16 +642,11 @@ function renderMonthView() {
         const sessions = sessionMap[dateStr] || [];
         const planned = getPlannedForDate(dateStr);
         const isToday = dateStr === today;
-        const classes = [
-            'cal-mday',
-            sessions.length ? 'has-session' : '',
-            planned.length ? 'has-planned' : '',
-            isToday ? 'today' : ''
-        ].filter(Boolean).join(' ');
+        const classes = ['cal-mday', sessions.length?'has-session':'', planned.length?'has-planned':'', isToday?'today':''].filter(Boolean).join(' ');
 
         html += `<div class="${classes}" ondragover="event.preventDefault();this.style.outline='1px solid var(--brand-accent)'" ondragleave="this.style.outline=''" ondrop="handleDrop(event,'${dateStr}');this.style.outline=''">
-            <div class="cal-mday-num">${d}</div>
-            ${sessions.map(s => `<div class="cal-session-pill" title="${s.programName} · Wk${s.weekNum} · ${s.pct}%">${s.programName} · Wk${s.weekNum}</div>`).join('')}
+            <div class="cal-mday-num" onclick="jumpToDay('${dateStr}')">${d}</div>
+            ${sessions.map(s => `<div class="cal-session-pill">${s.programName} · Wk${s.weekNum}</div>`).join('')}
             ${planned.map(pw => `<div class="cal-session-pill planned" style="background:${typeColors[pw.type]||'#888'}33;color:${typeColors[pw.type]||'#888'};" draggable="true" ondragstart="handleDragStart(event,'${pw.id}')" onclick="openPlanModal('${dateStr}','${pw.id}');event.stopPropagation();">${typeEmoji[pw.type]||'⚡'} ${pw.title}</div>`).join('')}
             <button class="add-plan-btn" onclick="openPlanModal('${dateStr}')" title="Add planned workout">＋</button>
         </div>`;
@@ -596,7 +665,7 @@ function renderWeekView() {
     const startStr = days[0].toLocaleDateString([], { month: 'short', day: 'numeric' });
     const endStr = days[6].toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
     document.getElementById('cal-period').textContent = `${startStr} – ${endStr}`;
-    const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const wDayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
     let html = `<div class="cal-week-list">`;
     days.forEach((day, i) => {
@@ -605,26 +674,106 @@ function renderWeekView() {
         const planned = getPlannedForDate(dateStr);
         const isToday = dateStr === today;
 
-        html += `<div class="cal-wday ${isToday ? 'today' : ''}" ondragover="event.preventDefault();this.style.borderColor='var(--brand-accent)'" ondragleave="this.style.borderColor=''" ondrop="handleDrop(event,'${dateStr}');this.style.borderColor=''">
+        html += `<div class="cal-wday ${isToday?'today':''}" ondragover="event.preventDefault();this.style.borderColor='var(--brand-accent)'" ondragleave="this.style.borderColor=''" ondrop="handleDrop(event,'${dateStr}');this.style.borderColor=''">
             <div class="cal-wday-label">
-                <span>${dayNames[i]} ${day.getDate()} ${day.toLocaleDateString([],{month:'short'})}</span>
+                <span onclick="jumpToDay('${dateStr}')" style="cursor:pointer;">${wDayNames[i]} ${day.getDate()} ${day.toLocaleDateString([],{month:'short'})}</span>
                 <button class="week-add-btn" onclick="openPlanModal('${dateStr}')">+ Plan</button>
             </div>
-            ${sessions.length === 0 && planned.length === 0 ? `<div class="cal-wday-empty">—</div>` : ''}
-            ${sessions.map(s => `
-                <div class="cal-wday-session">
-                    <div class="cal-wday-prog">${s.programName}</div>
-                    <div class="cal-wday-sub">Week ${s.weekNum} · ${s.pct}% complete</div>
-                </div>`).join('')}
-            ${planned.map(pw => `
-                <div class="cal-wday-session planned" draggable="true" ondragstart="handleDragStart(event,'${pw.id}')" onclick="openPlanModal('${dateStr}','${pw.id}')">
-                    <div class="cal-wday-prog planned" style="color:${typeColors[pw.type]||'#888'}">${typeEmoji[pw.type]||'⚡'} ${pw.title}${pw.time?' · '+pw.time:''}</div>
-                    <div class="cal-wday-sub">${pw.type}${pw.repeat!=='none'?' · repeating':''}</div>
-                </div>`).join('')}
+            ${sessions.length===0&&planned.length===0?`<div class="cal-wday-empty">—</div>`:''}
+            ${sessions.map(s=>`<div class="cal-wday-session"><div class="cal-wday-prog">${s.programName}</div><div class="cal-wday-sub">Week ${s.weekNum} · ${s.pct}% complete</div></div>`).join('')}
+            ${planned.map(pw=>`<div class="cal-wday-session planned" draggable="true" ondragstart="handleDragStart(event,'${pw.id}')" onclick="openPlanModal('${dateStr}','${pw.id}')"><div class="cal-wday-prog planned" style="color:${typeColors[pw.type]||'#888'}">${typeEmoji[pw.type]||'⚡'} ${pw.title}${pw.time?' · '+pw.time:''}</div><div class="cal-wday-sub">${pw.type}${pw.repeat!=='none'?' · repeating':''}</div></div>`).join('')}
         </div>`;
     });
     html += `</div>`;
     document.getElementById('cal-content').innerHTML = html;
+}
+
+function renderDayView() {
+    const dateStr = calDate.toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0];
+    const isToday = dateStr === today;
+    const dayName = dayNames[calDate.getDay()];
+    const dateLabel = calDate.toLocaleDateString([], { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const sessions = sessionMap[dateStr] || [];
+    const planned = getPlannedForDate(dateStr);
+
+    document.getElementById('cal-period').textContent = dateLabel;
+
+    // Build events with slot positions
+    const events = [];
+    planned.forEach(pw => {
+        let slotIndex = 32; // default 8am
+        if (pw.time) {
+            const [h, m] = pw.time.split(':').map(Number);
+            slotIndex = h * 4 + Math.floor(m / 15);
+        }
+        events.push({ type: 'plan', pw, slotIndex, durationSlots: 4 });
+    });
+    sessions.forEach((s, si) => {
+        events.push({ type: 'session', session: s, slotIndex: 28 + si * 5, durationSlots: 4 });
+    });
+
+    let html = `<div class="cal-day-view">
+        <div class="cal-day-header-bar">
+            <div>
+                <div class="cal-day-title">${isToday ? '📍 Today — ' : ''}${dayName}</div>
+                <div class="cal-day-subtitle">${dateLabel}</div>
+            </div>
+        </div>
+        <div class="day-scroll-wrap" id="day-scroll">
+            <div style="position:relative;">`;
+
+    // Now line
+    if (isToday) {
+        const now = new Date();
+        const nowSlot = now.getHours() * 4 + Math.floor(now.getMinutes() / 15);
+        html += `<div class="cal-now-line" style="top:${nowSlot * 28}px;"></div>`;
+    }
+
+    for (let h = 0; h < 24; h++) {
+        for (let m = 0; m < 60; m += 15) {
+            const slotIndex = h * 4 + m / 15;
+            const timeLabel = m === 0 ? `${String(h).padStart(2,'0')}:00` : '';
+            const timeStr = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+            const slotEvents = events.filter(e => e.slotIndex === slotIndex);
+
+            html += `<div class="cal-day-slot">
+                <div class="cal-slot-time">${timeLabel}</div>
+                <div class="cal-slot-content"
+                    ondragover="event.preventDefault();this.style.background='rgba(38,198,218,0.08)'"
+                    ondragleave="this.style.background=''"
+                    ondrop="handleDayDrop(event,${slotIndex});this.style.background=''"
+                    onclick="openPlanModalAtTime('${dateStr}','${timeStr}')">
+                    ${slotEvents.map(e => {
+                        if (e.type === 'session') {
+                            return `<div class="cal-slot-event session-event" style="height:${e.durationSlots*28-4}px;">
+                                ✓ ${e.session.programName} · Wk${e.session.weekNum}
+                            </div>`;
+                        } else {
+                            const color = typeColors[e.pw.type] || '#888';
+                            return `<div class="cal-slot-event plan-event"
+                                style="height:${e.durationSlots*28-4}px;background:${color}22;color:${color};border:1px solid ${color}44;"
+                                draggable="true"
+                                ondragstart="handleDragStart(event,'${e.pw.id}')"
+                                onclick="openPlanModal('${dateStr}','${e.pw.id}');event.stopPropagation();">
+                                ${typeEmoji[e.pw.type]||'⚡'} ${e.pw.title}${e.pw.time?' · '+e.pw.time:''}
+                            </div>`;
+                        }
+                    }).join('')}
+                </div>
+            </div>`;
+        }
+    }
+
+    html += `</div></div></div>`;
+    document.getElementById('cal-content').innerHTML = html;
+
+    // Scroll to 7am
+    setTimeout(() => {
+        const wrap = document.getElementById('day-scroll');
+        if (wrap) wrap.scrollTop = 28 * 28; // slot 28 = 7am
+    }, 50);
 }
 
 // ── CHECKINS ──────────────────────────────────────
@@ -660,43 +809,6 @@ async function loadCheckins() {
             </div>`;
         }).join('');
     } catch(e) { console.error(e); }
-}
-let draggedPlanId = null;
-
-function handleDragStart(event, planId) {
-    draggedPlanId = planId;
-    event.dataTransfer.effectAllowed = 'move';
-    event.stopPropagation();
-}
-
-async function handleDrop(event, newDateStr) {
-    event.preventDefault();
-    if (!draggedPlanId) return;
-    const pw = plannedWorkouts.find(p => p.id === draggedPlanId);
-    if (!pw) return;
-    const oldDate = pw.date?.substring(0,10);
-    if (oldDate === newDateStr) return;
-    const isRepeating = pw.repeat !== 'none';
-    try {
-        if (isRepeating) {
-            const choice = await showRepeatDialog();
-            if (choice === null) return;
-            if (choice === 'one') {
-                await pb.collection('planned_workouts').create({
-                    user: pw.user, title: pw.title, date: newDateStr,
-                    time: pw.time, type: pw.type, notes: pw.notes,
-                    repeat: 'none', repeat_days: '', repeat_until: null
-                });
-            } else {
-                await pb.collection('planned_workouts').update(draggedPlanId, { date: newDateStr });
-            }
-        } else {
-            await pb.collection('planned_workouts').update(draggedPlanId, { date: newDateStr });
-        }
-        draggedPlanId = null;
-        await refreshPlanned();
-        renderCalendar();
-    } catch(e) { alert('Move failed: ' + e.message); draggedPlanId = null; }
 }
 </script>
 </body>
