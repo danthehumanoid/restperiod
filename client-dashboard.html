@@ -426,35 +426,6 @@ function toggleRepeatOptions() {
     document.getElementById('repeat-days-field').style.display = val === 'custom' ? 'block' : 'none';
     document.getElementById('repeat-until-field').style.display = val !== 'none' ? 'block' : 'none';
 }
-
-async function savePlan() {
-    const title = document.getElementById('plan-title').value.trim();
-    if (!title) return alert('Please enter a title');
-    const repeatVal = document.getElementById('plan-repeat').value;
-    const customDays = repeatVal === 'custom'
-        ? Array.from(document.querySelectorAll('.repeat-day-cb:checked')).map(cb => cb.value).join(',')
-        : '';
-    const payload = {
-        user: pb.authStore.model.id,
-        title,
-        date: document.getElementById('plan-date').value,
-        time: document.getElementById('plan-time').value,
-        type: document.getElementById('plan-type').value,
-        notes: document.getElementById('plan-notes').value,
-        repeat: repeatVal,
-        repeat_days: customDays,
-        repeat_until: document.getElementById('plan-repeat-until').value || null
-    };
-    try {
-        const id = document.getElementById('plan-id').value;
-        if (id) await pb.collection('planned_workouts').update(id, payload);
-        else await pb.collection('planned_workouts').create(payload);
-        closePlanModal();
-        await loadPlannedWorkouts();
-        renderCalendar();
-    } catch(e) { alert('Save failed: ' + e.message); }
-}
-
 async function savePlan() {
     const title = document.getElementById('plan-title').value.trim();
     if (!title) return alert('Please enter a title');
@@ -604,10 +575,10 @@ function renderMonthView() {
             isToday ? 'today' : ''
         ].filter(Boolean).join(' ');
 
-        html += `<div class="${classes}">
+        html += `<div class="${classes}" ondragover="event.preventDefault();this.style.outline='1px solid var(--brand-accent)'" ondragleave="this.style.outline=''" ondrop="handleDrop(event,'${dateStr}');this.style.outline=''">
             <div class="cal-mday-num">${d}</div>
             ${sessions.map(s => `<div class="cal-session-pill" title="${s.programName} · Wk${s.weekNum} · ${s.pct}%">${s.programName} · Wk${s.weekNum}</div>`).join('')}
-            ${planned.map(pw => `<div class="cal-session-pill planned" style="background:${typeColors[pw.type]||'#888'}33;color:${typeColors[pw.type]||'#888'};" onclick="openPlanModal('${dateStr}','${pw.id}');event.stopPropagation();">${typeEmoji[pw.type]||'⚡'} ${pw.title}</div>`).join('')}
+            ${planned.map(pw => `<div class="cal-session-pill planned" style="background:${typeColors[pw.type]||'#888'}33;color:${typeColors[pw.type]||'#888'};" draggable="true" ondragstart="handleDragStart(event,'${pw.id}')" onclick="openPlanModal('${dateStr}','${pw.id}');event.stopPropagation();">${typeEmoji[pw.type]||'⚡'} ${pw.title}</div>`).join('')}
             <button class="add-plan-btn" onclick="openPlanModal('${dateStr}')" title="Add planned workout">＋</button>
         </div>`;
     }
@@ -634,7 +605,7 @@ function renderWeekView() {
         const planned = getPlannedForDate(dateStr);
         const isToday = dateStr === today;
 
-        html += `<div class="cal-wday ${isToday ? 'today' : ''}">
+        html += `<div class="cal-wday ${isToday ? 'today' : ''}" ondragover="event.preventDefault();this.style.borderColor='var(--brand-accent)'" ondragleave="this.style.borderColor=''" ondrop="handleDrop(event,'${dateStr}');this.style.borderColor=''">
             <div class="cal-wday-label">
                 <span>${dayNames[i]} ${day.getDate()} ${day.toLocaleDateString([],{month:'short'})}</span>
                 <button class="week-add-btn" onclick="openPlanModal('${dateStr}')">+ Plan</button>
@@ -646,7 +617,7 @@ function renderWeekView() {
                     <div class="cal-wday-sub">Week ${s.weekNum} · ${s.pct}% complete</div>
                 </div>`).join('')}
             ${planned.map(pw => `
-                <div class="cal-wday-session planned" onclick="openPlanModal('${dateStr}','${pw.id}')">
+                <div class="cal-wday-session planned" draggable="true" ondragstart="handleDragStart(event,'${pw.id}')" onclick="openPlanModal('${dateStr}','${pw.id}')">
                     <div class="cal-wday-prog planned" style="color:${typeColors[pw.type]||'#888'}">${typeEmoji[pw.type]||'⚡'} ${pw.title}${pw.time?' · '+pw.time:''}</div>
                     <div class="cal-wday-sub">${pw.type}${pw.repeat!=='none'?' · repeating':''}</div>
                 </div>`).join('')}
@@ -689,6 +660,43 @@ async function loadCheckins() {
             </div>`;
         }).join('');
     } catch(e) { console.error(e); }
+}
+let draggedPlanId = null;
+
+function handleDragStart(event, planId) {
+    draggedPlanId = planId;
+    event.dataTransfer.effectAllowed = 'move';
+    event.stopPropagation();
+}
+
+async function handleDrop(event, newDateStr) {
+    event.preventDefault();
+    if (!draggedPlanId) return;
+    const pw = plannedWorkouts.find(p => p.id === draggedPlanId);
+    if (!pw) return;
+    const oldDate = pw.date?.substring(0,10);
+    if (oldDate === newDateStr) return;
+    const isRepeating = pw.repeat !== 'none';
+    try {
+        if (isRepeating) {
+            const choice = await showRepeatDialog();
+            if (choice === null) return;
+            if (choice === 'one') {
+                await pb.collection('planned_workouts').create({
+                    user: pw.user, title: pw.title, date: newDateStr,
+                    time: pw.time, type: pw.type, notes: pw.notes,
+                    repeat: 'none', repeat_days: '', repeat_until: null
+                });
+            } else {
+                await pb.collection('planned_workouts').update(draggedPlanId, { date: newDateStr });
+            }
+        } else {
+            await pb.collection('planned_workouts').update(draggedPlanId, { date: newDateStr });
+        }
+        draggedPlanId = null;
+        await refreshPlanned();
+        renderCalendar();
+    } catch(e) { alert('Move failed: ' + e.message); draggedPlanId = null; }
 }
 </script>
 </body>
