@@ -341,7 +341,7 @@ function renderPrograms(clientProgs, templateProgs, freeProgs) {
         html += templateProgs.map(progCard).join('');
     }
     if (freeProgs.length > 0) {
-        html += `<div class="section-title" style="grid-column:1/-1; margin-top:20px;">🆓 Free Programs</div>`;
+        html += `<div class="section-title" style="grid-column:1/-1; margin-top:20px;">Pre-Made Programs</div>`;
         html += freeProgs.map(progCard).join('');
     }
     grid.innerHTML = html;
