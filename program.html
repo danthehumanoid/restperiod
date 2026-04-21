@@ -14,171 +14,105 @@
         body { margin: 0; font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); padding-bottom: 80px; overflow-x: hidden; }
         * { box-sizing: border-box; }
 
-        /* HEADER & TOOLS */
         .nav-top { display: flex; justify-content: space-between; padding: 5px 15px; background: #000; border-bottom: 1px solid #004d7a; align-items: center; position: sticky; top:0; z-index: 1000; height: 70px; }
-        .header-tool { color: var(--brand-accent); border: 1.5px solid rgba(38, 198, 218, 0.5); border-radius: 8px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; background: rgba(0, 0, 0, 0.4); transition: 0.2s; }
-        .header-tool:hover { background: rgba(38, 198, 218, 0.1); border-color: var(--brand-accent); }
-        .nav-top div::-webkit-scrollbar { display: none; }
+        .header-tool { color: var(--brand-accent); border: 1.5px solid rgba(38,198,218,0.5); border-radius: 8px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; background: rgba(0,0,0,0.4); transition: 0.2s; }
+        .header-tool:hover { background: rgba(38,198,218,0.1); border-color: var(--brand-accent); }
 
-        /* NEW SET CONTAINER DESIGN (Notes below Reps/KG) */
         .set-container { background: #000; border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid #1a2c3a; }
-        .set-row-top { 
-    display: grid; 
-    grid-template-columns: 35px 85px 1fr 1fr 1fr; 
-    gap: 8px; 
-    align-items: end; /* Aligns inputs and labels at the bottom */
-}
-
-/* Styling for the small 'Actual' labels */
-.act-label {
-    font-size: 0.55rem;
-    color: var(--brand-secondary);
-    font-weight: 800;
-    text-align: center;
-    display: block;
-    margin-bottom: 2px;
-    letter-spacing: 0.5px;
-}
+        .set-row-top { display: grid; grid-template-columns: 35px 85px 1fr 1fr 1fr; gap: 8px; align-items: end; }
+        .act-label { font-size: 0.55rem; color: var(--brand-secondary); font-weight: 800; text-align: center; display: block; margin-bottom: 2px; letter-spacing: 0.5px; }
         .set-row-bottom { display: grid; grid-template-columns: 1fr 44px; gap: 10px; margin-top: 10px; }
-        
         .actual-input { margin: 0 !important; padding: 10px !important; text-align: center; border: 1px solid var(--brand-secondary) !important; background: #0e1b24 !important; font-size: 0.95rem !important; color: white !important; font-weight: 700; border-radius: 4px; width: 100%; }
         .note-input { margin: 0 !important; padding: 10px !important; background: #111 !important; border: 1px solid #333 !important; font-size: 0.85rem !important; color: #ccc !important; width: 100%; border-radius: 4px; }
-        /* Styles the checkbox to look like a modern 'Confirm' button */
-.tick-box {
-    appearance: none;
-    -webkit-appearance: none;
-    background-color: #111;
-    border: 2px solid var(--brand-secondary);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
+        .tick-box { appearance: none; -webkit-appearance: none; background-color: #111; border: 2px solid var(--brand-secondary); border-radius: 4px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .tick-box:checked { background-color: var(--brand-secondary); }
+        .tick-box:checked::after { content: '✔'; color: white; font-size: 1.2rem; font-weight: bold; }
 
-.tick-box:checked {
-    background-color: var(--brand-secondary);
-}
-
-.tick-box:checked::after {
-    content: '✔';
-    color: white;
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-        /* UI ELEMENTS */
         .exercise-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid #004d7a; margin-bottom: 20px; }
         .exercise-title { font-family: 'Montserrat'; font-size: 1.2rem; font-weight: 800; color: var(--brand-accent); margin: 0 0 15px 0; border-bottom: 1px solid #222; padding-bottom: 8px; cursor: pointer; }
-        .btn-start { background: var(--brand-accent); color: black; font-weight: 800; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border:none; border-radius:4px; padding:15px; width:100%; cursor:pointer; }
-        .btn-finish { background: var(--brand-secondary); color: white; font-weight: 800; margin-top: 20px; border:none; border-radius:4px; padding:15px; width:100%; cursor:pointer; display: flex; justify-content: center; gap: 10px; }
-        
+
         .container { max-width: 800px; margin: 0 auto; padding: 20px; }
         .progress-container { width: 100%; background: #111; border-radius: 10px; height: 12px; margin: 15px 0; border: 1px solid #333; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--brand-secondary), var(--brand-accent)); width: 0%; transition: 0.5s; }
         .card { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid #004d7a; margin-bottom: 20px; }
         .section-header { background: #000; color: white; padding: 12px 15px; border-radius: 4px; margin: 25px 0 10px 0; font-family: 'Montserrat'; font-weight: 800; border-left: 4px solid var(--brand-accent); font-size: 0.9rem; }
-        
-        .tab { padding: 10px 20px; background: #001a2c; border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.9rem; white-space: nowrap; color: #888; font-weight: 600; margin-right:5px; }
+
+        .tab { padding: 8px 14px; background: #001a2c; border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; color: #888; font-weight: 600; margin-right: 5px; text-align: center; }
         .tab.active { background: var(--brand-accent); color: black; font-weight: 800; }
-        
+        .tab-date { font-size: 0.55rem; display: block; opacity: 0.7; margin-top: 2px; }
+
         .modal { display: none; position: fixed; z-index: 5000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); overflow: auto; }
-        .modal-content { background: var(--card-bg); margin: 10% auto; padding: 25px; border: 1px solid var(--brand-accent); width: 90%; max-width: 450px; border-radius: 12px; position: relative;}
+        .modal-content { background: var(--card-bg); margin: 10% auto; padding: 25px; border: 1px solid var(--brand-accent); width: 90%; max-width: 450px; border-radius: 12px; position: relative; }
         .sidebar { height: 100%; width: 0; position: fixed; z-index: 6000; top: 0; right: 0; background-color: #000; overflow-x: hidden; transition: 0.4s; padding-top: 60px; border-left: 1px solid var(--brand-accent); }
         .sidebar a { padding: 10px 20px; text-decoration: none; font-size: 1.1rem; color: #818181; display: block; font-family: 'Montserrat'; }
         .quad-title { font-size: 0.65rem; color: #aaa; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; display: block; }
-        .timer-display { font-size: 4rem; font-family: 'Courier New', monospace; font-weight: bold; margin: 15px 0; color: #fff; text-align: center;}
         #sync-toast { position: fixed; bottom: 20px; right: 20px; background: var(--brand-secondary); color: white; padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; display: none; z-index: 7000; }
-   .t-unit-btn {
-    padding: 5px 10px;
-    border: none;
-    background: none;
-    color: #555;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    font-size: 0.65rem;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.t-unit-btn.active { background: var(--brand-accent); color: #000; }
 
-.tool-inp {
-    width: 100%;
-    background: #000;
-    border: 1px solid #1a2c3a;
-    border-radius: 4px;
-    color: white;
-    padding: 9px 10px;
-    font-size: 0.9rem;
-    font-family: inherit;
-    margin-bottom: 10px;
-}
-.tool-inp:focus { outline: none; border-color: var(--brand-accent); }
+        .t-unit-btn { padding: 5px 10px; border: none; background: none; color: #555; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.65rem; cursor: pointer; transition: 0.2s; }
+        .t-unit-btn.active { background: var(--brand-accent); color: #000; }
+        .tool-inp { width: 100%; background: #000; border: 1px solid #1a2c3a; border-radius: 4px; color: white; padding: 9px 10px; font-size: 0.9rem; font-family: inherit; margin-bottom: 10px; }
+        .tool-inp:focus { outline: none; border-color: var(--brand-accent); }
+        .tool-action-btn { padding: 11px; border: none; border-radius: 6px; background: var(--brand-primary); color: white; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .tool-action-btn:hover { background: #004d7a; }
+        .tool-action-btn.running { background: #7f1d1d; color: #f87171; }
 
-.tool-action-btn {
-    padding: 11px;
-    border: none;
-    border-radius: 6px;
-    background: var(--brand-primary);
-    color: white;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    font-size: 0.75rem;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: 0.2s;
-}
-.tool-action-btn:hover { background: #004d7a; }
-.tool-action-btn.running { background: #7f1d1d; color: #f87171; }
+        /* DATE BADGE STYLES */
+        .date-row { background: var(--card-bg); border: 1px solid #004d7a; border-radius: 8px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .date-scheduled { font-size: 0.75rem; color: #888; padding: 6px 12px; background: #0a1a2a; border: 1px solid #1a2a35; border-radius: 6px; }
+        .date-scheduled span { color: var(--brand-accent); font-weight: 800; }
+        .date-completed { font-size: 0.75rem; color: #4ade80; padding: 6px 12px; background: #052e16; border: 1px solid #166534; border-radius: 6px; font-weight: 800; }
+        .date-not-logged { font-size: 0.75rem; color: #555; padding: 6px 0; }
     </style>
 </head>
 <body>
 
-    <div id="sync-toast">Synced ✓</div>
+<div id="sync-toast">Synced ✓</div>
 
-    <div class="nav-top">
-        <canvas id="nav-clock" width="45" height="45" style="background: #000; border-radius: 50%; border: 1.5px solid var(--brand-accent); flex-shrink: 0;"></canvas>
-        <div style="display: flex; gap: 8px; overflow-x: auto; padding: 0 10px; align-items: center; -webkit-overflow-scrolling: touch;">
-            <div class="header-tool" onclick="openTool('pace-tool')"><i class="fas fa-running"></i></div>
-            <div class="header-tool" onclick="openTool('onerm-tool')"><i class="fas fa-weight-hanging"></i></div>
-            <div class="header-tool" onclick="openTool('metronome-tool')"><i class="fas fa-drum"></i></div>
-            <div class="header-tool" onclick="openTool('interval-tool')"><i class="fas fa-redo"></i></div>
-            <div class="header-tool" onclick="openTool('countdown-tool')"><i class="fas fa-hourglass-half"></i></div>
-            <div class="header-tool" onclick="openTool('stopwatch-tool')"><i class="fas fa-stopwatch"></i></div>
+<div class="nav-top">
+    <canvas id="nav-clock" width="45" height="45" style="background:#000; border-radius:50%; border:1.5px solid var(--brand-accent); flex-shrink:0;"></canvas>
+    <div style="display:flex; gap:8px; overflow-x:auto; padding:0 10px; align-items:center; -webkit-overflow-scrolling:touch;">
+        <div class="header-tool" onclick="openTool('pace-tool')"><i class="fas fa-running"></i></div>
+        <div class="header-tool" onclick="openTool('onerm-tool')"><i class="fas fa-weight-hanging"></i></div>
+        <div class="header-tool" onclick="openTool('metronome-tool')"><i class="fas fa-drum"></i></div>
+        <div class="header-tool" onclick="openTool('interval-tool')"><i class="fas fa-redo"></i></div>
+        <div class="header-tool" onclick="openTool('countdown-tool')"><i class="fas fa-hourglass-half"></i></div>
+        <div class="header-tool" onclick="openTool('stopwatch-tool')"><i class="fas fa-stopwatch"></i></div>
+    </div>
+    <div class="hamburger" onclick="openNav()">&#9776;</div>
+</div>
+
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="index.html">DASHBOARD</a>
+    <a href="program.html">MY PROGRAMS</a>
+    <a href="client-dashboard.html">← MY DASHBOARD</a>
+    <a href="#" onclick="pb.authStore.clear(); window.location.reload();">LOGOUT</a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <label class="quad-title">Select Training Block</label>
+        <select id="program-selector" onchange="loadSelectedProgram()"></select>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+            <span class="quad-title">Session Completion</span>
+            <span id="progress-percent" style="font-weight:bold; color:var(--brand-accent);">0%</span>
         </div>
-        <div class="hamburger" onclick="openNav()">&#9776;</div>
+        <div class="progress-container"><div class="progress-fill" id="progress-bar"></div></div>
     </div>
+    <div id="week-tabs-container" style="display:flex; overflow-x:auto; margin-bottom:20px;"></div>
+    <div id="workout-content"></div>
+</div>
 
-    <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <a href="index.html">DASHBOARD</a>
-        <a href="program.html">MY PROGRAMS</a>
-        <a href="client-dashboard.html">← MY DASHBOARD</a>
-        <a href="#" onclick="pb.authStore.clear(); window.location.reload();">LOGOUT</a>
+<!-- VIDEO MODAL -->
+<div id="videoModal" class="modal">
+    <div class="modal-content" style="max-width:800px; padding:10px; background:#000; border-radius:12px; position:relative;">
+        <span onclick="closeVideoModal()" style="position:absolute; right:15px; top:10px; color:white; font-size:2.5rem; cursor:pointer; z-index:100;">&times;</span>
+        <div id="video-player-content" style="width:100%; border-radius:8px; overflow:hidden; background:#000; min-height:250px;"></div>
     </div>
+</div>
 
-    <div class="container">
-        <div class="card">
-            <label class="quad-title">Select Training Block</label>
-            <select id="program-selector" onchange="loadSelectedProgram()"></select>
-            <div style="display:flex; justify-content:space-between; align-items: center; margin-top:10px;">
-                <span class="quad-title">Session Completion</span>
-                <span id="progress-percent" style="font-weight:bold; color:var(--brand-accent);">0%</span>
-            </div>
-            <div class="progress-container"><div class="progress-fill" id="progress-bar"></div></div>
-        </div>
-        <div id="week-tabs-container" style="display:flex; overflow-x:auto; margin-bottom:20px;"></div>
-        <div id="workout-content"></div>
-    </div>
-
-    <div id="videoModal" class="modal">
-        <div class="modal-content" style="max-width: 800px; padding: 10px; background: #000; border-radius: 12px; position: relative;">
-            <span onclick="closeVideoModal()" style="position: absolute; right: 15px; top: 10px; color: white; font-size: 2.5rem; cursor: pointer; z-index: 100;">&times;</span>
-            <div id="video-player-content" style="width: 100%; border-radius: 8px; overflow: hidden; background: #000; min-height: 250px;"></div>
-        </div>
-    </div>
-
-    <div id="toolModal" class="modal">
+<!-- TOOL MODAL -->
+<div id="toolModal" class="modal">
     <div class="modal-content" style="max-width:480px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <span id="tool-modal-title" style="font-family:'Montserrat'; font-weight:800; font-size:1rem; color:var(--brand-accent);"></span>
@@ -246,13 +180,11 @@
             </div>
             <div id="t-rm-output" style="display:none; margin-top:10px; max-height:220px; overflow-y:auto;">
                 <table style="width:100%; border-collapse:collapse; font-size:0.78rem;">
-                    <thead>
-                        <tr>
-                            <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Reps</th>
-                            <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Epley</th>
-                            <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Brzycki</th>
-                        </tr>
-                    </thead>
+                    <thead><tr>
+                        <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Reps</th>
+                        <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Epley</th>
+                        <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Brzycki</th>
+                    </tr></thead>
                     <tbody id="t-rm-table-body"></tbody>
                 </table>
             </div>
@@ -263,15 +195,14 @@
             <p style="font-size:0.7rem; color:#555; margin-bottom:12px;">(Ensure Silent Mode is OFF)</p>
             <div id="t-bpm-val" style="font-size:4rem; color:var(--brand-accent); font-weight:800; font-family:'Montserrat'; transition:all 0.05s;">60</div>
             <label class="quad-title">Beats Per Minute</label>
-            <input type="range" id="t-m-slider" min="40" max="220" value="60" style="width:100%; margin:10px 0; accent-color:var(--brand-accent);"
-                oninput="document.getElementById('t-bpm-val').textContent=this.value" />
+            <input type="range" id="t-m-slider" min="40" max="220" value="60" style="width:100%; margin:10px 0; accent-color:var(--brand-accent);" oninput="document.getElementById('t-bpm-val').textContent=this.value" />
             <button class="tool-action-btn" id="t-metro-btn" onclick="tToggleMetronome()" style="width:100%;">Start</button>
         </div>
 
         <!-- INTERVAL TIMER -->
         <div id="interval-tool" class="tool-content" style="display:none;">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-                <div><label class="quad-title">Warm Up (s)</label><input type="number" class="tool-inp" id="t-int-warmup" value="0" min="0" placeholder="0 = skip" /></div>
+                <div><label class="quad-title">Warm Up (s)</label><input type="number" class="tool-inp" id="t-int-warmup" value="0" min="0" /></div>
                 <div><label class="quad-title">Sets</label><input type="number" class="tool-inp" id="t-int-sets" value="5" min="1" /></div>
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
@@ -287,8 +218,7 @@
         <!-- COUNTDOWN -->
         <div id="countdown-tool" class="tool-content" style="display:none;">
             <label class="quad-title">Seconds</label>
-            <input type="number" class="tool-inp" id="t-cd-input" value="60" min="1"
-                oninput="if(!tCdRunning){tCdTime=parseInt(this.value)||60;tUpdateCDDisplay()}" />
+            <input type="number" class="tool-inp" id="t-cd-input" value="60" min="1" oninput="if(!tCdRunning){tCdTime=parseInt(this.value)||60;tUpdateCDDisplay()}" />
             <div id="t-cd-display" style="font-size:4rem; font-family:'Courier New'; font-weight:bold; text-align:center; color:white; margin:12px 0;">01:00</div>
             <button class="tool-action-btn" id="t-cd-btn" onclick="tToggleCountdown()" style="width:100%;">Start</button>
         </div>
@@ -301,40 +231,29 @@
                 <button class="tool-action-btn" onclick="tResetStopwatch()">Reset</button>
             </div>
         </div>
-
     </div>
 </div>
 
 <script>
     const pb = new PocketBase('https://restperiod.org');
-
-    /// --- GLOBAL STATE ---
     let allPrograms = [], currentProgram = null, currentWeekIndex = 0, masterExerciseList = [];
-    let audioCtx = null;
-    
-    // --- SOUNDBRENNER PRECISION VARIABLES ---
-    let isMetronomePlaying = false;
-    let nextTickTime = 0.0;     // when the next note is due
-    let lookahead = 25.0;       // how frequently to check for next note (ms)
-    let scheduleAheadTime = 0.1; // how far ahead to schedule audio (sec)
-    let metroTimerID = null;    // Identifier for the setTimeout loop
+    let tAudioCtx = null, tMetroPlaying = false, tMetroTimerID = null, tNextTick = 0;
 
-    window.onload = async () => { 
-        if (!pb.authStore.isValid) window.location.href = 'index.html'; 
+    window.onload = async () => {
+        if (!pb.authStore.isValid) window.location.href = 'index.html';
         runNavClock();
         await loadMasterLibrary();
-        await fetchUserPrograms(); 
+        await fetchUserPrograms();
     };
 
-    // --- LIBRARY & VIDEOS ---
+    // ── LIBRARY & VIDEOS ──────────────────────────────
     async function loadMasterLibrary() {
         if (typeof exerciseDatabase !== 'undefined') masterExerciseList = [...exerciseDatabase];
         try {
             const recs = await pb.collection('custom_exercises').getFullList();
             recs.forEach(r => {
-                if (!masterExerciseList.some(e => e.id === r.id)) {
+                if (!masterExerciseList.some(e => e.id === r.id))
                     masterExerciseList.push({ id: r.id, title: r.title, video: r.video, src: r.video });
-                }
             });
         } catch(e) { console.log("Library sync skipped"); }
     }
@@ -351,7 +270,7 @@
                 container.innerHTML = `<div style="position:relative; padding-bottom:56.25%; height:0;"><iframe src="${convertToEmbed(videoUrl)}" style="position:absolute; top:0; left:0; width:100%; height:100%;" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>`;
             }
             document.getElementById('videoModal').style.display = 'block';
-        } else { alert("Demonstration video not found for: " + name); }
+        } else { alert("No video found for: " + name); }
     }
 
     function convertToEmbed(url) {
@@ -362,78 +281,12 @@
         return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : url;
     }
 
-    function closeVideoModal() { document.getElementById('videoModal').style.display = 'none'; document.getElementById('video-player-content').innerHTML = ''; }
-
-    // --- METRONOME ENGINE (WEB AUDIO API) ---
-    // --- HIGH PRECISION METRONOME ENGINE ---
-    function scheduler() {
-        // While there are notes to play before the next check, schedule them
-        while (nextTickTime < audioCtx.currentTime + scheduleAheadTime ) {
-            scheduleNote(nextTickTime);
-            advanceNote();
-        }
-        metroTimerID = window.setTimeout(scheduler, lookahead);
+    function closeVideoModal() {
+        document.getElementById('videoModal').style.display = 'none';
+        document.getElementById('video-player-content').innerHTML = '';
     }
 
-    function advanceNote() {
-        const bpm = parseFloat(document.getElementById('m-slider').value);
-        const secondsPerBeat = 60.0 / bpm;
-        nextTickTime += secondsPerBeat; 
-    }
-
-    function scheduleNote(time) {
-        const osc = audioCtx.createOscillator();
-        const envelope = audioCtx.createGain();
-
-        // High pitch sharp click
-        osc.type = 'sine';
-        osc.frequency.value = 1000; 
-
-        envelope.gain.value = 1;
-        envelope.gain.exponentialRampToValueAtTime(1, time + 0.001);
-        envelope.gain.exponentialRampToValueAtTime(0.001, time + 0.02); 
-
-        osc.connect(envelope);
-        envelope.connect(audioCtx.destination);
-
-        osc.start(time);
-        osc.stop(time + 0.03);
-
-        // VISUAL PULSE: Syncs the display scale with the audio thread
-        window.setTimeout(() => {
-            const valDisp = document.getElementById('bpm-val');
-            if(valDisp) {
-                valDisp.style.color = "#fff";
-                valDisp.style.transform = "scale(1.2)";
-                setTimeout(() => {
-                    valDisp.style.color = "var(--brand-accent)";
-                    valDisp.style.transform = "scale(1.0)";
-                }, 50);
-            }
-        }, (time - audioCtx.currentTime) * 1000);
-    }
-
-    function toggleMetronome() {
-        // Standard browser requirement: audio context must start on user tap
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-
-        isMetronomePlaying = !isMetronomePlaying;
-        const btn = document.getElementById('m-btn');
-
-        if (isMetronomePlaying) {
-            btn.innerText = "STOP BEAT";
-            btn.style.background = "#b71c1c"; // Soundbrenner Red
-            nextTickTime = audioCtx.currentTime;
-            scheduler();
-        } else {
-            btn.innerText = "START BEAT";
-            btn.style.background = ""; 
-            window.clearTimeout(metroTimerID);
-        }
-    }
-
-    // --- CLOCK ENGINE ---
+    // ── CLOCK ─────────────────────────────────────────
     function runNavClock() {
         const canvas = document.getElementById('nav-clock');
         const ctx = canvas.getContext('2d');
@@ -441,567 +294,386 @@
             const now = new Date();
             const ms = now.getMilliseconds(), sec = now.getSeconds(), min = now.getMinutes();
             ctx.clearRect(0,0,45,45); ctx.save(); ctx.translate(22.5,22.5);
-            ctx.save(); ctx.rotate((min + (sec/60)) * (Math.PI/30));
+            ctx.save(); ctx.rotate((min + sec/60) * (Math.PI/30));
             ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-14); ctx.strokeStyle='#fff'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.stroke(); ctx.restore();
-            ctx.save(); ctx.rotate((sec + (ms/1000)) * (Math.PI/30));
+            ctx.save(); ctx.rotate((sec + ms/1000) * (Math.PI/30));
             ctx.beginPath(); ctx.moveTo(0,5); ctx.lineTo(0,-18); ctx.strokeStyle='#26C6DA'; ctx.lineWidth=1.5; ctx.stroke(); ctx.restore();
             ctx.restore(); requestAnimationFrame(draw);
         }
         draw();
     }
 
-    // --- RENDER ENGINE (NESTED GRID) ---
+    // ── RENDER ────────────────────────────────────────
     function generateExerciseHTML(list, type) {
-    return list.map((ex, i) => {
-        // We look for the grouping data (e.g., A1, B1)
-        const groupBadge = ex.grouping ? 
-            `<div style="display:inline-block; background:var(--brand-primary); color:var(--brand-accent); padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:800; margin-bottom:8px; border:1px solid var(--brand-accent);">
-                ${ex.grouping.toUpperCase()}
-             </div>` : '';
-
-        return `
-            <div class="exercise-card">
-                ${groupBadge} <h4 class="exercise-title" onclick="openExercisePreview('${ex.name.replace(/'/g, "\\'")}')">
-                    ${ex.name.replace(/^([A-Z0-9-]+\s)+/, '')} 
+        return list.map((ex, i) => {
+            const groupBadge = ex.grouping
+                ? `<div style="display:inline-block; background:var(--brand-primary); color:var(--brand-accent); padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:800; margin-bottom:8px; border:1px solid var(--brand-accent);">${ex.grouping.toUpperCase()}</div>`
+                : '';
+            return `<div class="exercise-card">
+                ${groupBadge}
+                <h4 class="exercise-title" onclick="openExercisePreview('${ex.name.replace(/'/g,"\\'")}')">
+                    ${ex.name.replace(/^([A-Z0-9-]+\s)+/, '')}
                     <i class="fas fa-play-circle" style="font-size:0.8em; opacity:0.5; margin-left:5px;"></i>
                 </h4>
-
                 ${ex.setsData.map((s, si) => {
                     const baseId = `${type}-${i}-${si}`;
-                    return `
-                    <div class="set-container">
+                    return `<div class="set-container">
                         <div class="set-row-top">
                             <div style="font-weight:800; color:var(--brand-accent);">#${si+1}</div>
-                            
-                            <div style="font-size:0.95rem; color:#888; line-height:1.4; border-right: 1px solid #222; padding-right:5px;">
+                            <div style="font-size:0.95rem; color:#888; line-height:1.4; border-right:1px solid #222; padding-right:5px;">
                                 <b>${s.reps}</b> Reps @ <b>${s.weight}</b>kg<br>
-<span onclick="alert('TEMPO: ${s.tempo || 'N/A'}\\n\\nEach number represents time spent in parts of the movement (Time Under Tension):\\n\\n1. ECCENTRIC: Muscle lengthening (e.g. lowering into a squat or bench press).\\n\\n2. PAUSE\\n\\n3. CONCENTRIC: Muscle shortening (e.g. standing up from a squat or pressing the bar up).\\n\\n4. PAUSE')" style="cursor:help; color:var(--brand-accent)">
-    <i class="fas fa-drum" style="color:var(--brand-accent); width:12px;"></i> ${s.tempo || 'N/A'} <i class="far fa-question-circle" style="font-size:0.6rem;"></i>
-</span><br>
-                                <span onclick="alert('RPE (Rate of perceived exertion): ${s.rpe || 'N/A'}\\n\\n10: Max Effort\\n9: 1 rep left/near failure\\n8: 2 reps left/goldilocks zone\\n7: Moderate effort')" style="cursor:help; color:var(--brand-accent)">
-                                    <i class="fas fa-chart-line" style="color:var(--brand-accent); width:12px;"></i> ${s.rpe || 'N/A'} <i class="far fa-question-circle" style="font-size:0.6rem;"></i>
+                                <span onclick="alert('TEMPO: ${s.tempo||'N/A'}\\n\\n1. ECCENTRIC\\n2. PAUSE\\n3. CONCENTRIC\\n4. PAUSE')" style="cursor:help; color:var(--brand-accent)">
+                                    <i class="fas fa-drum" style="width:12px;"></i> ${s.tempo||'N/A'} <i class="far fa-question-circle" style="font-size:0.6rem;"></i>
+                                </span><br>
+                                <span onclick="alert('RPE: ${s.rpe||'N/A'}\\n\\n10: Max\\n9: Near failure\\n8: 2 reps left\\n7: Moderate')" style="cursor:help; color:var(--brand-accent)">
+                                    <i class="fas fa-chart-line" style="width:12px;"></i> ${s.rpe||'N/A'} <i class="far fa-question-circle" style="font-size:0.6rem;"></i>
                                 </span>
                             </div>
-
                             <div>
                                 <span class="act-label">ACT REPS</span>
-                                <input type="number" id="reps-${baseId}" class="actual-input" placeholder="0" value="${s.act_reps || ''}" onchange="autoSaveSet('${type}',${i},${si},'act_reps',this.value)">
+                                <input type="number" id="reps-${baseId}" class="actual-input" placeholder="0" value="${s.act_reps||''}" onchange="autoSaveSet('${type}',${i},${si},'act_reps',this.value)">
                             </div>
                             <div>
                                 <span class="act-label">ACT KG</span>
-                                <input type="number" id="weight-${baseId}" class="actual-input" placeholder="0" value="${s.act_weight || ''}" onchange="autoSaveSet('${type}',${i},${si},'act_weight',this.value)">
+                                <input type="number" id="weight-${baseId}" class="actual-input" placeholder="0" value="${s.act_weight||''}" onchange="autoSaveSet('${type}',${i},${si},'act_weight',this.value)">
                             </div>
                             <div>
                                 <span class="act-label">ACT RPE</span>
-                                <input type="number" step="0.5" id="rpe-${baseId}" class="actual-input" placeholder="-" value="${s.act_rpe || ''}" onchange="autoSaveSet('${type}',${i},${si},'act_rpe',this.value)">
+                                <input type="number" step="0.5" id="rpe-${baseId}" class="actual-input" placeholder="-" value="${s.act_rpe||''}" onchange="autoSaveSet('${type}',${i},${si},'act_rpe',this.value)">
                             </div>
                         </div>
-                        
                         <div class="set-row-bottom">
-                            <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="50" value="${s.act_note || ''}" onchange="autoSaveSet('${type}',${i},${si},'act_note',this.value)">
-                            <input type="checkbox" class="tick-box" ${(s.act_reps && s.act_weight) ? 'checked' : ''} 
-                                onclick="fillSetData('${type}', ${i}, ${si}, '${s.reps}', '${s.weight}', '${s.rpe}', this.checked)">
+                            <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="50" value="${s.act_note||''}" onchange="autoSaveSet('${type}',${i},${si},'act_note',this.value)">
+                            <input type="checkbox" class="tick-box" ${(s.act_reps && s.act_weight) ? 'checked' : ''}
+                                onclick="fillSetData('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe}',this.checked)">
                         </div>
                     </div>`;
                 }).join('')}
                 ${ex.notes ? `<div style="font-size:0.8rem; color:#777; margin-top:5px; font-style:italic;">Coach Note: ${ex.notes}</div>` : ''}
             </div>`;
-    }).join('');
-}
+        }).join('');
+    }
 
     function renderContent() {
-    const week = currentProgram.schedule[currentWeekIndex];
-    const dateVal = week.sessionDate || '';
+        const session = currentProgram.schedule[currentWeekIndex];
 
-    let html = `
-        <div style="background:var(--card-bg); border:1px solid #004d7a; border-radius:8px; padding:14px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        // Scheduled date (set by coach in builder)
+        const scheduledStr = session.scheduledDate
+            ? new Date(session.scheduledDate + 'T12:00:00').toLocaleDateString([], {weekday:'short', day:'numeric', month:'short'})
+            : null;
+
+        // Completed date (set by client)
+        const completedStr = session.sessionDate
+            ? new Date(session.sessionDate).toLocaleDateString([], {day:'numeric', month:'short', year:'numeric'})
+            : null;
+
+        let html = `<div class="date-row">
             <div>
                 <span class="quad-title">Session Date</span>
-                <input type="date" 
+                <input type="date"
                     style="background:#000; border:1px solid #004d7a; color:white; padding:8px 12px; border-radius:4px; font-size:0.9rem; font-family:inherit;"
-                    value="${dateVal}"
+                    value="${session.sessionDate || ''}"
                     onchange="saveSessionDate(this.value)" />
             </div>
-           <div style="display:flex; gap:8px;" id="session-date-badge">
-    ${week.sessionDate 
-        ? `<div style="background:#052e16; border:1px solid #166534; border-radius:6px; padding:6px 12px; font-size:0.75rem; color:#4ade80; font-weight:800;">✓ LOGGED ${new Date(week.sessionDate).toLocaleDateString([], {day:'numeric', month:'short'})}</div>`
-        : `<div style="font-size:0.75rem; color:#555; padding:6px 0;">Not logged yet</div>`
-    }
-</div>
+            <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+                ${scheduledStr ? `<div class="date-scheduled">📅 Scheduled <span>${scheduledStr}</span></div>` : ''}
+                <div id="session-date-badge">
+                    ${completedStr
+                        ? `<div class="date-completed">✓ COMPLETED ${completedStr}</div>`
+                        : `<div class="date-not-logged">Not logged yet</div>`
+                    }
+                </div>
+            </div>
         </div>`;
 
-    if (week.warmup?.length) {
-        html += `<div class="section-header" onclick="toggleWarmup()" style="cursor:pointer; display:flex; justify-content:space-between;"><span>WARM UP</span><i id="warmup-chevron" class="fas fa-chevron-down"></i></div>
-                 <div id="warmup-content-wrapper" style="display:block;">${generateExerciseHTML(week.warmup, 'warmup')}</div>`;
-    }
-    if (week.exercises?.length) {
-        html += `<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>` + generateExerciseHTML(week.exercises, 'exercises');
+        if (session.warmup?.length) {
+            html += `<div class="section-header" onclick="toggleWarmup()" style="cursor:pointer; display:flex; justify-content:space-between;"><span>WARM UP</span><i id="warmup-chevron" class="fas fa-chevron-down"></i></div>
+                     <div id="warmup-content-wrapper">${generateExerciseHTML(session.warmup, 'warmup')}</div>`;
+        }
+        if (session.exercises?.length) {
+            html += `<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>` + generateExerciseHTML(session.exercises, 'exercises');
+        }
+
+        document.getElementById('workout-content').innerHTML = html;
     }
 
-    // --- PROGRAM LOGIC ---
+    // ── PROGRAMS ──────────────────────────────────────
     async function fetchUserPrograms() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlId = urlParams.get('id');
-    const clientId = urlParams.get('clientId');
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlId = urlParams.get('id');
+        const clientId = urlParams.get('clientId');
+        const targetId = clientId || pb.authStore.model.id;
 
-    // If trainer is logging for a client, show a banner
-    const targetId = clientId || pb.authStore.model.id;
-    if (clientId) {
-        const banner = document.createElement('div');
-        banner.style.cssText = 'background:#003B5C;border-bottom:1px solid #004d7a;padding:8px 20px;font-size:0.75rem;color:var(--brand-accent);display:flex;justify-content:space-between;align-items:center;';
-        banner.innerHTML = `<span>📋 Logging as client</span><a href="dashboard.html" style="color:#888;font-size:0.7rem;">← Back to Dashboard</a>`;
-        document.body.insertBefore(banner, document.body.firstChild);
+        if (clientId) {
+            const banner = document.createElement('div');
+            banner.style.cssText = 'background:#003B5C;border-bottom:1px solid #004d7a;padding:8px 20px;font-size:0.75rem;color:var(--brand-accent);display:flex;justify-content:space-between;align-items:center;';
+            banner.innerHTML = `<span>📋 Logging as client</span><a href="dashboard.html" style="color:#888;font-size:0.7rem;">← Back to Dashboard</a>`;
+            document.body.insertBefore(banner, document.body.firstChild);
+        }
+
+        const [clientRecs, templateRecs, freeRecs] = await Promise.all([
+            pb.collection('programs').getFullList({ filter: `client="${targetId}" && archived=false`, sort: '-created', requestKey: null }),
+            pb.collection('programs').getFullList({ filter: 'is_template=true && is_free=false', sort: 'name', requestKey: null }),
+            pb.collection('programs').getFullList({ filter: 'is_free=true', sort: 'name', requestKey: null })
+        ]);
+
+        allPrograms = [...clientRecs, ...templateRecs, ...freeRecs];
+
+        let html = '';
+        if (clientRecs.length > 0) {
+            html += `<optgroup label="📋 Your Programs">` + clientRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('') + `</optgroup>`;
+        }
+        if (templateRecs.length > 0) {
+            html += `<optgroup label="📚 Coach Programs">` + templateRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('') + `</optgroup>`;
+        }
+        if (freeRecs.length > 0) {
+            html += `<optgroup label="🆓 Free Programs">` + freeRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('') + `</optgroup>`;
+        }
+
+        document.getElementById('program-selector').innerHTML = html;
+        if (urlId && allPrograms.find(p => p.id === urlId)) document.getElementById('program-selector').value = urlId;
+        if (allPrograms.length > 0) loadSelectedProgram();
     }
 
-    const [clientRecs, templateRecs, freeRecs] = await Promise.all([
-        pb.collection('programs').getFullList({
-            filter: `client = "${targetId}" && archived = false`,
-            sort: '-created',
-            requestKey: null
-        }),
-        pb.collection('programs').getFullList({
-            filter: 'is_template = true && is_free = false',
-            sort: 'name',
-            requestKey: null
-        }),
-        pb.collection('programs').getFullList({
-            filter: 'is_free = true',
-            sort: 'name',
-            requestKey: null
-        })
-    ]);
-
-    allPrograms = [...clientRecs, ...templateRecs, ...freeRecs];
-
-    let html = '';
-    if (clientRecs.length > 0) {
-        html += `<optgroup label="📋 Your Programs">`;
-        html += clientRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-        html += `</optgroup>`;
-    }
-    if (templateRecs.length > 0) {
-        html += `<optgroup label="📚 Coach Programs">`;
-        html += templateRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-        html += `</optgroup>`;
-    }
-    if (freeRecs.length > 0) {
-        html += `<optgroup label="🆓 Free Programs">`;
-        html += freeRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-        html += `</optgroup>`;
-    }
-
-    document.getElementById('program-selector').innerHTML = html;
-
-    if (urlId && allPrograms.find(p => p.id === urlId)) {
-        document.getElementById('program-selector').value = urlId;
-    }
-    if (allPrograms.length > 0) loadSelectedProgram();
-}
     function loadSelectedProgram() {
-    const id = document.getElementById('program-selector').value;
-    currentProgram = allPrograms.find(p => p.id === id);
-    
-    let data = currentProgram.workout_data;
-    if (typeof data === 'string') data = JSON.parse(data);
-    
-    currentProgram.schedule = data.schedule || data;
-    
-    // Make sure warmup/exercises exist
-    currentProgram.schedule.forEach(w => { 
-        if(!w.warmup) w.warmup = []; 
-        if(!w.exercises) w.exercises = []; 
-    });
-
-    renderTabs(); 
-    renderContent(); 
-    updateProgressBar();
-}
-    function renderTabs() {
-        document.getElementById('week-tabs-container').innerHTML = currentProgram.schedule.map((week, i) => `<div class="tab ${i === currentWeekIndex ? 'active' : ''}" onclick="currentWeekIndex=${i}; renderTabs(); renderContent();">Wk ${week.weekNum}</div>`).join('');
+        const id = document.getElementById('program-selector').value;
+        currentProgram = allPrograms.find(p => p.id === id);
+        let data = currentProgram.workout_data;
+        if (typeof data === 'string') data = JSON.parse(data);
+        currentProgram.schedule = data.schedule || data;
+        // Normalise sessionNum/weekNum
+        currentProgram.schedule = currentProgram.schedule.map((s, i) => ({
+            ...s,
+            sessionNum: s.sessionNum || s.weekNum || i + 1
+        }));
+        currentProgram.schedule.forEach(w => { if (!w.warmup) w.warmup = []; if (!w.exercises) w.exercises = []; });
+        currentWeekIndex = 0;
+        renderTabs();
+        renderContent();
+        updateProgressBar();
     }
 
-    // --- SYNC ENGINE ---
+    function renderTabs() {
+        document.getElementById('week-tabs-container').innerHTML = currentProgram.schedule.map((s, i) => {
+            const dateLabel = s.scheduledDate
+                ? `<span class="tab-date">${new Date(s.scheduledDate+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'})}</span>`
+                : '';
+            const isCompleted = !!s.sessionDate;
+            return `<div class="tab ${i === currentWeekIndex ? 'active' : ''}" 
+                style="${isCompleted && i !== currentWeekIndex ? 'border-color:#2E7D32; color:#4ade80;' : ''}"
+                onclick="currentWeekIndex=${i}; renderTabs(); renderContent();">
+                Sn ${s.sessionNum}${dateLabel}
+            </div>`;
+        }).join('');
+    }
+
+    // ── SYNC ──────────────────────────────────────────
     async function syncWorkoutToDB(msg) {
         const toast = document.getElementById('sync-toast');
-        toast.innerText = msg; toast.style.display = "block";
+        toast.innerText = msg; toast.style.display = 'block';
         await pb.collection('programs').update(currentProgram.id, { workout_data: JSON.stringify({ schedule: currentProgram.schedule }) });
-        setTimeout(() => toast.style.display = "none", 1500);
+        setTimeout(() => toast.style.display = 'none', 1500);
     }
+
     async function autoSaveSet(type, exIdx, setIdx, field, val) {
         currentProgram.schedule[currentWeekIndex][type][exIdx].setsData[setIdx][field] = val;
         await syncWorkoutToDB("Saving..."); updateProgressBar();
     }
-  async function fillSetData(type, exIdx, setIdx, targetReps, targetWeight, targetRpe, isChecked) {
-    if (!isChecked) return;
 
-    const set = currentProgram.schedule[currentWeekIndex][type][exIdx].setsData[setIdx];
-    const baseId = `${type}-${exIdx}-${setIdx}`;
-    
-    const inputReps = document.getElementById(`reps-${baseId}`);
-    const inputWeight = document.getElementById(`weight-${baseId}`);
-    const inputRpe = document.getElementById(`rpe-${baseId}`);
-
-    // LOGIC: Only fill if empty string or 0
-    if (!inputReps.value || inputReps.value == 0) {
-        inputReps.value = targetReps;
-        set.act_reps = targetReps;
-    }
-    if (!inputWeight.value || inputWeight.value == 0) {
-        inputWeight.value = targetWeight;
-        set.act_weight = targetWeight;
-    }
-    if (!inputRpe.value || inputRpe.value == 0) {
-        // If target RPE is a string or N/A, maybe keep it empty
-        inputRpe.value = (parseFloat(targetRpe)) ? targetRpe : "";
-        set.act_rpe = inputRpe.value;
+    async function fillSetData(type, exIdx, setIdx, targetReps, targetWeight, targetRpe, isChecked) {
+        if (!isChecked) return;
+        const set = currentProgram.schedule[currentWeekIndex][type][exIdx].setsData[setIdx];
+        const baseId = `${type}-${exIdx}-${setIdx}`;
+        const inputReps = document.getElementById(`reps-${baseId}`);
+        const inputWeight = document.getElementById(`weight-${baseId}`);
+        const inputRpe = document.getElementById(`rpe-${baseId}`);
+        if (!inputReps.value || inputReps.value == 0) { inputReps.value = targetReps; set.act_reps = targetReps; }
+        if (!inputWeight.value || inputWeight.value == 0) { inputWeight.value = targetWeight; set.act_weight = targetWeight; }
+        if (!inputRpe.value || inputRpe.value == 0) { inputRpe.value = parseFloat(targetRpe) ? targetRpe : ''; set.act_rpe = inputRpe.value; }
+        await syncWorkoutToDB("Logged ✓"); updateProgressBar();
     }
 
-    await syncWorkoutToDB("Logged ✓");
-    updateProgressBar();
-}
     function updateProgressBar() {
         let total = 0, done = 0;
         currentProgram.schedule.forEach(w => {
             [...(w.warmup||[]), ...(w.exercises||[])].forEach(ex => ex.setsData.forEach(s => { total++; if (s.act_reps && s.act_weight) done++; }));
         });
-        const p = Math.round((done / total) * 100) || 0;
+        const p = Math.round((done/total)*100) || 0;
         document.getElementById('progress-bar').style.width = p + '%';
         document.getElementById('progress-percent').innerText = p + '%';
     }
+
     async function saveSessionDate(val) {
-    currentProgram.schedule[currentWeekIndex].sessionDate = val;
-    await syncWorkoutToDB("Date saved ✓");
-    // Update just the logged badge without re-rendering the whole page
-    const badge = document.getElementById('session-date-badge');
-    if (badge) {
-        badge.innerHTML = val
-            ? `<div style="background:#052e16; border:1px solid #166534; border-radius:6px; padding:6px 12px; font-size:0.75rem; color:#4ade80; font-weight:800;">✓ LOGGED ${new Date(val).toLocaleDateString([], {day:'numeric', month:'short'})}</div>`
-            : `<div style="font-size:0.75rem; color:#555; padding:6px 0;">Not logged yet</div>`;
+        currentProgram.schedule[currentWeekIndex].sessionDate = val;
+        await syncWorkoutToDB("Date saved ✓");
+        const badge = document.getElementById('session-date-badge');
+        if (badge) {
+            const completedStr = val ? new Date(val).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'}) : null;
+            badge.innerHTML = completedStr
+                ? `<div class="date-completed">✓ COMPLETED ${completedStr}</div>`
+                : `<div class="date-not-logged">Not logged yet</div>`;
+        }
+        // Refresh tabs to update completed colouring
+        renderTabs();
     }
-}
 
-    // --- UI HELPERS ---
-    // --- UI HELPERS ---
-const toolTitles = {
-    'pace-tool': '🏃 Pace Solver',
-    'onerm-tool': '🏋️ 1RM Calculator',
-    'metronome-tool': '🥁 Metronome',
-    'interval-tool': '🔁 Interval Timer',
-    'countdown-tool': '⏱ Countdown',
-    'stopwatch-tool': '⏲ Stopwatch'
-};
+    // ── UI HELPERS ────────────────────────────────────
+    const toolTitles = {
+        'pace-tool': '🏃 Pace Solver', 'onerm-tool': '🏋️ 1RM Calculator',
+        'metronome-tool': '🥁 Metronome', 'interval-tool': '🔁 Interval Timer',
+        'countdown-tool': '⏱ Countdown', 'stopwatch-tool': '⏲ Stopwatch'
+    };
 
-function openTool(id) {
-    document.querySelectorAll('.tool-content').forEach(el => el.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
-    document.getElementById('tool-modal-title').textContent = toolTitles[id] || '';
-    document.getElementById('toolModal').style.display = 'block';
-}
+    function openTool(id) {
+        document.querySelectorAll('.tool-content').forEach(el => el.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+        document.getElementById('tool-modal-title').textContent = toolTitles[id] || '';
+        document.getElementById('toolModal').style.display = 'block';
+    }
 
-function closeTool() {
-    document.getElementById('toolModal').style.display = 'none';
-    if (tMetroPlaying) tToggleMetronome();
-    if (tIntRunning) tToggleInterval();
-    if (tCdRunning) { clearInterval(tCdInterval); tCdRunning = false; }
-}
+    function closeTool() {
+        document.getElementById('toolModal').style.display = 'none';
+        if (tMetroPlaying) tToggleMetronome();
+        if (tIntRunning) tToggleInterval();
+        if (tCdRunning) { clearInterval(tCdInterval); tCdRunning = false; }
+    }
+
     function openNav() { document.getElementById("mySidebar").style.width = "300px"; }
     function closeNav() { document.getElementById("mySidebar").style.width = "0"; }
+
     function toggleWarmup() {
         const w = document.getElementById('warmup-content-wrapper'), c = document.getElementById('warmup-chevron');
-        const isHidden = w.style.display === 'none'; w.style.display = isHidden ? 'block' : 'none';
+        const isHidden = w.style.display === 'none';
+        w.style.display = isHidden ? 'block' : 'none';
         c.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
     }
 
     // ── PACE SOLVER ───────────────────────────────────
-let tPaceUnit = 'km';
-
-function tSetPaceUnit(unit) {
-    tPaceUnit = unit;
-    document.getElementById('t-pace-km-btn').classList.toggle('active', unit === 'km');
-    document.getElementById('t-pace-mi-btn').classList.toggle('active', unit === 'mi');
-    document.getElementById('t-pace-dist-label').textContent = `Distance (${unit})`;
-    document.getElementById('t-pace-pace-label').textContent = `Pace (min:sec /${unit})`;
-    document.getElementById('t-pace-speed-label').textContent = `Speed (${unit}/h)`;
-    tClearPace();
-}
-
-function tClearPace() {
-    ['t-pace-dist','t-pace-min','t-pace-sec','t-pace-pace-min','t-pace-pace-sec','t-pace-speed'].forEach(id => {
-        document.getElementById(id).value = '';
-    });
-    const out = document.getElementById('t-pace-output');
-    out.style.display = 'none'; out.innerHTML = '';
-}
-
-function tSolvePace() {
-    const dist  = document.getElementById('t-pace-dist').value;
-    const tMin  = document.getElementById('t-pace-min').value;
-    const tSec  = document.getElementById('t-pace-sec').value;
-    const pMin  = document.getElementById('t-pace-pace-min').value;
-    const pSec  = document.getElementById('t-pace-pace-sec').value;
-    const speed = document.getElementById('t-pace-speed').value;
-    const out   = document.getElementById('t-pace-output');
-    const u     = tPaceUnit;
-
-    const hasTime  = tMin !== '' || tSec !== '';
-    const hasPace  = pMin !== '' || pSec !== '';
-    const hasDist  = dist !== '';
-    const hasSpeed = speed !== '';
-
-    const totalTimeSec = hasTime  ? (parseFloat(tMin)||0)*60 + (parseFloat(tSec)||0) : null;
-    const paceSec      = hasPace  ? (parseFloat(pMin)||0)*60 + (parseFloat(pSec)||0) : null;
-    const distVal      = hasDist  ? parseFloat(dist) : null;
-    const speedVal     = hasSpeed ? parseFloat(speed) : null;
-
-    let d = distVal, t = totalTimeSec, p = paceSec, sp = speedVal;
-
-    if (d && t && !p)  p  = t / d;
-    if (d && t && !sp) sp = d / (t / 3600);
-    if (d && p && !t)  t  = d * p;
-    if (d && p && !sp) sp = 3600 / p;
-    if (d && sp && !t) t  = (d / sp) * 3600;
-    if (d && sp && !p) p  = 3600 / sp;
-    if (t && p && !d)  d  = t / p;
-    if (t && p && !sp) sp = 3600 / p;
-    if (t && sp && !d) d  = sp * (t / 3600);
-    if (t && sp && !p) p  = 3600 / sp;
-
-    if (!d || !t || !p || !sp) {
-        out.innerHTML = 'Fill in any 2 fields to solve.';
-        out.style.display = 'block'; return;
+    let tPaceUnit = 'km';
+    function tSetPaceUnit(unit) {
+        tPaceUnit = unit;
+        document.getElementById('t-pace-km-btn').classList.toggle('active', unit==='km');
+        document.getElementById('t-pace-mi-btn').classList.toggle('active', unit==='mi');
+        document.getElementById('t-pace-dist-label').textContent = `Distance (${unit})`;
+        document.getElementById('t-pace-pace-label').textContent = `Pace (min:sec /${unit})`;
+        document.getElementById('t-pace-speed-label').textContent = `Speed (${unit}/h)`;
+        tClearPace();
+    }
+    function tClearPace() {
+        ['t-pace-dist','t-pace-min','t-pace-sec','t-pace-pace-min','t-pace-pace-sec','t-pace-speed'].forEach(id => document.getElementById(id).value = '');
+        const out = document.getElementById('t-pace-output'); out.style.display = 'none'; out.innerHTML = '';
+    }
+    function tSolvePace() {
+        const dist=document.getElementById('t-pace-dist').value, tMin=document.getElementById('t-pace-min').value, tSec=document.getElementById('t-pace-sec').value;
+        const pMin=document.getElementById('t-pace-pace-min').value, pSec=document.getElementById('t-pace-pace-sec').value, speed=document.getElementById('t-pace-speed').value;
+        const out=document.getElementById('t-pace-output'), u=tPaceUnit;
+        const hasTime=tMin!==''||tSec!=='', hasPace=pMin!==''||pSec!=='', hasDist=dist!=='', hasSpeed=speed!=='';
+        const totalTimeSec=hasTime?(parseFloat(tMin)||0)*60+(parseFloat(tSec)||0):null;
+        const paceSec=hasPace?(parseFloat(pMin)||0)*60+(parseFloat(pSec)||0):null;
+        const distVal=hasDist?parseFloat(dist):null, speedVal=hasSpeed?parseFloat(speed):null;
+        let d=distVal,t=totalTimeSec,p=paceSec,sp=speedVal;
+        if(d&&t&&!p)p=t/d; if(d&&t&&!sp)sp=d/(t/3600); if(d&&p&&!t)t=d*p; if(d&&p&&!sp)sp=3600/p;
+        if(d&&sp&&!t)t=(d/sp)*3600; if(d&&sp&&!p)p=3600/sp; if(t&&p&&!d)d=t/p; if(t&&p&&!sp)sp=3600/p;
+        if(t&&sp&&!d)d=sp*(t/3600); if(t&&sp&&!p)p=3600/sp;
+        if(!d||!t||!p||!sp){out.innerHTML='Fill in any 2 fields to solve.';out.style.display='block';return;}
+        const pM=Math.floor(p/60),pS=Math.round(p%60),tH=Math.floor(t/3600),tM=Math.floor((t%3600)/60),tSS=Math.round(t%60);
+        const timeStr=tH>0?`${tH}h ${tM}m ${tSS}s`:`${tM}m ${tSS}s`;
+        out.innerHTML=`Distance: <strong style="color:var(--brand-accent)">${d.toFixed(2)} ${u}</strong><br>Time: <strong style="color:var(--brand-accent)">${timeStr}</strong><br>Pace: <strong style="color:var(--brand-accent)">${pM}:${String(pS).padStart(2,'0')} /${u}</strong><br>Speed: <strong style="color:var(--brand-accent)">${sp.toFixed(2)} ${u}/h</strong><br>Speed: <strong style="color:var(--brand-accent)">${((d*1000)/t).toFixed(2)} m/s</strong>`;
+        out.style.display='block';
     }
 
-    const pM = Math.floor(p/60), pS = Math.round(p%60);
-    const tH = Math.floor(t/3600), tM = Math.floor((t%3600)/60), tSS = Math.round(t%60);
-    const timeStr = tH > 0 ? `${tH}h ${tM}m ${tSS}s` : `${tM}m ${tSS}s`;
-    const ms = (d * 1000) / t;
-
-    out.innerHTML = `
-        Distance: <strong style="color:var(--brand-accent)">${d.toFixed(2)} ${u}</strong><br>
-        Time: <strong style="color:var(--brand-accent)">${timeStr}</strong><br>
-        Pace: <strong style="color:var(--brand-accent)">${pM}:${String(pS).padStart(2,'0')} /${u}</strong><br>
-        Speed: <strong style="color:var(--brand-accent)">${sp.toFixed(2)} ${u}/h</strong><br>
-        Speed: <strong style="color:var(--brand-accent)">${ms.toFixed(2)} m/s</strong>`;
-    out.style.display = 'block';
-}
-
-// ── 1RM CALCULATOR ────────────────────────────────
-let tRmUnit = 'kg';
-
-function tSetRMUnit(unit) {
-    tRmUnit = unit;
-    document.getElementById('t-rm-kg-btn').classList.toggle('active', unit === 'kg');
-    document.getElementById('t-rm-lb-btn').classList.toggle('active', unit === 'lb');
-    document.getElementById('t-rm-weight-label').textContent = `Weight (${unit})`;
-    tClear1RM();
-}
-
-function tClear1RM() {
-    document.getElementById('t-rm-weight').value = '';
-    document.getElementById('t-rm-reps').value = '';
-    document.getElementById('t-rm-output').style.display = 'none';
-    document.getElementById('t-rm-table-body').innerHTML = '';
-}
-
-function tCalc1RM() {
-    let w = parseFloat(document.getElementById('t-rm-weight').value);
-    const r = parseFloat(document.getElementById('t-rm-reps').value);
-    if (!w || !r || r < 1) return;
-    if (tRmUnit === 'lb') w = w / 2.2046;
-    const tbody = document.getElementById('t-rm-table-body');
-    tbody.innerHTML = '';
-    for (let reps = 1; reps <= 10; reps++) {
-        let epley = w * (1 + reps / 30);
-        let brzycki = reps < 37 ? w * (36 / (37 - reps)) : null;
-        if (tRmUnit === 'lb') { epley *= 2.2046; if (brzycki) brzycki *= 2.2046; }
-        const fmt = v => v ? `${Math.round(v)}${tRmUnit}` : '—';
-        const row = document.createElement('tr');
-        if (reps === Math.round(r)) { row.style.color = 'var(--brand-accent)'; row.style.fontWeight = '800'; }
-        row.innerHTML = `
-            <td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${reps}</td>
-            <td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${fmt(epley)}</td>
-            <td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${fmt(brzycki)}</td>`;
-        tbody.appendChild(row);
+    // ── 1RM CALCULATOR ────────────────────────────────
+    let tRmUnit = 'kg';
+    function tSetRMUnit(unit) {
+        tRmUnit=unit;
+        document.getElementById('t-rm-kg-btn').classList.toggle('active',unit==='kg');
+        document.getElementById('t-rm-lb-btn').classList.toggle('active',unit==='lb');
+        document.getElementById('t-rm-weight-label').textContent=`Weight (${unit})`;
+        tClear1RM();
     }
-    document.getElementById('t-rm-output').style.display = 'block';
-}
-
-// ── METRONOME ─────────────────────────────────────
-let tAudioCtx = null, tMetroPlaying = false, tMetroTimerID = null, tNextTick = 0;
-
-function tMetroScheduler() {
-    const bpm = parseFloat(document.getElementById('t-m-slider').value);
-    const spb = 60.0 / bpm;
-    while (tNextTick < tAudioCtx.currentTime + 0.1) {
-        const osc = tAudioCtx.createOscillator();
-        const env = tAudioCtx.createGain();
-        osc.frequency.value = 1000;
-        env.gain.setValueAtTime(1, tNextTick);
-        env.gain.exponentialRampToValueAtTime(0.001, tNextTick + 0.025);
-        osc.connect(env); env.connect(tAudioCtx.destination);
-        osc.start(tNextTick); osc.stop(tNextTick + 0.03);
-        const delay = Math.max(0, (tNextTick - tAudioCtx.currentTime) * 1000);
-        setTimeout(() => {
-            const d = document.getElementById('t-bpm-val');
-            if (!d) return;
-            d.style.color = '#fff'; d.style.transform = 'scale(1.15)';
-            setTimeout(() => { d.style.color = 'var(--brand-accent)'; d.style.transform = 'scale(1)'; }, 60);
-        }, delay);
-        tNextTick += spb;
-    }
-    tMetroTimerID = setTimeout(tMetroScheduler, 25);
-}
-
-function tToggleMetronome() {
-    if (!tAudioCtx) tAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (tAudioCtx.state === 'suspended') tAudioCtx.resume();
-    const btn = document.getElementById('t-metro-btn');
-    tMetroPlaying = !tMetroPlaying;
-    if (tMetroPlaying) {
-        btn.textContent = 'Stop'; btn.classList.add('running');
-        tNextTick = tAudioCtx.currentTime; tMetroScheduler();
-    } else {
-        btn.textContent = 'Start'; btn.classList.remove('running');
-        clearTimeout(tMetroTimerID);
-    }
-}
-
-// ── COUNTDOWN ─────────────────────────────────────
-let tCdRunning = false, tCdTime = 60, tCdInterval = null;
-
-function tUpdateCDDisplay() {
-    const m = Math.floor(tCdTime/60), s = tCdTime % 60;
-    document.getElementById('t-cd-display').textContent =
-        `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function tToggleCountdown() {
-    const btn = document.getElementById('t-cd-btn');
-    if (tCdRunning) {
-        clearInterval(tCdInterval); tCdRunning = false;
-        btn.textContent = 'Start'; btn.classList.remove('running');
-    } else {
-        tCdTime = parseInt(document.getElementById('t-cd-input').value) || 60;
-        tCdRunning = true; btn.textContent = 'Stop'; btn.classList.add('running');
-        tCdInterval = setInterval(() => {
-            tCdTime--; tUpdateCDDisplay();
-            if (tCdTime <= 0) {
-                clearInterval(tCdInterval); tCdRunning = false;
-                btn.textContent = 'Start'; btn.classList.remove('running');
-                tCdTime = parseInt(document.getElementById('t-cd-input').value) || 60;
-                tUpdateCDDisplay();
-            }
-        }, 1000);
-    }
-}
-
-// ── STOPWATCH ─────────────────────────────────────
-let tSwRunning = false, tSwStart = 0, tSwElapsed = 0, tSwInterval = null;
-
-function tToggleStopwatch() {
-    const btn = document.getElementById('t-sw-btn');
-    if (tSwRunning) {
-        clearInterval(tSwInterval); tSwElapsed += Date.now() - tSwStart;
-        tSwRunning = false; btn.textContent = 'Start'; btn.classList.remove('running');
-    } else {
-        tSwStart = Date.now(); tSwRunning = true;
-        btn.textContent = 'Stop'; btn.classList.add('running');
-        tSwInterval = setInterval(() => {
-            const t = tSwElapsed + (Date.now() - tSwStart);
-            const m = Math.floor(t/60000), s = Math.floor((t%60000)/1000), ms = Math.floor((t%1000)/10);
-            document.getElementById('t-sw-display').textContent =
-                `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms).padStart(2,'0')}`;
-        }, 50);
-    }
-}
-
-function tResetStopwatch() {
-    clearInterval(tSwInterval); tSwRunning = false; tSwElapsed = 0;
-    document.getElementById('t-sw-display').textContent = '00:00.00';
-    const btn = document.getElementById('t-sw-btn');
-    btn.textContent = 'Start'; btn.classList.remove('running');
-}
-
-// ── INTERVAL TIMER ────────────────────────────────
-let tIntRunning = false, tIntInterval = null, tIntPhase = 'idle';
-let tIntCurrentSet = 0, tIntTotalSets = 0, tIntTime = 0;
-
-function tUpdateIntDisplay() {
-    const m = Math.floor(tIntTime/60), s = tIntTime % 60;
-    document.getElementById('t-int-display').textContent =
-        `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function tSetIntPhase(phase, set, total) {
-    tIntPhase = phase;
-    const label = document.getElementById('t-int-phase');
-    const disp  = document.getElementById('t-int-display');
-    const sets  = document.getElementById('t-int-sets-label');
-    if (phase === 'warmup') {
-        label.textContent = 'WARM UP'; label.style.color = '#fb923c'; disp.style.color = '#fb923c'; sets.textContent = '';
-    } else if (phase === 'work') {
-        label.textContent = 'WORK'; label.style.color = '#4ade80'; disp.style.color = '#4ade80';
-        sets.textContent = `Set ${set} of ${total}`;
-    } else if (phase === 'rest') {
-        label.textContent = 'REST'; label.style.color = '#f87171'; disp.style.color = '#f87171';
-        sets.textContent = `Set ${set} of ${total}`;
-    } else if (phase === 'done') {
-        label.textContent = 'DONE 🔥'; label.style.color = 'var(--brand-accent)'; disp.style.color = 'white'; sets.textContent = '';
-    }
-}
-
-function tToggleInterval() {
-    const btn = document.getElementById('t-int-btn');
-    if (tIntRunning) {
-        clearInterval(tIntInterval); tIntRunning = false;
-        btn.textContent = 'Start'; btn.classList.remove('running');
-        tIntPhase = 'idle';
-        document.getElementById('t-int-phase').textContent = 'READY';
-        document.getElementById('t-int-phase').style.color = 'var(--brand-accent)';
-        document.getElementById('t-int-display').style.color = 'white';
-        document.getElementById('t-int-sets-label').textContent = '';
-        tIntTime = parseInt(document.getElementById('t-int-work').value) || 30;
-        tUpdateIntDisplay(); return;
-    }
-
-    const warmup = parseInt(document.getElementById('t-int-warmup').value) || 0;
-    const sets   = parseInt(document.getElementById('t-int-sets').value) || 5;
-    const work   = parseInt(document.getElementById('t-int-work').value) || 30;
-    const rest   = parseInt(document.getElementById('t-int-rest').value) || 15;
-
-    tIntTotalSets = sets; tIntCurrentSet = 1; tIntRunning = true;
-    btn.textContent = 'Stop'; btn.classList.add('running');
-
-    if (warmup > 0) { tIntTime = warmup; tSetIntPhase('warmup', 0, sets); }
-    else            { tIntTime = work;   tSetIntPhase('work', 1, sets); }
-    tUpdateIntDisplay();
-
-    tIntInterval = setInterval(() => {
-        tIntTime--; tUpdateIntDisplay();
-        if (tIntTime > 0) return;
-        if (tIntPhase === 'warmup') {
-            tIntTime = work; tIntCurrentSet = 1; tSetIntPhase('work', 1, tIntTotalSets);
-        } else if (tIntPhase === 'work') {
-            if (rest > 0) {
-                tIntTime = rest; tSetIntPhase('rest', tIntCurrentSet, tIntTotalSets);
-            } else {
-                tIntCurrentSet++;
-                if (tIntCurrentSet > tIntTotalSets) {
-                    clearInterval(tIntInterval); tIntRunning = false;
-                    btn.textContent = 'Start'; btn.classList.remove('running');
-                    tIntTime = 0; tSetIntPhase('done', 0, 0); tUpdateIntDisplay();
-                } else { tIntTime = work; tSetIntPhase('work', tIntCurrentSet, tIntTotalSets); }
-            }
-        } else if (tIntPhase === 'rest') {
-            tIntCurrentSet++;
-            if (tIntCurrentSet > tIntTotalSets) {
-                clearInterval(tIntInterval); tIntRunning = false;
-                btn.textContent = 'Start'; btn.classList.remove('running');
-                tIntTime = 0; tSetIntPhase('done', 0, 0); tUpdateIntDisplay();
-            } else { tIntTime = work; tSetIntPhase('work', tIntCurrentSet, tIntTotalSets); }
+    function tClear1RM() { document.getElementById('t-rm-weight').value=''; document.getElementById('t-rm-reps').value=''; document.getElementById('t-rm-output').style.display='none'; document.getElementById('t-rm-table-body').innerHTML=''; }
+    function tCalc1RM() {
+        let w=parseFloat(document.getElementById('t-rm-weight').value); const r=parseFloat(document.getElementById('t-rm-reps').value);
+        if(!w||!r||r<1)return; if(tRmUnit==='lb')w=w/2.2046;
+        const tbody=document.getElementById('t-rm-table-body'); tbody.innerHTML='';
+        for(let reps=1;reps<=10;reps++){
+            let epley=w*(1+reps/30), brzycki=reps<37?w*(36/(37-reps)):null;
+            if(tRmUnit==='lb'){epley*=2.2046;if(brzycki)brzycki*=2.2046;}
+            const fmt=v=>v?`${Math.round(v)}${tRmUnit}`:'—';
+            const row=document.createElement('tr');
+            if(reps===Math.round(r)){row.style.color='var(--brand-accent)';row.style.fontWeight='800';}
+            row.innerHTML=`<td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${reps}</td><td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${fmt(epley)}</td><td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${fmt(brzycki)}</td>`;
+            tbody.appendChild(row);
         }
-    }, 1000);
-}
+        document.getElementById('t-rm-output').style.display='block';
+    }
+
+    // ── METRONOME ─────────────────────────────────────
+    function tMetroScheduler() {
+        const bpm=parseFloat(document.getElementById('t-m-slider').value), spb=60/bpm;
+        while(tNextTick<tAudioCtx.currentTime+0.1){
+            const osc=tAudioCtx.createOscillator(), env=tAudioCtx.createGain();
+            osc.frequency.value=1000; env.gain.setValueAtTime(1,tNextTick); env.gain.exponentialRampToValueAtTime(0.001,tNextTick+0.025);
+            osc.connect(env); env.connect(tAudioCtx.destination); osc.start(tNextTick); osc.stop(tNextTick+0.03);
+            const delay=Math.max(0,(tNextTick-tAudioCtx.currentTime)*1000);
+            setTimeout(()=>{const d=document.getElementById('t-bpm-val');if(!d)return;d.style.color='#fff';d.style.transform='scale(1.15)';setTimeout(()=>{d.style.color='var(--brand-accent)';d.style.transform='scale(1)';},60);},delay);
+            tNextTick+=spb;
+        }
+        tMetroTimerID=setTimeout(tMetroScheduler,25);
+    }
+    function tToggleMetronome() {
+        if(!tAudioCtx)tAudioCtx=new(window.AudioContext||window.webkitAudioContext)();
+        if(tAudioCtx.state==='suspended')tAudioCtx.resume();
+        const btn=document.getElementById('t-metro-btn'); tMetroPlaying=!tMetroPlaying;
+        if(tMetroPlaying){btn.textContent='Stop';btn.classList.add('running');tNextTick=tAudioCtx.currentTime;tMetroScheduler();}
+        else{btn.textContent='Start';btn.classList.remove('running');clearTimeout(tMetroTimerID);}
+    }
+
+    // ── COUNTDOWN ─────────────────────────────────────
+    let tCdRunning=false, tCdTime=60, tCdInterval=null;
+    function tUpdateCDDisplay(){const m=Math.floor(tCdTime/60),s=tCdTime%60;document.getElementById('t-cd-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+    function tToggleCountdown(){
+        const btn=document.getElementById('t-cd-btn');
+        if(tCdRunning){clearInterval(tCdInterval);tCdRunning=false;btn.textContent='Start';btn.classList.remove('running');}
+        else{tCdTime=parseInt(document.getElementById('t-cd-input').value)||60;tCdRunning=true;btn.textContent='Stop';btn.classList.add('running');
+            tCdInterval=setInterval(()=>{tCdTime--;tUpdateCDDisplay();if(tCdTime<=0){clearInterval(tCdInterval);tCdRunning=false;btn.textContent='Start';btn.classList.remove('running');tCdTime=parseInt(document.getElementById('t-cd-input').value)||60;tUpdateCDDisplay();}},1000);}
+    }
+
+    // ── STOPWATCH ─────────────────────────────────────
+    let tSwRunning=false, tSwStart=0, tSwElapsed=0, tSwInterval=null;
+    function tToggleStopwatch(){
+        const btn=document.getElementById('t-sw-btn');
+        if(tSwRunning){clearInterval(tSwInterval);tSwElapsed+=Date.now()-tSwStart;tSwRunning=false;btn.textContent='Start';btn.classList.remove('running');}
+        else{tSwStart=Date.now();tSwRunning=true;btn.textContent='Stop';btn.classList.add('running');
+            tSwInterval=setInterval(()=>{const t=tSwElapsed+(Date.now()-tSwStart),m=Math.floor(t/60000),s=Math.floor((t%60000)/1000),ms=Math.floor((t%1000)/10);document.getElementById('t-sw-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms).padStart(2,'0')}`;},50);}
+    }
+    function tResetStopwatch(){clearInterval(tSwInterval);tSwRunning=false;tSwElapsed=0;document.getElementById('t-sw-display').textContent='00:00.00';const btn=document.getElementById('t-sw-btn');btn.textContent='Start';btn.classList.remove('running');}
+
+    // ── INTERVAL TIMER ────────────────────────────────
+    let tIntRunning=false, tIntInterval=null, tIntPhase='idle', tIntCurrentSet=0, tIntTotalSets=0, tIntTime=0;
+    function tUpdateIntDisplay(){const m=Math.floor(tIntTime/60),s=tIntTime%60;document.getElementById('t-int-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+    function tSetIntPhase(phase,set,total){
+        tIntPhase=phase;
+        const label=document.getElementById('t-int-phase'),disp=document.getElementById('t-int-display'),sets=document.getElementById('t-int-sets-label');
+        if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';disp.style.color='#fb923c';sets.textContent='';}
+        else if(phase==='work'){label.textContent='WORK';label.style.color='#4ade80';disp.style.color='#4ade80';sets.textContent=`Set ${set} of ${total}`;}
+        else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';disp.style.color='#f87171';sets.textContent=`Set ${set} of ${total}`;}
+        else if(phase==='done'){label.textContent='DONE 🔥';label.style.color='var(--brand-accent)';disp.style.color='white';sets.textContent='';}
+    }
+    function tToggleInterval(){
+        const btn=document.getElementById('t-int-btn');
+        if(tIntRunning){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntPhase='idle';document.getElementById('t-int-phase').textContent='READY';document.getElementById('t-int-phase').style.color='var(--brand-accent)';document.getElementById('t-int-display').style.color='white';document.getElementById('t-int-sets-label').textContent='';tIntTime=parseInt(document.getElementById('t-int-work').value)||30;tUpdateIntDisplay();return;}
+        const warmup=parseInt(document.getElementById('t-int-warmup').value)||0,sets=parseInt(document.getElementById('t-int-sets').value)||5,work=parseInt(document.getElementById('t-int-work').value)||30,rest=parseInt(document.getElementById('t-int-rest').value)||15;
+        tIntTotalSets=sets;tIntCurrentSet=1;tIntRunning=true;btn.textContent='Stop';btn.classList.add('running');
+        if(warmup>0){tIntTime=warmup;tSetIntPhase('warmup',0,sets);}else{tIntTime=work;tSetIntPhase('work',1,sets);}
+        tUpdateIntDisplay();
+        tIntInterval=setInterval(()=>{
+            tIntTime--;tUpdateIntDisplay();if(tIntTime>0)return;
+            if(tIntPhase==='warmup'){tIntTime=work;tIntCurrentSet=1;tSetIntPhase('work',1,tIntTotalSets);}
+            else if(tIntPhase==='work'){if(rest>0){tIntTime=rest;tSetIntPhase('rest',tIntCurrentSet,tIntTotalSets);}else{tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}}
+            else if(tIntPhase==='rest'){tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}
+        },1000);
+    }
 </script>
 </body>
 </html>
