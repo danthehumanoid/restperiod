@@ -522,12 +522,12 @@
                     value="${dateVal}"
                     onchange="saveSessionDate(this.value)" />
             </div>
-            <div style="display:flex; gap:8px;">
-                ${week.sessionDate 
-                    ? `<div style="background:#052e16; border:1px solid #166534; border-radius:6px; padding:6px 12px; font-size:0.75rem; color:#4ade80; font-weight:800;">✓ LOGGED ${new Date(week.sessionDate).toLocaleDateString([], {day:'numeric', month:'short'})}</div>`
-                    : `<div style="font-size:0.75rem; color:#555; padding:6px 0;">Not logged yet</div>`
-                }
-            </div>
+           <div style="display:flex; gap:8px;" id="session-date-badge">
+    ${week.sessionDate 
+        ? `<div style="background:#052e16; border:1px solid #166534; border-radius:6px; padding:6px 12px; font-size:0.75rem; color:#4ade80; font-weight:800;">✓ LOGGED ${new Date(week.sessionDate).toLocaleDateString([], {day:'numeric', month:'short'})}</div>`
+        : `<div style="font-size:0.75rem; color:#555; padding:6px 0;">Not logged yet</div>`
+    }
+</div>
         </div>`;
 
     if (week.warmup?.length) {
@@ -537,11 +537,6 @@
     if (week.exercises?.length) {
         html += `<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>` + generateExerciseHTML(week.exercises, 'exercises');
     }
-
-    const isFinished = week.sessionDate ? true : false;
-    html += `<button class="btn-finish" onclick="finishSession()">${isFinished ? 'FINISHED 🔥' : 'FINISH SESSION'}</button>`;
-    document.getElementById('workout-content').innerHTML = html;
-}
 
     // --- PROGRAM LOGIC ---
     async function fetchUserPrograms() {
@@ -676,15 +671,13 @@
     async function saveSessionDate(val) {
     currentProgram.schedule[currentWeekIndex].sessionDate = val;
     await syncWorkoutToDB("Date saved ✓");
-    renderContent();
-}
-
-async function finishSession() {
-    currentProgram.schedule[currentWeekIndex].sessionDate = 
-        currentProgram.schedule[currentWeekIndex].sessionDate || 
-        new Date().toISOString().split('T')[0];
-    await syncWorkoutToDB("Finished 🔥");
-    renderContent();
+    // Update just the logged badge without re-rendering the whole page
+    const badge = document.getElementById('session-date-badge');
+    if (badge) {
+        badge.innerHTML = val
+            ? `<div style="background:#052e16; border:1px solid #166534; border-radius:6px; padding:6px 12px; font-size:0.75rem; color:#4ade80; font-weight:800;">✓ LOGGED ${new Date(val).toLocaleDateString([], {day:'numeric', month:'short'})}</div>`
+            : `<div style="font-size:0.75rem; color:#555; padding:6px 0;">Not logged yet</div>`;
+    }
 }
 
     // --- UI HELPERS ---
