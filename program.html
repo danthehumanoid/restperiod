@@ -415,12 +415,13 @@
             document.body.insertBefore(banner, document.body.firstChild);
         }
 
-        const [clientRecs, premadeRecs] = await Promise.all([
-    pb.collection('programs').getFullList({ filter: `client="${targetId}" && archived=false`, sort: 'name', requestKey: null }),
-    pb.collection('programs').getFullList({ filter: `client!="${targetId}" && archived=false`, sort: 'name', requestKey: null })
-]);
+        const [clientRecs, templateRecs, freeRecs] = await Promise.all([
+            pb.collection('programs').getFullList({ filter: `client="${targetId}" && archived=false`, sort: 'name', requestKey: null }),
+pb.collection('programs').getFullList({ filter: 'is_template=true', sort: 'name', requestKey: null }),
+pb.collection('programs').getFullList({ filter: 'is_free=true', sort: 'name', requestKey: null })
+        ]);
 
-allPrograms = [...clientRecs, ...premadeRecs];
+        allPrograms = [...clientRecs, ...templateRecs, ...freeRecs];
 
         let html = '';
         if (clientRecs.length > 0) {
@@ -433,10 +434,19 @@ allPrograms = [...clientRecs, ...premadeRecs];
             html += `<optgroup label="🆓 Free Programs">` + freeRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('') + `</optgroup>`;
         }
 
-        document.getElementById('program-selector').innerHTML = html;
-        if (urlId && allPrograms.find(p => p.id === urlId)) document.getElementById('program-selector').value = urlId;
-        if (allPrograms.length > 0) loadSelectedProgram();
-    }
+       document.getElementById('program-selector').innerHTML = clientRecs.length > 0
+    ? clientRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('')
+    : '<option value="">-- No programs assigned yet --</option>';
+
+document.getElementById('premade-selector').innerHTML = premadeRecs.length > 0
+    ? '<option value="">-- Browse premade programs --</option>' + premadeRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('')
+    : '<option value="">-- No premade programs available --</option>';
+
+if (urlId && allPrograms.find(p => p.id === urlId)) {
+    if (clientRecs.find(p => p.id === urlId)) document.getElementById('program-selector').value = urlId;
+    else document.getElementById('premade-selector').value = urlId;
+}
+if (clientRecs.length > 0) loadSelectedProgram();
 
     function loadSelectedProgram() {
         const id = document.getElementById('program-selector').value;
