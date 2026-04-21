@@ -415,13 +415,12 @@
             document.body.insertBefore(banner, document.body.firstChild);
         }
 
-        const [clientRecs, templateRecs, freeRecs] = await Promise.all([
-            pb.collection('programs').getFullList({ filter: `client="${targetId}" && archived=false`, sort: 'name', requestKey: null }),
-pb.collection('programs').getFullList({ filter: 'is_template=true', sort: 'name', requestKey: null }),
-pb.collection('programs').getFullList({ filter: 'is_free=true', sort: 'name', requestKey: null })
-        ]);
+        const [clientRecs, premadeRecs] = await Promise.all([
+    pb.collection('programs').getFullList({ filter: `client="${targetId}" && archived=false`, sort: 'name', requestKey: null }),
+    pb.collection('programs').getFullList({ filter: `client!="${targetId}" && archived=false`, sort: 'name', requestKey: null })
+]);
 
-        allPrograms = [...clientRecs, ...templateRecs, ...freeRecs];
+allPrograms = [...clientRecs, ...premadeRecs];
 
         let html = '';
         if (clientRecs.length > 0) {
