@@ -359,18 +359,15 @@
 allPrograms = ownRecs;
 premadePrograms = [...templateRecs, ...freeRecs];
 
-        allPrograms = ownRecs;
-        premadePrograms = otherRecs;
-
         // Own programs dropdown
         document.getElementById('program-selector').innerHTML = ownRecs.length > 0
             ? ownRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('')
             : '<option value="">-- No programs assigned yet --</option>';
 
         // Premade dropdown
-        document.getElementById('premade-selector').innerHTML = otherRecs.length > 0
-            ? '<option value="">-- Browse premade programs --</option>' + otherRecs.map(p => `<option value="${p.id}">${p.name}</option>`).join('')
-            : '<option value="">-- No premade programs --</option>';
+        document.getElementById('premade-selector').innerHTML = premadePrograms.length > 0
+    ? '<option value="">-- Browse premade programs --</option>' + premadePrograms.map(p => `<option value="${p.id}">${p.name}</option>`).join('')
+    : '<option value="">-- No premade programs --</option>';
 
         // Handle URL param
         if (urlId) {
