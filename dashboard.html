@@ -626,12 +626,37 @@
     }
 
     async function renderCalendar() {
-        if (!selectedClientId) return;
-        const sessionMap = buildSessionMap();
-        if (calView==='month') renderMonthView(sessionMap);
-        else if (calView==='week') renderWeekView(sessionMap);
-        else renderDayView(sessionMap);
-    }
+    if (!selectedClientId) return;
+    const sessionMap = buildSessionMap();
+    if (calView==='month') renderMonthView(sessionMap);
+    else if (calView==='week') renderWeekView(sessionMap);
+    else renderDayView(sessionMap);
+}
+
+function buildSessionMap() {
+    const map = {};
+    clientPrograms.forEach(prog => {
+        let data = prog.workout_data;
+        if (typeof data === 'string') data = JSON.parse(data);
+        const schedule = data.schedule || data;
+        schedule.forEach((week, i) => {
+            const completedDate = week.sessionDate?.substring(0,10);
+            const scheduledDate = week.scheduledDate?.substring(0,10);
+            const dateStr = completedDate || scheduledDate;
+            if (!dateStr) return;
+            let total = 0, done = 0;
+            [...(week.warmup||[]), ...(week.exercises||[])].forEach(ex => {
+                (ex.setsData||[]).forEach(s => { total++; if (s.act_reps && s.act_weight) done++; });
+            });
+            const pct = total > 0 ? Math.round((done/total)*100) : 0;
+            const isCompleted = !!completedDate;
+            const sessionNum = week.sessionNum || week.weekNum || i+1;
+            if (!map[dateStr]) map[dateStr] = [];
+            map[dateStr].push({ programName: prog.name, sessionNum, pct, isCompleted, progId: prog.id });
+        });
+    });
+    return map;
+}
 
     function renderMonthView(sessionMap) {
         const year=calDate.getFullYear(), month=calDate.getMonth();
@@ -656,7 +681,7 @@
             html+=`<div class="${classes}"
                 ondragover="event.preventDefault();this.style.outline='1px solid var(--brand-accent)'"
                 ondragleave="this.style.outline=''"
-                ondrop="(draggedSession?handleSessionDrop(event,'${dateStr}'):handleDrop(event,'${dateStr}'));this.style.outline=''">
+                ondrop="if(draggedSession){handleSessionDrop(event,'${dateStr}')}else{handleDrop(event,'${dateStr}')};this.style.outline=''">
                 <div class="cal-day-num" onclick="jumpToDay('${dateStr}')">${d}</div>
                 ${sessions.map(s=>`<div class="cal-session-dot ${s.isCompleted?'completed':'scheduled'}"
                     draggable="true"
@@ -697,7 +722,7 @@
             html+=`<div class="cal-week-day ${isToday?'today':''}"
                 ondragover="event.preventDefault();this.style.borderColor='var(--brand-accent)'"
                 ondragleave="this.style.borderColor=''"
-                ondrop="(draggedSession?handleSessionDrop(event,'${dateStr}'):handleDrop(event,'${dateStr}'));this.style.borderColor=''">
+                ondrop="if(draggedSession){handleSessionDrop(event,'${dateStr}')}else{handleDrop(event,'${dateStr}')};this.style.borderColor=''">
                 <div class="cal-week-day-label">
                     <span onclick="jumpToDay('${dateStr}')" style="cursor:pointer;">${wDayNames[i]} ${day.getDate()}</span>
                     <button class="week-add-btn" onclick="openPlanModal('${dateStr}')">+ Plan</button>
