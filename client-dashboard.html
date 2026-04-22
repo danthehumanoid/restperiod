@@ -9,13 +9,9 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
         :root {
-            --brand-primary: #003B5C;
-            --brand-secondary: #2E7D32;
-            --brand-accent: #26C6DA;
-            --brand-bg: #020c12;
-            --text-main: #E0F7FA;
-            --card-bg: #0e1b24;
-            --input-bg: #002840;
+            --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA;
+            --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24; --input-bg: #002840;
+            --brand-danger: #ff5252;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: 40px; }
@@ -49,7 +45,7 @@
         .prog-pct span { color: var(--brand-accent); font-weight: 800; }
         .prog-last { font-size: 0.65rem; color: #555; margin-top: 8px; }
         .prog-arrow { position: absolute; top: 16px; right: 16px; color: var(--brand-accent); font-size: 0.8rem; opacity: 0.5; }
-        .prog-weeks { font-size: 0.65rem; color: #555; margin-top: 4px; }
+        .prog-sessions { font-size: 0.65rem; color: #555; margin-top: 4px; }
         .no-programs { color: #555; font-size: 0.85rem; text-align: center; padding: 30px; background: var(--card-bg); border: 1px solid #1a2a35; border-radius: 10px; }
 
         /* CALENDAR */
@@ -66,16 +62,20 @@
         /* MONTH GRID */
         .cal-month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
         .cal-dow { text-align: center; font-size: 0.55rem; color: #555; font-weight: 800; font-family: 'Montserrat'; padding: 4px 0; text-transform: uppercase; }
-        .cal-mday { min-height: 60px; background: #050d12; border-radius: 4px; padding: 4px; border: 1px solid transparent; position: relative; }
+        .cal-mday { min-height: 60px; background: #050d12; border-radius: 4px; padding: 4px; border: 1px solid transparent; position: relative; transition: 0.15s; }
         .cal-mday.today { border-color: var(--brand-accent) !important; }
         .cal-mday.other-month .cal-mday-num { color: #222; }
         .cal-mday.has-session { background: #0a1f0e; border-color: #1a3a1a; }
+        .cal-mday.has-scheduled { background: #0a1a0a; border-color: #1a3a1a; }
         .cal-mday.has-planned { border-color: #2a1a3a; }
-        .cal-mday.has-session.has-planned { border-color: #1a3a4a; }
         .cal-mday-num { font-size: 0.65rem; color: #444; margin-bottom: 3px; cursor: pointer; }
         .cal-mday.today .cal-mday-num { color: var(--brand-accent); font-weight: 800; }
-        .cal-session-pill { border-radius: 3px; padding: 2px 4px; font-size: 0.48rem; color: white; font-weight: 800; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; background: var(--brand-secondary); cursor: pointer; }
-        .cal-session-pill.planned { background: #4a1a6a; }
+
+        /* Session pills */
+        .cal-session-pill { border-radius: 3px; padding: 2px 4px; font-size: 0.48rem; font-weight: 800; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; cursor: grab; }
+        .cal-session-pill.completed { background: var(--brand-secondary); color: white; }
+        .cal-session-pill.scheduled { background: #0a2a1a; border: 1px solid #2E7D32; color: #4ade80; }
+        .cal-session-pill.planned { cursor: pointer; }
         .add-plan-btn { position: absolute; bottom: 3px; right: 3px; background: none; border: none; color: #333; cursor: pointer; font-size: 0.75rem; padding: 0; line-height: 1; transition: 0.2s; }
         .add-plan-btn:hover { color: var(--brand-accent); }
 
@@ -84,8 +84,10 @@
         .cal-wday { background: #050d12; border-radius: 6px; padding: 10px 12px; border: 1px solid #1a2a35; }
         .cal-wday.today { border-color: var(--brand-accent); }
         .cal-wday-label { font-size: 0.62rem; color: #555; font-family: 'Montserrat'; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
-        .cal-wday-session { background: #0e2a1a; border: 1px solid #1a4a2a; border-radius: 4px; padding: 8px 10px; margin-bottom: 4px; }
-        .cal-wday-session.planned { background: #1a0e2a; border-color: #3a1a4a; cursor: pointer; }
+        .cal-wday-session { border-radius: 4px; padding: 8px 10px; margin-bottom: 4px; cursor: grab; }
+        .cal-wday-session.completed { background: #0e2a1a; border: 1px solid #1a4a2a; }
+        .cal-wday-session.scheduled { background: #0a2a1a; border: 1px solid #2E7D32; }
+        .cal-wday-session.planned { background: #1a0e2a; border: 1px solid #3a1a4a; cursor: pointer; }
         .cal-wday-prog { font-size: 0.78rem; font-weight: 700; color: #4ade80; margin-bottom: 2px; }
         .cal-wday-prog.planned { color: #c084fc; }
         .cal-wday-sub { font-size: 0.65rem; color: #555; }
@@ -157,7 +159,6 @@
 </div>
 
 <div class="container">
-
     <div class="programs-grid" id="programs-grid">
         <div class="no-programs">Loading programs...</div>
     </div>
@@ -181,7 +182,6 @@
 
     <div class="section-title">📝 Recent Check-ins</div>
     <div id="checkins-list"></div>
-
 </div>
 
 <!-- PLAN MODAL -->
@@ -259,14 +259,10 @@ let plannedWorkouts = [];
 let calView = 'month';
 let calDate = new Date();
 let draggedPlanId = null;
+let draggedSession = null;
 
-const typeColors = {
-    strength: '#26C6DA', cardio: '#f87171', recovery: '#c084fc',
-    mobility: '#4ade80', other: '#fb923c'
-};
-const typeEmoji = {
-    strength: '💪', cardio: '🏃', recovery: '🧘', mobility: '🤸', other: '⚡'
-};
+const typeColors = { strength:'#26C6DA', cardio:'#f87171', recovery:'#c084fc', mobility:'#4ade80', other:'#fb923c' };
+const typeEmoji = { strength:'💪', cardio:'🏃', recovery:'🧘', mobility:'🤸', other:'⚡' };
 const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 window.onload = async () => {
@@ -274,11 +270,9 @@ window.onload = async () => {
     const role = pb.authStore.model.role;
     if (role === 'trainer' || role === 'admin') { window.location.href = 'dashboard.html'; return; }
     if (role === 'free') { window.location.href = 'free.html'; return; }
-
     const name = pb.authStore.model.name || pb.authStore.model.email;
     document.getElementById('nav-user').textContent = name;
     document.getElementById('greeting-name').textContent = name.split(' ')[0];
-
     await Promise.all([loadPrograms(), loadPlannedWorkouts()]);
     buildSessionMap();
     renderCalendar();
@@ -291,9 +285,9 @@ function logout() { pb.authStore.clear(); window.location.href = 'index.html'; }
 async function loadPrograms() {
     try {
         const [clientRecs, templateRecs, freeRecs] = await Promise.all([
-            pb.collection('programs').getFullList({ filter: `client = "${pb.authStore.model.id}" && archived = false`, sort: '-created', requestKey: null }),
-            pb.collection('programs').getFullList({ filter: 'is_template = true && is_free = false', sort: 'name', requestKey: null }),
-            pb.collection('programs').getFullList({ filter: 'is_free = true', sort: 'name', requestKey: null })
+            pb.collection('programs').getFullList({ filter: `client="${pb.authStore.model.id}" && archived=false`, sort: 'name', requestKey: null }),
+            pb.collection('programs').getFullList({ filter: 'is_template=true && is_free=false', sort: 'name', requestKey: null }),
+            pb.collection('programs').getFullList({ filter: 'is_free=true', sort: 'name', requestKey: null })
         ]);
         allPrograms = [...clientRecs, ...templateRecs, ...freeRecs];
         renderPrograms(clientRecs, templateRecs, freeRecs);
@@ -307,22 +301,22 @@ function progCard(prog) {
     let data = prog.workout_data;
     if (typeof data === 'string') data = JSON.parse(data);
     const schedule = data.schedule || data;
-    let totalSets = 0, doneSets = 0, lastSession = null, completedWeeks = 0;
-    schedule.forEach(week => {
-        [...(week.warmup||[]), ...(week.exercises||[])].forEach(ex => {
-            (ex.setsData||[]).forEach(s => { totalSets++; if (s.act_reps && s.act_weight) doneSets++; });
+    let totalSets = 0, doneSets = 0, lastSession = null, completedSessions = 0;
+    schedule.forEach(s => {
+        [...(s.warmup||[]), ...(s.exercises||[])].forEach(ex => {
+            (ex.setsData||[]).forEach(set => { totalSets++; if (set.act_reps && set.act_weight) doneSets++; });
         });
-        if (week.sessionDate) { completedWeeks++; if (!lastSession || week.sessionDate > lastSession) lastSession = week.sessionDate; }
+        if (s.sessionDate) { completedSessions++; if (!lastSession || s.sessionDate > lastSession) lastSession = s.sessionDate; }
     });
-    const pct = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
-    const lastStr = lastSession ? new Date(lastSession).toLocaleDateString([], { day: 'numeric', month: 'short' }) : 'Not started';
+    const pct = totalSets > 0 ? Math.round((doneSets/totalSets)*100) : 0;
+    const lastStr = lastSession ? new Date(lastSession).toLocaleDateString([],{day:'numeric',month:'short'}) : 'Not started';
     return `<div class="program-card" onclick="goToProgram('${prog.id}')">
         <i class="fas fa-chevron-right prog-arrow"></i>
         <div class="prog-name">${prog.name}</div>
-        <div class="prog-meta">${prog.description || ''}</div>
+        <div class="prog-meta">${prog.description||''}</div>
         <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
         <div class="prog-pct"><span>${pct}% complete</span><span style="color:#555">${doneSets}/${totalSets} sets</span></div>
-        <div class="prog-weeks">${completedWeeks} of ${schedule.length} weeks logged</div>
+        <div class="prog-sessions">${completedSessions} of ${schedule.length} sessions logged</div>
         <div class="prog-last">Last session: ${lastStr}</div>
     </div>`;
 }
@@ -331,21 +325,18 @@ function renderPrograms(clientProgs, templateProgs, freeProgs) {
     const grid = document.getElementById('programs-grid');
     let html = '';
     if (clientProgs.length > 0) {
-        html += `<div class="section-title" style="grid-column:1/-1;">📋 Your Programs</div>`;
-        html += clientProgs.map(progCard).join('');
+        html += `<div class="section-title" style="grid-column:1/-1;">📋 Your Programs</div>` + clientProgs.map(progCard).join('');
     } else {
         html += `<div class="no-programs" style="grid-column:1/-1;">No custom programs yet — your coach will assign one soon.</div>`;
     }
     if (templateProgs.length > 0) {
-        html += `<div class="section-title" style="grid-column:1/-1; margin-top:20px;">📚 Coach Programs</div>`;
-        html += templateProgs.map(progCard).join('');
+        html += `<div class="section-title" style="grid-column:1/-1; margin-top:20px;">📚 Coach Programs</div>` + templateProgs.map(progCard).join('');
     }
     if (freeProgs.length > 0) {
-        html += `<div class="section-title" style="grid-column:1/-1; margin-top:20px;">Pre-Made Programs</div>`;
-        html += freeProgs.map(progCard).join('');
+        html += `<div class="section-title" style="grid-column:1/-1; margin-top:20px;">Pre-Made Programs</div>` + freeProgs.map(progCard).join('');
     }
     grid.innerHTML = html;
-    document.getElementById('greeting-sub').textContent = `${allPrograms.length} program${allPrograms.length !== 1 ? 's' : ''} · Keep it up!`;
+    document.getElementById('greeting-sub').textContent = `${allPrograms.length} program${allPrograms.length!==1?'s':''} · Keep it up!`;
 }
 
 function goToProgram(id) { window.location.href = `program.html?id=${id}`; }
@@ -357,16 +348,20 @@ function buildSessionMap() {
         let data = prog.workout_data;
         if (typeof data === 'string') data = JSON.parse(data);
         const schedule = data.schedule || data;
-        schedule.forEach(week => {
-            if (!week.sessionDate) return;
-            const dateStr = week.sessionDate.substring(0, 10);
+        schedule.forEach((week, i) => {
+            const completedDate = week.sessionDate?.substring(0,10);
+            const scheduledDate = week.scheduledDate?.substring(0,10);
+            const dateStr = completedDate || scheduledDate;
+            if (!dateStr) return;
             let total = 0, done = 0;
             [...(week.warmup||[]), ...(week.exercises||[])].forEach(ex => {
                 (ex.setsData||[]).forEach(s => { total++; if (s.act_reps && s.act_weight) done++; });
             });
             const pct = total > 0 ? Math.round((done/total)*100) : 0;
+            const isCompleted = !!completedDate;
+            const sessionNum = week.sessionNum || week.weekNum || i+1;
             if (!sessionMap[dateStr]) sessionMap[dateStr] = [];
-            sessionMap[dateStr].push({ programName: prog.name, weekNum: week.weekNum, pct });
+            sessionMap[dateStr].push({ programName: prog.name, sessionNum, pct, isCompleted, progId: prog.id });
         });
     });
 }
@@ -375,9 +370,7 @@ function buildSessionMap() {
 async function loadPlannedWorkouts() {
     try {
         plannedWorkouts = await pb.collection('planned_workouts').getFullList({
-            filter: `user = "${pb.authStore.model.id}"`,
-            sort: 'date',
-            requestKey: null
+            filter: `user="${pb.authStore.model.id}"`, sort: 'date', requestKey: null
         });
     } catch(e) { console.error(e); }
 }
@@ -387,20 +380,17 @@ function getPlannedForDate(dateStr) {
     plannedWorkouts.forEach(pw => {
         const pwDate = pw.date?.substring(0,10);
         if (!pwDate) return;
-        if (pw.repeat === 'none' && pwDate === dateStr) {
-            results.push(pw);
-        } else if (pw.repeat === 'daily') {
+        if (pw.repeat === 'none' && pwDate === dateStr) { results.push(pw); }
+        else if (pw.repeat === 'daily') {
             const until = pw.repeat_until ? pw.repeat_until.substring(0,10) : '2099-12-31';
             if (dateStr >= pwDate && dateStr <= until) results.push(pw);
         } else if (pw.repeat === 'weekly') {
             const until = pw.repeat_until ? pw.repeat_until.substring(0,10) : '2099-12-31';
-            if (dateStr >= pwDate && dateStr <= until) {
-                if (new Date(pwDate).getDay() === new Date(dateStr).getDay()) results.push(pw);
-            }
+            if (dateStr >= pwDate && dateStr <= until && new Date(pwDate).getDay() === new Date(dateStr).getDay()) results.push(pw);
         } else if (pw.repeat === 'custom') {
             const until = pw.repeat_until ? pw.repeat_until.substring(0,10) : '2099-12-31';
             if (dateStr >= pwDate && dateStr <= until) {
-                const days = (pw.repeat_days || '').split(',');
+                const days = (pw.repeat_days||'').split(',');
                 const dNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
                 if (days.includes(dNames[new Date(dateStr).getDay()])) results.push(pw);
             }
@@ -418,14 +408,14 @@ function openPlanModal(dateStr, existingId) {
     if (existingId) {
         const pw = plannedWorkouts.find(p => p.id === existingId);
         if (pw) {
-            document.getElementById('plan-title').value = pw.title || '';
-            document.getElementById('plan-time').value = pw.time || '';
-            document.getElementById('plan-type').value = pw.type || 'other';
-            document.getElementById('plan-notes').value = pw.notes || '';
-            document.getElementById('plan-repeat').value = pw.repeat || 'none';
-            document.getElementById('plan-repeat-until').value = pw.repeat_until?.substring(0,10) || '';
+            document.getElementById('plan-title').value = pw.title||'';
+            document.getElementById('plan-time').value = pw.time||'';
+            document.getElementById('plan-type').value = pw.type||'other';
+            document.getElementById('plan-notes').value = pw.notes||'';
+            document.getElementById('plan-repeat').value = pw.repeat||'none';
+            document.getElementById('plan-repeat-until').value = pw.repeat_until?.substring(0,10)||'';
             if (pw.repeat === 'custom') {
-                const days = (pw.repeat_days || '').split(',');
+                const days = (pw.repeat_days||'').split(',');
                 document.querySelectorAll('.repeat-day-cb').forEach(cb => { cb.checked = days.includes(cb.value); });
             }
         }
@@ -459,15 +449,12 @@ async function savePlan() {
     const title = document.getElementById('plan-title').value.trim();
     if (!title) return alert('Please enter a title');
     const repeatVal = document.getElementById('plan-repeat').value;
-    const customDays = repeatVal === 'custom'
-        ? Array.from(document.querySelectorAll('.repeat-day-cb:checked')).map(cb => cb.value).join(',')
-        : '';
+    const customDays = repeatVal === 'custom' ? Array.from(document.querySelectorAll('.repeat-day-cb:checked')).map(cb=>cb.value).join(',') : '';
     const newDate = document.getElementById('plan-date').value;
     const newTime = document.getElementById('plan-time').value;
     const existingId = document.getElementById('plan-id').value;
     const payload = {
-        user: pb.authStore.model.id,
-        title, date: newDate, time: newTime,
+        user: pb.authStore.model.id, title, date: newDate, time: newTime,
         type: document.getElementById('plan-type').value,
         notes: document.getElementById('plan-notes').value,
         repeat: repeatVal, repeat_days: customDays,
@@ -483,8 +470,8 @@ async function savePlan() {
                 const choice = await showRepeatDialog();
                 if (choice === null) return;
                 if (choice === 'one') {
-                    await pb.collection('planned_workouts').create({ ...payload, repeat: 'none', repeat_days: '', repeat_until: null });
-                    await pb.collection('planned_workouts').update(existingId, { title: payload.title, type: payload.type, notes: payload.notes, repeat: payload.repeat, repeat_days: payload.repeat_days, repeat_until: payload.repeat_until });
+                    await pb.collection('planned_workouts').create({ ...payload, repeat:'none', repeat_days:'', repeat_until:null });
+                    await pb.collection('planned_workouts').update(existingId, { title:payload.title, type:payload.type, notes:payload.notes, repeat:payload.repeat, repeat_days:payload.repeat_days, repeat_until:payload.repeat_until });
                 } else {
                     await pb.collection('planned_workouts').update(existingId, payload);
                 }
@@ -515,16 +502,15 @@ function showRepeatDialog() {
     return new Promise(resolve => {
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;';
-        overlay.innerHTML = `
-            <div style="background:var(--card-bg);border:1px solid var(--brand-accent);border-radius:12px;padding:24px;max-width:340px;width:100%;">
-                <div style="font-family:'Montserrat';font-weight:800;font-size:0.9rem;color:var(--brand-accent);margin-bottom:10px;">Repeating Workout</div>
-                <p style="font-size:0.8rem;color:#888;margin-bottom:20px;line-height:1.6;">Do you want to change just this one occurrence, or this and all future ones?</p>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-                    <button id="repeat-one-btn" style="padding:10px;border:none;border-radius:6px;background:#1a2a35;color:var(--brand-accent);font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">JUST THIS ONE</button>
-                    <button id="repeat-all-btn" style="padding:10px;border:none;border-radius:6px;background:var(--brand-secondary);color:white;font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">ALL FUTURE</button>
-                </div>
-                <button id="repeat-cancel-btn" style="width:100%;padding:8px;border:none;border-radius:6px;background:none;color:#555;font-family:'Montserrat';font-weight:800;font-size:0.65rem;cursor:pointer;">CANCEL</button>
-            </div>`;
+        overlay.innerHTML = `<div style="background:var(--card-bg);border:1px solid var(--brand-accent);border-radius:12px;padding:24px;max-width:340px;width:100%;">
+            <div style="font-family:'Montserrat';font-weight:800;font-size:0.9rem;color:var(--brand-accent);margin-bottom:10px;">Repeating Workout</div>
+            <p style="font-size:0.8rem;color:#888;margin-bottom:20px;line-height:1.6;">Do you want to change just this one occurrence, or this and all future ones?</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                <button id="repeat-one-btn" style="padding:10px;border:none;border-radius:6px;background:#1a2a35;color:var(--brand-accent);font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">JUST THIS ONE</button>
+                <button id="repeat-all-btn" style="padding:10px;border:none;border-radius:6px;background:var(--brand-secondary);color:white;font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">ALL FUTURE</button>
+            </div>
+            <button id="repeat-cancel-btn" style="width:100%;padding:8px;border:none;border-radius:6px;background:none;color:#555;font-family:'Montserrat';font-weight:800;font-size:0.65rem;cursor:pointer;">CANCEL</button>
+        </div>`;
         document.body.appendChild(overlay);
         document.getElementById('repeat-one-btn').onclick = () => { document.body.removeChild(overlay); resolve('one'); };
         document.getElementById('repeat-all-btn').onclick = () => { document.body.removeChild(overlay); resolve('all'); };
@@ -538,25 +524,27 @@ async function refreshPlanned() {
     });
 }
 
-// ── DRAG AND DROP ─────────────────────────────────
+// ── DRAG AND DROP — PLANNED WORKOUTS ─────────────
 function handleDragStart(event, planId) {
     draggedPlanId = planId;
+    draggedSession = null;
     event.dataTransfer.effectAllowed = 'move';
     event.stopPropagation();
 }
 
 async function handleDrop(event, newDateStr) {
     event.preventDefault();
+    // Session drag takes priority
+    if (draggedSession) { await handleSessionDrop(event, newDateStr); return; }
     if (!draggedPlanId) return;
     const pw = plannedWorkouts.find(p => p.id === draggedPlanId);
-    if (!pw) return;
-    if (pw.date?.substring(0,10) === newDateStr) return;
+    if (!pw || pw.date?.substring(0,10) === newDateStr) { draggedPlanId = null; return; }
     try {
         if (pw.repeat !== 'none') {
             const choice = await showRepeatDialog();
             if (choice === null) { draggedPlanId = null; return; }
             if (choice === 'one') {
-                await pb.collection('planned_workouts').create({ user: pw.user, title: pw.title, date: newDateStr, time: pw.time, type: pw.type, notes: pw.notes, repeat: 'none', repeat_days: '', repeat_until: null });
+                await pb.collection('planned_workouts').create({ user:pw.user, title:pw.title, date:newDateStr, time:pw.time, type:pw.type, notes:pw.notes, repeat:'none', repeat_days:'', repeat_until:null });
             } else {
                 await pb.collection('planned_workouts').update(draggedPlanId, { date: newDateStr });
             }
@@ -575,16 +563,14 @@ async function handleDayDrop(event, newSlotIndex) {
     if (!draggedPlanId) return;
     const pw = plannedWorkouts.find(p => p.id === draggedPlanId);
     if (!pw) return;
-    const h = Math.floor(newSlotIndex / 4);
-    const m = (newSlotIndex % 4) * 15;
+    const h = Math.floor(newSlotIndex/4), m = (newSlotIndex%4)*15;
     const newTime = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
     try {
         if (pw.repeat !== 'none') {
             const choice = await showRepeatDialog();
             if (choice === null) { draggedPlanId = null; return; }
             if (choice === 'one') {
-                const dateStr = calDate.toISOString().split('T')[0];
-                await pb.collection('planned_workouts').create({ user: pw.user, title: pw.title, date: dateStr, time: newTime, type: pw.type, notes: pw.notes, repeat: 'none', repeat_days: '', repeat_until: null });
+                await pb.collection('planned_workouts').create({ user:pw.user, title:pw.title, date:calDate.toISOString().split('T')[0], time:newTime, type:pw.type, notes:pw.notes, repeat:'none', repeat_days:'', repeat_until:null });
             } else {
                 await pb.collection('planned_workouts').update(draggedPlanId, { time: newTime });
             }
@@ -597,57 +583,107 @@ async function handleDayDrop(event, newSlotIndex) {
     } catch(e) { alert('Move failed: ' + e.message); draggedPlanId = null; }
 }
 
+// ── DRAG AND DROP — PROGRAM SESSIONS ─────────────
+function handleSessionDragStart(event, progId, sessionNum) {
+    draggedSession = { progId, sessionNum };
+    draggedPlanId = null;
+    event.dataTransfer.effectAllowed = 'move';
+    event.stopPropagation();
+}
+
+async function handleSessionDrop(event, newDateStr) {
+    event.preventDefault();
+    if (!draggedSession) return;
+    const prog = allPrograms.find(p => p.id === draggedSession.progId);
+    if (!prog) { draggedSession = null; return; }
+    let data = prog.workout_data;
+    if (typeof data === 'string') data = JSON.parse(data);
+    const schedule = data.schedule || data;
+    const session = schedule.find((s, i) => (s.sessionNum || s.weekNum || i+1) === draggedSession.sessionNum);
+    if (!session) { draggedSession = null; return; }
+    // Update the right date field
+    if (session.sessionDate) {
+        session.sessionDate = newDateStr;
+    } else {
+        session.scheduledDate = newDateStr;
+    }
+    try {
+        await pb.collection('programs').update(prog.id, { workout_data: JSON.stringify({ schedule }) });
+        // Refresh local copy
+        const updated = await pb.collection('programs').getOne(prog.id);
+        const idx = allPrograms.findIndex(p => p.id === prog.id);
+        if (idx > -1) allPrograms[idx] = updated;
+        buildSessionMap();
+        renderCalendar();
+    } catch(e) { alert('Move failed: ' + e.message); }
+    draggedSession = null;
+}
+
 // ── CALENDAR ──────────────────────────────────────
 function setCalView(view) {
     calView = view;
-    document.getElementById('cal-month-btn').classList.toggle('active', view === 'month');
-    document.getElementById('cal-week-btn').classList.toggle('active', view === 'week');
-    document.getElementById('cal-day-btn').classList.toggle('active', view === 'day');
+    document.getElementById('cal-month-btn').classList.toggle('active', view==='month');
+    document.getElementById('cal-week-btn').classList.toggle('active', view==='week');
+    document.getElementById('cal-day-btn').classList.toggle('active', view==='day');
     renderCalendar();
 }
 
 function moveCal(dir) {
-    if (calView === 'month') calDate.setMonth(calDate.getMonth() + dir);
-    else if (calView === 'week') calDate.setDate(calDate.getDate() + dir * 7);
-    else calDate.setDate(calDate.getDate() + dir);
+    if (calView==='month') calDate.setMonth(calDate.getMonth()+dir);
+    else if (calView==='week') calDate.setDate(calDate.getDate()+dir*7);
+    else calDate.setDate(calDate.getDate()+dir);
     renderCalendar();
 }
 
 function jumpToDay(dateStr) {
-    calDate = new Date(dateStr + 'T12:00:00');
+    calDate = new Date(dateStr+'T12:00:00');
     setCalView('day');
 }
 
 function renderCalendar() {
-    if (calView === 'month') renderMonthView();
-    else if (calView === 'week') renderWeekView();
+    if (calView==='month') renderMonthView();
+    else if (calView==='week') renderWeekView();
     else renderDayView();
 }
 
 function renderMonthView() {
-    const year = calDate.getFullYear();
-    const month = calDate.getMonth();
+    const year = calDate.getFullYear(), month = calDate.getMonth();
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('cal-period').textContent = calDate.toLocaleDateString([], { month: 'long', year: 'numeric' });
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const startDow = (firstDay.getDay() + 6) % 7;
+    document.getElementById('cal-period').textContent = calDate.toLocaleDateString([],{month:'long',year:'numeric'});
+    const firstDay = new Date(year,month,1), lastDay = new Date(year,month+1,0);
+    const startDow = (firstDay.getDay()+6)%7;
 
     let html = `<div class="cal-month-grid">`;
     ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(d => { html += `<div class="cal-dow">${d}</div>`; });
-    for (let i = 0; i < startDow; i++) { html += `<div class="cal-mday other-month"><div class="cal-mday-num"></div></div>`; }
+    for (let i=0; i<startDow; i++) { html += `<div class="cal-mday other-month"><div class="cal-mday-num"></div></div>`; }
 
-    for (let d = 1; d <= lastDay.getDate(); d++) {
+    for (let d=1; d<=lastDay.getDate(); d++) {
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
         const sessions = sessionMap[dateStr] || [];
         const planned = getPlannedForDate(dateStr);
         const isToday = dateStr === today;
-        const classes = ['cal-mday', sessions.length?'has-session':'', planned.length?'has-planned':'', isToday?'today':''].filter(Boolean).join(' ');
+        const hasCompleted = sessions.some(s=>s.isCompleted);
+        const hasScheduled = sessions.some(s=>!s.isCompleted);
+        const classes = ['cal-mday', hasCompleted?'has-session':'', hasScheduled&&!hasCompleted?'has-scheduled':'', planned.length?'has-planned':'', isToday?'today':''].filter(Boolean).join(' ');
 
-        html += `<div class="${classes}" ondragover="event.preventDefault();this.style.outline='1px solid var(--brand-accent)'" ondragleave="this.style.outline=''" ondrop="handleDrop(event,'${dateStr}');this.style.outline=''">
+        html += `<div class="${classes}"
+            ondragover="event.preventDefault();this.style.outline='1px solid var(--brand-accent)'"
+            ondragleave="this.style.outline=''"
+            ondrop="(draggedSession?handleSessionDrop(event,'${dateStr}'):handleDrop(event,'${dateStr}'));this.style.outline=''">
             <div class="cal-mday-num" onclick="jumpToDay('${dateStr}')">${d}</div>
-            ${sessions.map(s => `<div class="cal-session-pill">${s.programName} · Wk${s.weekNum}</div>`).join('')}
-            ${planned.map(pw => `<div class="cal-session-pill planned" style="background:${typeColors[pw.type]||'#888'}33;color:${typeColors[pw.type]||'#888'};" draggable="true" ondragstart="handleDragStart(event,'${pw.id}')" onclick="openPlanModal('${dateStr}','${pw.id}');event.stopPropagation();">${typeEmoji[pw.type]||'⚡'} ${pw.title}</div>`).join('')}
+            ${sessions.map(s => `<div class="cal-session-pill ${s.isCompleted?'completed':'scheduled'}"
+                draggable="true"
+                ondragstart="handleSessionDragStart(event,'${s.progId}',${s.sessionNum})"
+                onclick="goToProgram('${s.progId}')">
+                ${s.isCompleted?'✓':'📅'} ${s.programName} · Sn${s.sessionNum}
+            </div>`).join('')}
+            ${planned.map(pw => `<div class="cal-session-pill planned"
+                style="background:${typeColors[pw.type]||'#888'}33;color:${typeColors[pw.type]||'#888'};"
+                draggable="true"
+                ondragstart="handleDragStart(event,'${pw.id}')"
+                onclick="openPlanModal('${dateStr}','${pw.id}');event.stopPropagation();">
+                ${typeEmoji[pw.type]||'⚡'} ${pw.title}
+            </div>`).join('')}
             <button class="add-plan-btn" onclick="openPlanModal('${dateStr}')" title="Add planned workout">＋</button>
         </div>`;
     }
@@ -657,14 +693,12 @@ function renderMonthView() {
 
 function renderWeekView() {
     const today = new Date().toISOString().split('T')[0];
-    const dow = (calDate.getDay() + 6) % 7;
+    const dow = (calDate.getDay()+6)%7;
     const monday = new Date(calDate);
-    monday.setDate(calDate.getDate() - dow);
+    monday.setDate(calDate.getDate()-dow);
     const days = [];
-    for (let i = 0; i < 7; i++) { const d = new Date(monday); d.setDate(monday.getDate() + i); days.push(d); }
-    const startStr = days[0].toLocaleDateString([], { month: 'short', day: 'numeric' });
-    const endStr = days[6].toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
-    document.getElementById('cal-period').textContent = `${startStr} – ${endStr}`;
+    for (let i=0; i<7; i++) { const d=new Date(monday); d.setDate(monday.getDate()+i); days.push(d); }
+    document.getElementById('cal-period').textContent = `${days[0].toLocaleDateString([],{month:'short',day:'numeric'})} – ${days[6].toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'})}`;
     const wDayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
     let html = `<div class="cal-week-list">`;
@@ -674,14 +708,29 @@ function renderWeekView() {
         const planned = getPlannedForDate(dateStr);
         const isToday = dateStr === today;
 
-        html += `<div class="cal-wday ${isToday?'today':''}" ondragover="event.preventDefault();this.style.borderColor='var(--brand-accent)'" ondragleave="this.style.borderColor=''" ondrop="handleDrop(event,'${dateStr}');this.style.borderColor=''">
+        html += `<div class="cal-wday ${isToday?'today':''}"
+            ondragover="event.preventDefault();this.style.borderColor='var(--brand-accent)'"
+            ondragleave="this.style.borderColor=''"
+            ondrop="(draggedSession?handleSessionDrop(event,'${dateStr}'):handleDrop(event,'${dateStr}'));this.style.borderColor=''">
             <div class="cal-wday-label">
                 <span onclick="jumpToDay('${dateStr}')" style="cursor:pointer;">${wDayNames[i]} ${day.getDate()} ${day.toLocaleDateString([],{month:'short'})}</span>
                 <button class="week-add-btn" onclick="openPlanModal('${dateStr}')">+ Plan</button>
             </div>
             ${sessions.length===0&&planned.length===0?`<div class="cal-wday-empty">—</div>`:''}
-            ${sessions.map(s=>`<div class="cal-wday-session"><div class="cal-wday-prog">${s.programName}</div><div class="cal-wday-sub">Week ${s.weekNum} · ${s.pct}% complete</div></div>`).join('')}
-            ${planned.map(pw=>`<div class="cal-wday-session planned" draggable="true" ondragstart="handleDragStart(event,'${pw.id}')" onclick="openPlanModal('${dateStr}','${pw.id}')"><div class="cal-wday-prog planned" style="color:${typeColors[pw.type]||'#888'}">${typeEmoji[pw.type]||'⚡'} ${pw.title}${pw.time?' · '+pw.time:''}</div><div class="cal-wday-sub">${pw.type}${pw.repeat!=='none'?' · repeating':''}</div></div>`).join('')}
+            ${sessions.map(s=>`<div class="cal-wday-session ${s.isCompleted?'completed':'scheduled'}"
+                draggable="true"
+                ondragstart="handleSessionDragStart(event,'${s.progId}',${s.sessionNum})"
+                onclick="goToProgram('${s.progId}')">
+                <div class="cal-wday-prog">${s.isCompleted?'✓':'📅'} ${s.programName}</div>
+                <div class="cal-wday-sub">Session ${s.sessionNum} · ${s.isCompleted?s.pct+'% complete':'scheduled'}</div>
+            </div>`).join('')}
+            ${planned.map(pw=>`<div class="cal-wday-session planned"
+                draggable="true"
+                ondragstart="handleDragStart(event,'${pw.id}')"
+                onclick="openPlanModal('${dateStr}','${pw.id}')">
+                <div class="cal-wday-prog planned" style="color:${typeColors[pw.type]||'#888'}">${typeEmoji[pw.type]||'⚡'} ${pw.title}${pw.time?' · '+pw.time:''}</div>
+                <div class="cal-wday-sub">${pw.type}${pw.repeat!=='none'?' · repeating':''}</div>
+            </div>`).join('')}
         </div>`;
     });
     html += `</div>`;
@@ -693,50 +742,41 @@ function renderDayView() {
     const today = new Date().toISOString().split('T')[0];
     const isToday = dateStr === today;
     const dayName = dayNames[calDate.getDay()];
-    const dateLabel = calDate.toLocaleDateString([], { day: 'numeric', month: 'long', year: 'numeric' });
-
+    const dateLabel = calDate.toLocaleDateString([],{day:'numeric',month:'long',year:'numeric'});
     const sessions = sessionMap[dateStr] || [];
     const planned = getPlannedForDate(dateStr);
-
     document.getElementById('cal-period').textContent = dateLabel;
 
-    // Build events with slot positions
     const events = [];
     planned.forEach(pw => {
-        let slotIndex = 32; // default 8am
-        if (pw.time) {
-            const [h, m] = pw.time.split(':').map(Number);
-            slotIndex = h * 4 + Math.floor(m / 15);
-        }
-        events.push({ type: 'plan', pw, slotIndex, durationSlots: 4 });
+        let slotIndex = 32;
+        if (pw.time) { const [h,m] = pw.time.split(':').map(Number); slotIndex = h*4+Math.floor(m/15); }
+        events.push({ type:'plan', pw, slotIndex, durationSlots:4 });
     });
     sessions.forEach((s, si) => {
-        events.push({ type: 'session', session: s, slotIndex: 28 + si * 5, durationSlots: 4 });
+        events.push({ type:'session', session:s, slotIndex:28+si*5, durationSlots:4 });
     });
 
     let html = `<div class="cal-day-view">
         <div class="cal-day-header-bar">
             <div>
-                <div class="cal-day-title">${isToday ? '📍 Today — ' : ''}${dayName}</div>
+                <div class="cal-day-title">${isToday?'📍 Today — ':''}${dayName}</div>
                 <div class="cal-day-subtitle">${dateLabel}</div>
             </div>
         </div>
-        <div class="day-scroll-wrap" id="day-scroll">
-            <div style="position:relative;">`;
+        <div class="day-scroll-wrap" id="day-scroll"><div style="position:relative;">`;
 
-    // Now line
     if (isToday) {
         const now = new Date();
-        const nowSlot = now.getHours() * 4 + Math.floor(now.getMinutes() / 15);
-        html += `<div class="cal-now-line" style="top:${nowSlot * 28}px;"></div>`;
+        html += `<div class="cal-now-line" style="top:${(now.getHours()*4+Math.floor(now.getMinutes()/15))*28}px;"></div>`;
     }
 
-    for (let h = 0; h < 24; h++) {
-        for (let m = 0; m < 60; m += 15) {
-            const slotIndex = h * 4 + m / 15;
-            const timeLabel = m === 0 ? `${String(h).padStart(2,'0')}:00` : '';
+    for (let h=0; h<24; h++) {
+        for (let m=0; m<60; m+=15) {
+            const slotIndex = h*4+m/15;
+            const timeLabel = m===0 ? `${String(h).padStart(2,'0')}:00` : '';
             const timeStr = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-            const slotEvents = events.filter(e => e.slotIndex === slotIndex);
+            const slotEvents = events.filter(e=>e.slotIndex===slotIndex);
 
             html += `<div class="cal-day-slot">
                 <div class="cal-slot-time">${timeLabel}</div>
@@ -747,11 +787,16 @@ function renderDayView() {
                     onclick="openPlanModalAtTime('${dateStr}','${timeStr}')">
                     ${slotEvents.map(e => {
                         if (e.type === 'session') {
-                            return `<div class="cal-slot-event session-event" style="height:${e.durationSlots*28-4}px;">
-                                ✓ ${e.session.programName} · Wk${e.session.weekNum}
+                            const color = e.session.isCompleted ? '#2E7D32' : '#1a4a2a';
+                            return `<div class="cal-slot-event session-event"
+                                style="height:${e.durationSlots*28-4}px;background:${color};"
+                                draggable="true"
+                                ondragstart="handleSessionDragStart(event,'${e.session.progId}',${e.session.sessionNum})"
+                                onclick="goToProgram('${e.session.progId}');event.stopPropagation();">
+                                ${e.session.isCompleted?'✓':'📅'} ${e.session.programName} · Sn${e.session.sessionNum}
                             </div>`;
                         } else {
-                            const color = typeColors[e.pw.type] || '#888';
+                            const color = typeColors[e.pw.type]||'#888';
                             return `<div class="cal-slot-event plan-event"
                                 style="height:${e.durationSlots*28-4}px;background:${color}22;color:${color};border:1px solid ${color}44;"
                                 draggable="true"
@@ -768,20 +813,14 @@ function renderDayView() {
 
     html += `</div></div></div>`;
     document.getElementById('cal-content').innerHTML = html;
-
-    // Scroll to 7am
-    setTimeout(() => {
-        const wrap = document.getElementById('day-scroll');
-        if (wrap) wrap.scrollTop = 28 * 28; // slot 28 = 7am
-    }, 50);
+    setTimeout(() => { const wrap=document.getElementById('day-scroll'); if(wrap) wrap.scrollTop=28*28; }, 50);
 }
 
 // ── CHECKINS ──────────────────────────────────────
 async function loadCheckins() {
     try {
         const recs = await pb.collection('checkins').getList(1, 4, {
-            filter: `client = "${pb.authStore.model.id}"`,
-            sort: '-created'
+            filter: `client="${pb.authStore.model.id}"`, sort: '-created'
         });
         const el = document.getElementById('checkins-list');
         if (recs.items.length === 0) {
@@ -789,13 +828,10 @@ async function loadCheckins() {
             return;
         }
         el.innerHTML = recs.items.map(c => {
-            const date = new Date(c.created).toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
-            const avg = Math.round((c.energy + c.sleep + c.mindset + c.training + c.nutrition + c.incidental) / 6);
+            const date = new Date(c.created).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});
+            const avg = Math.round((c.energy+c.sleep+c.mindset+c.training+c.nutrition+c.incidental)/6);
             return `<div class="checkin-card">
-                <div class="checkin-date">
-                    <span>${date}</span>
-                    <span class="checkin-avg">avg ${avg}/10</span>
-                </div>
+                <div class="checkin-date"><span>${date}</span><span class="checkin-avg">avg ${avg}/10</span></div>
                 <div class="checkin-grid">
                     <div class="checkin-stat"><div class="checkin-stat-icon">⚡</div><div class="checkin-stat-val">${c.energy}</div><div class="checkin-stat-label">Energy</div></div>
                     <div class="checkin-stat"><div class="checkin-stat-icon">😴</div><div class="checkin-stat-val">${c.sleep}</div><div class="checkin-stat-label">Sleep</div></div>
@@ -804,8 +840,8 @@ async function loadCheckins() {
                     <div class="checkin-stat"><div class="checkin-stat-icon">🥗</div><div class="checkin-stat-val">${c.nutrition}</div><div class="checkin-stat-label">Nutrition</div></div>
                     <div class="checkin-stat"><div class="checkin-stat-icon">🚶</div><div class="checkin-stat-val">${c.incidental}</div><div class="checkin-stat-label">Activity</div></div>
                 </div>
-                ${c.WIN ? `<div class="checkin-text"><strong style="color:#4ade80;">WIN</strong> ${c.WIN}</div>` : ''}
-                ${c.WORK_ON ? `<div class="checkin-text"><strong style="color:#fb923c;">WORK ON</strong> ${c.WORK_ON}</div>` : ''}
+                ${c.WIN?`<div class="checkin-text"><strong style="color:#4ade80;">WIN</strong> ${c.WIN}</div>`:''}
+                ${c.WORK_ON?`<div class="checkin-text"><strong style="color:#fb923c;">WORK ON</strong> ${c.WORK_ON}</div>`:''}
             </div>`;
         }).join('');
     } catch(e) { console.error(e); }
