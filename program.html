@@ -350,10 +350,14 @@
         }
 
         // Fetch client's own programs + ALL other programs separately
-        const [ownRecs, otherRecs] = await Promise.all([
-            pb.collection('programs').getFullList({ filter: `client="${targetId}" && archived=false`, sort: 'name', requestKey: null }),
-            pb.collection('programs').getFullList({ filter: `client!="${targetId}" && archived=false`, sort: 'name', requestKey: null })
-        ]);
+        const [ownRecs, templateRecs, freeRecs] = await Promise.all([
+    pb.collection('programs').getFullList({ filter: `client="${targetId}" && archived=false`, sort: 'name', requestKey: null }),
+    pb.collection('programs').getFullList({ filter: 'is_template=true && is_free=false && archived=false', sort: 'name', requestKey: null }),
+    pb.collection('programs').getFullList({ filter: 'is_free=true && archived=false', sort: 'name', requestKey: null })
+]);
+
+allPrograms = ownRecs;
+premadePrograms = [...templateRecs, ...freeRecs];
 
         allPrograms = ownRecs;
         premadePrograms = otherRecs;
