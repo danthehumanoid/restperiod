@@ -655,7 +655,7 @@
 
                 html += `<div class="cal-day ${sessions.length?'has-session':''} ${planned.length?'has-planned':''} ${isToday?'today':''}" ondragover="event.preventDefault();this.style.outline='1px solid var(--brand-accent)'" ondragleave="this.style.outline=''" ondrop="handleDrop(event,'${dateStr}');this.style.outline=''">
                     <div class="cal-day-num" onclick="jumpToDay('${dateStr}')">${d}</div>
-                    ${sessions.map(s => `<div class="cal-session-dot">${s.programName} · Wk${s.weekNum}</div>`).join('')}
+                    ${sessions.map(s => `<div class="cal-session-pill" style="${s.isCompleted ? '' : 'background:#1a3a2a; border:1px solid #2E7D32; color:#4ade80;'}">${s.isCompleted ? '✓' : '📅'} ${s.programName} · Sn${s.sessionNum}</div>`).join('')}
                     ${planned.map(pw => `<div class="cal-session-dot planned" style="background:${typeColors[pw.type]||'#888'}33;color:${typeColors[pw.type]||'#888'};" draggable="true" ondragstart="handleDragStart(event,'${pw.id}')" onclick="openPlanModal('${dateStr}','${pw.id}');event.stopPropagation();">${typeEmoji[pw.type]||'⚡'} ${pw.title}</div>`).join('')}
                     <button class="add-plan-btn" onclick="openPlanModal('${dateStr}')" title="Add planned workout">＋</button>
                 </div>`;
@@ -689,7 +689,7 @@
                         <button class="week-add-btn" onclick="openPlanModal('${dateStr}')">+ Plan</button>
                     </div>
                     ${sessions.length===0&&planned.length===0?`<div class="cal-empty">—</div>`:''}
-                    ${sessions.map(s=>`<div class="cal-week-session"><div class="cal-week-session-name">${s.programName}</div><div class="cal-week-session-sub">Week ${s.weekNum} · ${s.pct}% complete</div></div>`).join('')}
+                    ${sessions.map(s=>`<div class="cal-wday-session" style="${s.isCompleted ? '' : 'background:#0a2a1a; border-color:#2E7D32;'}"><div class="cal-wday-prog" style="${s.isCompleted ? '' : 'color:#4ade80;'}">${s.isCompleted ? '✓' : '📅'} ${s.programName}</div><div class="cal-wday-sub">Session ${s.sessionNum}${s.isCompleted ? ' · '+s.pct+'% complete' : ' · scheduled'}</div></div>`).join('')}
                     ${planned.map(pw=>`<div class="cal-week-session planned" draggable="true" ondragstart="handleDragStart(event,'${pw.id}')" onclick="openPlanModal('${dateStr}','${pw.id}')"><div class="cal-week-session-name planned" style="color:${typeColors[pw.type]||'#888'}">${typeEmoji[pw.type]||'⚡'} ${pw.title}${pw.time?' · '+pw.time:''}</div><div class="cal-week-session-sub">${pw.type}${pw.repeat!=='none'?' · repeating':''}</div></div>`).join('')}
                 </div>`;
             });
