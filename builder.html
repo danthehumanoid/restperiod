@@ -282,13 +282,13 @@
     let schedDays = [];
 
     const filterGroups = {
-        "MOVEMENT": { "PUSH": "PUSH", "PULL": "PULL", "SQUAT": "SQUAT", "HINGE": "HINGE" },
-        "ANGLE": { "HOR": "HORIZONTAL", "VER": "VERTICAL" },
-        "LIMBS": { "DA": "DOUBLE ARM", "DL": "DOUBLE LEG", "SA": "SINGLE ARM", "SL": "SINGLE LEG" },
-        "EQUIPMENT": { "BB": "BARBELL", "DB": "DUMBBELL", "BW": "BODYWEIGHT", "BND": "BAND" },
-        "TYPE": { "MOB": "MOBILITY", "PRIMER": "PRIMER" },
-        "BODY PART": { "UB": "UPPER BODY", "LB": "LOWER BODY" }
-    };
+    "MOVEMENT":  { "PUSH":"PUSH","PULL":"PULL","SQUAT":"SQUAT","HINGE":"HINGE","CORE":"CORE","PLYO":"PLYO","RUN":"RUN","MOBILITY":"MOBILITY","PRIMER":"PRIMER","RECOVERY":"RECOVERY","SKILLS":"SKILLS" },
+    "DIRECTION": { "HORIZONTAL":"HORIZONTAL","VERTICAL":"VERTICAL","LATERAL":"LATERAL","ANTERIOR":"ANTERIOR","POSTERIOR":"POSTERIOR","SIDE":"SIDE","MIXED":"MIXED","TOTAL-CORE-STABILITY":"TOTAL CORE STABILITY" },
+    "LIMBS":     { "DOUBLE-ARM":"DOUBLE ARM","SINGLE-ARM":"SINGLE ARM","DOUBLE-LEG":"DOUBLE LEG","SINGLE-LEG":"SINGLE LEG","SPLIT-STANCE":"SPLIT STANCE","FULL-BODY":"FULL BODY" },
+    "BODY PART": { "UPPER-BODY":"UPPER BODY","LOWER-BODY":"LOWER BODY" },
+    "JOINT":     { "FOOT":"FOOT","ANKLE":"ANKLE","KNEE":"KNEE","HIP":"HIP","SPINE":"SPINE","SHOULDER":"SHOULDER","ELBOW":"ELBOW","WRIST":"WRIST","NECK":"NECK" },
+    "EQUIPMENT": { "BODYWEIGHT":"BODYWEIGHT","DUMBBELL":"DUMBBELL","BARBELL":"BARBELL","KETTLEBELL":"KETTLEBELL","BAND":"BAND","WEIGHTED":"WEIGHTED","TRAP-BAR":"TRAP BAR" }
+};
 
     window.onload = async () => {
         if (!pb.authStore.isValid) window.location.href = 'index.html';
@@ -543,11 +543,11 @@
     }
 
     function toggleFilter(f) {
-        const btn = document.getElementById(`f-${f}`);
-        if (activeFilters.includes(f)) { activeFilters = activeFilters.filter(i => i !== f); btn.classList.remove('active'); }
-        else { activeFilters.push(f); btn.classList.add('active'); }
-        runLibrarySearch();
-    }
+    const btn = document.getElementById(`f-${f}`);
+    if (activeFilters.includes(f)) { activeFilters = activeFilters.filter(i => i !== f); btn.classList.remove('active'); }
+    else { activeFilters.push(f); btn.classList.add('active'); }
+    runLibrarySearch();
+}
 
     // ── HISTORY (UNDO/REDO) ───────────────────────────
     function saveHistory() {
@@ -684,14 +684,17 @@
         const res = exerciseDatabase
             .filter(e => {
                 const textMatch = e.title.toLowerCase().includes(q) || e.searchStr.toLowerCase().includes(q);
-                const filterMatch = activeFilters.every(f => e.searchStr.toUpperCase().includes(f));
+                const filterMatch = activeFilters.every(f => {
+    const regex = new RegExp(`\\b${f.replace(/-/g,'[- ]')}\\b`, 'i');
+    return regex.test(e.searchStr);
+});
                 return textMatch && filterMatch;
             })
             .sort((a, b) => a.title.localeCompare(b.title)); // ← alphabetised
 
         document.getElementById('lib-results').innerHTML = res.slice(0, 60).map(e => `
             <div class="search-result">
-                <div class="res-title">${e.title.replace(/^([A-Z0-9-]{2,}\s*)+/, '')}</div>
+                <div class="res-title">${cleanExTitle(e.title)}</div>
                 <div class="res-actions">
                     <button class="add-small" onclick="addEx('${e.title.replace(/'/g,"\\'")}','warmup')">+ Warm Up</button>
                     <button class="add-small" onclick="addEx('${e.title.replace(/'/g,"\\'")}','exercises')">+ Workout</button>
