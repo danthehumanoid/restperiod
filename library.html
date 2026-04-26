@@ -439,7 +439,7 @@ function extractDisplayTags(searchStr) {
     const movementTags = filterGroups.movement;
     return found.slice(0, 6).map(tag => {
         const isNoVideo = tag === 'NO-VIDEO';
-        return `<span class="card-tag ${isMovement?'movement':''} ${isNoVideo?'no-video-tag':''}">${tag.replace(/-/g,' ')}</span>`;
+return `<span class="card-tag ${isNoVideo?'no-video-tag':''}">${tag.replace(/-/g,' ')}</span>`;
     }).join('');
 }
 
