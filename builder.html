@@ -258,11 +258,11 @@ const pb = new PocketBase('https://restperiod.org');
 // ── KNOWN TAGS & HELPERS ──────────────────────────
 const KNOWN_TAGS = [
     'PUSH','PULL','SQUAT','HINGE','CORE','PLYO','RUN','MOBILITY','PRIMER','RECOVERY','SKILLS',
-    'HORIZONTAL','VERTICAL','LATERAL','ANTERIOR','POSTERIOR','SIDE','MIXED','TOTAL-CORE-STABILITY',
-    'DOUBLE-ARM','SINGLE-ARM','DOUBLE-LEG','SINGLE-LEG','SPLIT-STANCE','FULL-BODY',
-    'UPPER-BODY','LOWER-BODY',
-    'FOOT','ANKLE','KNEE','HIP','SPINE','SHOULDER','ELBOW','WRIST','NECK',
-    'BODYWEIGHT','DUMBBELL','BARBELL','KETTLEBELL','BAND','WEIGHTED','TRAP-BAR'
+    // old short codes still present in some titles
+    'FB','UB','LB','DA','SA','DL','SL','SS','HOR','VER','LAT','ANT','POS','SDE','TCS','MXD',
+    'BW','BB','DB','KB','BND','WGT','TBP','TPB','SPN','SHD','HIP','ANK','KNE','FOT','ELB','WRT','NCK','NEK',
+    'HGE','SQT','PSH','PUL','LGE','TWT','REC','DEC','TIS',
+    'FULL-BODY','UPPER-BODY','LOWER-BODY',
 ];
 
 const filterGroups = {
