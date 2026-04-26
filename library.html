@@ -346,19 +346,16 @@ function resetAndRender() {
     const q = document.getElementById('search-input').value.toLowerCase().trim();
 
     filteredList = allExercises.filter(e => {
-        const search = (e.searchStr || '').toUpperCase();
-        const title = (e.title || '').toLowerCase();
-
-        const matchesText = !q || title.includes(q) || search.toLowerCase().includes(q);
-
-        const matchesTags = activeFilters.size === 0 || Array.from(activeFilters).every(tag => {
-            const regex = new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i');
-            return regex.test(search);
-        });
-
-        return matchesText && matchesTags;
+    const search = (e.searchStr || '').toUpperCase();
+    const title = (e.title || '').toLowerCase();
+    const matchesText = !q || title.includes(q) || search.toLowerCase().includes(q);
+    const matchesTags = activeFilters.size === 0 || Array.from(activeFilters).every(tag => {
+        const regex = new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i');
+        return regex.test(search);
     });
-
+    return matchesText && matchesTags;
+});
+filteredList.sort((a, b) => cleanTitle(a.title).localeCompare(cleanTitle(b.title)));
     document.getElementById('video-grid').innerHTML = '';
     document.getElementById('results-count').innerHTML =
         `<span>${filteredList.length}</span> exercise${filteredList.length !== 1 ? 's' : ''} found`;
