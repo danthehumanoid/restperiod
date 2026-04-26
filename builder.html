@@ -7,19 +7,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
     <script src="exercises.js"></script>
-    
     <style>
-        .search-result { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #222; transition: 0.2s; }
-        .search-result:hover { background: rgba(255,255,255,0.05); }
-        .res-title { font-size: 0.85rem; font-weight: 600; color: #E0F7FA; flex: 1; }
-        .add-small { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); padding: 4px 8px; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 3px; margin-left: 5px; transition: 0.2s; }
-        .add-small:hover { background: var(--brand-accent); color: #000; }
-        .filter-grid { display: flex; flex-direction: column; gap: 12px; margin: 15px 0; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 6px; border: 1px solid #222; }
-        .filter-btn { padding: 6px 12px; background: transparent; border: 1px solid var(--brand-blue); color: var(--brand-blue); border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
-        .filter-btn.active { background: var(--brand-blue); color: white; box-shadow: 0 0 8px rgba(0,123,255,0.5); }
-
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
-        :root { --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA; --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24; --input-bg: #002840; --brand-blue: #007bff; }
+        :root {
+            --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA;
+            --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24; --input-bg: #002840;
+        }
         body { margin: 0; font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); padding-bottom: 90px; overflow-x: hidden; }
         * { box-sizing: border-box; }
 
@@ -35,63 +28,71 @@
         h3 { color: var(--brand-accent); text-transform: uppercase; font-family: 'Montserrat'; margin-top: 0; letter-spacing: 1px; }
 
         .client-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .client-table th { text-align: left; color: #666; font-size: 0.7rem; padding: 10px; border-bottom: 1px solid #333; }
         .client-table td { padding: 12px 10px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
         .client-table tr:hover { background: #002840; }
 
-        input, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #004d7a; color: white; border-radius: 4px; margin-bottom: 10px; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #004d7a; color: white; border-radius: 4px; margin-bottom: 10px; font-size: 0.9rem; font-family: inherit; }
         label { font-size: 0.65rem; color: #aaa; text-transform: uppercase; display: block; margin-bottom: 4px; font-weight: 800; }
 
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 5px; text-align: center; transition: 0.2s; font-family: 'Montserrat'; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 5px; transition: 0.2s; font-family: 'Montserrat'; font-size: 0.8rem; }
         .btn-green { background: var(--brand-secondary); color: white; }
         .btn-green:hover { background: #388E3C; }
         .btn-outline { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); }
         .btn-outline:hover { background: var(--brand-accent); color: #000; }
 
-        .section-divider { background: #000; padding: 12px 15px; border-radius: 4px; margin: 20px 0 10px 0; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--brand-accent); cursor: pointer; transition: 0.2s; }
-        .section-divider:hover { background: #050505; }
-
-        .exercise-item { background: #001a2c; padding: 15px; border-radius: 6px; border: 1px solid #333; margin-bottom: 15px; position: relative; transition: transform 0.2s, border-color 0.2s; cursor: grab; }
-        .exercise-item:active { cursor: grabbing; transform: scale(1.01); border-color: var(--brand-accent); }
-
-        .move-controls { display: flex; flex-direction: column; gap: 4px; margin-right: 12px; align-items: center; }
+        .section-divider { background: #000; padding: 12px 15px; border-radius: 4px; margin: 20px 0 10px 0; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--brand-accent); cursor: pointer; }
+        .exercise-item { background: #001a2c; padding: 15px; border-radius: 6px; border: 1px solid #333; margin-bottom: 15px; cursor: grab; }
+        .exercise-item:active { cursor: grabbing; border-color: var(--brand-accent); }
+        .move-controls { display: flex; flex-direction: column; gap: 4px; margin-right: 12px; }
         .move-arrow { cursor: pointer; color: var(--brand-accent); font-size: 0.9rem; opacity: 0.5; transition: 0.2s; }
-        .move-arrow:hover { opacity: 1; transform: scale(1.2); }
-
-        .exercise-name-title { font-size: 1.15rem; color: var(--brand-accent); font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; }
-
+        .move-arrow:hover { opacity: 1; }
+        .exercise-name-title { font-size: 1.1rem; color: var(--brand-accent); font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; }
         .metrics-grid { display: grid; grid-template-columns: 0.6fr 1fr 1fr 1fr 1fr 0.4fr; gap: 5px; margin-top: 10px; }
         .metric-unit { display: flex; flex-direction: column; align-items: center; }
-        .metric-unit label { font-size: 0.5rem; margin-bottom: 2px; color: var(--brand-accent); font-weight: 800; }
+        .metric-unit label { font-size: 0.5rem; margin-bottom: 2px; color: var(--brand-accent); }
         .metric-unit input { font-size: 0.85rem; text-align: center; background: #000; border: 1px solid #004d7a; width: 100%; padding: 6px; color: white; border-radius: 4px; }
 
         .tab-container { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; }
-        .tab { padding: 10px 18px; background: #001a2c; border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.85rem; color: #888; transition: 0.2s; font-weight: 700; white-space: nowrap; }
-        .tab.active { background: var(--brand-accent); color: black; font-weight: 800; box-shadow: 0 0 10px var(--brand-accent); }
+        .tab { padding: 10px 18px; background: #001a2c; border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.8rem; color: #888; transition: 0.2s; font-weight: 700; white-space: nowrap; }
+        .tab.active { background: var(--brand-accent); color: black; font-weight: 800; }
 
         .modal { display: none; position: fixed; z-index: 5000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); overflow: auto; }
-        .modal-content { background: var(--card-bg); margin: 5% auto; padding: 30px; border: 1px solid var(--brand-accent); width: 95%; max-width: 500px; border-radius: 12px; text-align: center; }
+        .modal-content { background: var(--card-bg); margin: 5% auto; padding: 30px; border: 1px solid var(--brand-accent); width: 95%; max-width: 520px; border-radius: 12px; }
+        .modal-content h3 { text-align: center; }
 
         .history-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #222; transition: 0.2s; }
         .history-row:hover { background: rgba(255,255,255,0.03); }
 
-        /* SESSION SCHEDULER */
+        /* SCHEDULER */
         .scheduler-panel { background: #050d12; border: 1px solid #1a2a35; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
         .scheduler-title { font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-        .scheduler-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .scheduler-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .day-btn { padding: 6px 4px; background: transparent; border: 1px solid #333; color: #555; border-radius: 4px; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.2s; font-family: 'Montserrat'; text-transform: uppercase; }
         .day-btn.active { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
         .freq-btn { padding: 8px; background: transparent; border: 1px solid #333; color: #555; border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: 0.2s; font-family: 'Montserrat'; text-transform: uppercase; text-align: center; }
         .freq-btn.active { background: var(--brand-secondary); color: white; border-color: var(--brand-secondary); }
         .sched-apply-btn { width: 100%; padding: 10px; background: var(--brand-secondary); color: white; border: none; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; margin-top: 4px; }
-        .sched-apply-btn:hover { background: #388E3C; }
+
+        /* LIBRARY FILTERS */
+        .lib-filter-btn { padding: 4px 10px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.2s; font-family: 'Montserrat'; text-transform: uppercase; }
+        .lib-filter-btn:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+        .lib-filter-btn.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
+        .lib-filter-group-title { font-size: 0.55rem; color: var(--brand-accent); font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; font-family: 'Montserrat'; }
+
+        .search-result { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid #1a2a35; transition: 0.2s; }
+        .search-result:hover { background: rgba(255,255,255,0.04); }
+        .res-title { font-size: 0.82rem; font-weight: 600; color: #E0F7FA; flex: 1; line-height: 1.3; }
+        .add-small { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); padding: 4px 8px; font-size: 0.58rem; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 3px; margin-left: 4px; transition: 0.2s; white-space: nowrap; }
+        .add-small:hover { background: var(--brand-accent); color: #000; }
+
+        /* MODAL TAGS */
+        .modal-filter-btn { padding: 4px 10px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.2s; font-family: 'Montserrat'; text-transform: uppercase; }
+        .modal-filter-btn.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
     </style>
 </head>
 <body>
 
 <div class="nav-top">
-    <div style="font-weight:800; font-size:1.4rem;">REST <span style="color:var(--brand-accent)">PERIOD</span></div>
+    <div style="font-weight:800; font-size:1.4rem; font-family:'Montserrat';">REST <span style="color:var(--brand-accent)">PERIOD</span></div>
     <div class="nav-links">
         <a href="dashboard.html">DASHBOARD</a>
         <a href="builder.html" class="active">BUILDER</a>
@@ -113,12 +114,10 @@
         <div class="card">
             <label>Active Client</label>
             <select id="client-select" onchange="loadProgramHistory()"><option value="">-- Select --</option></select>
-
             <div id="history-panel" style="display:none; margin-top:20px;">
                 <button class="btn btn-green" onclick="startNewProgram()">+ CREATE NEW TRAINING BLOCK</button>
                 <div id="history-list" style="margin-top:10px;"></div>
             </div>
-
             <div id="program-info-area" style="margin-top:20px; display:none;">
                 <label>Block Name</label>
                 <input type="text" id="prog-name" placeholder="e.g. Hypertrophy Phase 1" oninput="triggerAutoSave()">
@@ -128,28 +127,20 @@
         </div>
 
         <div class="card" id="schedule-card" style="display:none;">
-
-            <!-- SESSION SCHEDULER -->
-            <div class="scheduler-panel" id="scheduler-panel">
+            <div class="scheduler-panel">
                 <div class="scheduler-title">📅 Session Scheduler</div>
-                <div class="scheduler-grid">
-                    <div>
-                        <label>Number of Sessions</label>
-                        <input type="number" id="sched-count" value="6" min="1" max="52" style="margin-bottom:0;">
-                    </div>
-                    <div>
-                        <label>Start Date</label>
-                        <input type="date" id="sched-start" style="margin-bottom:0;">
-                    </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                    <div><label>Number of Sessions</label><input type="number" id="sched-count" value="6" min="1" max="52" style="margin-bottom:0;"></div>
+                    <div><label>Start Date</label><input type="date" id="sched-start" style="margin-bottom:0;"></div>
                 </div>
                 <label style="margin-top:10px;">Frequency</label>
-                <div class="scheduler-grid-3" id="freq-btns">
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px;">
                     <button class="freq-btn active" id="freq-1" onclick="setFreq(1)">1× / week</button>
                     <button class="freq-btn" id="freq-2" onclick="setFreq(2)">2× / week</button>
                     <button class="freq-btn" id="freq-3" onclick="setFreq(3)">3× / week</button>
                 </div>
                 <label id="day-picker-label">Day of Week</label>
-                <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:10px;" id="day-picker">
+                <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:10px;">
                     <button class="day-btn" data-day="0" onclick="toggleDay(0)">Mon</button>
                     <button class="day-btn" data-day="1" onclick="toggleDay(1)">Tue</button>
                     <button class="day-btn" data-day="2" onclick="toggleDay(2)">Wed</button>
@@ -163,12 +154,11 @@
 
             <div class="tab-container" id="week-tabs-container"></div>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
                 <button class="btn btn-outline" onclick="undo()"><i class="fas fa-undo"></i> Undo</button>
                 <button class="btn btn-outline" onclick="redo()"><i class="fas fa-redo"></i> Redo</button>
             </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
                 <button class="btn btn-outline" style="font-size:0.7rem;" onclick="duplicateSession()">Copy Prev Session</button>
                 <button class="btn btn-outline" style="font-size:0.7rem; border-color:#ff4d4d; color:#ff4d4d;" onclick="deleteSession()">Delete Session</button>
             </div>
@@ -193,7 +183,7 @@
                     <input type="checkbox" id="prog-is-free" style="width:auto;margin:0;" onchange="triggerAutoSave()"> Free / Public
                 </label>
             </div>
-            <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:10px;">
+            <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:10px;">
                 <button class="btn btn-green" onclick="saveProgramToDB()">💾 PUBLISH PROGRAM</button>
                 <button class="btn btn-outline" onclick="saveAsTemplate()">🧬 TEMPLATE</button>
             </div>
@@ -213,25 +203,21 @@
                     <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:0.6rem;" onclick="openModal('addExModal')">+ NEW TO LIB</button>
                 </div>
                 <label>📂 Load Full Training Block</label>
-                <select id="full-template-select" onchange="loadFullProgramTemplate(this.value)" style="border-color:var(--brand-secondary); margin-bottom:20px;">
-                    <option value="">-- Choose a Training Block --</option>
-                </select>
+                <select id="full-template-select" onchange="loadFullProgramTemplate(this.value)" style="border-color:var(--brand-secondary); margin-bottom:20px;"><option value="">-- Choose a Training Block --</option></select>
                 <label>Load Section Template</label>
                 <div style="display:flex; gap:8px; align-items:center; margin-bottom:15px;">
-                    <select id="section-template-select" onchange="loadSectionTemplate(this.value)" style="margin-bottom:0;">
-                        <option value="">-- Choose a template --</option>
-                    </select>
+                    <select id="section-template-select" onchange="loadSectionTemplate(this.value)" style="margin-bottom:0;"><option value="">-- Choose a template --</option></select>
                     <i class="fas fa-trash-alt" style="color:#ff4d4d; cursor:pointer;" onclick="deleteSectionTemplate()"></i>
                 </div>
-                <input type="text" id="lib-search-text" placeholder="Search exercises..." onkeyup="runLibrarySearch()">
-                <div class="filter-grid" id="filter-container"></div>
-                <div id="lib-results" style="max-height:600px; overflow-y:auto; border:1px solid #333; margin-top:10px;"></div>
+                <input type="text" id="lib-search-text" placeholder="Search exercises..." oninput="runLibrarySearch()">
+                <div id="filter-container" style="background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; border:1px solid #222; margin-bottom:10px;"></div>
+                <div id="lib-results" style="max-height:600px; overflow-y:auto; border:1px solid #1a2a35; border-radius:6px;"></div>
             </div>
 
             <div id="review-panel" style="display:none;">
                 <div style="margin-bottom:14px;">
-                    <label style="font-size:0.6rem; color:#aaa; font-weight:800; text-transform:uppercase; display:block; margin-bottom:6px;">Review Session</label>
-                    <select id="review-week-select" onchange="renderReview()" style="width:100%; background:#050d12; border:1px solid #333; color:white; padding:8px; border-radius:4px; font-size:0.85rem;"></select>
+                    <label>Review Session</label>
+                    <select id="review-week-select" onchange="renderReview()" style="background:#050d12; border:1px solid #333; color:white; padding:8px; border-radius:4px;"></select>
                 </div>
                 <div id="review-session-info" style="margin-bottom:14px;"></div>
                 <div id="review-content"><div style="color:#555; font-size:0.85rem; padding:20px; text-align:center;">Select a client and session to review</div></div>
@@ -241,733 +227,672 @@
 </div>
 
 <!-- MODALS -->
-<div id="addClientModal" class="modal"><div class="modal-content">
-    <span onclick="closeModal('addClientModal')" style="float:right; cursor:pointer;">&times;</span>
-    <h3>CREATE CLIENT ACCOUNT</h3>
-    <label>Name</label><input type="text" id="new-client-name">
-    <label>Email</label><input type="email" id="new-client-email">
-    <label>Password</label><input type="text" id="new-client-pass">
-    <button class="btn btn-green" onclick="saveNewClient()">CREATE CLIENT</button>
-</div></div>
+<div id="addClientModal" class="modal">
+    <div class="modal-content">
+        <span onclick="closeModal('addClientModal')" style="float:right; cursor:pointer; font-size:1.5rem;">&times;</span>
+        <h3>CREATE CLIENT ACCOUNT</h3>
+        <label>Name</label><input type="text" id="new-client-name">
+        <label>Email</label><input type="email" id="new-client-email">
+        <label>Password</label><input type="text" id="new-client-pass">
+        <button class="btn btn-green" onclick="saveNewClient()">CREATE CLIENT</button>
+    </div>
+</div>
 
 <div id="addExModal" class="modal">
     <div class="modal-content">
-        <span onclick="closeModal('addExModal')" style="float:right; cursor:pointer;">&times;</span>
+        <span onclick="closeModal('addExModal')" style="float:right; cursor:pointer; font-size:1.5rem;">&times;</span>
         <h3>ADD NEW TO VAULT</h3>
         <label>Exercise Name</label>
-        <input type="text" id="new-ex-name">
-        <label>Select Tags</label>
-        <div id="modal-tag-groups" style="background:rgba(0,0,0,0.4); padding:10px; border-radius:4px; margin-bottom:10px; display:flex; flex-wrap:wrap; gap:5px; text-align:left;"></div>
-        <label>Custom Tags (comma separated)</label>
-        <input type="text" id="new-ex-custom-tags" placeholder="e.g. KETTLEBELL, CORE, ADVANCED">
-        <label>Video URL</label>
-        <input type="text" id="new-ex-video" placeholder="Leave blank to auto-tag NO-VIDEO">
+        <input type="text" id="new-ex-name" placeholder="e.g. Bench press eccentric">
+        <label>Tags</label>
+        <div id="modal-tag-groups" style="background:rgba(0,0,0,0.4); padding:12px; border-radius:6px; margin-bottom:10px; text-align:left; max-height:300px; overflow-y:auto;"></div>
+        <label>Video URL <span style="color:#555; font-size:0.6rem;">(optional — leave blank for NO-VIDEO tag)</span></label>
+        <input type="text" id="new-ex-video" placeholder="YouTube URL or leave blank">
         <button class="btn btn-green" onclick="saveNewExerciseToLib()">SAVE TO DATABASE</button>
     </div>
 </div>
 
 <script>
-    const pb = new PocketBase('https://restperiod.org');
-    let modalActiveTags = [];
-    let programData = [{sessionNum:1, warmup:[], exercises:[]}];
-    let currentWeekIndex = 0;
-    let editingProgramId = null;
-    let activeFilters = [];
-    let warmupCollapsed = false;
-    let draggedItemIndex = null;
-    let draggedType = null;
-    let history = [];
-    let historyIndex = -1;
-    let schedFreq = 1;
-    let schedDays = [];
+const pb = new PocketBase('https://restperiod.org');
 
-    const filterGroups = {
-    "MOVEMENT":  { "PUSH":"PUSH","PULL":"PULL","SQUAT":"SQUAT","HINGE":"HINGE","CORE":"CORE","PLYO":"PLYO","RUN":"RUN","MOBILITY":"MOBILITY","PRIMER":"PRIMER","RECOVERY":"RECOVERY","SKILLS":"SKILLS" },
-    "DIRECTION": { "HORIZONTAL":"HORIZONTAL","VERTICAL":"VERTICAL","LATERAL":"LATERAL","ANTERIOR":"ANTERIOR","POSTERIOR":"POSTERIOR","SIDE":"SIDE","MIXED":"MIXED","TOTAL-CORE-STABILITY":"TOTAL CORE STABILITY" },
-    "LIMBS":     { "DOUBLE-ARM":"DOUBLE ARM","SINGLE-ARM":"SINGLE ARM","DOUBLE-LEG":"DOUBLE LEG","SINGLE-LEG":"SINGLE LEG","SPLIT-STANCE":"SPLIT STANCE","FULL-BODY":"FULL BODY" },
-    "BODY PART": { "UPPER-BODY":"UPPER BODY","LOWER-BODY":"LOWER BODY" },
-    "JOINT":     { "FOOT":"FOOT","ANKLE":"ANKLE","KNEE":"KNEE","HIP":"HIP","SPINE":"SPINE","SHOULDER":"SHOULDER","ELBOW":"ELBOW","WRIST":"WRIST","NECK":"NECK" },
-    "EQUIPMENT": { "BODYWEIGHT":"BODYWEIGHT","DUMBBELL":"DUMBBELL","BARBELL":"BARBELL","KETTLEBELL":"KETTLEBELL","BAND":"BAND","WEIGHTED":"WEIGHTED","TRAP-BAR":"TRAP BAR" }
+// ── KNOWN TAGS & HELPERS ──────────────────────────
+const KNOWN_TAGS = [
+    'PUSH','PULL','SQUAT','HINGE','CORE','PLYO','RUN','MOBILITY','PRIMER','RECOVERY','SKILLS',
+    'HORIZONTAL','VERTICAL','LATERAL','ANTERIOR','POSTERIOR','SIDE','MIXED','TOTAL-CORE-STABILITY',
+    'DOUBLE-ARM','SINGLE-ARM','DOUBLE-LEG','SINGLE-LEG','SPLIT-STANCE','FULL-BODY',
+    'UPPER-BODY','LOWER-BODY',
+    'FOOT','ANKLE','KNEE','HIP','SPINE','SHOULDER','ELBOW','WRIST','NECK',
+    'BODYWEIGHT','DUMBBELL','BARBELL','KETTLEBELL','BAND','WEIGHTED','TRAP-BAR'
+];
+
+const filterGroups = {
+    'MOVEMENT':  ['PUSH','PULL','SQUAT','HINGE','CORE','PLYO','RUN','MOBILITY','PRIMER','RECOVERY','SKILLS'],
+    'DIRECTION': ['HORIZONTAL','VERTICAL','LATERAL','ANTERIOR','POSTERIOR','SIDE','MIXED','TOTAL-CORE-STABILITY'],
+    'LIMBS':     ['DOUBLE-ARM','SINGLE-ARM','DOUBLE-LEG','SINGLE-LEG','SPLIT-STANCE','FULL-BODY'],
+    'BODY PART': ['UPPER-BODY','LOWER-BODY'],
+    'JOINT':     ['FOOT','ANKLE','KNEE','HIP','SPINE','SHOULDER','ELBOW','WRIST','NECK'],
+    'EQUIPMENT': ['BODYWEIGHT','DUMBBELL','BARBELL','KETTLEBELL','BAND','WEIGHTED','TRAP-BAR']
 };
 
-    window.onload = async () => {
-        if (!pb.authStore.isValid) window.location.href = 'index.html';
-        // Default start date to today
-        document.getElementById('sched-start').value = new Date().toISOString().split('T')[0];
-        setupFilters();
-        await loadDashboard();
-        await loadCustomExercises();
-        await fetchSectionTemplates();
-        runLibrarySearch();
-    };
+function cleanExTitle(title) {
+    const tagPattern = new RegExp(`^((?:${KNOWN_TAGS.map(t => t.replace(/-/g,'[- ]')).join('|')})\\s+)+`, 'i');
+    return title.replace(tagPattern, '').trim() || title;
+}
 
-    // ── SCHEDULER ─────────────────────────────────────
-    function setFreq(n) {
-        schedFreq = n;
-        [1,2,3].forEach(i => {
-            document.getElementById(`freq-${i}`).classList.toggle('active', i === n);
-        });
-        // Reset day selection when frequency changes
-        schedDays = [];
-        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('day-picker-label').textContent =
-            n === 1 ? 'Day of Week' : `Days of Week (pick ${n})`;
+// ── STATE ─────────────────────────────────────────
+let modalActiveTags = [];
+let programData = [{sessionNum:1, warmup:[], exercises:[]}];
+let currentWeekIndex = 0;
+let editingProgramId = null;
+let activeFilters = new Set();
+let warmupCollapsed = false;
+let draggedItemIndex = null;
+let draggedType = null;
+let undoHistory = [];
+let historyIndex = -1;
+let schedFreq = 1;
+let schedDays = [];
+let autoSaveTimer = null;
+
+// ── INIT ──────────────────────────────────────────
+window.onload = async () => {
+    if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
+    document.getElementById('sched-start').value = new Date().toISOString().split('T')[0];
+    setupFilterUI();
+    await loadDashboard();
+    await loadCustomExercises();
+    await fetchSectionTemplates();
+    runLibrarySearch();
+};
+
+// ── FILTER UI ─────────────────────────────────────
+function setupFilterUI() {
+    const container = document.getElementById('filter-container');
+    let html = '';
+    Object.entries(filterGroups).forEach(([groupName, tags]) => {
+        html += `<div style="margin-bottom:10px;">
+            <div class="lib-filter-group-title">${groupName}</div>
+            <div style="display:flex; flex-wrap:wrap; gap:5px;">
+                ${tags.map(tag =>
+                    `<button class="lib-filter-btn" data-tag="${tag}" onclick="toggleFilter('${tag}')">${tag.replace(/-/g,' ')}</button>`
+                ).join('')}
+            </div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+function toggleFilter(tag) {
+    if (activeFilters.has(tag)) {
+        activeFilters.delete(tag);
+    } else {
+        activeFilters.add(tag);
     }
-
-    function toggleDay(d) {
-        const btn = document.querySelector(`.day-btn[data-day="${d}"]`);
-        if (schedDays.includes(d)) {
-            schedDays = schedDays.filter(x => x !== d);
-            btn.classList.remove('active');
-        } else {
-            if (schedDays.length >= schedFreq) {
-                // Deselect oldest
-                const old = schedDays.shift();
-                document.querySelector(`.day-btn[data-day="${old}"]`).classList.remove('active');
-            }
-            schedDays.push(d);
-            btn.classList.add('active');
-        }
-    }
-
-    function applySchedule() {
-        const count = parseInt(document.getElementById('sched-count').value) || 6;
-        const startStr = document.getElementById('sched-start').value;
-        if (!startStr) return alert('Please set a start date.');
-        if (schedDays.length === 0) return alert('Please select at least one day of the week.');
-
-        const startDate = new Date(startStr + 'T12:00:00');
-        // Sort days Mon=0 ... Sun=6
-        const sortedDays = [...schedDays].sort((a,b) => a - b);
-
-        // Generate session dates
-        const dates = [];
-        let cursor = new Date(startDate);
-        // Rewind cursor to Monday of start week
-        const startDow = (cursor.getDay() + 6) % 7; // Mon=0
-        cursor.setDate(cursor.getDate() - startDow);
-
-        while (dates.length < count) {
-            for (const day of sortedDays) {
-                if (dates.length >= count) break;
-                const d = new Date(cursor);
-                d.setDate(cursor.getDate() + day);
-                if (d >= startDate) {
-                    dates.push(d.toISOString().split('T')[0]);
-                }
-            }
-            cursor.setDate(cursor.getDate() + 7);
-        }
-
-        // Preserve existing exercise data where sessions already exist
-        const newData = dates.map((dateStr, i) => {
-            const existing = programData[i];
-            return {
-                sessionNum: i + 1,
-                scheduledDate: dateStr,
-                sessionDate: existing?.sessionDate || null,
-                warmup: existing?.warmup || [],
-                exercises: existing?.exercises || []
-            };
-        });
-
-        programData = newData;
-        saveHistory();
-        renderTabs();
-        renderLists();
-
-        // Show confirmation
-        const btn = document.querySelector('.sched-apply-btn');
-        const orig = btn.textContent;
-        btn.textContent = `✓ ${count} Sessions Generated`;
-        btn.style.background = '#26C6DA';
-        btn.style.color = '#000';
-        setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 2500);
-    }
-
-    // ── DASHBOARD & ROSTER ────────────────────────────
-    async function loadDashboard() {
-        try {
-            const users = await pb.collection('users').getList(1, 100, { filter: 'role="client"', sort: 'name' });
-            const tableBody = document.getElementById('client-table-body');
-            const dropdown = document.getElementById('client-select');
-            dropdown.innerHTML = '<option value="">-- Select Client --</option>' +
-                users.items.map(u => `<option value="${u.id}">${u.name}</option>`).join('');
-            tableBody.innerHTML = users.items.map(u => `
-                <tr onclick="selectClient('${u.id}')">
-                    <td>${u.name}</td>
-                    <td style="text-align:right; color:#555;">Active</td>
-                </tr>`).join('');
-        } catch(e) { console.error("Roster Error:", e); }
-    }
-
-    function selectClient(id) {
-        document.getElementById('client-select').value = id;
-        loadProgramHistory();
-    }
-
-    async function loadProgramHistory() {
-        const cid = document.getElementById('client-select').value;
-        if (!cid) return;
-        document.getElementById('history-panel').style.display = 'block';
-        try {
-            const progs = await pb.collection('programs').getList(1, 50, {
-                filter: `client="${cid}" && archived=false`, sort: '-created'
-            });
-            document.getElementById('history-list').innerHTML = progs.items.map(p => `
-                <div class="history-row">
-                    <span onclick="loadProgram('${p.id}')" style="cursor:pointer; font-weight:600;">${p.name}</span>
-                    <div style="display:flex; gap:12px;">
-                        <i class="fas fa-archive" title="Archive" style="color:var(--brand-accent); cursor:pointer;" onclick="archiveProgram('${p.id}', true)"></i>
-                        <i class="fas fa-trash" title="Delete" style="color:#ff4d4d; cursor:pointer;" onclick="deleteProgram('${p.id}')"></i>
-                    </div>
-                </div>`).join('') || '<div style="color:#555; font-size:0.8rem; padding:10px;">No active programs.</div>';
-        } catch(e) { console.error("History Error:", e); }
-    }
-
-    async function archiveProgram(id, shouldArchive) {
-        if (!confirm(shouldArchive ? 'Archive this program?' : 'Restore this program?')) return;
-        try {
-            await pb.collection('programs').update(id, { archived: shouldArchive });
-            if (shouldArchive && editingProgramId === id) {
-                startNewProgram();
-                document.getElementById('schedule-card').style.display = 'none';
-            }
-            loadProgramHistory();
-        } catch(e) { alert("Error: " + e.message); }
-    }
-
-    async function deleteProgram(id) {
-        if (!confirm("Permanently delete this training block?")) return;
-        try {
-            await pb.collection('programs').delete(id);
-            if (editingProgramId === id) {
-                editingProgramId = null;
-                programData = [{sessionNum:1, warmup:[], exercises:[]}];
-                renderTabs(); renderLists();
-                document.getElementById('schedule-card').style.display = 'none';
-            }
-            await loadProgramHistory();
-        } catch(e) { alert("Error: " + e.message); }
-    }
-
-    // ── TEMPLATES ─────────────────────────────────────
-    async function fetchSectionTemplates() {
-        try {
-            const records = await pb.collection('templates').getFullList({ sort: '-created' });
-            const sectionSelect = document.getElementById('section-template-select');
-            const fullSelect = document.getElementById('full-template-select');
-            const blocks = records.filter(r => r.type === 'full');
-            fullSelect.innerHTML = '<option value="">-- Choose a Training Block --</option>' +
-                blocks.map(r => {
-                    const count = Array.isArray(r.workout_data) ? r.workout_data.length : 1;
-                    return `<option value="${r.id}">${r.name} (${count} Sessions)</option>`;
-                }).join('');
-            const sections = records.filter(r => r.type === 'warmup' || r.type === 'workout');
-            sectionSelect.innerHTML = '<option value="">-- Load Saved Section --</option>' +
-                sections.map(r => `<option value="${r.id}">[${r.type.toUpperCase()}] ${r.name}</option>`).join('');
-        } catch(e) { console.error("Fetch Templates Error:", e); }
-    }
-
-    async function saveSectionTemplate(type) {
-        const list = programData[currentWeekIndex][type];
-        if (list.length === 0) return alert("Section is empty!");
-        const name = prompt("Template Name:");
-        if (!name) return;
-        try {
-            await pb.collection('templates').create({ name, type: type === 'warmup' ? 'warmup' : 'workout', workout_data: JSON.stringify(list) });
-            await fetchSectionTemplates();
-        } catch(e) { alert("Save Error: " + e.message); }
-    }
-
-    async function deleteSectionTemplate() {
-        const id = document.getElementById('section-template-select').value;
-        if (!id) return alert("Select a template first.");
-        try { await pb.collection('templates').delete(id); await fetchSectionTemplates(); }
-        catch(e) { alert("Delete Error: " + e.message); }
-    }
-
-    async function loadSectionTemplate(id) {
-        if (!id) return;
-        try {
-            const record = await pb.collection('templates').getOne(id);
-            let data = record.workout_data;
-            if (typeof data === 'string') data = JSON.parse(data);
-            const target = record.type === 'warmup' ? 'warmup' : 'exercises';
-            programData[currentWeekIndex][target] = [...programData[currentWeekIndex][target], ...data];
-            saveHistory(); renderLists();
-            document.getElementById('section-template-select').value = '';
-        } catch(e) { alert("Load Error: " + e.message); }
-    }
-
-    async function loadFullProgramTemplate(id) {
-        if (!id) return;
-        if (!confirm("This will replace all current sessions. Continue?")) {
-            document.getElementById('full-template-select').value = ''; return;
-        }
-        try {
-            const record = await pb.collection('templates').getOne(id);
-            let incoming = record.workout_data;
-            if (typeof incoming === 'string') incoming = JSON.parse(incoming);
-            let finalData = Array.isArray(incoming) ? incoming
-                : incoming.schedule ? incoming.schedule
-                : incoming.weeks ? incoming.weeks : null;
-            if (!finalData) throw new Error("Could not find sessions in this template.");
-            // Normalise — support both weekNum and sessionNum
-            finalData = finalData.map((s, i) => ({
-                ...s,
-                sessionNum: s.sessionNum || s.weekNum || i + 1
-            }));
-            programData = finalData;
-            currentWeekIndex = 0;
-            saveHistory(); renderTabs(); renderLists();
-            document.getElementById('full-template-select').value = '';
-        } catch(e) { alert("Load Error: " + e.message); document.getElementById('full-template-select').value = ''; }
-    }
-
-    // ── FILTERS ───────────────────────────────────────
-    function setupFilters() {
-        const container = document.getElementById('filter-container');
-        let html = '';
-        for (const [groupName, options] of Object.entries(filterGroups)) {
-            html += `<div style="width:100%;">
-                <div style="font-size:0.55rem; color:var(--brand-accent); font-weight:800; margin-bottom:5px; letter-spacing:1px;">${groupName}</div>
-                <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
-                    ${Object.entries(options).map(([tag, label]) =>
-                        `<button class="filter-btn" id="f-${tag}" onclick="toggleFilter('${tag}')">${label}</button>`
-                    ).join('')}
-                </div>
-            </div>`;
-        }
-        container.innerHTML = html;
-    }
-
-    function toggleFilter(f) {
-    const btn = document.getElementById(`f-${f}`);
-    if (activeFilters.includes(f)) { activeFilters = activeFilters.filter(i => i !== f); btn.classList.remove('active'); }
-    else { activeFilters.push(f); btn.classList.add('active'); }
+    document.querySelectorAll(`.lib-filter-btn[data-tag="${tag}"]`).forEach(el => {
+        el.classList.toggle('active', activeFilters.has(tag));
+    });
     runLibrarySearch();
 }
 
-    // ── HISTORY (UNDO/REDO) ───────────────────────────
-    function saveHistory() {
-        if (historyIndex < history.length - 1) history = history.slice(0, historyIndex + 1);
-        history.push(JSON.stringify(programData));
-        if (history.length > 50) history.shift();
-        historyIndex = history.length - 1;
-        triggerAutoSave();
-    }
+// ── LIBRARY SEARCH ────────────────────────────────
+function runLibrarySearch() {
+    const q = (document.getElementById('lib-search-text').value || '').toLowerCase().trim();
 
-    function undo() {
-        if (historyIndex > 0) { historyIndex--; programData = JSON.parse(history[historyIndex]); renderLists(); renderTabs(); }
-    }
-
-    function redo() {
-        if (historyIndex < history.length - 1) { historyIndex++; programData = JSON.parse(history[historyIndex]); renderLists(); renderTabs(); }
-    }
-
-    // ── LOAD PROGRAM ──────────────────────────────────
-    async function loadProgram(id) {
-        try {
-            const p = await pb.collection('programs').getOne(id);
-            editingProgramId = p.id;
-            document.getElementById('prog-name').value = p.name || '';
-            document.getElementById('prog-desc').value = p.description || '';
-            const tmplBox = document.getElementById('prog-is-template');
-            const freeBox = document.getElementById('prog-is-free');
-            if (tmplBox) tmplBox.checked = p.is_template || false;
-            if (freeBox) freeBox.checked = p.is_free || false;
-            let data = typeof p.workout_data === 'string' ? JSON.parse(p.workout_data) : p.workout_data;
-            programData = data.schedule || data;
-            // Normalise sessionNum/weekNum
-            programData = programData.map((s, i) => ({
-                ...s,
-                sessionNum: s.sessionNum || s.weekNum || i + 1
-            }));
-            programData.forEach(w => { if (!w.warmup) w.warmup = []; if (!w.exercises) w.exercises = []; });
-            showUI(); renderTabs(); renderLists(); saveHistory();
-        } catch(e) { alert("Load Error: " + e.message); }
-    }
-
-    // ── RENDER ────────────────────────────────────────
-    function renderLists() {
-        renderListMarkup('warmup-list', programData[currentWeekIndex].warmup, 'warmup');
-        renderListMarkup('workout-list', programData[currentWeekIndex].exercises, 'exercises');
-    }
-
-    function renderListMarkup(id, list, type) {
-        const container = document.getElementById(id);
-        container.innerHTML = list.map((ex, i) => `
-            <div class="exercise-item" draggable="true"
-                 ondragstart="draggedItemIndex=${i}; draggedType='${type}';"
-                 ondragover="event.preventDefault(); this.style.borderTop='2px solid var(--brand-accent)';"
-                 ondragleave="this.style.borderTop='none';"
-                 ondrop="handleDrop(event, ${i}, '${type}')">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="display:flex; align-items:center;">
-                        <div class="move-controls">
-                            <i class="fas fa-chevron-up move-arrow" onclick="moveElement(${i},'${type}',-1)"></i>
-                            <i class="fas fa-chevron-down move-arrow" onclick="moveElement(${i},'${type}',1)"></i>
-                        </div>
-                        <strong class="exercise-name-title">${ex.name}</strong>
-                    </div>
-                    <i class="fas fa-trash-alt" style="color:#555; cursor:pointer;" onclick="programData[currentWeekIndex].${type}.splice(${i},1); saveHistory(); renderLists();"></i>
-                </div>
-                <input type="text" value="${ex.grouping||''}" placeholder="Group (e.g. A1)" onchange="programData[currentWeekIndex].${type}[${i}].grouping=this.value; saveHistory();">
-                ${ex.setsData.map((s, si) => `
-                    <div class="metrics-grid">
-                        <div class="metric-unit"><label>SET ${si+1}</label></div>
-                        <div class="metric-unit"><label>REPS</label><input type="text" value="${s.reps}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].reps=this.value; saveHistory();"></div>
-                        <div class="metric-unit"><label>KG</label><input type="text" value="${s.weight}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].weight=this.value; saveHistory();"></div>
-                        <div class="metric-unit"><label>TEMPO</label><input type="text" value="${s.tempo}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].tempo=this.value; saveHistory();"></div>
-                        <div class="metric-unit"><label>RPE</label><input type="text" value="${s.rpe}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rpe=this.value; saveHistory();"></div>
-                        <i class="fas fa-minus-circle" style="color:#b71c1c; cursor:pointer; align-self:center;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.splice(${si},1); saveHistory(); renderLists();"></i>
-                    </div>`).join('')}
-                <button class="btn btn-outline" style="padding:6px; font-size:0.6rem; width:auto; margin-top:12px;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.push({...programData[currentWeekIndex].${type}[${i}].setsData.slice(-1)[0]}); saveHistory(); renderLists();">+ SET</button>
-            </div>`).join('');
-    }
-
-    // ── TABS ──────────────────────────────────────────
-    function renderTabs() {
-        const container = document.getElementById('week-tabs-container');
-        if (!container) return;
-        if (!Array.isArray(programData)) programData = [{sessionNum:1, warmup:[], exercises:[]}];
-        container.innerHTML = programData.map((s, i) => {
-            const dateLabel = s.scheduledDate
-                ? `<span style="font-size:0.5rem; display:block; opacity:0.7;">${new Date(s.scheduledDate+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'})}</span>`
-                : '';
-            return `<div class="tab ${i === currentWeekIndex ? 'active' : ''}" onclick="currentWeekIndex=${i}; renderTabs(); renderLists();">
-                Sn ${s.sessionNum}${dateLabel}
-            </div>`;
-        }).join('') +
-        `<div class="tab" onclick="programData.push({sessionNum:programData.length+1, warmup:[], exercises:[]}); saveHistory(); renderTabs();">+</div>`;
-    }
-
-    // ── SESSION MANAGEMENT ────────────────────────────
-    function deleteSession() {
-        if (programData.length <= 1) return alert("A program must have at least one session.");
-        if (!confirm(`Delete Session ${programData[currentWeekIndex].sessionNum}?`)) return;
-        programData.splice(currentWeekIndex, 1);
-        programData.forEach((s, i) => { s.sessionNum = i + 1; });
-        if (currentWeekIndex >= programData.length) currentWeekIndex = programData.length - 1;
-        saveHistory(); renderTabs(); renderLists();
-    }
-
-    function duplicateSession() {
-        if (currentWeekIndex === 0) return alert("Cannot copy previous session: You are on Session 1.");
-        const prev = programData[currentWeekIndex - 1];
-        programData[currentWeekIndex].warmup = JSON.parse(JSON.stringify(prev.warmup));
-        programData[currentWeekIndex].exercises = JSON.parse(JSON.stringify(prev.exercises));
-        saveHistory(); renderLists();
-    }
-
-    // ── DRAG & DROP (exercises within session) ────────
-    function moveElement(idx, type, dir) {
-        const list = programData[currentWeekIndex][type];
-        if (idx + dir < 0 || idx + dir >= list.length) return;
-        [list[idx], list[idx+dir]] = [list[idx+dir], list[idx]];
-        saveHistory(); renderLists();
-    }
-
-    function handleDrop(e, targetIdx, targetType) {
-        e.currentTarget.style.borderTop = 'none';
-        if (draggedType !== targetType) return;
-        const list = programData[currentWeekIndex][targetType];
-        const movedItem = list.splice(draggedItemIndex, 1)[0];
-        list.splice(targetIdx, 0, movedItem);
-        saveHistory(); renderLists();
-    }
-
-    // ── LIBRARY SEARCH (alphabetised) ─────────────────
-    function runLibrarySearch() {
-        const q = document.getElementById('lib-search-text').value.toLowerCase();
-        const res = exerciseDatabase
-            .filter(e => {
-                const textMatch = e.title.toLowerCase().includes(q) || e.searchStr.toLowerCase().includes(q);
-                const filterMatch = activeFilters.every(f => {
-    const regex = new RegExp(`\\b${f.replace(/-/g,'[- ]')}\\b`, 'i');
-    return regex.test(e.searchStr);
-});
-                return textMatch && filterMatch;
-            })
-            .sort((a, b) => a.title.localeCompare(b.title)); // ← alphabetised
-
-        document.getElementById('lib-results').innerHTML = res.slice(0, 60).map(e => `
-            <div class="search-result">
-                <div class="res-title">${cleanExTitle(e.title)}</div>
-                <div class="res-actions">
-                    <button class="add-small" onclick="addEx('${e.title.replace(/'/g,"\\'")}','warmup')">+ Warm Up</button>
-                    <button class="add-small" onclick="addEx('${e.title.replace(/'/g,"\\'")}','exercises')">+ Workout</button>
-                </div>
-            </div>`).join('');
-    }
-
-    function addEx(name, type) {
-        const clean = name.replace(/^([A-Z0-9-]{2,}\s*)+/, '');
-        programData[currentWeekIndex][type].push({ name: clean, grouping: "", setsData: [{reps:"10", weight:"0", tempo:"//", rpe:"7"}], notes:"" });
-        saveHistory(); renderLists();
-    }
-
-    // ── SAVE NEW EXERCISE (with NO-VIDEO tag) ─────────
-    async function saveNewExerciseToLib() {
-        const name = document.getElementById('new-ex-name').value.trim();
-        const video = document.getElementById('new-ex-video').value.trim();
-        if (!name) return alert("Please enter a name.");
-
-        const customTagsRaw = document.getElementById('new-ex-custom-tags').value;
-        const customTags = customTagsRaw.split(',').map(t => t.trim().toUpperCase()).filter(Boolean);
-
-        // Auto-tag NO-VIDEO if no video URL provided
-        const videoTags = video ? [] : ['NO-VIDEO'];
-
-        const allTags = [...modalActiveTags, ...customTags, ...videoTags];
-        const finalSearchStr = (name + " " + allTags.join(" ")).toUpperCase();
-
-        try {
-            const rec = await pb.collection('custom_exercises').create({ title: name, searchStr: finalSearchStr, video: video });
-            exerciseDatabase.push({ id: rec.id, title: name, searchStr: finalSearchStr, video, src: video });
-
-            document.getElementById('new-ex-name').value = '';
-            document.getElementById('new-ex-video').value = '';
-            document.getElementById('new-ex-custom-tags').value = '';
-            modalActiveTags = [];
-            document.querySelectorAll('#modal-tag-groups .filter-btn').forEach(b => b.classList.remove('active'));
-            closeModal('addExModal');
-            runLibrarySearch();
-
-            const btn = document.querySelector('[onclick="openModal(\'addExModal\')"]');
-            if (btn) {
-                const orig = btn.textContent;
-                btn.textContent = '✓ ADDED'; btn.style.color = '#4ade80';
-                setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
-            }
-        } catch(e) { alert("Error: " + e.message); }
-    }
-
-    // ── SYSTEM ────────────────────────────────────────
-    function startNewProgram() {
-        editingProgramId = null;
-        programData = [{sessionNum:1, warmup:[], exercises:[]}];
-        document.getElementById('prog-name').value = '';
-        document.getElementById('prog-desc').value = '';
-        showUI(); renderTabs(); renderLists(); saveHistory();
-    }
-
-    function showUI() {
-        document.getElementById('schedule-card').style.display = 'block';
-        document.getElementById('program-info-area').style.display = 'block';
-        document.getElementById('library-col').style.display = 'block';
-    }
-
-    function toggleWarmupCollapse() {
-        warmupCollapsed = !warmupCollapsed;
-        document.getElementById('warmup-list').style.display = warmupCollapsed ? 'none' : 'block';
-        document.getElementById('warmup-chevron').className = warmupCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-down';
-    }
-
-    async function loadCustomExercises() {
-        try {
-            const recs = await pb.collection('custom_exercises').getFullList();
-            recs.forEach(r => {
-                if (!exerciseDatabase.some(e => e.id === r.id))
-                    exerciseDatabase.push({ id: r.id, title: r.title, searchStr: r.searchStr || r.title, video: r.video });
+    const res = (typeof exerciseDatabase !== 'undefined' ? exerciseDatabase : [])
+        .filter(e => {
+            const search = (e.searchStr || e.title || '').toLowerCase();
+            const title = (e.title || '').toLowerCase();
+            const matchesText = !q || title.includes(q) || search.includes(q);
+            const matchesTags = activeFilters.size === 0 || Array.from(activeFilters).every(tag => {
+                const regex = new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i');
+                return regex.test(search);
             });
-        } catch(e) {}
+            return matchesText && matchesTags;
+        })
+        .sort((a, b) => cleanExTitle(a.title).localeCompare(cleanExTitle(b.title)));
+
+    const resultsEl = document.getElementById('lib-results');
+    if (res.length === 0) {
+        resultsEl.innerHTML = '<div style="color:#555; font-size:0.8rem; padding:20px; text-align:center;">No exercises found</div>';
+        return;
     }
 
-    async function saveNewClient() {
+    resultsEl.innerHTML = res.slice(0, 80).map(e => {
+        const cleanName = cleanExTitle(e.title);
+        const safeName = e.title.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        return `<div class="search-result">
+            <div class="res-title">${cleanName}</div>
+            <div style="display:flex; gap:4px; flex-shrink:0;">
+                <button class="add-small" onclick="addEx('${safeName}','warmup')">+ Warm</button>
+                <button class="add-small" onclick="addEx('${safeName}','exercises')">+ Main</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function addEx(name, type) {
+    const clean = cleanExTitle(name);
+    programData[currentWeekIndex][type].push({
+        name: clean, grouping: '', setsData: [{reps:'10', weight:'0', tempo:'//', rpe:'7'}], notes: ''
+    });
+    saveHistory();
+    renderLists();
+}
+
+// ── SCHEDULER ─────────────────────────────────────
+function setFreq(n) {
+    schedFreq = n;
+    [1,2,3].forEach(i => document.getElementById(`freq-${i}`).classList.toggle('active', i===n));
+    schedDays = [];
+    document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('day-picker-label').textContent = n===1 ? 'Day of Week' : `Days of Week (pick ${n})`;
+}
+
+function toggleDay(d) {
+    const btn = document.querySelector(`.day-btn[data-day="${d}"]`);
+    if (schedDays.includes(d)) {
+        schedDays = schedDays.filter(x => x!==d);
+        btn.classList.remove('active');
+    } else {
+        if (schedDays.length >= schedFreq) {
+            const old = schedDays.shift();
+            document.querySelector(`.day-btn[data-day="${old}"]`).classList.remove('active');
+        }
+        schedDays.push(d);
+        btn.classList.add('active');
+    }
+}
+
+function applySchedule() {
+    const count = parseInt(document.getElementById('sched-count').value) || 6;
+    const startStr = document.getElementById('sched-start').value;
+    if (!startStr) return alert('Please set a start date.');
+    if (schedDays.length === 0) return alert('Please select at least one day of the week.');
+    const startDate = new Date(startStr + 'T12:00:00');
+    const sortedDays = [...schedDays].sort((a,b) => a-b);
+    const dates = [];
+    let cursor = new Date(startDate);
+    const startDow = (cursor.getDay()+6)%7;
+    cursor.setDate(cursor.getDate()-startDow);
+    while (dates.length < count) {
+        for (const day of sortedDays) {
+            if (dates.length >= count) break;
+            const d = new Date(cursor);
+            d.setDate(cursor.getDate()+day);
+            if (d >= startDate) dates.push(d.toISOString().split('T')[0]);
+        }
+        cursor.setDate(cursor.getDate()+7);
+    }
+    programData = dates.map((dateStr, i) => {
+        const ex = programData[i];
+        return { sessionNum: i+1, scheduledDate: dateStr, sessionDate: ex?.sessionDate||null, warmup: ex?.warmup||[], exercises: ex?.exercises||[] };
+    });
+    saveHistory(); renderTabs(); renderLists();
+    const btn = document.querySelector('.sched-apply-btn');
+    const orig = btn.textContent;
+    btn.textContent = `✓ ${count} Sessions Generated`;
+    btn.style.background = '#26C6DA'; btn.style.color = '#000';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 2500);
+}
+
+// ── DASHBOARD ─────────────────────────────────────
+async function loadDashboard() {
+    try {
+        const users = await pb.collection('users').getList(1, 100, { filter: 'role="client"', sort: 'name' });
+        const dropdown = document.getElementById('client-select');
+        dropdown.innerHTML = '<option value="">-- Select Client --</option>' +
+            users.items.map(u => `<option value="${u.id}">${u.name}</option>`).join('');
+        document.getElementById('client-table-body').innerHTML = users.items.map(u =>
+            `<tr onclick="selectClient('${u.id}')"><td>${u.name}</td><td style="text-align:right;color:#555;">Active</td></tr>`
+        ).join('');
+    } catch(e) { console.error(e); }
+}
+
+function selectClient(id) {
+    document.getElementById('client-select').value = id;
+    loadProgramHistory();
+}
+
+async function loadProgramHistory() {
+    const cid = document.getElementById('client-select').value;
+    if (!cid) return;
+    document.getElementById('history-panel').style.display = 'block';
+    try {
+        const progs = await pb.collection('programs').getList(1, 50, { filter: `client="${cid}" && archived=false`, sort: '-created' });
+        document.getElementById('history-list').innerHTML = progs.items.map(p =>
+            `<div class="history-row">
+                <span onclick="loadProgram('${p.id}')" style="cursor:pointer; font-weight:600;">${p.name}</span>
+                <div style="display:flex; gap:12px;">
+                    <i class="fas fa-archive" style="color:var(--brand-accent); cursor:pointer;" onclick="archiveProgram('${p.id}', true)"></i>
+                    <i class="fas fa-trash" style="color:#ff4d4d; cursor:pointer;" onclick="deleteProgram('${p.id}')"></i>
+                </div>
+            </div>`
+        ).join('') || '<div style="color:#555; font-size:0.8rem; padding:10px;">No active programs.</div>';
+    } catch(e) { console.error(e); }
+}
+
+async function archiveProgram(id, shouldArchive) {
+    if (!confirm(shouldArchive ? 'Archive this program?' : 'Restore?')) return;
+    try {
+        await pb.collection('programs').update(id, { archived: shouldArchive });
+        if (shouldArchive && editingProgramId === id) { startNewProgram(); document.getElementById('schedule-card').style.display = 'none'; }
+        loadProgramHistory();
+    } catch(e) { alert(e.message); }
+}
+
+async function deleteProgram(id) {
+    if (!confirm('Permanently delete this training block?')) return;
+    try {
+        await pb.collection('programs').delete(id);
+        if (editingProgramId === id) { editingProgramId = null; programData = [{sessionNum:1,warmup:[],exercises:[]}]; renderTabs(); renderLists(); document.getElementById('schedule-card').style.display='none'; }
+        await loadProgramHistory();
+    } catch(e) { alert(e.message); }
+}
+
+// ── TEMPLATES ─────────────────────────────────────
+async function fetchSectionTemplates() {
+    try {
+        const records = await pb.collection('templates').getFullList({ sort: '-created' });
+        const fullSelect = document.getElementById('full-template-select');
+        const sectionSelect = document.getElementById('section-template-select');
+        fullSelect.innerHTML = '<option value="">-- Choose a Training Block --</option>' +
+            records.filter(r => r.type==='full').map(r => {
+                const count = Array.isArray(r.workout_data) ? r.workout_data.length : 1;
+                return `<option value="${r.id}">${r.name} (${count} Sessions)</option>`;
+            }).join('');
+        sectionSelect.innerHTML = '<option value="">-- Load Saved Section --</option>' +
+            records.filter(r => r.type==='warmup'||r.type==='workout').map(r =>
+                `<option value="${r.id}">[${r.type.toUpperCase()}] ${r.name}</option>`
+            ).join('');
+    } catch(e) { console.error(e); }
+}
+
+async function saveSectionTemplate(type) {
+    const list = programData[currentWeekIndex][type];
+    if (!list.length) return alert('Section is empty!');
+    const name = prompt('Template Name:');
+    if (!name) return;
+    try { await pb.collection('templates').create({ name, type: type==='warmup'?'warmup':'workout', workout_data: JSON.stringify(list) }); await fetchSectionTemplates(); }
+    catch(e) { alert(e.message); }
+}
+
+async function deleteSectionTemplate() {
+    const id = document.getElementById('section-template-select').value;
+    if (!id) return alert('Select a template first.');
+    try { await pb.collection('templates').delete(id); await fetchSectionTemplates(); }
+    catch(e) { alert(e.message); }
+}
+
+async function loadSectionTemplate(id) {
+    if (!id) return;
+    try {
+        const rec = await pb.collection('templates').getOne(id);
+        let data = rec.workout_data;
+        if (typeof data==='string') data = JSON.parse(data);
+        const target = rec.type==='warmup' ? 'warmup' : 'exercises';
+        programData[currentWeekIndex][target] = [...programData[currentWeekIndex][target], ...data];
+        saveHistory(); renderLists();
+        document.getElementById('section-template-select').value = '';
+    } catch(e) { alert(e.message); }
+}
+
+async function loadFullProgramTemplate(id) {
+    if (!id) return;
+    if (!confirm('This will replace all current sessions. Continue?')) { document.getElementById('full-template-select').value=''; return; }
+    try {
+        const rec = await pb.collection('templates').getOne(id);
+        let incoming = rec.workout_data;
+        if (typeof incoming==='string') incoming = JSON.parse(incoming);
+        let finalData = Array.isArray(incoming) ? incoming : incoming.schedule || incoming.weeks || null;
+        if (!finalData) throw new Error('Could not find sessions in this template.');
+        finalData = finalData.map((s,i) => ({...s, sessionNum: s.sessionNum||s.weekNum||i+1}));
+        programData = finalData;
+        currentWeekIndex = 0;
+        saveHistory(); renderTabs(); renderLists();
+        document.getElementById('full-template-select').value = '';
+    } catch(e) { alert(e.message); document.getElementById('full-template-select').value=''; }
+}
+
+// ── LOAD PROGRAM ──────────────────────────────────
+async function loadProgram(id) {
+    try {
+        const p = await pb.collection('programs').getOne(id);
+        editingProgramId = p.id;
+        document.getElementById('prog-name').value = p.name||'';
+        document.getElementById('prog-desc').value = p.description||'';
+        document.getElementById('prog-is-template').checked = p.is_template||false;
+        document.getElementById('prog-is-free').checked = p.is_free||false;
+        let data = typeof p.workout_data==='string' ? JSON.parse(p.workout_data) : p.workout_data;
+        programData = data.schedule || data;
+        programData = programData.map((s,i) => ({...s, sessionNum: s.sessionNum||s.weekNum||i+1}));
+        programData.forEach(w => { if(!w.warmup) w.warmup=[]; if(!w.exercises) w.exercises=[]; });
+        showUI(); renderTabs(); renderLists(); saveHistory();
+    } catch(e) { alert(e.message); }
+}
+
+// ── RENDER ────────────────────────────────────────
+function renderLists() {
+    renderListMarkup('warmup-list', programData[currentWeekIndex].warmup, 'warmup');
+    renderListMarkup('workout-list', programData[currentWeekIndex].exercises, 'exercises');
+}
+
+function renderListMarkup(id, list, type) {
+    document.getElementById(id).innerHTML = list.map((ex, i) => `
+        <div class="exercise-item" draggable="true"
+             ondragstart="draggedItemIndex=${i}; draggedType='${type}';"
+             ondragover="event.preventDefault(); this.style.borderTop='2px solid var(--brand-accent)';"
+             ondragleave="this.style.borderTop='none';"
+             ondrop="handleDrop(event,${i},'${type}')">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div style="display:flex; align-items:center;">
+                    <div class="move-controls">
+                        <i class="fas fa-chevron-up move-arrow" onclick="moveElement(${i},'${type}',-1)"></i>
+                        <i class="fas fa-chevron-down move-arrow" onclick="moveElement(${i},'${type}',1)"></i>
+                    </div>
+                    <strong class="exercise-name-title">${ex.name}</strong>
+                </div>
+                <i class="fas fa-trash-alt" style="color:#555; cursor:pointer;" onclick="programData[currentWeekIndex].${type}.splice(${i},1); saveHistory(); renderLists();"></i>
+            </div>
+            <input type="text" value="${(ex.grouping||'').replace(/"/g,'&quot;')}" placeholder="Group (e.g. A1)" onchange="programData[currentWeekIndex].${type}[${i}].grouping=this.value; saveHistory();">
+            ${ex.setsData.map((s,si) => `
+                <div class="metrics-grid">
+                    <div class="metric-unit"><label>SET ${si+1}</label></div>
+                    <div class="metric-unit"><label>REPS</label><input type="text" value="${s.reps||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].reps=this.value; saveHistory();"></div>
+                    <div class="metric-unit"><label>KG</label><input type="text" value="${s.weight||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].weight=this.value; saveHistory();"></div>
+                    <div class="metric-unit"><label>TEMPO</label><input type="text" value="${s.tempo||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].tempo=this.value; saveHistory();"></div>
+                    <div class="metric-unit"><label>RPE</label><input type="text" value="${s.rpe||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rpe=this.value; saveHistory();"></div>
+                    <i class="fas fa-minus-circle" style="color:#b71c1c; cursor:pointer; align-self:center;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.splice(${si},1); saveHistory(); renderLists();"></i>
+                </div>`).join('')}
+            <button class="btn btn-outline" style="padding:6px; font-size:0.6rem; width:auto; margin-top:12px;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.push({...programData[currentWeekIndex].${type}[${i}].setsData.slice(-1)[0]}); saveHistory(); renderLists();">+ SET</button>
+        </div>`).join('');
+}
+
+function renderTabs() {
+    const container = document.getElementById('week-tabs-container');
+    if (!container) return;
+    if (!Array.isArray(programData)) programData = [{sessionNum:1,warmup:[],exercises:[]}];
+    container.innerHTML = programData.map((s,i) => {
+        const dateLabel = s.scheduledDate
+            ? `<span style="font-size:0.5rem;display:block;opacity:0.7;">${new Date(s.scheduledDate+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'})}</span>`
+            : '';
+        return `<div class="tab ${i===currentWeekIndex?'active':''}" onclick="currentWeekIndex=${i}; renderTabs(); renderLists();">Sn ${s.sessionNum}${dateLabel}</div>`;
+    }).join('') + `<div class="tab" onclick="programData.push({sessionNum:programData.length+1,warmup:[],exercises:[]}); saveHistory(); renderTabs();">+</div>`;
+}
+
+// ── SESSION MANAGEMENT ────────────────────────────
+function deleteSession() {
+    if (programData.length <= 1) return alert('A program must have at least one session.');
+    if (!confirm(`Delete Session ${programData[currentWeekIndex].sessionNum}?`)) return;
+    programData.splice(currentWeekIndex, 1);
+    programData.forEach((s,i) => { s.sessionNum = i+1; });
+    if (currentWeekIndex >= programData.length) currentWeekIndex = programData.length-1;
+    saveHistory(); renderTabs(); renderLists();
+}
+
+function duplicateSession() {
+    if (currentWeekIndex === 0) return alert('Cannot copy previous session: You are on Session 1.');
+    const prev = programData[currentWeekIndex-1];
+    programData[currentWeekIndex].warmup = JSON.parse(JSON.stringify(prev.warmup));
+    programData[currentWeekIndex].exercises = JSON.parse(JSON.stringify(prev.exercises));
+    saveHistory(); renderLists();
+}
+
+function moveElement(idx, type, dir) {
+    const list = programData[currentWeekIndex][type];
+    if (idx+dir < 0 || idx+dir >= list.length) return;
+    [list[idx], list[idx+dir]] = [list[idx+dir], list[idx]];
+    saveHistory(); renderLists();
+}
+
+function handleDrop(e, targetIdx, targetType) {
+    e.currentTarget.style.borderTop = 'none';
+    if (draggedType !== targetType) return;
+    const list = programData[currentWeekIndex][targetType];
+    const movedItem = list.splice(draggedItemIndex, 1)[0];
+    list.splice(targetIdx, 0, movedItem);
+    saveHistory(); renderLists();
+}
+
+// ── HISTORY ───────────────────────────────────────
+function saveHistory() {
+    if (historyIndex < undoHistory.length-1) undoHistory = undoHistory.slice(0, historyIndex+1);
+    undoHistory.push(JSON.stringify(programData));
+    if (undoHistory.length > 50) undoHistory.shift();
+    historyIndex = undoHistory.length-1;
+    triggerAutoSave();
+}
+
+function undo() {
+    if (historyIndex > 0) { historyIndex--; programData = JSON.parse(undoHistory[historyIndex]); renderLists(); renderTabs(); }
+}
+
+function redo() {
+    if (historyIndex < undoHistory.length-1) { historyIndex++; programData = JSON.parse(undoHistory[historyIndex]); renderLists(); renderTabs(); }
+}
+
+// ── SAVE ──────────────────────────────────────────
+function triggerAutoSave() {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => saveProgramToDB(true), 1500);
+}
+
+async function saveProgramToDB(silent=false) {
+    const cid = document.getElementById('client-select').value;
+    if (!cid) { if (!silent) alert('Please select a client first.'); return; }
+    const payload = {
+        workout_data: JSON.stringify({ schedule: programData }),
+        client: cid,
+        name: document.getElementById('prog-name').value,
+        description: document.getElementById('prog-desc').value,
+        is_template: document.getElementById('prog-is-template')?.checked||false,
+        is_free: document.getElementById('prog-is-free')?.checked||false
+    };
+    try {
+        if (editingProgramId) await pb.collection('programs').update(editingProgramId, payload);
+        else { const rec = await pb.collection('programs').create(payload); editingProgramId = rec.id; }
+        if (!silent) alert('PUBLISHED!');
+        else showSaveToast();
+    } catch(e) { if (!silent) alert(e.message); }
+}
+
+function showSaveToast() {
+    let toast = document.getElementById('builder-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'builder-toast';
+        toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#052e16;border:1px solid #166534;color:#4ade80;padding:8px 20px;border-radius:50px;font-size:0.75rem;font-weight:800;font-family:Montserrat,sans-serif;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = '✓ AUTO-SAVED';
+    toast.style.opacity = '1';
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(() => toast.style.opacity='0', 2000);
+}
+
+async function saveAsTemplate() {
+    const name = prompt('Name this Full Program Template:');
+    if (!name) return;
+    try {
+        await pb.collection('templates').create({ name, type:'full', workout_data: programData, creator: pb.authStore.model.id });
+        alert(`Template "${name}" saved!`);
+        await fetchSectionTemplates();
+    } catch(e) { alert(e.message); }
+}
+
+// ── ADD EXERCISE TO VAULT ─────────────────────────
+async function loadCustomExercises() {
+    try {
+        const recs = await pb.collection('custom_exercises').getFullList({ requestKey: null });
+        recs.forEach(r => {
+            if (!exerciseDatabase.some(e => e.id===r.id))
+                exerciseDatabase.push({ id:r.id, title:r.title, searchStr:r.searchStr||r.title, video:r.video });
+        });
+    } catch(e) {}
+}
+
+async function saveNewExerciseToLib() {
+    const name = document.getElementById('new-ex-name').value.trim();
+    const video = document.getElementById('new-ex-video').value.trim();
+    if (!name) return alert('Please enter a name.');
+    const videoTags = video ? [] : ['NO-VIDEO'];
+    const allTags = [...modalActiveTags, ...videoTags];
+    const fullTitle = allTags.length ? `${allTags.join(' ')} ${name}` : name;
+    const searchStr = allTags.join(' ').toLowerCase() + ' ' + name.toLowerCase();
+    try {
+        const rec = await pb.collection('custom_exercises').create({ title: fullTitle, searchStr, video, uploaded_by: pb.authStore.model.id });
+        exerciseDatabase.push({ id:rec.id, title:fullTitle, searchStr, video, src:video });
+        document.getElementById('new-ex-name').value = '';
+        document.getElementById('new-ex-video').value = '';
+        modalActiveTags = [];
+        document.querySelectorAll('.modal-filter-btn').forEach(b => b.classList.remove('active'));
+        closeModal('addExModal');
+        runLibrarySearch();
+    } catch(e) { alert(e.message); }
+}
+
+// ── MODAL TAG BUILDER ─────────────────────────────
+function buildModalTags() {
+    const container = document.getElementById('modal-tag-groups');
+    let html = '';
+    Object.entries(filterGroups).forEach(([groupName, tags]) => {
+        html += `<div style="margin-bottom:10px;">
+            <div style="font-size:0.5rem; color:var(--brand-accent); font-weight:800; margin-bottom:5px; font-family:'Montserrat'; text-transform:uppercase;">${groupName}</div>
+            <div style="display:flex; flex-wrap:wrap; gap:4px;">
+                ${tags.map(tag =>
+                    `<button class="modal-filter-btn" data-tag="${tag}" onclick="toggleModalTag('${tag}',this)">${tag.replace(/-/g,' ')}</button>`
+                ).join('')}
+            </div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+function toggleModalTag(tag, btn) {
+    if (modalActiveTags.includes(tag)) { modalActiveTags = modalActiveTags.filter(t=>t!==tag); btn.classList.remove('active'); }
+    else { modalActiveTags.push(tag); btn.classList.add('active'); }
+}
+
+// ── UI HELPERS ────────────────────────────────────
+function startNewProgram() {
+    editingProgramId = null;
+    programData = [{sessionNum:1, warmup:[], exercises:[]}];
+    document.getElementById('prog-name').value = '';
+    document.getElementById('prog-desc').value = '';
+    showUI(); renderTabs(); renderLists(); saveHistory();
+}
+
+function showUI() {
+    document.getElementById('schedule-card').style.display = 'block';
+    document.getElementById('program-info-area').style.display = 'block';
+    document.getElementById('library-col').style.display = 'block';
+}
+
+function toggleWarmupCollapse() {
+    warmupCollapsed = !warmupCollapsed;
+    document.getElementById('warmup-list').style.display = warmupCollapsed ? 'none' : 'block';
+    document.getElementById('warmup-chevron').className = warmupCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-down';
+}
+
+function openModal(id) {
+    document.getElementById(id).style.display = 'block';
+    if (id==='addExModal') { modalActiveTags=[]; buildModalTags(); }
+}
+
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+function handleLogout() { pb.authStore.clear(); window.location.href = 'index.html'; }
+
+function switchRightCol(mode) {
+    const libBtn = document.getElementById('col-lib-btn');
+    const revBtn = document.getElementById('col-review-btn');
+    if (mode==='library') {
+        libBtn.style.background='var(--brand-accent)'; libBtn.style.color='#000';
+        revBtn.style.background='none'; revBtn.style.color='#555';
+        document.getElementById('library-panel').style.display='block';
+        document.getElementById('review-panel').style.display='none';
+    } else {
+        revBtn.style.background='var(--brand-accent)'; revBtn.style.color='#000';
+        libBtn.style.background='none'; libBtn.style.color='#555';
+        document.getElementById('library-panel').style.display='none';
+        document.getElementById('review-panel').style.display='block';
+        populateReviewWeeks(); renderReview();
+    }
+}
+
+async function saveNewClient() {
+    try {
         await pb.collection('users').create({
             email: document.getElementById('new-client-email').value,
             password: document.getElementById('new-client-pass').value,
             passwordConfirm: document.getElementById('new-client-pass').value,
             name: document.getElementById('new-client-name').value,
-            role: "client"
+            role: 'client'
         });
         location.reload();
+    } catch(e) { alert(e.message); }
+}
+
+// ── REVIEW ────────────────────────────────────────
+function populateReviewWeeks() {
+    const sel = document.getElementById('review-week-select');
+    if (!editingProgramId || !Array.isArray(programData)) { sel.innerHTML='<option value="">No program loaded</option>'; return; }
+    sel.innerHTML = programData.map((s,i) =>
+        `<option value="${i}">Session ${s.sessionNum}${s.scheduledDate?' — '+new Date(s.scheduledDate+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'}):''}</option>`
+    ).join('');
+    sel.value = currentWeekIndex;
+}
+
+function renderReview() {
+    const sel = document.getElementById('review-week-select');
+    const weekIdx = parseInt(sel.value);
+    if (isNaN(weekIdx) || !programData[weekIdx]) {
+        document.getElementById('review-content').innerHTML = '<div style="color:#555;font-size:0.85rem;padding:20px;text-align:center;">No data</div>';
+        return;
     }
+    const week = programData[weekIdx];
+    let infoHtml = '';
+    if (week.scheduledDate) infoHtml += `<div style="background:#0a1a2a;border:1px solid #1a2a35;border-radius:6px;padding:8px 12px;font-size:0.75rem;color:#888;margin-bottom:6px;">📅 Scheduled: ${new Date(week.scheduledDate+'T12:00:00').toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'})}</div>`;
+    if (week.sessionDate) infoHtml += `<div style="background:#052e16;border:1px solid #166534;border-radius:6px;padding:8px 12px;font-size:0.75rem;color:#4ade80;">✓ Completed: ${new Date(week.sessionDate).toLocaleDateString([],{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>`;
+    else infoHtml += `<div style="background:#1a1a1a;border:1px solid #333;border-radius:6px;padding:8px 12px;font-size:0.75rem;color:#555;">Not completed yet</div>`;
+    document.getElementById('review-session-info').innerHTML = infoHtml;
 
-    let autoSaveTimer = null;
-    function triggerAutoSave() {
-        clearTimeout(autoSaveTimer);
-        autoSaveTimer = setTimeout(() => saveProgramToDB(true), 1500);
-    }
+    const allEx = [...(week.warmup||[]).map(e=>({...e,section:'Warm Up'})),...(week.exercises||[]).map(e=>({...e,section:'Main Workout'}))];
+    if (!allEx.length) { document.getElementById('review-content').innerHTML='<div style="color:#555;font-size:0.85rem;padding:20px;text-align:center;">No exercises in this session</div>'; return; }
 
-    async function saveProgramToDB(silent = false) {
-        const cid = document.getElementById('client-select').value;
-        if (!cid) { if (!silent) alert("Please select a client first."); return; }
-        const payload = {
-            workout_data: JSON.stringify({ schedule: programData }),
-            client: cid,
-            name: document.getElementById('prog-name').value,
-            description: document.getElementById('prog-desc').value,
-            is_template: document.getElementById('prog-is-template')?.checked || false,
-            is_free: document.getElementById('prog-is-free')?.checked || false
-        };
-        try {
-            if (editingProgramId) await pb.collection('programs').update(editingProgramId, payload);
-            else { const rec = await pb.collection('programs').create(payload); editingProgramId = rec.id; }
-            if (!silent) alert("PUBLISHED!");
-            else showSaveToast();
-        } catch(e) { if (!silent) alert("Save error: " + e.message); }
-    }
-
-    function showSaveToast() {
-        let toast = document.getElementById('builder-toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'builder-toast';
-            toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#052e16;border:1px solid #166534;color:#4ade80;padding:8px 20px;border-radius:50px;font-size:0.75rem;font-weight:800;font-family:Montserrat,sans-serif;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;';
-            document.body.appendChild(toast);
-        }
-        toast.textContent = '✓ AUTO-SAVED';
-        toast.style.opacity = '1';
-        clearTimeout(toast._hideTimer);
-        toast._hideTimer = setTimeout(() => toast.style.opacity = '0', 2000);
-    }
-
-    async function saveAsTemplate() {
-        const name = prompt("Name this Full Program Template:");
-        if (!name) return;
-        try {
-            await pb.collection('templates').create({ name, type: 'full', workout_data: programData, creator: pb.authStore.model.id });
-            alert(`Template "${name}" saved!`);
-            await fetchSectionTemplates();
-        } catch(e) { alert("Error: " + e.message); }
-    }
-
-    function handleLogout() { pb.authStore.clear(); location.reload(); }
-
-    function openModal(id) {
-        document.getElementById(id).style.display = 'block';
-        if (id === 'addExModal') { modalActiveTags = []; buildModalTags(); }
-    }
-
-    function buildModalTags() {
-        const container = document.getElementById('modal-tag-groups');
-        let html = '';
-        for (const [groupName, options] of Object.entries(filterGroups)) {
-            html += `<div style="margin-bottom:10px; text-align:left;">
-                <div style="font-size:0.5rem; color:var(--brand-accent); font-weight:800; margin-bottom:5px;">${groupName}</div>
-                <div style="display:flex; flex-wrap:wrap; gap:4px;">
-                    ${Object.entries(options).map(([tag, label]) =>
-                        `<button class="filter-btn" type="button" data-tag="${tag}" onclick="toggleModalTag('${tag}',this)" style="font-size:0.55rem; padding:4px 8px;">${label}</button>`
-                    ).join('')}
+    let lastSection = '';
+    const html = allEx.map(ex => {
+        const secHeader = ex.section!==lastSection ? `<div style="font-size:0.6rem;font-weight:800;color:${ex.section==='Warm Up'?'var(--brand-accent)':'var(--brand-secondary)'};text-transform:uppercase;letter-spacing:1px;margin:12px 0 6px;padding-top:8px;border-top:1px solid #1a2a35;">${ex.section}</div>` : '';
+        lastSection = ex.section;
+        const completedSets = (ex.setsData||[]).filter(s=>s.act_reps&&s.act_weight).length;
+        const totalSets = (ex.setsData||[]).length;
+        const allDone = completedSets===totalSets && totalSets>0;
+        const setsHtml = (ex.setsData||[]).map((s,si) => {
+            const hasData = s.act_reps||s.act_weight;
+            const diffColor = v => v===null?'#555':v>0?'#4ade80':v<0?'#f87171':'#888';
+            const diffStr = (v,u='') => v===null?'—':v===0?`=${u}`:v>0?`+${v}${u}`:`${v}${u}`;
+            const rd = s.act_reps&&s.reps ? parseInt(s.act_reps)-parseInt(s.reps) : null;
+            const wd = s.act_weight&&s.weight ? parseFloat(s.act_weight)-parseFloat(s.weight) : null;
+            const rpd = s.act_rpe&&s.rpe ? parseFloat(s.act_rpe)-parseFloat(s.rpe) : null;
+            return `<div style="background:${hasData?'#050d12':'#020c12'};border:1px solid ${hasData?'#1a2a35':'#111'};border-radius:6px;padding:8px;margin-bottom:6px;font-size:0.75rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${hasData?'6px':'0'};">
+                    <span style="color:var(--brand-accent);font-weight:800;">Set ${si+1}</span>
+                    <span style="color:#444;font-size:0.65rem;">${s.reps} reps @ ${s.weight}kg / RPE ${s.rpe||'—'}</span>
                 </div>
-            </div>`;
-        }
-        container.innerHTML = html;
-    }
-
-    function toggleModalTag(tag, btn) {
-        if (modalActiveTags.includes(tag)) { modalActiveTags = modalActiveTags.filter(t => t !== tag); btn.classList.remove('active'); }
-        else { modalActiveTags.push(tag); btn.classList.add('active'); }
-    }
-
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    function switchRightCol(mode) {
-        const libBtn = document.getElementById('col-lib-btn');
-        const revBtn = document.getElementById('col-review-btn');
-        const libPanel = document.getElementById('library-panel');
-        const revPanel = document.getElementById('review-panel');
-        if (mode === 'library') {
-            libBtn.style.background = 'var(--brand-accent)'; libBtn.style.color = '#000';
-            revBtn.style.background = 'none'; revBtn.style.color = '#555';
-            libPanel.style.display = 'block'; revPanel.style.display = 'none';
-        } else {
-            revBtn.style.background = 'var(--brand-accent)'; revBtn.style.color = '#000';
-            libBtn.style.background = 'none'; libBtn.style.color = '#555';
-            libPanel.style.display = 'none'; revPanel.style.display = 'block';
-            populateReviewWeeks(); renderReview();
-        }
-    }
-
-    function populateReviewWeeks() {
-        const sel = document.getElementById('review-week-select');
-        if (!editingProgramId || !Array.isArray(programData)) {
-            sel.innerHTML = '<option value="">No program loaded</option>'; return;
-        }
-        sel.innerHTML = programData.map((s, i) =>
-            `<option value="${i}">Session ${s.sessionNum}${s.scheduledDate ? ' — ' + new Date(s.scheduledDate+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'}) : ''}</option>`
-        ).join('');
-        sel.value = currentWeekIndex;
-    }
-
-    function renderReview() {
-        const sel = document.getElementById('review-week-select');
-        const weekIdx = parseInt(sel.value);
-        if (isNaN(weekIdx) || !programData[weekIdx]) {
-            document.getElementById('review-content').innerHTML = '<div style="color:#555; font-size:0.85rem; padding:20px; text-align:center;">No data</div>';
-            return;
-        }
-        const week = programData[weekIdx];
-        const infoEl = document.getElementById('review-session-info');
-
-        let infoHtml = '';
-        if (week.scheduledDate) {
-            const sd = new Date(week.scheduledDate+'T12:00:00').toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'});
-            infoHtml += `<div style="background:#0a1a2a; border:1px solid #1a2a35; border-radius:6px; padding:8px 12px; font-size:0.75rem; color:#888; margin-bottom:6px;">📅 Scheduled: ${sd}</div>`;
-        }
-        if (week.sessionDate) {
-            const cd = new Date(week.sessionDate).toLocaleDateString([],{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-            infoHtml += `<div style="background:#052e16; border:1px solid #166534; border-radius:6px; padding:8px 12px; font-size:0.75rem; color:#4ade80;">✓ Completed: ${cd}</div>`;
-        } else {
-            infoHtml += `<div style="background:#1a1a1a; border:1px solid #333; border-radius:6px; padding:8px 12px; font-size:0.75rem; color:#555;">Not completed yet</div>`;
-        }
-        infoEl.innerHTML = infoHtml;
-
-        const allExercises = [
-            ...(week.warmup||[]).map(ex => ({...ex, section:'Warm Up'})),
-            ...(week.exercises||[]).map(ex => ({...ex, section:'Main Workout'}))
-        ];
-        if (allExercises.length === 0) {
-            document.getElementById('review-content').innerHTML = '<div style="color:#555; font-size:0.85rem; padding:20px; text-align:center;">No exercises in this session</div>';
-            return;
-        }
-
-        let lastSection = '';
-        const html = allExercises.map(ex => {
-            const sectionHeader = ex.section !== lastSection
-                ? `<div style="font-size:0.6rem; font-weight:800; color:${ex.section==='Warm Up'?'var(--brand-accent)':'var(--brand-secondary)'}; text-transform:uppercase; letter-spacing:1px; margin:12px 0 6px; padding-top:8px; border-top:1px solid #1a2a35;">${ex.section}</div>`
-                : '';
-            lastSection = ex.section;
-            const cleanName = ex.name.replace(/^([A-Z0-9-]+\s)+/, '');
-            const completedSets = (ex.setsData||[]).filter(s => s.act_reps && s.act_weight).length;
-            const totalSets = (ex.setsData||[]).length;
-            const allDone = completedSets === totalSets && totalSets > 0;
-
-            const setsHtml = (ex.setsData||[]).map((s, si) => {
-                const hasData = s.act_reps || s.act_weight;
-                const repsDiff = s.act_reps && s.reps ? parseInt(s.act_reps) - parseInt(s.reps) : null;
-                const weightDiff = s.act_weight && s.weight ? parseFloat(s.act_weight) - parseFloat(s.weight) : null;
-                const rpeDiff = s.act_rpe && s.rpe ? parseFloat(s.act_rpe) - parseFloat(s.rpe) : null;
-                const diffColor = v => v===null?'#555':v>0?'#4ade80':v<0?'#f87171':'#888';
-                const diffStr = (v,u='') => v===null?'—':v===0?`=${u}`:v>0?`+${v}${u}`:`${v}${u}`;
-                return `<div style="background:${hasData?'#050d12':'#020c12'};border:1px solid ${hasData?'#1a2a35':'#111'};border-radius:6px;padding:8px;margin-bottom:6px;font-size:0.75rem;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${hasData?'6px':'0'};">
-                        <span style="color:var(--brand-accent);font-weight:800;">Set ${si+1}</span>
-                        <span style="color:#444;font-size:0.65rem;">${s.reps} reps @ ${s.weight}kg / RPE ${s.rpe||'—'}</span>
-                    </div>
-                    ${hasData ? `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;">
-                        <div><div style="font-size:0.55rem;color:#888;margin-bottom:2px;">REPS</div><div style="font-weight:800;color:white;">${s.act_reps||'—'}</div><div style="font-size:0.6rem;color:${diffColor(repsDiff)}">${diffStr(repsDiff)}</div></div>
-                        <div><div style="font-size:0.55rem;color:#888;margin-bottom:2px;">WEIGHT</div><div style="font-weight:800;color:white;">${s.act_weight||'—'}kg</div><div style="font-size:0.6rem;color:${diffColor(weightDiff)}">${diffStr(weightDiff,'kg')}</div></div>
-                        <div><div style="font-size:0.55rem;color:#888;margin-bottom:2px;">RPE</div><div style="font-weight:800;color:white;">${s.act_rpe||'—'}</div><div style="font-size:0.6rem;color:${diffColor(rpeDiff)}">${diffStr(rpeDiff)}</div></div>
-                    </div>${s.act_note?`<div style="margin-top:6px;padding:5px 8px;background:#111;border-radius:4px;color:#aaa;font-size:0.7rem;font-style:italic;">"${s.act_note}"</div>`:''}` : `<div style="color:#333;font-size:0.7rem;">Not completed</div>`}
-                </div>`;
-            }).join('');
-
-            return `${sectionHeader}
-            <div style="background:var(--card-bg);border:1px solid #1a2a35;border-radius:8px;padding:12px;margin-bottom:10px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                    <span style="font-family:'Montserrat';font-weight:800;font-size:0.85rem;color:var(--brand-accent);">${cleanName}</span>
-                    <span style="font-size:0.65rem;padding:2px 8px;border-radius:4px;font-weight:800;background:${allDone?'#052e16':completedSets>0?'#1a2a1a':'#1a1a1a'};color:${allDone?'#4ade80':completedSets>0?'#888':'#444'};">${completedSets}/${totalSets} sets</span>
-                </div>
-                ${setsHtml}
+                ${hasData ? `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center;">
+                    <div><div style="font-size:0.55rem;color:#888;margin-bottom:2px;">REPS</div><div style="font-weight:800;color:white;">${s.act_reps||'—'}</div><div style="font-size:0.6rem;color:${diffColor(rd)}">${diffStr(rd)}</div></div>
+                    <div><div style="font-size:0.55rem;color:#888;margin-bottom:2px;">WEIGHT</div><div style="font-weight:800;color:white;">${s.act_weight||'—'}kg</div><div style="font-size:0.6rem;color:${diffColor(wd)}">${diffStr(wd,'kg')}</div></div>
+                    <div><div style="font-size:0.55rem;color:#888;margin-bottom:2px;">RPE</div><div style="font-weight:800;color:white;">${s.act_rpe||'—'}</div><div style="font-size:0.6rem;color:${diffColor(rpd)}">${diffStr(rpd)}</div></div>
+                </div>${s.act_note?`<div style="margin-top:6px;padding:5px 8px;background:#111;border-radius:4px;color:#aaa;font-size:0.7rem;font-style:italic;">"${s.act_note}"</div>`:''}` : `<div style="color:#333;font-size:0.7rem;">Not completed</div>`}
             </div>`;
         }).join('');
-
-        document.getElementById('review-content').innerHTML = `<div style="max-height:600px;overflow-y:auto;">${html}</div>`;
-    }
+        return `${secHeader}<div style="background:var(--card-bg);border:1px solid #1a2a35;border-radius:8px;padding:12px;margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="font-family:'Montserrat';font-weight:800;font-size:0.85rem;color:var(--brand-accent);">${ex.name}</span>
+                <span style="font-size:0.65rem;padding:2px 8px;border-radius:4px;font-weight:800;background:${allDone?'#052e16':completedSets>0?'#1a2a1a':'#1a1a1a'};color:${allDone?'#4ade80':completedSets>0?'#888':'#444'};">${completedSets}/${totalSets} sets</span>
+            </div>${setsHtml}</div>`;
+    }).join('');
+    document.getElementById('review-content').innerHTML = `<div style="max-height:600px;overflow-y:auto;">${html}</div>`;
+}
 </script>
 </body>
 </html>
