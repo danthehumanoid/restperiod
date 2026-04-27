@@ -20,60 +20,76 @@
         .nav-links a:hover { color: var(--brand-accent); }
         .nav-links a.active { color: white; border-bottom: 2px solid var(--brand-accent); }
 
-        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
-        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+        .page { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 60px); }
+        @media (max-width: 900px) { .page { grid-template-columns: 1fr; } }
 
-        .card { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid #004d7a; }
-        h3 { color: var(--brand-accent); font-family: 'Montserrat'; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
+        /* VAULT SIDEBAR */
+        .sidebar { background: #000; border-right: 1px solid #0a1a25; padding: 16px; overflow-y: auto; height: calc(100vh - 60px); position: sticky; top: 60px; }
+        .vault-search { width: 100%; background: var(--input-bg); border: 1px solid #004d7a; color: white; padding: 10px 12px; border-radius: 6px; font-size: 0.85rem; font-family: inherit; margin-bottom: 10px; }
+        .vault-search:focus { outline: none; border-color: var(--brand-accent); }
+        .filter-section { margin-bottom: 10px; }
+        .filter-section-title { font-family: 'Montserrat'; font-size: 0.55rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .filter-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+        .filter-tag { padding: 3px 8px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; cursor: pointer; font-size: 0.58rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
+        .filter-tag:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+        .filter-tag.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
+        .filter-clear { width: 100%; padding: 5px; background: none; border: 1px solid #1a2a35; color: #555; border-radius: 4px; cursor: pointer; font-size: 0.6rem; font-family: 'Montserrat'; font-weight: 800; margin-top: 5px; transition: 0.2s; }
+        .filter-clear:hover { border-color: #ff5252; color: #ff5252; }
+        .lib-result { display: flex; justify-content: space-between; align-items: center; padding: 9px 10px; border-bottom: 1px solid #1a2a35; transition: 0.2s; }
+        .lib-result:hover { background: rgba(255,255,255,0.04); }
+        .lib-result-name { font-size: 0.78rem; font-weight: 600; color: #E0F7FA; flex: 1; line-height: 1.3; }
+        .add-btn-w { background: transparent; border: 1px solid #1a2a35; color: #555; padding: 3px 7px; font-size: 0.55rem; font-weight: 800; cursor: pointer; border-radius: 3px; font-family: 'Montserrat'; transition: 0.2s; white-space: nowrap; margin-left: 3px; }
+        .add-btn-w:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+        .add-btn-m { background: transparent; border: 1px solid #1a2a35; color: #555; padding: 3px 7px; font-size: 0.55rem; font-weight: 800; cursor: pointer; border-radius: 3px; font-family: 'Montserrat'; transition: 0.2s; white-space: nowrap; margin-left: 3px; }
+        .add-btn-m:hover { border-color: var(--brand-secondary); color: var(--brand-secondary); }
 
-        input, select { width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid #004d7a; color: white; border-radius: 4px; margin-bottom: 12px; font-size: 0.9rem; font-family: inherit; }
+        /* MAIN */
+        .main { padding: 20px; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid #004d7a; margin-bottom: 20px; }
+        h3 { color: var(--brand-accent); font-family: 'Montserrat'; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; }
+
+        input, select { width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid #004d7a; color: white; border-radius: 4px; margin-bottom: 10px; font-size: 0.9rem; font-family: inherit; }
         input:focus, select:focus { outline: none; border-color: var(--brand-accent); }
         label { font-size: 0.6rem; color: #aaa; text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 4px; font-family: 'Montserrat'; }
 
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-family: 'Montserrat'; font-size: 0.75rem; transition: 0.2s; }
+        .btn { width: 100%; padding: 11px; border: none; border-radius: 4px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-family: 'Montserrat'; font-size: 0.72rem; transition: 0.2s; }
         .btn-green { background: var(--brand-secondary); color: white; }
         .btn-green:hover { background: #388E3C; }
         .btn-outline { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); }
         .btn-outline:hover { background: var(--brand-accent); color: #000; }
         .btn-sm { padding: 6px 12px; width: auto; font-size: 0.65rem; }
+        .btn-danger { background: transparent; border: 1px solid #ff5252; color: #ff5252; }
 
-        /* VAULT SIDEBAR */
-        .vault-search { width: 100%; background: var(--input-bg); border: 1px solid #004d7a; color: white; padding: 10px 12px; border-radius: 6px; font-size: 0.85rem; font-family: inherit; margin-bottom: 12px; }
-        .vault-search:focus { outline: none; border-color: var(--brand-accent); }
-        .filter-section { margin-bottom: 12px; }
-        .filter-section-title { font-family: 'Montserrat'; font-size: 0.55rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-        .filter-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-        .filter-tag { padding: 3px 8px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; cursor: pointer; font-size: 0.58rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
-        .filter-tag:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
-        .filter-tag.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
-        .filter-clear { width: 100%; padding: 6px; background: none; border: 1px solid #1a2a35; color: #555; border-radius: 4px; cursor: pointer; font-size: 0.6rem; font-family: 'Montserrat'; font-weight: 800; margin-top: 6px; transition: 0.2s; }
-        .filter-clear:hover { border-color: #ff5252; color: #ff5252; }
+        /* SESSION TABS */
+        .tab-row { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; flex-wrap: nowrap; }
+        .tab { padding: 8px 14px; background: #001a2c; border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.75rem; color: #888; transition: 0.2s; font-weight: 700; white-space: nowrap; font-family: 'Montserrat'; }
+        .tab.active { background: var(--brand-accent); color: #000; font-weight: 800; }
+        .tab-add { padding: 8px 14px; background: transparent; border: 1px dashed #333; cursor: pointer; border-radius: 4px; font-size: 0.75rem; color: #555; transition: 0.2s; font-weight: 800; white-space: nowrap; font-family: 'Montserrat'; }
+        .tab-add:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
 
-        .lib-result { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid #1a2a35; transition: 0.2s; }
-        .lib-result:hover { background: rgba(255,255,255,0.04); }
-        .lib-result-name { font-size: 0.82rem; font-weight: 600; color: #E0F7FA; flex: 1; line-height: 1.3; }
-        .add-btn { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); padding: 4px 10px; font-size: 0.6rem; font-weight: 800; cursor: pointer; border-radius: 3px; font-family: 'Montserrat'; transition: 0.2s; white-space: nowrap; }
-        .add-btn:hover { background: var(--brand-accent); color: #000; }
+        /* SECTION DIVIDERS */
+        .section-div { background: #000; padding: 10px 14px; border-radius: 4px; margin: 16px 0 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--brand-accent); font-family: 'Montserrat'; font-size: 0.75rem; font-weight: 800; }
+        .section-div.main { border-left-color: var(--brand-secondary); }
 
-        /* BUILDER */
-        .builder-item { background: #001a2c; padding: 14px; margin-bottom: 12px; border-radius: 6px; border: 1px solid #333; }
-        .ex-title { font-family: 'Montserrat'; font-weight: 800; color: var(--brand-accent); font-size: 1rem; text-transform: uppercase; }
+        /* EXERCISE ITEMS */
+        .ex-item { background: #001a2c; padding: 13px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #333; }
+        .ex-title { font-family: 'Montserrat'; font-weight: 800; color: var(--brand-accent); font-size: 0.95rem; text-transform: uppercase; }
         .metrics-grid { display: grid; grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 0.3fr; gap: 5px; margin-top: 8px; align-items: center; }
         .metric-col { text-align: center; }
         .metric-col label { font-size: 0.5rem; color: var(--brand-accent); margin-bottom: 2px; }
-        .metric-col input { text-align: center; padding: 6px; margin-bottom: 0; font-size: 0.85rem; }
+        .metric-col input { text-align: center; padding: 5px; margin-bottom: 0; font-size: 0.82rem; }
 
-        /* SAVED TEMPLATES */
-        .saved-section-title { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid #1a2a35; font-family: 'Montserrat'; }
+        /* SAVED */
         .saved-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1a2a35; align-items: center; }
         .saved-row-name { font-size: 0.82rem; color: #eee; }
+        .saved-row-meta { font-size: 0.6rem; color: #555; margin-left: 8px; }
 
         /* MODAL */
-        .modal { display: none; position: fixed; z-index: 5000; inset: 0; background: rgba(0,0,0,0.92); overflow: auto; }
-        .modal-content { background: var(--card-bg); margin: 5% auto; padding: 28px; border: 1px solid var(--brand-accent); width: 95%; max-width: 520px; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 6000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: var(--card-bg); border: 1px solid var(--brand-accent); border-radius: 12px; padding: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
         .modal-tag-btn { padding: 4px 10px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; cursor: pointer; font-size: 0.6rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
         .modal-tag-btn.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
-        .modal-group-title { font-size: 0.5rem; color: var(--brand-accent); font-weight: 800; margin: 10px 0 5px; font-family: 'Montserrat'; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -84,81 +100,88 @@
         <a href="dashboard.html">DASHBOARD</a>
         <a href="builder.html">BUILDER</a>
         <a href="library.html">LIBRARY</a>
-        <a href="template.html" class="active">TEMPLATES</a>
+        <a href="templates.html" class="active">TEMPLATES</a>
         <a href="#" onclick="pb.authStore.clear(); window.location.href='index.html'">LOGOUT</a>
     </div>
 </div>
 
-<div class="container">
+<div class="page">
 
-    <!-- VAULT -->
-    <div class="card" style="position:sticky; top:70px; max-height:calc(100vh - 90px); overflow-y:auto;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <h3 style="margin:0;">VAULT</h3>
-            <button class="btn btn-outline btn-sm" onclick="openAddModal()">+ NEW</button>
+    <!-- VAULT SIDEBAR -->
+    <div class="sidebar">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <div style="font-family:'Montserrat'; font-weight:800; font-size:0.75rem; color:var(--brand-accent);">VAULT</div>
+            <button style="background:none; border:1px solid #1a2a35; color:#555; padding:3px 8px; font-size:0.55rem; font-family:'Montserrat'; font-weight:800; border-radius:3px; cursor:pointer;" onclick="openAddModal()">+ NEW</button>
         </div>
         <input type="text" class="vault-search" id="vault-search" placeholder="Search exercises..." oninput="renderVault()">
-
         <div id="filter-groups"></div>
         <button class="filter-clear" onclick="clearFilters()">✕ Clear Filters</button>
-
-        <div id="vault-results" style="margin-top:10px; max-height:400px; overflow-y:auto; border:1px solid #1a2a35; border-radius:4px;"></div>
+        <div id="vault-results" style="margin-top:10px; border:1px solid #1a2a35; border-radius:4px; max-height:350px; overflow-y:auto;"></div>
     </div>
 
-    <!-- BUILDER + SAVED -->
-    <div>
-        <div class="card" style="margin-bottom:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <h3 style="margin:0;">Build Template</h3>
-                <button class="btn btn-outline btn-sm" onclick="resetBuilder()">Clear</button>
-            </div>
+    <!-- MAIN CONTENT -->
+    <div class="main">
 
-            <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:16px;">
+        <!-- TEMPLATE META -->
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h3 style="margin:0;">Template Builder</h3>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-outline btn-sm" onclick="resetBuilder()">Clear All</button>
+                    <button class="btn btn-green btn-sm" id="save-btn" onclick="saveTemplate()">💾 Save Template</button>
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns:2fr 1fr auto; gap:12px; align-items:end;">
                 <div>
                     <label>Template Name</label>
-                    <input type="text" id="template-name" placeholder="e.g. Leg Day Primer">
+                    <input type="text" id="template-name" placeholder="e.g. 6 Week Strength Block" style="margin-bottom:0;">
                 </div>
                 <div>
-                    <label>Section Type</label>
-                    <select id="template-type">
-                        <option value="warmup">Warm Up</option>
-                        <option value="workout">Main Workout</option>
-                    </select>
+                    <label>Sessions</label>
+                    <input type="number" id="session-count" value="6" min="1" max="52" placeholder="6" style="margin-bottom:0;">
                 </div>
+                <button class="btn btn-outline btn-sm" style="height:42px;" onclick="generateSessions()">⚡ Generate</button>
             </div>
-
-            <div id="builder-area" style="min-height:150px; margin-bottom:16px;">
-                <div id="builder-empty" style="text-align:center; color:#333; padding:40px; border:2px dashed #1a2a35; border-radius:6px; font-size:0.8rem;">
-                    Add exercises from the Vault to start building.
-                </div>
-            </div>
-
-            <button class="btn btn-green" id="save-btn" onclick="saveTemplate()">💾 SAVE TEMPLATE</button>
         </div>
 
+        <!-- SESSION EDITOR -->
+        <div class="card" id="session-editor" style="display:none;">
+            <div class="tab-row" id="session-tabs"></div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+                <button class="btn btn-outline btn-sm" onclick="duplicateSession()">Copy Prev Session</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteSession()">Delete Session</button>
+            </div>
+
+            <div class="section-div">
+                <span><i class="fas fa-fire"></i> WARM UP</span>
+            </div>
+            <div id="warmup-list"></div>
+
+            <div class="section-div main">
+                <span><i class="fas fa-dumbbell"></i> MAIN WORKOUT</span>
+            </div>
+            <div id="workout-list"></div>
+        </div>
+
+        <!-- SAVED TEMPLATES -->
         <div class="card">
-            <h3>Saved Templates</h3>
-            <div id="saved-warmups">
-                <div class="saved-section-title" style="color:#ff9800;">🔥 Warm Ups</div>
-                <div id="warmup-list"><div style="color:#333; font-size:0.75rem;">None saved.</div></div>
-            </div>
-            <div id="saved-workouts" style="margin-top:8px;">
-                <div class="saved-section-title" style="color:var(--brand-accent);">💪 Main Workouts</div>
-                <div id="workout-list"><div style="color:#333; font-size:0.75rem;">None saved.</div></div>
-            </div>
+            <h3>Saved Full Templates</h3>
+            <div id="saved-list"><div style="color:#333; font-size:0.75rem;">No templates saved yet.</div></div>
         </div>
+
     </div>
 </div>
 
 <!-- ADD EXERCISE MODAL -->
-<div id="add-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:6000; align-items:center; justify-content:center; padding:20px;" onclick="if(event.target===this)closeAddModal()">
-    <div style="background:var(--card-bg); border:1px solid var(--brand-accent); border-radius:12px; padding:24px; width:100%; max-width:500px; max-height:90vh; overflow-y:auto;">
+<div class="modal-overlay" id="add-modal" onclick="if(event.target===this)closeAddModal()">
+    <div class="modal">
         <h3>Add to Vault</h3>
         <label>Exercise Name</label>
         <input type="text" id="new-ex-name" placeholder="e.g. Goblet squat">
         <label>Tags</label>
-        <div id="modal-tags" style="background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; margin-bottom:12px;"></div>
-        <label>Video URL <span style="color:#555; font-size:0.55rem;">(optional)</span></label>
+        <div id="modal-tags" style="background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; margin-bottom:12px; max-height:280px; overflow-y:auto;"></div>
+        <label>Video URL <span style="color:#555; font-size:0.55rem;">(optional — blank = NO-VIDEO tag)</span></label>
         <input type="text" id="new-ex-video" placeholder="YouTube URL or leave blank">
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:4px;">
             <button class="btn btn-green" onclick="saveNewExercise()">Save</button>
@@ -193,11 +216,14 @@ function cleanTitle(title) {
     return title.replace(pat, '').trim() || title;
 }
 
+// ── STATE ─────────────────────────────────────────
 let activeFilters = new Set();
-let builderList = [];
+let sessions = [];
+let currentSession = 0;
 let modalTags = [];
 let editingId = null;
 
+// ── INIT ──────────────────────────────────────────
 window.onload = async () => {
     if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
     buildFilterUI();
@@ -206,10 +232,9 @@ window.onload = async () => {
     renderVault();
 };
 
-// ── FILTER UI ─────────────────────────────────────
+// ── FILTERS ───────────────────────────────────────
 function buildFilterUI() {
-    const el = document.getElementById('filter-groups');
-    el.innerHTML = Object.entries(filterGroups).map(([group, tags]) => `
+    document.getElementById('filter-groups').innerHTML = Object.entries(filterGroups).map(([group, tags]) => `
         <div class="filter-section">
             <div class="filter-section-title">${group}</div>
             <div class="filter-tags">
@@ -220,9 +245,7 @@ function buildFilterUI() {
 
 function toggleFilter(tag) {
     activeFilters.has(tag) ? activeFilters.delete(tag) : activeFilters.add(tag);
-    document.querySelectorAll(`.filter-tag[data-tag="${tag}"]`).forEach(el => {
-        el.classList.toggle('active', activeFilters.has(tag));
-    });
+    document.querySelectorAll(`.filter-tag[data-tag="${tag}"]`).forEach(el => el.classList.toggle('active', activeFilters.has(tag)));
     renderVault();
 }
 
@@ -235,16 +258,15 @@ function clearFilters() {
 // ── VAULT ─────────────────────────────────────────
 function renderVault() {
     const q = (document.getElementById('vault-search').value || '').toLowerCase().trim();
-    const results = (typeof exerciseDatabase !== 'undefined' ? exerciseDatabase : [])
-        .filter(e => {
-            const search = (e.searchStr || e.title || '').toLowerCase();
-            const matchText = !q || search.includes(q) || (e.title||'').toLowerCase().includes(q);
-            const matchTags = activeFilters.size === 0 || Array.from(activeFilters).every(tag => {
-                return new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i').test(search);
-            });
-            return matchText && matchTags;
-        })
-        .sort((a, b) => cleanTitle(a.title).localeCompare(cleanTitle(b.title)));
+    const db = typeof exerciseDatabase !== 'undefined' ? exerciseDatabase : [];
+    const results = db.filter(e => {
+        const search = (e.searchStr || e.title || '').toLowerCase();
+        const matchText = !q || search.includes(q) || (e.title||'').toLowerCase().includes(q);
+        const matchTags = activeFilters.size === 0 || Array.from(activeFilters).every(tag =>
+            new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i').test(search)
+        );
+        return matchText && matchTags;
+    }).sort((a, b) => cleanTitle(a.title).localeCompare(cleanTitle(b.title)));
 
     const el = document.getElementById('vault-results');
     if (!results.length) {
@@ -255,7 +277,10 @@ function renderVault() {
         const safe = e.title.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
         return `<div class="lib-result">
             <div class="lib-result-name">${cleanTitle(e.title)}</div>
-            <button class="add-btn" onclick="addToBuilder('${safe}')">ADD +</button>
+            <div style="display:flex; gap:3px; flex-shrink:0;">
+                <button class="add-btn-w" onclick="addEx('${safe}','warmup')">+ W</button>
+                <button class="add-btn-m" onclick="addEx('${safe}','exercises')">+ M</button>
+            </div>
         </div>`;
     }).join('');
 }
@@ -270,106 +295,162 @@ async function loadCustomExercises() {
     } catch(e) {}
 }
 
-// ── BUILDER ───────────────────────────────────────
-function addToBuilder(name) {
-    builderList.push({
+// ── SESSION MANAGEMENT ────────────────────────────
+function generateSessions() {
+    const count = Math.min(52, Math.max(1, parseInt(document.getElementById('session-count').value) || 6));
+    if (sessions.length > 0 && !confirm(`Replace current ${sessions.length} sessions with ${count} new ones?`)) return;
+    sessions = Array.from({ length: count }, (_, i) => ({
+        sessionNum: i + 1,
+        warmup: [],
+        exercises: []
+    }));
+    currentSession = 0;
+    document.getElementById('session-editor').style.display = 'block';
+    renderTabs();
+    renderLists();
+}
+
+function renderTabs() {
+    const container = document.getElementById('session-tabs');
+    container.innerHTML = sessions.map((s, i) =>
+        `<div class="tab ${i === currentSession ? 'active' : ''}" onclick="switchSession(${i})">Sn ${s.sessionNum}</div>`
+    ).join('') + `<div class="tab-add" onclick="addSession()">+ Add</div>`;
+}
+
+function switchSession(i) {
+    currentSession = i;
+    renderTabs();
+    renderLists();
+}
+
+function addSession() {
+    if (sessions.length >= 52) return alert('Maximum 52 sessions.');
+    sessions.push({ sessionNum: sessions.length + 1, warmup: [], exercises: [] });
+    currentSession = sessions.length - 1;
+    renderTabs();
+    renderLists();
+}
+
+function deleteSession() {
+    if (sessions.length <= 1) return alert('A template needs at least one session.');
+    if (!confirm(`Delete Session ${sessions[currentSession].sessionNum}?`)) return;
+    sessions.splice(currentSession, 1);
+    sessions.forEach((s, i) => { s.sessionNum = i + 1; });
+    if (currentSession >= sessions.length) currentSession = sessions.length - 1;
+    renderTabs();
+    renderLists();
+}
+
+function duplicateSession() {
+    if (currentSession === 0) return alert('No previous session to copy from.');
+    const prev = sessions[currentSession - 1];
+    sessions[currentSession].warmup = JSON.parse(JSON.stringify(prev.warmup));
+    sessions[currentSession].exercises = JSON.parse(JSON.stringify(prev.exercises));
+    renderLists();
+}
+
+// ── EXERCISE MANAGEMENT ───────────────────────────
+function addEx(name, type) {
+    if (!sessions.length) return alert('Generate sessions first.');
+    sessions[currentSession][type].push({
         name: cleanTitle(name),
         grouping: '',
         setsData: [{ reps: '10', weight: '0', tempo: '//', rpe: '7' }],
         notes: ''
     });
-    renderBuilder();
+    renderLists();
 }
 
-function renderBuilder() {
-    const el = document.getElementById('builder-area');
-    const empty = document.getElementById('builder-empty');
-    if (!builderList.length) {
-        el.innerHTML = '';
-        el.appendChild(document.getElementById('builder-empty') || Object.assign(document.createElement('div'), {
-            id: 'builder-empty',
-            style: 'text-align:center; color:#333; padding:40px; border:2px dashed #1a2a35; border-radius:6px; font-size:0.8rem;',
-            textContent: 'Add exercises from the Vault to start building.'
-        }));
+function renderLists() {
+    renderList('warmup-list', sessions[currentSession].warmup, 'warmup');
+    renderList('workout-list', sessions[currentSession].exercises, 'exercises');
+}
+
+function renderList(id, list, type) {
+    const el = document.getElementById(id);
+    if (!list.length) {
+        el.innerHTML = `<div style="color:#333; font-size:0.75rem; padding:12px; text-align:center;">No exercises — add from vault.</div>`;
         return;
     }
-    el.innerHTML = builderList.map((ex, i) => `
-        <div class="builder-item">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <div style="display:flex; align-items:center; gap:10px;">
+    el.innerHTML = list.map((ex, i) => `
+        <div class="ex-item">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <div style="display:flex; align-items:center; gap:8px;">
                     <div style="display:flex; flex-direction:column; gap:2px;">
-                        <i class="fas fa-chevron-up" style="cursor:pointer; font-size:0.7rem; color:var(--brand-accent); opacity:0.6;" onclick="moveItem(${i},-1)"></i>
-                        <i class="fas fa-chevron-down" style="cursor:pointer; font-size:0.7rem; color:var(--brand-accent); opacity:0.6;" onclick="moveItem(${i},1)"></i>
+                        <i class="fas fa-chevron-up" style="cursor:pointer; font-size:0.65rem; color:var(--brand-accent); opacity:0.6;" onclick="moveEx(${i},'${type}',-1)"></i>
+                        <i class="fas fa-chevron-down" style="cursor:pointer; font-size:0.65rem; color:var(--brand-accent); opacity:0.6;" onclick="moveEx(${i},'${type}',1)"></i>
                     </div>
                     <div class="ex-title">${ex.name}</div>
                 </div>
-                <i class="fas fa-trash" style="color:#555; cursor:pointer;" onclick="builderList.splice(${i},1); renderBuilder();"></i>
+                <i class="fas fa-trash" style="color:#555; cursor:pointer;" onclick="sessions[currentSession].${type}.splice(${i},1); renderLists();"></i>
             </div>
-            <div style="display:flex; gap:8px; margin-bottom:8px;">
-                <input type="text" placeholder="Group (e.g. A1)" value="${(ex.grouping||'').replace(/"/g,'&quot;')}" onchange="builderList[${i}].grouping=this.value" style="width:110px; padding:6px; margin-bottom:0;">
-                <input type="text" placeholder="Notes..." value="${(ex.notes||'').replace(/"/g,'&quot;')}" onchange="builderList[${i}].notes=this.value" style="flex:1; padding:6px; margin-bottom:0;">
-            </div>
+            <input type="text" placeholder="Group (e.g. A1)" value="${(ex.grouping||'').replace(/"/g,'&quot;')}" onchange="sessions[currentSession].${type}[${i}].grouping=this.value" style="margin-bottom:6px; padding:6px;">
             ${ex.setsData.map((s, si) => `
                 <div class="metrics-grid">
                     <div class="metric-col"><label>SET ${si+1}</label></div>
-                    <div class="metric-col"><label>REPS</label><input type="text" value="${s.reps||''}" onchange="builderList[${i}].setsData[${si}].reps=this.value"></div>
-                    <div class="metric-col"><label>KG</label><input type="text" value="${s.weight||''}" onchange="builderList[${i}].setsData[${si}].weight=this.value"></div>
-                    <div class="metric-col"><label>TEMPO</label><input type="text" value="${s.tempo||''}" onchange="builderList[${i}].setsData[${si}].tempo=this.value"></div>
-                    <div class="metric-col"><label>RPE</label><input type="text" value="${s.rpe||''}" onchange="builderList[${i}].setsData[${si}].rpe=this.value"></div>
-                    <i class="fas fa-minus-circle" style="color:#b71c1c; cursor:pointer; align-self:center;" onclick="builderList[${i}].setsData.splice(${si},1); renderBuilder();"></i>
+                    <div class="metric-col"><label>REPS</label><input type="text" value="${s.reps||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].reps=this.value"></div>
+                    <div class="metric-col"><label>KG</label><input type="text" value="${s.weight||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].weight=this.value"></div>
+                    <div class="metric-col"><label>TEMPO</label><input type="text" value="${s.tempo||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].tempo=this.value"></div>
+                    <div class="metric-col"><label>RPE</label><input type="text" value="${s.rpe||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].rpe=this.value"></div>
+                    <i class="fas fa-minus-circle" style="color:#b71c1c; cursor:pointer; align-self:center;" onclick="sessions[currentSession].${type}[${i}].setsData.splice(${si},1); renderLists();"></i>
                 </div>`).join('')}
-            <button class="btn btn-outline" style="padding:5px 10px; font-size:0.6rem; width:auto; margin-top:10px;" onclick="builderList[${i}].setsData.push({...builderList[${i}].setsData.slice(-1)[0]}); renderBuilder();">+ SET</button>
+            <button class="btn btn-outline" style="padding:4px 10px; font-size:0.6rem; width:auto; margin-top:8px;" onclick="sessions[currentSession].${type}[${i}].setsData.push({...sessions[currentSession].${type}[${i}].setsData.slice(-1)[0]}); renderLists();">+ SET</button>
         </div>`).join('');
 }
 
-function moveItem(i, dir) {
-    if (i+dir < 0 || i+dir >= builderList.length) return;
-    [builderList[i], builderList[i+dir]] = [builderList[i+dir], builderList[i]];
-    renderBuilder();
-}
-
-function resetBuilder() {
-    if (!confirm('Clear current build?')) return;
-    builderList = []; editingId = null;
-    document.getElementById('template-name').value = '';
-    document.getElementById('save-btn').textContent = '💾 SAVE TEMPLATE';
-    renderBuilder();
+function moveEx(i, type, dir) {
+    const list = sessions[currentSession][type];
+    if (i+dir < 0 || i+dir >= list.length) return;
+    [list[i], list[i+dir]] = [list[i+dir], list[i]];
+    renderLists();
 }
 
 // ── SAVE / LOAD ───────────────────────────────────
 async function saveTemplate() {
     const name = document.getElementById('template-name').value.trim();
-    const type = document.getElementById('template-type').value;
-    if (!name || !builderList.length) return alert('Need a name and at least one exercise.');
-    const data = { name, type, workout_data: builderList, creator: pb.authStore.model.id };
+    if (!name) return alert('Please enter a template name.');
+    if (!sessions.length) return alert('Generate sessions first.');
+
+    const data = {
+        name,
+        type: 'full',
+        workout_data: sessions,
+        creator: pb.authStore.model.id
+    };
+
     try {
         if (editingId) await pb.collection('templates').update(editingId, data);
         else await pb.collection('templates').create(data);
-        alert('Template saved!');
-        editingId = null;
-        document.getElementById('save-btn').textContent = '💾 SAVE TEMPLATE';
+
+        const btn = document.getElementById('save-btn');
+        const orig = btn.textContent;
+        btn.textContent = '✓ Saved!';
+        btn.style.background = '#26C6DA'; btn.style.color = '#000';
+        setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 2000);
+
         await fetchSavedTemplates();
     } catch(e) { alert(e.message); }
 }
 
 async function fetchSavedTemplates() {
     try {
-        const recs = await pb.collection('templates').getFullList({ sort: '-created' });
-        const warmups = recs.filter(r => r.type === 'warmup');
-        const workouts = recs.filter(r => r.type === 'workout');
-
-        const row = r => `<div class="saved-row">
-            <div class="saved-row-name">${r.name}</div>
-            <div style="display:flex; gap:12px;">
-                <i class="fas fa-edit" style="color:var(--brand-accent); cursor:pointer;" onclick="loadTemplate('${r.id}')"></i>
-                <i class="fas fa-trash" style="color:#ff5252; cursor:pointer;" onclick="deleteTemplate('${r.id}')"></i>
-            </div>
-        </div>`;
-
-        document.getElementById('warmup-list').innerHTML = warmups.length
-            ? warmups.map(row).join('') : '<div style="color:#333; font-size:0.75rem; padding:8px 0;">None saved.</div>';
-        document.getElementById('workout-list').innerHTML = workouts.length
-            ? workouts.map(row).join('') : '<div style="color:#333; font-size:0.75rem; padding:8px 0;">None saved.</div>';
+        const recs = await pb.collection('templates').getFullList({ filter: 'type="full"', sort: '-created' });
+        const el = document.getElementById('saved-list');
+        if (!recs.length) { el.innerHTML = '<div style="color:#333; font-size:0.75rem;">No templates saved yet.</div>'; return; }
+        el.innerHTML = recs.map(r => {
+            const count = Array.isArray(r.workout_data) ? r.workout_data.length
+                : (typeof r.workout_data === 'string' ? (() => { try { return JSON.parse(r.workout_data).length; } catch(e){ return '?'; } })() : '?');
+            return `<div class="saved-row">
+                <div>
+                    <span class="saved-row-name">${r.name}</span>
+                    <span class="saved-row-meta">${count} sessions</span>
+                </div>
+                <div style="display:flex; gap:12px;">
+                    <i class="fas fa-edit" style="color:var(--brand-accent); cursor:pointer;" onclick="loadTemplate('${r.id}')"></i>
+                    <i class="fas fa-trash" style="color:#ff5252; cursor:pointer;" onclick="deleteTemplate('${r.id}')"></i>
+                </div>
+            </div>`;
+        }).join('');
     } catch(e) { console.error(e); }
 }
 
@@ -377,36 +458,60 @@ async function loadTemplate(id) {
     try {
         const rec = await pb.collection('templates').getOne(id);
         editingId = rec.id;
-        builderList = typeof rec.workout_data === 'string' ? JSON.parse(rec.workout_data) : rec.workout_data;
+        let data = rec.workout_data;
+        if (typeof data === 'string') data = JSON.parse(data);
+        // Support both flat array and {schedule:[]} formats
+        sessions = Array.isArray(data) ? data : (data.schedule || data);
+        sessions = sessions.map((s, i) => ({
+            ...s,
+            sessionNum: s.sessionNum || i + 1,
+            warmup: s.warmup || [],
+            exercises: s.exercises || []
+        }));
         document.getElementById('template-name').value = rec.name;
-        document.getElementById('template-type').value = rec.type;
-        document.getElementById('save-btn').textContent = '🆙 UPDATE TEMPLATE';
-        renderBuilder();
+        document.getElementById('session-count').value = sessions.length;
+        currentSession = 0;
+        document.getElementById('session-editor').style.display = 'block';
+        document.getElementById('save-btn').textContent = '🆙 Update Template';
+        renderTabs();
+        renderLists();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch(e) { alert(e.message); }
 }
 
 async function deleteTemplate(id) {
-    if (!confirm('Delete this template?')) return;
-    try { await pb.collection('templates').delete(id); await fetchSavedTemplates(); }
-    catch(e) { alert(e.message); }
+    if (!confirm('Permanently delete this template?')) return;
+    try {
+        await pb.collection('templates').delete(id);
+        if (editingId === id) resetBuilder();
+        await fetchSavedTemplates();
+    } catch(e) { alert(e.message); }
+}
+
+function resetBuilder() {
+    if (sessions.length && !confirm('Clear current template?')) return;
+    sessions = []; currentSession = 0; editingId = null;
+    document.getElementById('template-name').value = '';
+    document.getElementById('session-count').value = '6';
+    document.getElementById('save-btn').textContent = '💾 Save Template';
+    document.getElementById('session-editor').style.display = 'none';
+    document.getElementById('session-tabs').innerHTML = '';
 }
 
 // ── ADD EXERCISE MODAL ────────────────────────────
 function openAddModal() {
     modalTags = [];
-    const el = document.getElementById('modal-tags');
-    el.innerHTML = Object.entries(filterGroups).map(([group, tags]) => `
-        <div class="modal-group-title">${group}</div>
-        <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:6px;">
+    document.getElementById('modal-tags').innerHTML = Object.entries(filterGroups).map(([group, tags]) => `
+        <div style="font-size:0.5rem; color:var(--brand-accent); font-weight:800; margin:8px 0 4px; font-family:'Montserrat'; text-transform:uppercase;">${group}</div>
+        <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px;">
             ${tags.map(tag => `<button class="modal-tag-btn" data-tag="${tag}" onclick="toggleModalTag('${tag}',this)">${tag.replace(/-/g,' ')}</button>`).join('')}
         </div>`).join('');
     document.getElementById('new-ex-name').value = '';
     document.getElementById('new-ex-video').value = '';
-    document.getElementById('add-modal').style.display = 'flex';
+    document.getElementById('add-modal').classList.add('open');
 }
 
-function closeAddModal() { document.getElementById('add-modal').style.display = 'none'; }
+function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
 
 function toggleModalTag(tag, btn) {
     if (modalTags.includes(tag)) { modalTags = modalTags.filter(t => t !== tag); btn.classList.remove('active'); }
