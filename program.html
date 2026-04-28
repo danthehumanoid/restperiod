@@ -8,6 +8,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
     <script src="exercises.js"></script>
     <style>
+        /* Remove number input spinners */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
         :root { --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA; --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24; --input-bg: #002840; }
         * { box-sizing: border-box; }
