@@ -396,43 +396,52 @@ function generateExerciseHTML(list, type) {
             ${ex.setsData.map((s, si) => {
                 const baseId = `${type}-${i}-${si}`;
                 const isChecked = (s.act_reps && s.act_weight) ? 'checked' : '';
-                return `<div class="set-container">
-                    <div class="set-label">SET ${si+1}</div>
-                    <div class="set-grid">
-                        <div class="set-row-label" style="color:#26C6DA;">DO</div>
-                        <div>
-                            <div class="cell-header" style="color:#26C6DA88;">REPS</div>
-                            <div class="do-cell">${s.reps||'—'}</div>
-                        </div>
-                        <div>
-                            <div class="cell-header" style="color:#26C6DA88;">KG</div>
-                            <div class="do-cell">${s.weight||'—'}</div>
-                        </div>
-                        <div>
-                            <div class="cell-header" style="color:#26C6DA88;">TEMPO</div>
-                            <div class="do-cell" style="cursor:help;" onclick="alert('TEMPO: ${(s.tempo||'N/A').replace(/'/g,"\\'")}\\n\\n1. ECCENTRIC\\n2. PAUSE\\n3. CONCENTRIC\\n4. PAUSE')">${s.tempo||'—'}</div>
-                        </div>
-                        <div>
-                            <div class="cell-header" style="color:#26C6DA88;">RPE</div>
-                            <div class="do-cell" style="cursor:help;" onclick="alert('RPE: ${s.rpe||'N/A'}\\n\\n10: Max effort\\n9: Near failure\\n8: 2 reps left\\n7: Moderate')">${s.rpe||'—'}</div>
-                        </div>
-                    </div>
-                    <div class="set-grid">
-                        <div class="set-row-label" style="color:#4ade80;">DID</div>
-                        <div>
-                            <input type="number" id="reps-${baseId}" class="did-cell" placeholder="0" value="${s.act_reps||''}" onchange="autoSaveSet('${type}',${i},${si},'act_reps',this.value)">
-                        </div>
-                        <div>
-                            <input type="number" id="weight-${baseId}" class="did-cell" placeholder="0" value="${s.act_weight||''}" onchange="autoSaveSet('${type}',${i},${si},'act_weight',this.value)">
-                        </div>
-                        <div>
-                            <input type="number" step="0.5" id="rpe-${baseId}" class="did-cell" placeholder="—" value="${s.act_rpe||''}" onchange="autoSaveSet('${type}',${i},${si},'act_rpe',this.value)">
-                        </div>
-                        <div class="tick-wrap">
-                            <input type="checkbox" class="tick-box" ${isChecked} onclick="fillSetData('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe}',this.checked)">
-                        </div>
-                    </div>
-                    <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="80" value="${(s.act_note||'').replace(/"/g,'&quot;')}" onchange="autoSaveSet('${type}',${i},${si},'act_note',this.value)">
+                // DO ROW — 6 columns: label + REPS, KG, REST, RPE, TEMPO
+return `<div class="set-container">
+    <div class="set-label">SET ${si+1}</div>
+    <div class="set-grid" style="grid-template-columns:36px 1fr 1fr 1fr 1fr 1fr;">
+        <div class="set-row-label" style="color:#26C6DA;">DO</div>
+        <div>
+            <div class="cell-header" style="color:#26C6DA88;">REPS</div>
+            <div class="do-cell">${s.reps||'—'}</div>
+        </div>
+        <div>
+            <div class="cell-header" style="color:#26C6DA88;">KG</div>
+            <div class="do-cell">${s.weight||'—'}</div>
+        </div>
+        <div>
+            <div class="cell-header" style="color:#26C6DA88;">REST</div>
+            <div class="do-cell">${s.rest||'—'}</div>
+        </div>
+        <div>
+            <div class="cell-header" style="color:#26C6DA88;">RPE</div>
+            <div class="do-cell" style="cursor:help;" onclick="alert('RPE: ${s.rpe||'N/A'}\\n\\n10: Max\\n9: Near failure\\n8: 2 reps left\\n7: Moderate')">${s.rpe||'—'}</div>
+        </div>
+        <div>
+            <div class="cell-header" style="color:#26C6DA88;">TEMPO</div>
+            <div class="do-cell" style="cursor:help;" onclick="alert('TEMPO: ${(s.tempo||'N/A').replace(/'/g,"\\'")}\\n\\n1. ECCENTRIC\\n2. PAUSE\\n3. CONCENTRIC\\n4. PAUSE')">${s.tempo||'—'}</div>
+        </div>
+    </div>
+    <div class="set-grid" style="grid-template-columns:36px 1fr 1fr 1fr 1fr 1fr;">
+        <div class="set-row-label" style="color:#4ade80;">DID</div>
+        <div>
+            <input type="number" id="reps-${baseId}" class="did-cell" placeholder="0" value="${s.act_reps||''}" onchange="autoSaveSet('${type}',${i},${si},'act_reps',this.value)">
+        </div>
+        <div>
+            <input type="number" id="weight-${baseId}" class="did-cell" placeholder="0" value="${s.act_weight||''}" onchange="autoSaveSet('${type}',${i},${si},'act_weight',this.value)">
+        </div>
+        <div>
+            <input type="text" id="rest-${baseId}" class="did-cell" placeholder="—" value="${s.act_rest||''}" onchange="autoSaveSet('${type}',${i},${si},'act_rest',this.value)">
+        </div>
+        <div>
+            <input type="number" step="0.5" id="rpe-${baseId}" class="did-cell" placeholder="—" value="${s.act_rpe||''}" onchange="autoSaveSet('${type}',${i},${si},'act_rpe',this.value)">
+        </div>
+        <div class="tick-wrap" style="align-items:flex-end; padding-bottom:2px;">
+            <input type="checkbox" class="tick-box" ${isChecked} onclick="fillSetData('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe}',this.checked)">
+        </div>
+    </div>
+    <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="80" value="${(s.act_note||'').replace(/"/g,'&quot;')}" onchange="autoSaveSet('${type}',${i},${si},'act_note',this.value)">
+</div>`;
                 </div>`;
             }).join('')}
             ${ex.notes ? `<div style="font-size:0.8rem; color:#777; margin-top:5px; font-style:italic;">Coach Note: ${ex.notes}</div>` : ''}
