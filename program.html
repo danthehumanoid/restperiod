@@ -449,12 +449,22 @@ return `<div class="set-container">
     }).join('');
 }
 
-// ── VIDEO ─────────────────────────────────────────
 function openExercisePreview(name) {
-    const cleanName = name.replace(/^[A-Z][0-9]\s+/, '').trim().toLowerCase();
-    const match = masterExerciseList.find(ex => ex.title.toLowerCase().includes(cleanName) || cleanName.includes(ex.title.toLowerCase()));
+    // Try exact title match first, then partial
+    const nameLower = name.toLowerCase();
+    let match = masterExerciseList.find(ex => ex.title.toLowerCase() === nameLower);
+    if (!match) match = masterExerciseList.find(ex => ex.title.toLowerCase().includes(nameLower) || nameLower.includes(ex.title.toLowerCase()));
+    // Also try with tags stripped
+    if (!match) {
+        const stripped = name.replace(/^((?:[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)\s+)+/, '').trim().toLowerCase();
+        match = masterExerciseList.find(ex => {
+            const exStripped = ex.title.replace(/^((?:[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)\s+)+/, '').trim().toLowerCase();
+            return exStripped === stripped || exStripped.includes(stripped) || stripped.includes(exStripped);
+        });
+    }
     if (match) {
         const videoUrl = match.src || match.video || '';
+        if (!videoUrl) { alert('No video for: ' + name); return; }
         const container = document.getElementById('video-player-content');
         if (videoUrl.includes('.mp4') || videoUrl.includes('.mov') || videoUrl.includes('pocketbase') || videoUrl.startsWith('videos/')) {
             container.innerHTML = `<video controls autoplay loop playsinline style="width:100%; display:block;"><source src="${videoUrl}" type="video/mp4"></video>`;
