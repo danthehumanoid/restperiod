@@ -442,7 +442,7 @@ return `<div class="set-container">
     </div>
     <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="80" value="${(s.act_note||'').replace(/"/g,'&quot;')}" onchange="autoSaveSet('${type}',${i},${si},'act_note',this.value)">
 </div>`;
-                </div>`;
+            
             }).join('')}
             ${ex.notes ? `<div style="font-size:0.8rem; color:#777; margin-top:5px; font-style:italic;">Coach Note: ${ex.notes}</div>` : ''}
         </div>`;
