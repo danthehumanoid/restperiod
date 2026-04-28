@@ -454,21 +454,21 @@ return `<div class="set-container">
 }
 
 function openExercisePreview(name) {
-    // Try exact title match first, then partial
-    const nameLower = name.toLowerCase();
-    let match = masterExerciseList.find(ex => ex.title.toLowerCase() === nameLower);
-    if (!match) match = masterExerciseList.find(ex => ex.title.toLowerCase().includes(nameLower) || nameLower.includes(ex.title.toLowerCase()));
-    // Also try with tags stripped
-    if (!match) {
-        const stripped = name.replace(/^((?:[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)\s+)+/, '').trim().toLowerCase();
-        match = masterExerciseList.find(ex => {
-            const exStripped = ex.title.replace(/^((?:[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)\s+)+/, '').trim().toLowerCase();
-            return exStripped === stripped || exStripped.includes(stripped) || stripped.includes(exStripped);
-        });
+    const nameLower = name.trim().toLowerCase();
+
+    // Strip all-caps tag tokens from the start of a title
+    function stripTags(t) {
+        return t.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim().toLowerCase();
     }
+
+    let match =
+        masterExerciseList.find(ex => ex.title.toLowerCase() === nameLower) ||
+        masterExerciseList.find(ex => stripTags(ex.title) === nameLower) ||
+        masterExerciseList.find(ex => stripTags(ex.title).includes(nameLower) || nameLower.includes(stripTags(ex.title)));
+
     if (match) {
         const videoUrl = match.src || match.video || '';
-        if (!videoUrl) { alert('No video for: ' + name); return; }
+        if (!videoUrl || videoUrl.includes('NO-VIDEO')) { alert('No video available for this exercise.'); return; }
         const container = document.getElementById('video-player-content');
         if (videoUrl.includes('.mp4') || videoUrl.includes('.mov') || videoUrl.includes('pocketbase') || videoUrl.startsWith('videos/')) {
             container.innerHTML = `<video controls autoplay loop playsinline style="width:100%; display:block;"><source src="${videoUrl}" type="video/mp4"></video>`;
