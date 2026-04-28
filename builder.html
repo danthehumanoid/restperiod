@@ -47,7 +47,7 @@
         .move-arrow { cursor: pointer; color: var(--brand-accent); font-size: 0.9rem; opacity: 0.5; transition: 0.2s; }
         .move-arrow:hover { opacity: 1; }
         .exercise-name-title { font-size: 1.1rem; color: var(--brand-accent); font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; }
-        .metrics-grid { display: grid; grid-template-columns: 0.6fr 1fr 1fr 1fr 1fr 0.4fr; gap: 5px; margin-top: 10px; }
+        .metrics-grid { display: grid; gap: 5px; margin-top: 10px; }
         .metric-unit { display: flex; flex-direction: column; align-items: center; }
         .metric-unit label { font-size: 0.5rem; margin-bottom: 2px; color: var(--brand-accent); }
         .metric-unit input { font-size: 0.85rem; text-align: center; background: #000; border: 1px solid #004d7a; width: 100%; padding: 6px; color: white; border-radius: 4px; }
@@ -277,8 +277,9 @@ const filterGroups = {
 };
 
 function cleanExTitle(title) {
-    const tagPattern = new RegExp(`^((?:${KNOWN_TAGS.map(t => t.replace(/-/g,'[- ]')).join('|')})\\s+)+`, 'i');
-    return title.replace(tagPattern, '').trim() || title;
+    // Only strip leading tokens that are pure uppercase (with optional hyphens/numbers)
+    // Stop as soon as we hit a mixed-case word
+    return title.replace(/^((?:[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)\s+)+/, '').trim() || title;
 }
 
 // ── STATE ─────────────────────────────────────────
@@ -375,7 +376,7 @@ function runLibrarySearch() {
 function addEx(name, type) {
     const clean = cleanExTitle(name);
     programData[currentWeekIndex][type].push({
-        name: clean, grouping: '', setsData: [{reps:'10', weight:'0', tempo:'//', rpe:'7'}], notes: ''
+        name: clean, grouping: '', setsData: [{reps:'10', weight:'0', rest:'', tempo:'//', rpe:'7'}], notes: ''
     });
     saveHistory();
     renderLists();
@@ -597,14 +598,15 @@ function renderListMarkup(id, list, type) {
             </div>
             <input type="text" value="${(ex.grouping||'').replace(/"/g,'&quot;')}" placeholder="Group (e.g. A1)" onchange="programData[currentWeekIndex].${type}[${i}].grouping=this.value; saveHistory();">
             ${ex.setsData.map((s,si) => `
-                <div class="metrics-grid">
-                    <div class="metric-unit"><label>SET ${si+1}</label></div>
-                    <div class="metric-unit"><label>REPS</label><input type="text" value="${s.reps||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].reps=this.value; saveHistory();"></div>
-                    <div class="metric-unit"><label>KG</label><input type="text" value="${s.weight||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].weight=this.value; saveHistory();"></div>
-                    <div class="metric-unit"><label>TEMPO</label><input type="text" value="${s.tempo||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].tempo=this.value; saveHistory();"></div>
-                    <div class="metric-unit"><label>RPE</label><input type="text" value="${s.rpe||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rpe=this.value; saveHistory();"></div>
-                    <i class="fas fa-minus-circle" style="color:#b71c1c; cursor:pointer; align-self:center;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.splice(${si},1); saveHistory(); renderLists();"></i>
-                </div>`).join('')}
+               <div class="metrics-grid" style="grid-template-columns: 0.6fr 1fr 1fr 1fr 1fr 1fr 0.4fr;">
+    <div class="metric-unit"><label>SET ${si+1}</label></div>
+    <div class="metric-unit"><label>REPS</label><input type="text" value="${s.reps||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].reps=this.value; saveHistory();"></div>
+    <div class="metric-unit"><label>KG</label><input type="text" value="${s.weight||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].weight=this.value; saveHistory();"></div>
+    <div class="metric-unit"><label>REST</label><input type="text" value="${s.rest||''}" placeholder="90s" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rest=this.value; saveHistory();"></div>
+    <div class="metric-unit"><label>RPE</label><input type="text" value="${s.rpe||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rpe=this.value; saveHistory();"></div>
+    <div class="metric-unit"><label>TEMPO</label><input type="text" value="${s.tempo||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].tempo=this.value; saveHistory();"></div>
+    <i class="fas fa-minus-circle" style="color:#b71c1c; cursor:pointer; align-self:center;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.splice(${si},1); saveHistory(); renderLists();"></i>
+</div>`).join('')}
             <button class="btn btn-outline" style="padding:6px; font-size:0.6rem; width:auto; margin-top:12px;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.push({...programData[currentWeekIndex].${type}[${i}].setsData.slice(-1)[0]}); saveHistory(); renderLists();">+ SET</button>
         </div>`).join('');
 }
