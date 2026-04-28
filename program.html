@@ -285,73 +285,41 @@
             ${ex.setsData.map((s, si) => {
                 const baseId = `${type}-${i}-${si}`;
                 return `<div class="set-container">
-    <div style="font-size:0.65rem; font-weight:800; color:var(--brand-accent); font-family:'Montserrat'; margin-bottom:8px; letter-spacing:0.5px;">SET ${si+1}</div>
-
-    <!-- GRID: label + 4 cells -->
-    <div style="display:grid; grid-template-columns:36px 1fr 1fr 1fr 1fr; gap:6px; margin-bottom:6px; align-items:center;">
-
-        <!-- DO label -->
-        <div style="font-size:0.58rem; font-weight:800; color:#26C6DA; font-family:'Montserrat'; text-align:right; padding-right:4px;">DO</div>
-
-        <!-- DO REPS -->
-        <div>
-            <div style="font-size:0.48rem; color:#26C6DA88; font-weight:800; font-family:'Montserrat'; text-align:center; margin-bottom:2px;">REPS</div>
-            <div style="padding:9px 6px; text-align:center; border:1px solid #26C6DA33; background:#00131c; font-size:0.95rem; color:#26C6DA; font-weight:700; border-radius:4px;">${s.reps||'—'}</div>
-        </div>
-
-        <!-- DO KG -->
-        <div>
-            <div style="font-size:0.48rem; color:#26C6DA88; font-weight:800; font-family:'Montserrat'; text-align:center; margin-bottom:2px;">KG</div>
-            <div style="padding:9px 6px; text-align:center; border:1px solid #26C6DA33; background:#00131c; font-size:0.95rem; color:#26C6DA; font-weight:700; border-radius:4px;">${s.weight||'—'}</div>
-        </div>
-
-        <!-- DO TEMPO -->
-        <div>
-            <div style="font-size:0.48rem; color:#26C6DA88; font-weight:800; font-family:'Montserrat'; text-align:center; margin-bottom:2px;">TEMPO</div>
-            <div onclick="alert('TEMPO: ${s.tempo||'N/A'}\\n\\n1. ECCENTRIC\\n2. PAUSE\\n3. CONCENTRIC\\n4. PAUSE')" style="padding:9px 6px; text-align:center; border:1px solid #26C6DA33; background:#00131c; font-size:0.95rem; color:#26C6DA; font-weight:700; border-radius:4px; cursor:help;">${s.tempo||'—'}</div>
-        </div>
-
-        <!-- DO RPE -->
-        <div>
-            <div style="font-size:0.48rem; color:#26C6DA88; font-weight:800; font-family:'Montserrat'; text-align:center; margin-bottom:2px;">RPE</div>
-            <div onclick="alert('RPE: ${s.rpe||'N/A'}\\n\\n10: Max\\n9: Near failure\\n8: 2 reps left\\n7: Moderate')" style="padding:9px 6px; text-align:center; border:1px solid #26C6DA33; background:#00131c; font-size:0.95rem; color:#26C6DA; font-weight:700; border-radius:4px; cursor:help;">${s.rpe||'—'}</div>
-        </div>
-    </div>
-
-    <!-- DID ROW -->
-    <div style="display:grid; grid-template-columns:36px 1fr 1fr 1fr 1fr; gap:6px; align-items:center;">
-
-        <!-- DID label -->
-        <div style="font-size:0.58rem; font-weight:800; color:#4ade80; font-family:'Montserrat'; text-align:right; padding-right:4px;">DID</div>
-
-        <!-- DID REPS -->
-        <div>
-            <input type="number" id="reps-${baseId}" class="actual-input" placeholder="0" value="${s.act_reps||''}" onchange="autoSaveSet('${type}',${i},${si},'act_reps',this.value)" style="border-color:#2E7D32 !important; color:#4ade80 !important; margin:0 !important; padding:9px 6px !important; font-size:0.95rem !important; text-align:center; width:100%;">
-        </div>
-
-        <!-- DID KG -->
-        <div>
-            <input type="number" id="weight-${baseId}" class="actual-input" placeholder="0" value="${s.act_weight||''}" onchange="autoSaveSet('${type}',${i},${si},'act_weight',this.value)" style="border-color:#2E7D32 !important; color:#4ade80 !important; margin:0 !important; padding:9px 6px !important; font-size:0.95rem !important; text-align:center; width:100%;">
-        </div>
-
-        <!-- DID RPE -->
-        <div>
-            <input type="number" step="0.5" id="rpe-${baseId}" class="actual-input" placeholder="—" value="${s.act_rpe||''}" onchange="autoSaveSet('${type}',${i},${si},'act_rpe',this.value)" style="border-color:#2E7D32 !important; color:#4ade80 !important; margin:0 !important; padding:9px 6px !important; font-size:0.95rem !important; text-align:center; width:100%;">
-        </div>
-
-        <!-- TICK -->
-        <div style="display:flex; justify-content:center;">
-            <input type="checkbox" class="tick-box" style="width:36px; height:36px;" ${(s.act_reps && s.act_weight) ? 'checked' : ''} onclick="fillSetData('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe}',this.checked)">
-        </div>
-    </div>
-
-    <!-- NOTES -->
-    <div style="margin-top:8px;">
-        <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="50" value="${s.act_note||''}" onchange="autoSaveSet('${type}',${i},${si},'act_note',this.value)" style="width:100%;">
-    </div>
-</div>`;
-
-                    <!-- NOTES ROW -->
+                    <div style="font-size:0.65rem; font-weight:800; color:var(--brand-accent); font-family:'Montserrat'; margin-bottom:8px; letter-spacing:0.5px;">SET ${si+1}</div>
+                    <div style="display:grid; grid-template-columns:36px 1fr 1fr 1fr 1fr; gap:6px; margin-bottom:6px; align-items:center;">
+                        <div style="font-size:0.58rem; font-weight:800; color:#26C6DA; font-family:'Montserrat'; text-align:right; padding-right:4px;">DO</div>
+                        <div>
+                            <div style="font-size:0.48rem; color:#26C6DA88; font-weight:800; font-family:'Montserrat'; text-align:center; margin-bottom:2px;">REPS</div>
+                            <div style="padding:9px 6px; text-align:center; border:1px solid #26C6DA33; background:#00131c; font-size:0.95rem; color:#26C6DA; font-weight:700; border-radius:4px;">${s.reps||'—'}</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.48rem; color:#26C6DA88; font-weight:800; font-family:'Montserrat'; text-align:center; margin-bottom:2px;">KG</div>
+                            <div style="padding:9px 6px; text-align:center; border:1px solid #26C6DA33; background:#00131c; font-size:0.95rem; color:#26C6DA; font-weight:700; border-radius:4px;">${s.weight||'—'}</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.48rem; color:#26C6DA88; font-weight:800; font-family:'Montserrat'; text-align:center; margin-bottom:2px;">TEMPO</div>
+                            <div style="padding:9px 6px; text-align:center; border:1px solid #26C6DA33; background:#00131c; font-size:0.95rem; color:#26C6DA; font-weight:700; border-radius:4px; cursor:help;" onclick="alert('TEMPO: ${s.tempo||'N/A'}\\n\\n1. ECCENTRIC\\n2. PAUSE\\n3. CONCENTRIC\\n4. PAUSE')">${s.tempo||'—'}</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.48rem; color:#26C6DA88; font-weight:800; font-family:'Montserrat'; text-align:center; margin-bottom:2px;">RPE</div>
+                            <div style="padding:9px 6px; text-align:center; border:1px solid #26C6DA33; background:#00131c; font-size:0.95rem; color:#26C6DA; font-weight:700; border-radius:4px; cursor:help;" onclick="alert('RPE: ${s.rpe||'N/A'}\\n\\n10: Max\\n9: Near failure\\n8: 2 reps left\\n7: Moderate')">${s.rpe||'—'}</div>
+                        </div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:36px 1fr 1fr 1fr 1fr; gap:6px; align-items:center;">
+                        <div style="font-size:0.58rem; font-weight:800; color:#4ade80; font-family:'Montserrat'; text-align:right; padding-right:4px;">DID</div>
+                        <div>
+                            <input type="number" id="reps-${baseId}" class="actual-input" placeholder="0" value="${s.act_reps||''}" onchange="autoSaveSet('${type}',${i},${si},'act_reps',this.value)" style="border-color:#2E7D32 !important; color:#4ade80 !important; margin:0 !important; padding:9px 6px !important; font-size:0.95rem !important; text-align:center; width:100%;">
+                        </div>
+                        <div>
+                            <input type="number" id="weight-${baseId}" class="actual-input" placeholder="0" value="${s.act_weight||''}" onchange="autoSaveSet('${type}',${i},${si},'act_weight',this.value)" style="border-color:#2E7D32 !important; color:#4ade80 !important; margin:0 !important; padding:9px 6px !important; font-size:0.95rem !important; text-align:center; width:100%;">
+                        </div>
+                        <div>
+                            <input type="number" step="0.5" id="rpe-${baseId}" class="actual-input" placeholder="—" value="${s.act_rpe||''}" onchange="autoSaveSet('${type}',${i},${si},'act_rpe',this.value)" style="border-color:#2E7D32 !important; color:#4ade80 !important; margin:0 !important; padding:9px 6px !important; font-size:0.95rem !important; text-align:center; width:100%;">
+                        </div>
+                        <div style="display:flex; justify-content:center;">
+                            <input type="checkbox" class="tick-box" style="width:36px; height:36px;" ${(s.act_reps && s.act_weight) ? 'checked' : ''} onclick="fillSetData('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe}',this.checked)">
+                        </div>
+                    </div>
                     <div style="margin-top:8px;">
                         <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="50" value="${s.act_note||''}" onchange="autoSaveSet('${type}',${i},${si},'act_note',this.value)" style="width:100%;">
                     </div>
@@ -361,7 +329,6 @@
         </div>`;
     }).join('');
 }
-
     function renderContent() {
         const session = currentProgram.schedule[currentWeekIndex];
         const scheduledStr = session.scheduledDate ? new Date(session.scheduledDate+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'}) : null;
@@ -427,14 +394,13 @@ premadePrograms = [...templateRecs, ...freeRecs];
         // Handle URL param
         if (urlId) {
             const inOwn = ownRecs.find(p => p.id === urlId);
-            const inPremade = otherRecs.find(p => p.id === urlId);
+            const inPremade = premadePrograms.find(p => p.id === urlId);
             if (inOwn) { document.getElementById('program-selector').value = urlId; loadSelectedProgram('own'); return; }
             if (inPremade) { document.getElementById('premade-selector').value = urlId; loadSelectedProgram('premade'); return; }
         }
 
         if (ownRecs.length > 0) loadSelectedProgram('own');
-        else if (otherRecs.length > 0) { document.getElementById('premade-selector').selectedIndex = 1; loadSelectedProgram('premade'); }
-    }
+       else if (premadePrograms.length > 0) { document.getElementById('premade-selector').selectedIndex = 1; loadSelectedProgram('premade'); }
 
     function loadSelectedProgram(source) {
         let id;
