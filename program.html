@@ -390,7 +390,7 @@ function generateExerciseHTML(list, type) {
         const groupBadge = ex.grouping
             ? `<div style="display:inline-block; background:var(--brand-primary); color:var(--brand-accent); padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:800; margin-bottom:8px; border:1px solid var(--brand-accent);">${ex.grouping.toUpperCase()}</div>`
             : '';
-        const cleanName = ex.name.replace(/^([A-Z0-9-]+\s)+/, '');
+        const cleanName = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || ex.name;
         return `<div class="exercise-card">
             ${groupBadge}
             <div class="exercise-title" onclick="openExercisePreview('${ex.name.replace(/'/g,"\\'")}')">
@@ -456,31 +456,31 @@ return `<div class="set-container">
 function openExercisePreview(name) {
     const nameLower = name.trim().toLowerCase();
 
-    // Strip all-caps tag tokens from the start of a title
     function stripTags(t) {
         return t.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim().toLowerCase();
     }
 
-    let match =
+    const match =
         masterExerciseList.find(ex => ex.title.toLowerCase() === nameLower) ||
         masterExerciseList.find(ex => stripTags(ex.title) === nameLower) ||
-        masterExerciseList.find(ex => stripTags(ex.title).includes(nameLower) || nameLower.includes(stripTags(ex.title)));
+        masterExerciseList.find(ex => {
+            const stripped = stripTags(ex.title);
+            return stripped.includes(nameLower) || nameLower.includes(stripped);
+        });
 
-    if (match) {
-        const videoUrl = match.src || match.video || '';
-        if (!videoUrl || videoUrl.includes('NO-VIDEO')) { alert('No video available for this exercise.'); return; }
-        const container = document.getElementById('video-player-content');
-        if (videoUrl.includes('.mp4') || videoUrl.includes('.mov') || videoUrl.includes('pocketbase') || videoUrl.startsWith('videos/')) {
-            container.innerHTML = `<video controls autoplay loop playsinline style="width:100%; display:block;"><source src="${videoUrl}" type="video/mp4"></video>`;
-        } else {
-            container.innerHTML = `<div style="position:relative; padding-bottom:56.25%; height:0;"><iframe src="${convertToEmbed(videoUrl)}" style="position:absolute; top:0; left:0; width:100%; height:100%;" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>`;
-        }
-        document.getElementById('videoModal').style.display = 'block';
+    if (!match) { alert('No video found for: ' + name); return; }
+
+    const videoUrl = match.src || match.video || '';
+    if (!videoUrl) { alert('No video available for this exercise.'); return; }
+
+    const container = document.getElementById('video-player-content');
+    if (videoUrl.includes('.mp4') || videoUrl.includes('.mov') || videoUrl.includes('pocketbase') || videoUrl.startsWith('videos/')) {
+        container.innerHTML = `<video controls autoplay loop playsinline style="width:100%; display:block;"><source src="${videoUrl}" type="video/mp4"></video>`;
     } else {
-        alert('No video found for: ' + name);
+        container.innerHTML = `<div style="position:relative; padding-bottom:56.25%; height:0;"><iframe src="${convertToEmbed(videoUrl)}" style="position:absolute; top:0; left:0; width:100%; height:100%;" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>`;
     }
+    document.getElementById('videoModal').style.display = 'block';
 }
-
 function convertToEmbed(url) {
     if (!url || url.includes('embed')) return url;
     let videoId = '';
