@@ -460,6 +460,12 @@ function openExercisePreview(name) {
         return t.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim().toLowerCase();
     }
 
+    // DEBUG — open browser console to see this
+    console.log('Looking for:', nameLower);
+    console.log('masterExerciseList length:', masterExerciseList.length);
+    const sample = masterExerciseList.slice(0, 3).map(e => ({title: e.title, stripped: stripTags(e.title), video: e.video||e.src}));
+    console.log('Sample entries:', JSON.stringify(sample));
+
     const match =
         masterExerciseList.find(ex => ex.title.toLowerCase() === nameLower) ||
         masterExerciseList.find(ex => stripTags(ex.title) === nameLower) ||
@@ -467,6 +473,9 @@ function openExercisePreview(name) {
             const stripped = stripTags(ex.title);
             return stripped.includes(nameLower) || nameLower.includes(stripped);
         });
+
+    console.log('Match found:', match ? match.title : 'NONE');
+    console.log('Video URL:', match ? (match.src || match.video || 'EMPTY') : 'N/A');
 
     if (!match) { alert('No video found for: ' + name); return; }
 
