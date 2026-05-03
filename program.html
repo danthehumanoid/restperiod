@@ -460,12 +460,6 @@ function openExercisePreview(name) {
         return t.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim().toLowerCase();
     }
 
-    // DEBUG — open browser console to see this
-    console.log('Looking for:', nameLower);
-    console.log('masterExerciseList length:', masterExerciseList.length);
-    const sample = masterExerciseList.slice(0, 3).map(e => ({title: e.title, stripped: stripTags(e.title), video: e.video||e.src}));
-    console.log('Sample entries:', JSON.stringify(sample));
-
     const match =
         masterExerciseList.find(ex => ex.title.toLowerCase() === nameLower) ||
         masterExerciseList.find(ex => stripTags(ex.title) === nameLower) ||
@@ -474,18 +468,15 @@ function openExercisePreview(name) {
             return stripped.includes(nameLower) || nameLower.includes(stripped);
         });
 
-    console.log('Match found:', match ? match.title : 'NONE');
-    console.log('Video URL:', match ? (match.src || match.video || 'EMPTY') : 'N/A');
-
     if (!match) { alert('No video found for: ' + name); return; }
 
     const videoUrl = match.src || match.video || '';
     if (!videoUrl) { alert('No video available for this exercise.'); return; }
 
     const container = document.getElementById('video-player-content');
-if (videoUrl.includes('.mp4') || videoUrl.includes('.mov') || videoUrl.includes('pocketbase') || videoUrl.startsWith('videos/')) {
-    const encodedUrl = videoUrl.split('/').map((seg, i) => i === 0 ? seg : encodeURIComponent(seg)).join('/');
-    container.innerHTML = `<video controls autoplay loop playsinline style="width:100%; display:block;"><source src="${encodedUrl}" type="video/mp4"></video>`;
+    if (videoUrl.includes('.mp4') || videoUrl.includes('.mov') || videoUrl.includes('pocketbase') || videoUrl.startsWith('videos/')) {
+        const encodedUrl = videoUrl.split('/').map((seg, i) => i === 0 ? seg : encodeURIComponent(seg)).join('/');
+        container.innerHTML = `<video controls autoplay loop playsinline style="width:100%; display:block;"><source src="${encodedUrl}" type="video/mp4"></video>`;
     } else {
         container.innerHTML = `<div style="position:relative; padding-bottom:56.25%; height:0;"><iframe src="${convertToEmbed(videoUrl)}" style="position:absolute; top:0; left:0; width:100%; height:100%;" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div>`;
     }
