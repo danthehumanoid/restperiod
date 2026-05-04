@@ -277,9 +277,8 @@ const filterGroups = {
 };
 
 function cleanExTitle(title) {
-    // Only strip leading tokens that are pure uppercase (with optional hyphens/numbers)
-    // Stop as soon as we hit a mixed-case word
-    return title.replace(/^((?:[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)\s+)+/, '').trim() || title;
+    // Only strip tokens that are FULLY uppercase (all caps, digits, hyphens only)
+    return title.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || title;
 }
 
 // ── STATE ─────────────────────────────────────────
@@ -726,7 +725,10 @@ async function saveAsTemplate() {
 // ── ADD EXERCISE TO VAULT ─────────────────────────
 async function loadCustomExercises() {
     try {
-        const recs = await pb.collection('custom_exercises').getFullList({ requestKey: null });
+        const recs = await pb.collection('custom_exercises').getFullList({ 
+    filter: `uploaded_by = "${pb.authStore.model.id}"`,
+    requestKey: null 
+});
         recs.forEach(r => {
             if (!exerciseDatabase.some(e => e.id===r.id))
                 exerciseDatabase.push({ id:r.id, title:r.title, searchStr:r.searchStr||r.title, video:r.video });

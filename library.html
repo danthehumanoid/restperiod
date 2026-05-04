@@ -290,10 +290,10 @@ async function loadExercises() {
 
     // Custom exercises — only this trainer's
     try {
-        const recs = await pb.collection('custom_exercises').getFullList({
-            filter: `uploaded_by = "${pb.authStore.model.id}"`,
-            sort: 'title', requestKey: null
-        });
+        const recs = await pb.collection('custom_exercises').getFullList({ 
+    filter: `uploaded_by = "${pb.authStore.model.id}"`,
+    requestKey: null 
+});
         recs.forEach(r => {
             if (!allExercises.some(e => e.id === r.id)) {
                 allExercises.push({
