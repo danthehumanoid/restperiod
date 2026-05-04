@@ -205,56 +205,57 @@
         </div>
     </div>
 
-    <!-- RIGHT — NOTES + CALENDAR -->
-    <div class="col" id="col-right">
-        <div class="right-tabs">
-    <button class="right-tab active" id="tab-notes-btn" onclick="switchRightTab('notes')">📝 Notes</button>
-    <button class="right-tab" id="tab-cal-btn" onclick="switchRightTab('calendar')">📅 Calendar</button>
-    <button class="right-tab" id="tab-checkin-btn" onclick="switchRightTab('checkin')">📊 Check-in</button>
-</div>
-
-        <div id="panel-notes">
-            <div class="card">
-                <div class="card-title"><i class="fas fa-pen"></i> New Session Note</div>
-                <textarea id="new-note-content" style="height:80px;" placeholder="How did today's session go?"></textarea>
-                <button class="btn btn-green" onclick="saveNewNote()">Post to Timeline</button>
-            </div>
-            <div class="card-title" style="margin-bottom:10px;"><i class="fas fa-history"></i> Coach's Timeline</div>
-            <div id="notes-timeline"></div>
-        </div>
-
-        <div id="panel-calendar" style="display:none;">
-            <div class="cal-view-toggle">
-                <button class="cal-view-btn active" id="view-month-btn" onclick="setCalView('month')">Month</button>
-                <button class="cal-view-btn" id="view-week-btn" onclick="setCalView('week')">Week</button>
-                <button class="cal-view-btn" id="view-day-btn" onclick="setCalView('day')">Day</button>
-            </div>
-            <div class="cal-nav">
-                <button onclick="moveCal(-1)">← Prev</button>
-                <span class="cal-period" id="cal-period"></span>
-                <button onclick="moveCal(1)">Next →</button>
-            </div>
-            <div id="cal-content"></div>
-        <div id="panel-checkin" style="display:none;">
-            <div class="card">
-                <div class="card-title">📊 Log Client Check-in</div>
-                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px;">
-                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">⚡ ENERGY</div><input type="number" id="ci-energy" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
-                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">😴 SLEEP</div><input type="number" id="ci-sleep" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
-                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🧠 MINDSET</div><input type="number" id="ci-mindset" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
-                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🏋️ TRAINING</div><input type="number" id="ci-training" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
-                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🥗 NUTRITION</div><input type="number" id="ci-nutrition" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
-                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🚶 ACTIVITY</div><input type="number" id="ci-incidental" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
-                </div>
-                <div style="margin-bottom:8px;"><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🏆 WIN THIS WEEK</div><input type="text" id="ci-win" placeholder="Something that went well..." style="margin:0;"></div>
-                <div style="margin-bottom:12px;"><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🎯 WORK ON</div><input type="text" id="ci-workon" placeholder="Something to improve..." style="margin:0;"></div>
-                <button class="btn btn-green" onclick="saveCheckin()">Save Check-in</button>
-            </div>
-            <div class="card-title" style="margin-bottom:10px;">Recent Check-ins</div>
-            <div id="checkin-history"></div>
-        </div>
-
+    <!-- RIGHT — NOTES + CALENDAR + CHECKIN -->
+<div class="col" id="col-right">
+    <div class="right-tabs">
+        <button class="right-tab active" id="tab-notes-btn" onclick="switchRightTab('notes')">📝 Notes</button>
+        <button class="right-tab" id="tab-cal-btn" onclick="switchRightTab('calendar')">📅 Calendar</button>
+        <button class="right-tab" id="tab-checkin-btn" onclick="switchRightTab('checkin')">📊 Check-in</button>
     </div>
+
+    <div id="panel-notes">
+        <div class="card">
+            <div class="card-title"><i class="fas fa-pen"></i> New Session Note</div>
+            <textarea id="new-note-content" style="height:80px;" placeholder="How did today's session go?"></textarea>
+            <button class="btn btn-green" onclick="saveNewNote()">Post to Timeline</button>
+        </div>
+        <div class="card-title" style="margin-bottom:10px;"><i class="fas fa-history"></i> Coach's Timeline</div>
+        <div id="notes-timeline"></div>
+    </div>
+
+    <div id="panel-calendar" style="display:none;">
+        <div class="cal-view-toggle">
+            <button class="cal-view-btn active" id="view-month-btn" onclick="setCalView('month')">Month</button>
+            <button class="cal-view-btn" id="view-week-btn" onclick="setCalView('week')">Week</button>
+            <button class="cal-view-btn" id="view-day-btn" onclick="setCalView('day')">Day</button>
+        </div>
+        <div class="cal-nav">
+            <button onclick="moveCal(-1)">← Prev</button>
+            <span class="cal-period" id="cal-period"></span>
+            <button onclick="moveCal(1)">Next →</button>
+        </div>
+        <div id="cal-content"></div>
+    </div>
+
+    <div id="panel-checkin" style="display:none;">
+        <div class="card">
+            <div class="card-title">📊 Log Client Check-in</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px;">
+                <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">⚡ ENERGY</div><input type="number" id="ci-energy" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">😴 SLEEP</div><input type="number" id="ci-sleep" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🧠 MINDSET</div><input type="number" id="ci-mindset" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🏋️ TRAINING</div><input type="number" id="ci-training" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🥗 NUTRITION</div><input type="number" id="ci-nutrition" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🚶 ACTIVITY</div><input type="number" id="ci-incidental" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+            </div>
+            <div style="margin-bottom:8px;"><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🏆 WIN THIS WEEK</div><input type="text" id="ci-win" placeholder="Something that went well..." style="margin:0;"></div>
+            <div style="margin-bottom:12px;"><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🎯 WORK ON</div><input type="text" id="ci-workon" placeholder="Something to improve..." style="margin:0;"></div>
+            <button class="btn btn-green" onclick="saveCheckin()">Save Check-in</button>
+        </div>
+        <div class="card-title" style="margin-bottom:10px;">Recent Check-ins</div>
+        <div id="checkin-history"></div>
+    </div>
+
 </div>
 
 <!-- PLAN MODAL -->
