@@ -208,9 +208,10 @@
     <!-- RIGHT — NOTES + CALENDAR -->
     <div class="col" id="col-right">
         <div class="right-tabs">
-            <button class="right-tab active" id="tab-notes-btn" onclick="switchRightTab('notes')">📝 Notes</button>
-            <button class="right-tab" id="tab-cal-btn" onclick="switchRightTab('calendar')">📅 Calendar</button>
-        </div>
+    <button class="right-tab active" id="tab-notes-btn" onclick="switchRightTab('notes')">📝 Notes</button>
+    <button class="right-tab" id="tab-cal-btn" onclick="switchRightTab('calendar')">📅 Calendar</button>
+    <button class="right-tab" id="tab-checkin-btn" onclick="switchRightTab('checkin')">📊 Check-in</button>
+</div>
 
         <div id="panel-notes">
             <div class="card">
@@ -234,7 +235,25 @@
                 <button onclick="moveCal(1)">Next →</button>
             </div>
             <div id="cal-content"></div>
+        <div id="panel-checkin" style="display:none;">
+            <div class="card">
+                <div class="card-title">📊 Log Client Check-in</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px;">
+                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">⚡ ENERGY</div><input type="number" id="ci-energy" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">😴 SLEEP</div><input type="number" id="ci-sleep" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🧠 MINDSET</div><input type="number" id="ci-mindset" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🏋️ TRAINING</div><input type="number" id="ci-training" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🥗 NUTRITION</div><input type="number" id="ci-nutrition" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                    <div><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🚶 ACTIVITY</div><input type="number" id="ci-incidental" min="1" max="10" placeholder="1-10" style="margin:0;"></div>
+                </div>
+                <div style="margin-bottom:8px;"><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🏆 WIN THIS WEEK</div><input type="text" id="ci-win" placeholder="Something that went well..." style="margin:0;"></div>
+                <div style="margin-bottom:12px;"><div style="font-size:0.58rem;color:#888;font-family:'Montserrat';font-weight:800;margin-bottom:4px;">🎯 WORK ON</div><input type="text" id="ci-workon" placeholder="Something to improve..." style="margin:0;"></div>
+                <button class="btn btn-green" onclick="saveCheckin()">Save Check-in</button>
+            </div>
+            <div class="card-title" style="margin-bottom:10px;">Recent Check-ins</div>
+            <div id="checkin-history"></div>
         </div>
+
     </div>
 </div>
 
@@ -384,13 +403,14 @@ function filterClients() {
 
 // ── RIGHT PANEL TABS ──────────────────────────────
 function switchRightTab(tab) {
-    document.getElementById('tab-notes-btn').classList.toggle('active', tab==='notes');
-    document.getElementById('tab-cal-btn').classList.toggle('active', tab==='calendar');
-    document.getElementById('panel-notes').style.display = tab==='notes' ? 'block' : 'none';
-    document.getElementById('panel-calendar').style.display = tab==='calendar' ? 'block' : 'none';
+    ['notes','calendar','checkin'].forEach(t => {
+        document.getElementById(`tab-${t === 'calendar' ? 'cal' : t}-btn`).classList.toggle('active', t===tab);
+        document.getElementById(`panel-${t}`).style.display = t===tab ? 'block' : 'none';
+    });
     const mBtn = document.getElementById('mtab-right');
-    if (mBtn) mBtn.textContent = tab==='calendar' ? '📅 Calendar' : '📝 Notes';
+    if (mBtn) mBtn.textContent = tab==='calendar' ? '📅 Calendar' : tab==='checkin' ? '📊 Check-in' : '📝 Notes';
     if (tab==='calendar') renderCalendar();
+    if (tab==='checkin') loadCheckinHistory();
 }
 
 // ── NOTES ─────────────────────────────────────────
@@ -718,6 +738,67 @@ function renderDayView(sessionMap){
     html+=`</div></div>`;
     document.getElementById('cal-content').innerHTML=html;
     setTimeout(()=>{const w=document.getElementById('day-scroll');if(w)w.scrollTop=28*28;},50);
+}
+
+async function saveCheckin() {
+    if (!selectedClientId) return alert('Select a client first.');
+    const fields = ['energy','sleep','mindset','training','nutrition','incidental'];
+    const vals = {};
+    for (const f of fields) {
+        const v = parseInt(document.getElementById(`ci-${f}`).value);
+        if (!v || v < 1 || v > 10) return alert(`Please enter a valid score (1-10) for ${f}.`);
+        vals[f] = v;
+    }
+    try {
+        await pb.collection('checkins').create({
+            client: selectedClientId,
+            energy: vals.energy,
+            sleep: vals.sleep,
+            mindset: vals.mindset,
+            training: vals.training,
+            nutrition: vals.nutrition,
+            incidental: vals.incidental,
+            WIN: document.getElementById('ci-win').value.trim(),
+            WORK_ON: document.getElementById('ci-workon').value.trim()
+        });
+        ['energy','sleep','mindset','training','nutrition','incidental'].forEach(f => document.getElementById(`ci-${f}`).value = '');
+        document.getElementById('ci-win').value = '';
+        document.getElementById('ci-workon').value = '';
+        loadCheckinHistory();
+        alert('Check-in saved!');
+    } catch(e) { alert('Failed: ' + e.message); }
+}
+
+async function loadCheckinHistory() {
+    if (!selectedClientId) return;
+    try {
+        const recs = await pb.collection('checkins').getList(1, 5, {
+            filter: `client="${selectedClientId}"`, sort: '-created'
+        });
+        const el = document.getElementById('checkin-history');
+        if (!recs.items.length) { el.innerHTML = '<div class="empty">No check-ins yet.</div>'; return; }
+        el.innerHTML = recs.items.map(c => {
+            const avg = Math.round((c.energy+c.sleep+c.mindset+c.training+c.nutrition+c.incidental)/6);
+            const date = new Date(c.created).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});
+            const color = avg >= 7 ? '#4ade80' : avg >= 5 ? '#fb923c' : '#f87171';
+            return `<div class="card" style="margin-bottom:10px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <span style="font-size:0.75rem;font-weight:700;">${date}</span>
+                    <span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${color};">avg ${avg}/10</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px;">
+                    ${[['⚡','Energy',c.energy],['😴','Sleep',c.sleep],['🧠','Mindset',c.mindset],['🏋️','Training',c.training],['🥗','Nutrition',c.nutrition],['🚶','Activity',c.incidental]].map(([icon,label,val])=>`
+                    <div style="background:#050d12;border-radius:6px;padding:6px;text-align:center;border:1px solid var(--border);">
+                        <div style="font-size:0.75rem;">${icon}</div>
+                        <div style="font-family:'Montserrat';font-weight:800;font-size:0.9rem;color:var(--brand-accent);">${val}</div>
+                        <div style="font-size:0.48rem;color:#555;">${label}</div>
+                    </div>`).join('')}
+                </div>
+                ${c.WIN ? `<div style="font-size:0.75rem;color:#888;margin-bottom:3px;"><strong style="color:#4ade80;">WIN</strong> ${c.WIN}</div>` : ''}
+                ${c.WORK_ON ? `<div style="font-size:0.75rem;color:#888;"><strong style="color:#fb923c;">WORK ON</strong> ${c.WORK_ON}</div>` : ''}
+            </div>`;
+        }).join('');
+    } catch(e) { console.error(e); }
 }
 
 function handleLogout(){pb.authStore.clear();window.location.href='index.html';}
