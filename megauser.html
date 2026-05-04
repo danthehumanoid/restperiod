@@ -249,11 +249,15 @@ function renderStats() {
     });
 
     const totalSessions = allPrograms.reduce((acc, p) => {
+    try {
         let data = p.workout_data;
         if (typeof data === 'string') data = JSON.parse(data);
+        if (!data) return acc;
         const schedule = data.schedule || data;
+        if (!Array.isArray(schedule)) return acc;
         return acc + schedule.filter(s => s.sessionDate).length;
-    }, 0);
+    } catch(e) { return acc; }
+}, 0);
 
     document.getElementById('stats-grid').innerHTML = `
         <div class="stat-card">
