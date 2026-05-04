@@ -176,11 +176,17 @@
 <div class="dashboard-grid">
 
     <!-- LEFT — CLIENT LIST -->
-    <div class="col active" id="col-clients">
-        <div class="card-title">👥 Clients</div>
-        <input type="text" id="search-roster" placeholder="Search clients..." onkeyup="filterClients()" style="margin-bottom:12px;">
+    <!-- LEFT — CLIENT LIST -->
+<div class="col active" id="col-clients">
+    <div class="card-title" onclick="toggleClientList()" style="cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+        <span>👥 Clients</span>
+        <i class="fas fa-chevron-down" id="client-list-chevron" style="font-size:0.7rem; transition:0.2s;"></i>
+    </div>
+    <div id="client-list-body">
+        <input type="text" id="search-roster" placeholder="Search clients..." onkeyup="filterClients()" style="margin-bottom:12px; margin-top:8px;">
         <div id="roster-list"></div>
     </div>
+</div>
 
     <!-- MIDDLE — CLIENT DETAIL -->
     <div class="col" id="col-detail">
@@ -802,7 +808,13 @@ async function loadCheckinHistory() {
         }).join('');
     } catch(e) { console.error(e); }
 }
-
+function toggleClientList() {
+    const body = document.getElementById('client-list-body');
+    const chevron = document.getElementById('client-list-chevron');
+    const collapsed = body.style.display === 'none';
+    body.style.display = collapsed ? 'block' : 'none';
+    chevron.style.transform = collapsed ? 'rotate(0deg)' : 'rotate(-90deg)';
+}
 function handleLogout(){pb.authStore.clear();window.location.href='index.html';}
 </script>
 </body>
