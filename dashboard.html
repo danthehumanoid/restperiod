@@ -751,17 +751,18 @@ async function saveCheckin() {
         vals[f] = v;
     }
     try {
-        await pb.collection('checkins').create({
-            client: selectedClientId,
-            energy: vals.energy,
-            sleep: vals.sleep,
-            mindset: vals.mindset,
-            training: vals.training,
-            nutrition: vals.nutrition,
-            incidental: vals.incidental,
-            WIN: document.getElementById('ci-win').value.trim(),
-            WORK_ON: document.getElementById('ci-workon').value.trim()
-        });
+       await pb.collection('checkins').create({
+    client: selectedClientId,
+    energy: vals.energy,
+    sleep: vals.sleep,
+    mindset: vals.mindset,
+    training: vals.training,
+    nutrition: vals.nutrition,
+    incidental: vals.incidental,
+    notes: 0,
+    WIN: document.getElementById('ci-win').value.trim(),
+    WORK_ON: document.getElementById('ci-workon').value.trim()
+});
         ['energy','sleep','mindset','training','nutrition','incidental'].forEach(f => document.getElementById(`ci-${f}`).value = '');
         document.getElementById('ci-win').value = '';
         document.getElementById('ci-workon').value = '';
