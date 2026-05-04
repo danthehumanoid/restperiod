@@ -238,9 +238,11 @@ function renderStats() {
     const thisMonth = new Date(); thisMonth.setDate(1); thisMonth.setHours(0,0,0,0);
 
     allPrograms.forEach(p => {
-        let data = p.workout_data;
-        if (typeof data === 'string') data = JSON.parse(data);
-        const schedule = data.schedule || data;
+    let data = p.workout_data;
+    if (typeof data === 'string') { try { data = JSON.parse(data); } catch(e) { return; } }
+    if (!data) return;
+    const schedule = data.schedule || data;
+    if (!Array.isArray(schedule)) return;
         const completedSessions = schedule.filter(s => s.sessionDate).length;
         if (completedSessions > 0 && completedSessions < schedule.length) inProgress++;
         if (new Date(p.created) >= thisMonth) newThisMonth++;
