@@ -22,53 +22,28 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); padding-bottom: 80px; overflow-x: hidden; }
 
-        /* NAV */
-        .nav-top { display: flex; justify-content: space-between; padding: 5px 15px; background: #000; border-bottom: 1px solid #004d7a; align-items: center; position: sticky; top: 0; z-index: 1000; height: 60px; }
-        .nav-brand { font-weight: 800; font-size: 1.1rem; font-family: 'Montserrat'; }
+        .nav-top { display: flex; justify-content: space-between; padding: 5px 15px; background: #000; border-bottom: 1px solid #004d7a; align-items: center; position: sticky; top: 0; z-index: 1000; height: 60px; gap: 10px; }
+        .nav-brand { font-weight: 800; font-size: 1.1rem; font-family: 'Montserrat'; white-space: nowrap; }
         .nav-brand span { color: var(--brand-accent); }
-        .nav-right { display: flex; align-items: center; gap: 10px; }
-        .nav-user { font-size: 0.75rem; color: #888; }
-        .btn-logout { background: none; border: 1px solid #333; color: #888; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat'; font-weight: 700; }
-        .btn-logout:hover { color: var(--brand-accent); border-color: var(--brand-accent); }
+        .nav-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .nav-user { font-size: 0.72rem; color: #888; }
+        .btn-nav { background: none; border: 1px solid #333; color: #888; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat'; font-weight: 700; white-space: nowrap; transition: 0.2s; }
+        .btn-nav:hover { color: var(--brand-accent); border-color: var(--brand-accent); }
+        .btn-nav-accent { background: none; border: 1px solid var(--brand-accent); color: var(--brand-accent); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat'; font-weight: 700; white-space: nowrap; transition: 0.2s; }
+        .btn-nav-accent:hover { background: var(--brand-accent); color: #000; }
 
-        /* TOOLS ROW */
-        .tools-row { display: flex; gap: 8px; padding: 10px 15px; background: #000; border-bottom: 1px solid var(--border); overflow-x: auto; }
+        .tools-row { display: flex; gap: 8px; padding: 8px 15px; background: #000; border-bottom: 1px solid var(--border); overflow-x: auto; }
         .header-tool { color: var(--brand-accent); border: 1.5px solid rgba(38,198,218,0.3); border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; background: rgba(0,0,0,0.4); transition: 0.2s; font-size: 0.9rem; }
         .header-tool:hover { background: rgba(38,198,218,0.1); border-color: var(--brand-accent); }
 
-        /* UPGRADE BANNER */
         .upgrade-banner { background: linear-gradient(135deg, #003B5C, #004d7a); border-bottom: 1px solid #004d7a; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
         .upgrade-banner p { font-size: 0.75rem; color: #aaa; }
         .upgrade-banner strong { color: var(--brand-accent); }
         .btn-upgrade { background: var(--brand-accent); color: #000; border: none; padding: 7px 16px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; white-space: nowrap; }
 
         .container { max-width: 860px; margin: 0 auto; padding: 16px; }
-
-        /* CARDS */
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
         .section-title { font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-
-        /* SEARCH */
-        .search-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        .search-input { flex: 1; background: var(--input-bg); border: 1px solid #004d7a; border-radius: 6px; color: white; padding: 11px 14px; font-size: 0.9rem; font-family: inherit; }
-        .search-input:focus { outline: none; border-color: var(--brand-accent); }
-        .filter-toggle { background: var(--input-bg); border: 1px solid #004d7a; border-radius: 6px; color: var(--brand-accent); padding: 0 14px; font-size: 0.7rem; font-family: 'Montserrat'; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .filter-toggle.active, .filter-toggle:hover { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
-        .filter-panel { display: none; margin-bottom: 10px; }
-        .filter-panel.open { display: block; }
-        .filter-group { margin-bottom: 10px; }
-        .filter-group-label { font-size: 0.55rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .filter-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-        .filter-btn { padding: 4px 10px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: #888; font-size: 0.6rem; font-weight: 800; font-family: 'Montserrat'; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
-        .filter-btn.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
-        .results-count { font-size: 0.7rem; color: #555; margin-bottom: 6px; }
-        .results-list { background: #000; border: 1px solid var(--border); border-radius: 6px; max-height: 280px; overflow-y: auto; display: none; }
-        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; border-bottom: 1px solid #0e1b24; cursor: pointer; transition: 0.15s; }
-        .result-item:last-child { border-bottom: none; }
-        .result-item:hover { background: #152733; }
-        .result-name { font-size: 0.85rem; font-weight: 600; }
-        .result-tags { font-size: 0.6rem; color: #555; margin-top: 2px; }
-        .result-play { color: var(--brand-accent); font-size: 1.1rem; opacity: 0.6; }
 
         /* PROGRAMS */
         .program-select { width: 100%; background: var(--input-bg); border: 1px solid #004d7a; color: white; padding: 11px; border-radius: 6px; font-size: 0.9rem; margin-bottom: 14px; font-family: inherit; }
@@ -78,6 +53,22 @@
         .week-tab { padding: 7px 14px; background: #001a2c; border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; color: #888; font-weight: 600; font-family: 'Montserrat'; }
         .week-tab.active { background: var(--brand-accent); color: black; font-weight: 800; }
         .no-programs { color: #555; font-size: 0.85rem; text-align: center; padding: 30px; }
+
+        /* START BANNER */
+        .start-banner { background: linear-gradient(135deg, #003B5C, #002840); border: 1px solid var(--brand-accent); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 16px; }
+        .start-banner h3 { font-family: 'Montserrat'; font-size: 1rem; font-weight: 800; color: white; margin-bottom: 8px; }
+        .start-banner p { font-size: 0.8rem; color: #888; margin-bottom: 16px; line-height: 1.6; }
+        .btn-start { background: var(--brand-accent); color: #000; border: none; padding: 12px 32px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+        .btn-start:hover { background: #1eb3c5; }
+        .btn-start:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* MY PROGRAMS */
+        .my-prog-item { display: flex; justify-content: space-between; align-items: center; background: #050d12; padding: 12px 14px; margin-bottom: 8px; border-radius: 6px; border: 1px solid var(--border); gap: 8px; cursor: pointer; transition: 0.2s; }
+        .my-prog-item:hover { border-color: var(--brand-accent); }
+        .my-prog-item.active { border-color: var(--brand-accent); background: #0a1520; }
+        .my-prog-name { font-size: 0.88rem; font-weight: 700; }
+        .my-prog-meta { font-size: 0.65rem; color: #555; margin-top: 2px; }
+        .btn-log { background: var(--brand-accent); color: #000; border: none; padding: 5px 12px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; cursor: pointer; font-family: 'Montserrat'; white-space: nowrap; }
 
         /* EXERCISES */
         .exercise-card { background: #001a2c; padding: 14px; border-radius: 8px; border: 1px solid #004d7a; margin-bottom: 14px; }
@@ -97,7 +88,6 @@
         .date-label { font-size: 0.58rem; color: #aaa; text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 4px; font-family: 'Montserrat'; }
         .date-input { background: #000; border: 1px solid #004d7a; color: white; padding: 7px 10px; border-radius: 4px; font-size: 0.85rem; }
 
-        /* TOAST */
         #sync-toast { position: fixed; bottom: 20px; right: 20px; background: var(--brand-secondary); color: white; padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; display: none; z-index: 7000; }
 
         /* VIDEO MODAL */
@@ -106,6 +96,34 @@
         .video-box { background: #000; border-radius: 12px; width: 100%; max-width: 700px; position: relative; }
         .video-close { position: absolute; top: -40px; right: 0; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; }
         .video-title-bar { padding: 12px 16px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.9rem; color: var(--brand-accent); }
+
+        /* EXERCISE LIBRARY MODAL */
+        .lib-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
+        .lib-modal.open { display: flex; }
+        .lib-box { background: var(--card-bg); border: 1px solid var(--brand-accent); border-radius: 12px; padding: 20px; width: 100%; max-width: 600px; margin-top: 20px; }
+        .lib-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .lib-title { font-family: 'Montserrat'; font-weight: 800; font-size: 1rem; color: var(--brand-accent); }
+        .lib-close { background: none; border: none; color: #888; font-size: 1.4rem; cursor: pointer; }
+        .search-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .search-input { flex: 1; background: var(--input-bg); border: 1px solid #004d7a; border-radius: 6px; color: white; padding: 11px 14px; font-size: 0.9rem; font-family: inherit; }
+        .search-input:focus { outline: none; border-color: var(--brand-accent); }
+        .filter-toggle { background: var(--input-bg); border: 1px solid #004d7a; border-radius: 6px; color: var(--brand-accent); padding: 0 14px; font-size: 0.7rem; font-family: 'Montserrat'; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .filter-toggle.active, .filter-toggle:hover { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
+        .filter-panel { display: none; margin-bottom: 10px; }
+        .filter-panel.open { display: block; }
+        .filter-group { margin-bottom: 10px; }
+        .filter-group-label { font-size: 0.55rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .filter-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+        .filter-btn { padding: 4px 10px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: #888; font-size: 0.6rem; font-weight: 800; font-family: 'Montserrat'; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
+        .filter-btn.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
+        .results-count { font-size: 0.7rem; color: #555; margin-bottom: 6px; }
+        .results-list { background: #000; border: 1px solid var(--border); border-radius: 6px; max-height: 320px; overflow-y: auto; }
+        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; border-bottom: 1px solid #0e1b24; cursor: pointer; transition: 0.15s; }
+        .result-item:last-child { border-bottom: none; }
+        .result-item:hover { background: #152733; }
+        .result-name { font-size: 0.85rem; font-weight: 600; }
+        .result-tags { font-size: 0.6rem; color: #555; margin-top: 2px; }
+        .result-play { color: var(--brand-accent); font-size: 1.1rem; opacity: 0.6; }
 
         /* TOOL MODAL */
         .tool-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 5000; align-items: center; justify-content: center; }
@@ -132,7 +150,8 @@
     <div class="nav-brand">REST <span>PERIOD</span></div>
     <div class="nav-right">
         <span class="nav-user" id="nav-username"></span>
-        <button class="btn-logout" onclick="logout()">Logout</button>
+        <button class="btn-nav-accent" onclick="openLibrary()">🔍 Exercises</button>
+        <button class="btn-nav" onclick="logout()">Logout</button>
     </div>
 </div>
 
@@ -152,9 +171,41 @@
 
 <div class="container">
 
-    <!-- EXERCISE SEARCH -->
+    <!-- MY PROGRAMS -->
+    <div class="card" id="my-programs-card" style="display:none;">
+        <div class="section-title">💪 My Programs</div>
+        <div id="my-programs-list"></div>
+    </div>
+
+    <!-- FREE PROGRAMS BROWSER -->
     <div class="card">
-        <div class="section-title">🔍 Exercise Library</div>
+        <div class="section-title">📋 Free Programs</div>
+        <select class="program-select" id="program-selector" onchange="onProgramSelect()">
+            <option value="">-- Select a program --</option>
+        </select>
+        <div id="program-preview"></div>
+    </div>
+
+    <!-- ACTIVE SESSION -->
+    <div class="card" id="session-card" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <div class="section-title" style="margin:0;" id="session-title">Session</div>
+            <button onclick="closeSession()" style="background:none;border:none;color:#555;cursor:pointer;font-size:0.75rem;font-family:'Montserrat';font-weight:700;">✕ CLOSE</button>
+        </div>
+        <div class="progress-container"><div class="progress-fill" id="progress-bar"></div></div>
+        <div class="week-tabs" id="week-tabs"></div>
+        <div id="workout-content"></div>
+    </div>
+
+</div>
+
+<!-- EXERCISE LIBRARY MODAL -->
+<div class="lib-modal" id="lib-modal" onclick="if(event.target===this)closeLibrary()">
+    <div class="lib-box">
+        <div class="lib-header">
+            <span class="lib-title">🔍 Exercise Library</span>
+            <button class="lib-close" onclick="closeLibrary()">✕</button>
+        </div>
         <div class="search-row">
             <input type="text" class="search-input" id="search-input" placeholder="Search exercises..." oninput="runSearch()" />
             <button class="filter-toggle" id="filter-toggle-btn" onclick="toggleFilters()">FILTERS ▾</button>
@@ -163,18 +214,6 @@
         <div class="results-count" id="results-count"></div>
         <div class="results-list" id="results-list"></div>
     </div>
-
-    <!-- FREE PROGRAMS -->
-    <div class="card">
-        <div class="section-title">📋 Free Programs</div>
-        <select class="program-select" id="program-selector" onchange="loadSelectedProgram()">
-            <option value="">-- Select a program --</option>
-        </select>
-        <div class="progress-container"><div class="progress-fill" id="progress-bar"></div></div>
-        <div class="week-tabs" id="week-tabs"></div>
-        <div id="workout-content"><div class="no-programs">Select a program above to get started.</div></div>
-    </div>
-
 </div>
 
 <!-- VIDEO MODAL -->
@@ -299,16 +338,15 @@ window.onload = async () => {
     const role = pb.authStore.model.role;
     if (role === 'trainer' || role === 'admin') { window.location.href = 'dashboard.html'; return; }
     if (role === 'client') { window.location.href = 'client-dashboard.html'; return; }
-
     document.getElementById('nav-username').textContent = pb.authStore.model.name || pb.authStore.model.email;
     setupFilters();
     loadExercises();
-    await loadFreePrograms();
+    await Promise.all([loadFreePrograms(), loadMyPrograms()]);
 };
 
 function logout() { pb.authStore.clear(); window.location.href = 'index.html'; }
 
-// ── EXERCISE SEARCH ───────────────────────────────
+// ── EXERCISE LIBRARY ──────────────────────────────
 let allExercises = [];
 let activeFilters = [];
 let filterPanelOpen = false;
@@ -339,6 +377,9 @@ function loadExercises() {
     allExercises = (typeof exerciseDatabase !== 'undefined') ? [...exerciseDatabase] : [];
 }
 
+function openLibrary() { document.getElementById('lib-modal').classList.add('open'); }
+function closeLibrary() { document.getElementById('lib-modal').classList.remove('open'); }
+
 function toggleFilters() {
     filterPanelOpen = !filterPanelOpen;
     document.getElementById('filter-panel').classList.toggle('open', filterPanelOpen);
@@ -356,14 +397,13 @@ function runSearch() {
     const q = document.getElementById('search-input').value.toLowerCase().trim();
     const resultsList = document.getElementById('results-list');
     const resultsCount = document.getElementById('results-count');
-    if (!q && activeFilters.length === 0) { resultsList.style.display='none'; resultsCount.textContent=''; return; }
+    if (!q && activeFilters.length === 0) { resultsCount.textContent = ''; resultsList.innerHTML = ''; return; }
     const results = allExercises.filter(e => {
         const textMatch = !q || e.title.toLowerCase().includes(q) || (e.searchStr||'').toLowerCase().includes(q);
         const filterMatch = activeFilters.every(f => (e.searchStr||'').toUpperCase().includes(f));
         return textMatch && filterMatch;
     }).slice(0, 50);
     resultsCount.textContent = `${results.length} exercise${results.length !== 1 ? 's' : ''} found`;
-    resultsList.style.display = results.length ? 'block' : 'none';
     resultsList.innerHTML = results.map(e => {
         const cleanName = e.title.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim();
         const tags = (e.searchStr||'').split(' ').filter(t => t.length > 1 && t.length < 12).slice(0,4).join(' · ');
@@ -397,51 +437,140 @@ function closeVideo() {
     document.getElementById('video-content').innerHTML = '';
 }
 
-// ── FREE PROGRAMS ─────────────────────────────────
-let allPrograms = [];
+// ── MY PROGRAMS ───────────────────────────────────
+let myPrograms = [];
 let currentProgram = null;
 let currentWeekIndex = 0;
 
-async function loadFreePrograms() {
+async function loadMyPrograms() {
     try {
-        const recs = await pb.collection('programs').getFullList({ filter: 'is_free = true', sort: 'name' });
-        allPrograms = recs;
-        const sel = document.getElementById('program-selector');
-        if (!recs.length) { sel.innerHTML = '<option value="">No free programs available yet</option>'; return; }
-        sel.innerHTML = '<option value="">-- Select a program --</option>' +
-            recs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-    } catch(e) { console.error('Programs error:', e); }
+        const recs = await pb.collection('programs').getFullList({
+            filter: `client = "${pb.authStore.model.id}" && archived = false`,
+            sort: '-created'
+        });
+        myPrograms = recs;
+        renderMyPrograms();
+    } catch(e) { console.error(e); }
 }
 
-function loadSelectedProgram() {
-    const id = document.getElementById('program-selector').value;
-    if (!id) {
-        document.getElementById('workout-content').innerHTML = '<div class="no-programs">Select a program above to get started.</div>';
-        document.getElementById('week-tabs').innerHTML = '';
-        document.getElementById('progress-bar').style.width = '0%';
-        return;
-    }
-    const prog = allPrograms.find(p => p.id === id);
+function renderMyPrograms() {
+    const card = document.getElementById('my-programs-card');
+    const list = document.getElementById('my-programs-list');
+    if (!myPrograms.length) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    list.innerHTML = myPrograms.map(p => {
+        let total = 0, done = 0;
+        try {
+            let data = p.workout_data;
+            if (typeof data === 'string') data = JSON.parse(data);
+            const schedule = data.schedule || data;
+            schedule.forEach(w => {
+                [...(w.warmup||[]), ...(w.exercises||[])].forEach(ex =>
+                    (ex.setsData||[]).forEach(s => { total++; if (s.act_reps && s.act_weight) done++; })
+                );
+            });
+        } catch(e) {}
+        const pct = total ? Math.round((done/total)*100) : 0;
+        const started = new Date(p.created).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});
+        return `<div class="my-prog-item" onclick="openMyProgram('${p.id}')">
+            <div>
+                <div class="my-prog-name">${p.name}</div>
+                <div class="my-prog-meta">Started ${started} · ${pct}% complete</div>
+            </div>
+            <button class="btn-log" onclick="event.stopPropagation();openMyProgram('${p.id}')">LOG</button>
+        </div>`;
+    }).join('');
+}
+
+function openMyProgram(id) {
+    const prog = myPrograms.find(p => p.id === id);
+    if (!prog) return;
     let data = prog.workout_data;
     if (typeof data === 'string') data = JSON.parse(data);
-
-    // Deep copy template — never write back to the original
-    const template = JSON.parse(JSON.stringify(data.schedule || data));
-
-    // Restore any locally saved progress for this user+program
-    const key = `free_${pb.authStore.model.id}_${id}`;
-    const saved = localStorage.getItem(key);
-    const schedule = saved ? JSON.parse(saved) : template;
-
+    const schedule = JSON.parse(JSON.stringify(data.schedule || data));
     schedule.forEach(w => { if (!w.warmup) w.warmup = []; if (!w.exercises) w.exercises = []; });
-
-    currentProgram = { ...prog, schedule, _localKey: key };
+    currentProgram = { ...prog, schedule, _saveToDb: true };
     currentWeekIndex = 0;
+    document.getElementById('session-title').textContent = prog.name;
+    document.getElementById('session-card').style.display = 'block';
+    document.getElementById('session-card').scrollIntoView({ behavior: 'smooth' });
     renderWeekTabs();
     renderWorkout();
     updateProgressBar();
 }
 
+function closeSession() {
+    document.getElementById('session-card').style.display = 'none';
+    currentProgram = null;
+}
+
+// ── FREE PROGRAMS ─────────────────────────────────
+let allFreePrograms = [];
+
+async function loadFreePrograms() {
+    try {
+        const recs = await pb.collection('programs').getFullList({ filter: 'is_free = true', sort: 'name' });
+        allFreePrograms = recs;
+        const sel = document.getElementById('program-selector');
+        if (!recs.length) { sel.innerHTML = '<option value="">No free programs available yet</option>'; return; }
+        sel.innerHTML = '<option value="">-- Select a program --</option>' +
+            recs.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+    } catch(e) { console.error(e); }
+}
+
+function onProgramSelect() {
+    const id = document.getElementById('program-selector').value;
+    const preview = document.getElementById('program-preview');
+    if (!id) { preview.innerHTML = ''; return; }
+    const prog = allFreePrograms.find(p => p.id === id);
+    if (!prog) return;
+
+    // Check if already claimed
+    const alreadyClaimed = myPrograms.find(p => p.name === prog.name);
+
+    let data = prog.workout_data;
+    if (typeof data === 'string') data = JSON.parse(data);
+    const schedule = data.schedule || data;
+    const sessionCount = schedule.length;
+
+    preview.innerHTML = `<div class="start-banner">
+        <h3>${prog.name}</h3>
+        <p>${sessionCount} session${sessionCount!==1?'s':''} · Track your weights and dates in your own personal copy</p>
+        ${alreadyClaimed
+            ? `<div style="margin-bottom:12px;font-size:0.78rem;color:#4ade80;">✓ You already have this program — find it in My Programs above</div>
+               <button class="btn-start" onclick="openMyProgram('${alreadyClaimed.id}')">Open My Copy</button>`
+            : `<button class="btn-start" id="start-btn" onclick="claimProgram('${prog.id}')">▶ Start This Program</button>`
+        }
+    </div>`;
+}
+
+async function claimProgram(templateId) {
+    const btn = document.getElementById('start-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Creating...'; }
+    try {
+        const template = allFreePrograms.find(p => p.id === templateId);
+        if (!template) return;
+        const newProg = await pb.collection('programs').create({
+            name: template.name,
+            client: pb.authStore.model.id,
+            workout_data: template.workout_data,
+            is_free: false,
+            archived: false
+        });
+        myPrograms.unshift(newProg);
+        renderMyPrograms();
+        // Open it immediately
+        openMyProgram(newProg.id);
+        // Update preview to show already claimed
+        onProgramSelect();
+        showToast('Program started! 🔥');
+    } catch(e) {
+        alert('Failed to start program: ' + e.message);
+        if (btn) { btn.disabled = false; btn.textContent = '▶ Start This Program'; }
+    }
+}
+
+// ── SESSION RENDER ────────────────────────────────
 function renderWeekTabs() {
     document.getElementById('week-tabs').innerHTML = currentProgram.schedule.map((w, i) =>
         `<div class="week-tab ${i===currentWeekIndex?'active':''}" onclick="currentWeekIndex=${i};renderWeekTabs();renderWorkout();">
@@ -511,13 +640,13 @@ function previewExercise(name) {
     else alert('No video found for: ' + name);
 }
 
-function autoSave(type, exIdx, setIdx, field, val) {
+async function autoSave(type, exIdx, setIdx, field, val) {
     currentProgram.schedule[currentWeekIndex][type][exIdx].setsData[setIdx][field] = val;
-    saveLocal();
+    await syncProgram();
     updateProgressBar();
 }
 
-function quickFill(type, exIdx, setIdx, targetReps, targetWeight, targetRpe, isChecked) {
+async function quickFill(type, exIdx, setIdx, targetReps, targetWeight, targetRpe, isChecked) {
     if (!isChecked) return;
     const set = currentProgram.schedule[currentWeekIndex][type][exIdx].setsData[setIdx];
     const baseId = `${type}-${exIdx}-${setIdx}`;
@@ -527,31 +656,38 @@ function quickFill(type, exIdx, setIdx, targetReps, targetWeight, targetRpe, isC
     if (!repsEl.value || repsEl.value==0) { repsEl.value=targetReps; set.act_reps=targetReps; }
     if (!weightEl.value || weightEl.value==0) { weightEl.value=targetWeight; set.act_weight=targetWeight; }
     if (!rpeEl.value || rpeEl.value==0) { rpeEl.value=parseFloat(targetRpe)?targetRpe:''; set.act_rpe=rpeEl.value; }
-    saveLocal('Logged ✓');
+    await syncProgram('Logged ✓');
     updateProgressBar();
 }
 
-function saveSessionDate(val) {
+async function saveSessionDate(val) {
     currentProgram.schedule[currentWeekIndex].sessionDate = val;
-    saveLocal('Date saved ✓');
+    await syncProgram('Date saved ✓');
     renderWorkout();
 }
 
-function finishSession() {
+async function finishSession() {
     currentProgram.schedule[currentWeekIndex].sessionDate =
         currentProgram.schedule[currentWeekIndex].sessionDate || new Date().toISOString().split('T')[0];
-    saveLocal('Finished 🔥');
+    await syncProgram('Finished 🔥');
     renderWorkout();
+    // Refresh my programs list
+    const idx = myPrograms.findIndex(p => p.id === currentProgram.id);
+    if (idx > -1) myPrograms[idx] = { ...myPrograms[idx], workout_data: JSON.stringify({ schedule: currentProgram.schedule }) };
+    renderMyPrograms();
 }
 
-function saveLocal(msg = 'Saved ✓') {
-    localStorage.setItem(currentProgram._localKey, JSON.stringify(currentProgram.schedule));
-    const toast = document.getElementById('sync-toast');
-    toast.textContent = msg; toast.style.display = 'block';
-    setTimeout(() => toast.style.display = 'none', 1500);
+async function syncProgram(msg = 'Saved ✓') {
+    try {
+        await pb.collection('programs').update(currentProgram.id, {
+            workout_data: JSON.stringify({ schedule: currentProgram.schedule })
+        });
+        showToast(msg);
+    } catch(e) { console.error('Sync failed:', e); }
 }
 
 function updateProgressBar() {
+    if (!currentProgram) return;
     let total = 0, done = 0;
     currentProgram.schedule.forEach(w => {
         [...(w.warmup||[]), ...(w.exercises||[])].forEach(ex =>
@@ -559,6 +695,12 @@ function updateProgressBar() {
         );
     });
     document.getElementById('progress-bar').style.width = (total ? Math.round((done/total)*100) : 0) + '%';
+}
+
+function showToast(msg) {
+    const toast = document.getElementById('sync-toast');
+    toast.textContent = msg; toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 1500);
 }
 
 // ── TOOLS ─────────────────────────────────────────
@@ -577,7 +719,6 @@ function closeTool() {
     if (tCdRunning) { clearInterval(tCdInterval); tCdRunning=false; }
 }
 
-// PACE
 let tPaceUnit='km';
 function tSetPaceUnit(u){tPaceUnit=u;document.getElementById('t-pace-km-btn').classList.toggle('active',u==='km');document.getElementById('t-pace-mi-btn').classList.toggle('active',u==='mi');document.getElementById('t-pace-dist-label').textContent=`Distance (${u})`;document.getElementById('t-pace-pace-label').textContent=`Pace /${u}`;document.getElementById('t-pace-speed-label').textContent=`Speed (${u}/h)`;tClearPace();}
 function tClearPace(){['t-pace-dist','t-pace-min','t-pace-sec','t-pace-pace-min','t-pace-pace-sec','t-pace-speed'].forEach(id=>document.getElementById(id).value='');const o=document.getElementById('t-pace-output');o.style.display='none';o.innerHTML='';}
@@ -596,7 +737,6 @@ function tSolvePace(){
     out.style.display='block';
 }
 
-// 1RM
 let tRmUnit='kg';
 function tSetRMUnit(u){tRmUnit=u;document.getElementById('t-rm-kg-btn').classList.toggle('active',u==='kg');document.getElementById('t-rm-lb-btn').classList.toggle('active',u==='lb');document.getElementById('t-rm-weight-label').textContent=`Weight (${u})`;tClear1RM();}
 function tClear1RM(){document.getElementById('t-rm-weight').value='';document.getElementById('t-rm-reps').value='';document.getElementById('t-rm-output').style.display='none';document.getElementById('t-rm-table-body').innerHTML='';}
@@ -617,7 +757,6 @@ function tCalc1RM(){
     document.getElementById('t-rm-output').style.display='block';
 }
 
-// METRONOME
 let tAudioCtx=null,tMetroPlaying=false,tMetroTimerID=null,tNextTick=0;
 function tMetroScheduler(){
     const bpm=parseFloat(document.getElementById('t-m-slider').value),spb=60/bpm;
@@ -639,7 +778,6 @@ function tToggleMetronome(){
     else{btn.textContent='Start';btn.classList.remove('running');clearTimeout(tMetroTimerID);}
 }
 
-// COUNTDOWN
 let tCdRunning=false,tCdTime=60,tCdInterval=null;
 function tUpdateCDDisplay(){const m=Math.floor(tCdTime/60),s=tCdTime%60;document.getElementById('t-cd-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
 function tToggleCountdown(){
@@ -649,7 +787,6 @@ function tToggleCountdown(){
         tCdInterval=setInterval(()=>{tCdTime--;tUpdateCDDisplay();if(tCdTime<=0){clearInterval(tCdInterval);tCdRunning=false;btn.textContent='Start';btn.classList.remove('running');tCdTime=parseInt(document.getElementById('t-cd-input').value)||60;tUpdateCDDisplay();}},1000);}
 }
 
-// STOPWATCH
 let tSwRunning=false,tSwStart=0,tSwElapsed=0,tSwInterval=null;
 function tToggleStopwatch(){
     const btn=document.getElementById('t-sw-btn');
@@ -659,7 +796,6 @@ function tToggleStopwatch(){
 }
 function tResetStopwatch(){clearInterval(tSwInterval);tSwRunning=false;tSwElapsed=0;document.getElementById('t-sw-display').textContent='00:00.00';document.getElementById('t-sw-btn').textContent='Start';document.getElementById('t-sw-btn').classList.remove('running');}
 
-// INTERVAL
 let tIntRunning=false,tIntInterval=null,tIntPhase='idle',tIntCurrentSet=0,tIntTotalSets=0,tIntTime=0;
 function tUpdateIntDisplay(){const m=Math.floor(tIntTime/60),s=tIntTime%60;document.getElementById('t-int-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
 function tSetIntPhase(phase,set,total){
