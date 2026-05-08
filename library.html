@@ -114,12 +114,7 @@
 
 <div class="nav-top">
     <div class="nav-brand">REST <span>PERIOD</span></div>
-    <div class="nav-links">
-        <a href="dashboard.html">DASHBOARD</a>
-        <a href="builder.html">BUILDER</a>
-        <a href="library.html" class="active">LIBRARY</a>
-        <a href="#" onclick="pb.authStore.clear(); window.location.href='index.html'">LOGOUT</a>
-    </div>
+    <div class="nav-links" id="nav-links"></div>
 </div>
 
 <div class="page">
@@ -249,7 +244,23 @@ let isTrainer = false;
 window.onload = async () => {
     if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
     const role = pb.authStore.model.role;
-    isTrainer = role === 'trainer' || role === 'admin';
+    const navLinks = document.getElementById('nav-links');
+if (isTrainer) {
+    navLinks.innerHTML = `
+        <a href="dashboard.html">DASHBOARD</a>
+        <a href="builder.html">BUILDER</a>
+        <a href="library.html" class="active">LIBRARY</a>
+        <a href="templates.html">TEMPLATES</a>
+        <a href="#" onclick="pb.authStore.clear();window.location.href='index.html'">LOGOUT</a>
+    `;
+} else {
+    navLinks.innerHTML = `
+        <a href="free.html">HOME</a>
+        <a href="library.html" class="active">LIBRARY</a>
+        <a href="#" onclick="pb.authStore.clear();window.location.href='index.html'">LOGOUT</a>
+    `;
+}
+isTrainer = role === 'trainer' || role === 'admin';
     if (isTrainer) document.getElementById('add-btn').style.display = 'flex';
 
     buildFilterUI();
