@@ -166,7 +166,7 @@
 <div style="margin-bottom:16px;">
     <label>Session Description</label>
     <input type="text" id="session-desc-input" placeholder="e.g. Focus on control and depth today." 
-    oninput="console.log('desc:', this.value); programData[currentWeekIndex].description=this.value; triggerAutoSave();">
+    onblur="programData[currentWeekIndex].description=this.value; saveHistory(); triggerAutoSave();">
 </div>
             <div class="section-divider">
                 <span onclick="toggleWarmupCollapse()" style="flex:1;"><i class="fas fa-fire"></i> WARM UP <i id="warmup-chevron" class="fas fa-chevron-down"></i></span>
