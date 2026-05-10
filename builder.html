@@ -703,7 +703,6 @@ async function saveProgramToDB(silent=false) {
     client: cid,
     trainer: pb.authStore.model.id,
     name: document.getElementById('prog-name').value,
-    description: document.getElementById('prog-desc').value,
     is_template: document.getElementById('prog-is-template')?.checked||false,
     is_free: document.getElementById('prog-is-free')?.checked||false,
     is_repeatable: document.getElementById('prog-is-repeatable')?.checked||false
