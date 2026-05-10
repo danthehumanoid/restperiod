@@ -154,13 +154,16 @@
 
             <!-- FLAGS -->
             <div style="display:flex; gap:20px; margin-bottom:16px; flex-wrap:wrap;">
-                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.7rem; color:#888; text-transform:none;">
-                    <input type="checkbox" id="is-premade" style="width:auto; margin:0;"> Premade (coaches can load into builder)
-                </label>
-                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.7rem; color:#888; text-transform:none;">
-                    <input type="checkbox" id="is-free" style="width:auto; margin:0;"> Free (clients can browse and claim)
-                </label>
-            </div>
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.7rem; color:#888; text-transform:none;">
+        <input type="checkbox" id="is-premade" style="width:auto; margin:0;"> Premade (coaches can load into builder)
+    </label>
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.7rem; color:#888; text-transform:none;">
+        <input type="checkbox" id="is-free" style="width:auto; margin:0;"> Free (clients can browse and claim)
+    </label>
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.7rem; color:#26C6DA; text-transform:none;" title="Repeatable sessions can be logged multiple times — great for circuits done weekly">
+        <input type="checkbox" id="is-repeatable" style="width:auto; margin:0;"> 🔁 Repeatable Session
+    </label>
+</div>
 
             <!-- SESSION TABS (full only) -->
             <div id="session-tabs-area" style="margin-bottom:16px;">
@@ -476,13 +479,13 @@ async function saveTemplate() {
     }
 
     const data = {
-        name, type,
-        workout_data: workoutData,
-        is_free: isFree,
-        is_premade: isPremade,
-        creator: pb.authStore.model.id
-    };
-
+    name, type,
+    workout_data: workoutData,
+    is_free: isFree,
+    is_premade: isPremade,
+    is_repeatable: document.getElementById('is-repeatable').checked,
+    creator: pb.authStore.model.id
+};
     try {
         if (editingId) await pb.collection('templates').update(editingId, data);
         else await pb.collection('templates').create(data);
@@ -501,6 +504,7 @@ async function fetchSavedTemplates() {
             const badges = [];
             if (r.is_free) badges.push(`<span class="saved-badge" style="background:#1a3a1a; color:#4ade80;">FREE</span>`);
             if (r.is_premade) badges.push(`<span class="saved-badge" style="background:#1a2a3a; color:var(--brand-accent);">PREMADE</span>`);
+if (r.is_repeatable) badges.push(`<span class="saved-badge" style="background:#1a1a3a; color:#c084fc;">🔁 REPEATABLE</span>`);
             const count = Array.isArray(r.workout_data) ? r.workout_data.length : '?';
             const sub = r.type === 'full' ? `<span style="font-size:0.65rem; color:#555; margin-left:6px;">${count} sessions</span>` : '';
             return `<div class="saved-row">
@@ -531,6 +535,7 @@ async function loadTemplate(id) {
         document.getElementById('template-type').value = rec.type;
         document.getElementById('is-free').checked = rec.is_free || false;
         document.getElementById('is-premade').checked = rec.is_premade || false;
+        document.getElementById('is-repeatable').checked = rec.is_repeatable || false;
 
         let data = typeof rec.workout_data === 'string' ? JSON.parse(rec.workout_data) : rec.workout_data;
 
@@ -571,6 +576,7 @@ function resetBuilder() {
     document.getElementById('template-name').value = '';
     document.getElementById('is-free').checked = false;
     document.getElementById('is-premade').checked = false;
+    document.getElementById('is-repeatable').checked = false;
     document.getElementById('save-btn').textContent = '💾 SAVE TEMPLATE';
     renderTabs();
     renderSections();
