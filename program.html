@@ -236,6 +236,12 @@ input[type=number] { -moz-appearance: textfield; }
 </div>
 
 <script>
+    (function() {
+    const pb2 = new PocketBase('https://restperiod.org');
+    if (!pb2.authStore.isValid) { window.location.href = '/index.html'; return; }
+    const role = pb2.authStore.model.role;
+    if (role !== 'trainer' && role !== 'admin') { window.location.href = '/index.html'; }
+})();
 const pb = new PocketBase('https://restperiod.org');
 let allPrograms = [], premadePrograms = [], currentProgram = null, currentWeekIndex = 0, masterExerciseList = [];
 let tAudioCtx = null, tMetroPlaying = false, tMetroTimerID = null, tNextTick = 0;
@@ -337,11 +343,184 @@ function loadSelectedProgram(source) {
     currentProgram.schedule = currentProgram.schedule.map((s, i) => ({ ...s, sessionNum: s.sessionNum || s.weekNum || i+1 }));
     currentProgram.schedule.forEach(w => { if (!w.warmup) w.warmup = []; if (!w.exercises) w.exercises = []; });
     currentWeekIndex = 0;
-    renderTabs();
-    renderContent();
-    updateProgressBar();
+
+    if (currentProgram.is_repeatable) {
+        renderRepeatableMode();
+    } else {
+        renderTabs();
+        renderContent();
+        updateProgressBar();
+    }
+}
+// ── REPEATABLE MODE ───────────────────────────────
+async function renderRepeatableMode() {
+    document.getElementById('week-tabs-container').innerHTML = '';
+    const session = currentProgram.schedule[0];
+
+    let logsHtml = '';
+    try {
+        const logs = await pb.collection('session_logs').getFullList({
+            filter: `program = "${currentProgram.id}" && client = "${pb.authStore.model.id}"`,
+            sort: '-date',
+            requestKey: null
+        });
+        if (logs.length) {
+            logsHtml = `<div style="margin-bottom:20px;">
+                <div style="font-family:'Montserrat';font-size:0.7rem;font-weight:800;color:var(--brand-accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📈 Session History</div>
+                ${logs.map(log => {
+                    let data = log.workout_data;
+                    if (typeof data === 'string') data = JSON.parse(data);
+                    const allEx = [...(data.warmup||[]), ...(data.exercises||[])];
+                    let total = 0, done = 0;
+                    allEx.forEach(ex => (ex.setsData||[]).forEach(s => { total++; if (s.act_reps && s.act_weight) done++; }));
+                    const pct = total ? Math.round((done/total)*100) : 0;
+                    const dateStr = new Date(log.date).toLocaleDateString([],{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+                    return `<div style="background:#050d12;border:1px solid #1a2a35;border-radius:8px;padding:12px 14px;margin-bottom:8px;cursor:pointer;" onclick="openLogDetail('${log.id}')">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <span style="font-weight:700;font-size:0.88rem;">📅 ${dateStr}</span>
+                            <span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'#4ade80':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span>
+                        </div>
+                        ${allEx.slice(0,3).map(ex => {
+                            const best = (ex.setsData||[]).reduce((b,s) => s.act_weight && parseFloat(s.act_weight) > (parseFloat(b)||0) ? s.act_weight : b, null);
+                            const cleanName = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim()||ex.name;
+                            return best ? `<div style="font-size:0.72rem;color:#888;margin-top:4px;">${cleanName} — top ${best}kg</div>` : '';
+                        }).join('')}
+                    </div>`;
+                }).join('')}
+            </div>`;
+        }
+    } catch(e) { console.error(e); }
+
+    document.getElementById('workout-content').innerHTML = `
+        <div class="card" style="text-align:center;padding:20px;margin-bottom:20px;">
+            <div style="font-family:'Montserrat';font-weight:800;font-size:1.1rem;margin-bottom:8px;">${currentProgram.name}</div>
+            <div style="font-size:0.8rem;color:#888;margin-bottom:16px;">🔁 Repeatable session — log each time you do it</div>
+            <button onclick="startRepeatableSession()" style="background:var(--brand-accent);color:#000;border:none;padding:14px 32px;border-radius:8px;font-family:'Montserrat';font-weight:800;font-size:0.9rem;cursor:pointer;">▶ Log New Session</button>
+        </div>
+        ${logsHtml}
+        <div id="repeatable-session-content" style="display:none;"></div>
+    `;
 }
 
+function startRepeatableSession() {
+    const session = JSON.parse(JSON.stringify(currentProgram.schedule[0]));
+    session.sessionDate = new Date().toISOString().split('T')[0];
+    session._isNewRepeatSession = true;
+    currentProgram._activeRepeatSession = session;
+    renderRepeatableSession(session);
+}
+
+function renderRepeatableSession(session) {
+    const wrapper = document.getElementById('repeatable-session-content');
+    wrapper.style.display = 'block';
+    wrapper.scrollIntoView({ behavior: 'smooth' });
+
+    let html = `<div class="date-row">
+        <div>
+            <span class="quad-title">Session Date</span>
+            <input type="date" class="date-input" value="${session.sessionDate||''}" onchange="currentProgram._activeRepeatSession.sessionDate=this.value">
+        </div>
+        <div class="date-completed">🔁 New Session</div>
+    </div>`;
+
+    if (session.warmup?.length) {
+        html += `<div class="section-header"><span><i class="fas fa-fire" style="margin-right:8px;"></i>WARM UP</span></div>` + generateRepeatableExerciseHTML(session.warmup, 'warmup');
+    }
+    if (session.exercises?.length) {
+        html += `<div class="section-header" style="border-left-color:var(--brand-secondary);"><span><i class="fas fa-dumbbell" style="margin-right:8px;"></i>MAIN WORKOUT</span></div>` + generateRepeatableExerciseHTML(session.exercises, 'exercises');
+    }
+
+    html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;">
+        <button onclick="saveRepeatableSession()" style="background:var(--brand-secondary);color:white;border:none;padding:14px;border-radius:6px;font-family:'Montserrat';font-weight:800;font-size:0.8rem;cursor:pointer;">💾 SAVE SESSION</button>
+        <button onclick="document.getElementById('repeatable-session-content').style.display='none'" style="background:transparent;border:1px solid #555;color:#888;padding:14px;border-radius:6px;font-family:'Montserrat';font-weight:800;font-size:0.8rem;cursor:pointer;">✕ CANCEL</button>
+    </div>`;
+
+    wrapper.innerHTML = html;
+}
+
+function generateRepeatableExerciseHTML(list, type) {
+    return list.map((ex, i) => {
+        const cleanName = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || ex.name;
+        const groupBadge = ex.grouping ? `<div style="display:inline-block;background:var(--brand-primary);color:var(--brand-accent);padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:800;margin-bottom:8px;border:1px solid var(--brand-accent);">${ex.grouping.toUpperCase()}</div>` : '';
+        return `<div class="exercise-card">
+            ${groupBadge}
+            <div class="exercise-title" onclick="openExercisePreview('${ex.name.replace(/'/g,"\\'")}')">
+                <span>${cleanName}</span>
+                <i class="fas fa-play-circle" style="font-size:0.8em;opacity:0.4;"></i>
+            </div>
+            ${(ex.setsData||[]).map((s, si) => {
+                const baseId = `rep-${type}-${i}-${si}`;
+                return `<div class="set-container">
+                    <div class="set-label">SET ${si+1}</div>
+                    <div class="set-grid" style="grid-template-columns:36px 1fr 1fr 1fr 1fr 1fr;">
+                        <div class="set-row-label" style="color:#26C6DA;">DO</div>
+                        <div><div class="cell-header" style="color:#26C6DA88;">REPS</div><div class="do-cell">${s.reps||'—'}</div></div>
+                        <div><div class="cell-header" style="color:#26C6DA88;">KG</div><div class="do-cell">${s.weight||'—'}</div></div>
+                        <div><div class="cell-header" style="color:#26C6DA88;">REST</div><div class="do-cell">${s.rest||'—'}</div></div>
+                        <div><div class="cell-header" style="color:#26C6DA88;">RPE</div><div class="do-cell">${s.rpe||'—'}</div></div>
+                        <div></div>
+                    </div>
+                    <div class="set-grid" style="grid-template-columns:36px 1fr 1fr 1fr 1fr 1fr;">
+                        <div class="set-row-label" style="color:#4ade80;">DID</div>
+                        <div><input type="number" id="${baseId}-reps" class="did-cell" placeholder="0" value="${s.act_reps||''}" onchange="updateRepeatSet('${type}',${i},${si},'act_reps',this.value)"></div>
+                        <div><input type="number" id="${baseId}-kg" class="did-cell" placeholder="0" value="${s.act_weight||''}" onchange="updateRepeatSet('${type}',${i},${si},'act_weight',this.value)"></div>
+                        <div><input type="text" id="${baseId}-rest" class="did-cell" placeholder="—" value="${s.act_rest||''}" onchange="updateRepeatSet('${type}',${i},${si},'act_rest',this.value)"></div>
+                        <div><input type="number" step="0.5" id="${baseId}-rpe" class="did-cell" placeholder="—" value="${s.act_rpe||''}" onchange="updateRepeatSet('${type}',${i},${si},'act_rpe',this.value)"></div>
+                        <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                            <span style="font-size:0.62rem;font-weight:800;font-family:'Montserrat';color:#4ade80;">DONE</span>
+                            <input type="checkbox" class="tick-box" onclick="fillRepeatSet('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe||''}',this.checked)">
+                        </div>
+                    </div>
+                    <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="80" value="${(s.act_note||'').replace(/"/g,'&quot;')}" onchange="updateRepeatSet('${type}',${i},${si},'act_note',this.value)">
+                </div>`;
+            }).join('')}
+        </div>`;
+    }).join('');
+}
+
+function updateRepeatSet(type, exIdx, setIdx, field, val) {
+    if (!currentProgram._activeRepeatSession) return;
+    currentProgram._activeRepeatSession[type][exIdx].setsData[setIdx][field] = val;
+}
+
+function fillRepeatSet(type, exIdx, setIdx, targetReps, targetWeight, targetRpe, isChecked) {
+    if (!isChecked || !currentProgram._activeRepeatSession) return;
+    const set = currentProgram._activeRepeatSession[type][exIdx].setsData[setIdx];
+    const baseId = `rep-${type}-${exIdx}-${setIdx}`;
+    const repsEl = document.getElementById(`${baseId}-reps`);
+    const weightEl = document.getElementById(`${baseId}-kg`);
+    const rpeEl = document.getElementById(`${baseId}-rpe`);
+    if (!repsEl.value || repsEl.value==0) { repsEl.value=targetReps; set.act_reps=targetReps; }
+    if (!weightEl.value || weightEl.value==0) { weightEl.value=targetWeight; set.act_weight=targetWeight; }
+    if (!rpeEl.value || rpeEl.value==0) { rpeEl.value=parseFloat(targetRpe)?targetRpe:''; set.act_rpe=rpeEl.value; }
+}
+
+async function saveRepeatableSession() {
+    const session = currentProgram._activeRepeatSession;
+    if (!session) return;
+    const toast = document.getElementById('sync-toast');
+    toast.innerText = 'Saving...'; toast.style.display = 'block';
+    try {
+        await pb.collection('session_logs').create({
+            program: currentProgram.id,
+            client: pb.authStore.model.id,
+            date: session.sessionDate || new Date().toISOString().split('T')[0],
+            workout_data: JSON.stringify({ warmup: session.warmup, exercises: session.exercises })
+        });
+        toast.innerText = 'Session saved! 🔥'; 
+        setTimeout(() => toast.style.display = 'none', 2000);
+        currentProgram._activeRepeatSession = null;
+        await renderRepeatableMode();
+    } catch(e) {
+        toast.style.display = 'none';
+        alert('Save failed: ' + e.message);
+    }
+}
+
+async function openLogDetail(logId) {
+    // future: expand to show full session detail
+    alert('Session detail view coming soon!');
+}
 // ── TABS ──────────────────────────────────────────
 function renderTabs() {
     document.getElementById('week-tabs-container').innerHTML = currentProgram.schedule.map((s, i) => {
