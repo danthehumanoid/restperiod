@@ -119,10 +119,12 @@
                 <button class="btn btn-green" onclick="startNewProgram()">+ CREATE NEW TRAINING BLOCK</button>
                 <div id="history-list" style="margin-top:10px;"></div>
             </div>
-            <div id="program-info-area" style="margin-top:20px; display:none;">
-                <label>Block Name</label>
-                <input type="text" id="prog-name" placeholder="e.g. Hypertrophy Phase 1" oninput="triggerAutoSave()">
-            </div>
+           <div id="program-info-area" style="margin-top:20px; display:none;">
+    <label>Block Name</label>
+    <input type="text" id="prog-name" placeholder="e.g. Hypertrophy Phase 1" oninput="triggerAutoSave()">
+    <label style="margin-top:8px;">Program Description</label>
+    <input type="text" id="prog-desc" placeholder="e.g. 6-week hypertrophy block focusing on progressive overload." oninput="triggerAutoSave()">
+</div>
         </div>
 
         <div class="card" id="schedule-card" style="display:none;">
@@ -576,6 +578,7 @@ async function loadProgram(id) {
         document.getElementById('prog-is-template').checked = p.is_template||false;
         document.getElementById('prog-is-free').checked = p.is_free||false;
         document.getElementById('prog-is-repeatable').checked = p.is_repeatable||false;
+        document.getElementById('prog-desc').value = p.description||'';
         let data = typeof p.workout_data==='string' ? JSON.parse(p.workout_data) : p.workout_data;
         programData = data.schedule || data;
         programData = programData.map((s,i) => ({...s, sessionNum: s.sessionNum||s.weekNum||i+1}));
@@ -701,6 +704,7 @@ async function saveProgramToDB(silent=false) {
     client: cid,
     trainer: pb.authStore.model.id,
     name: document.getElementById('prog-name').value,
+description: document.getElementById('prog-desc').value,
     is_template: document.getElementById('prog-is-template')?.checked||false,
     is_free: document.getElementById('prog-is-free')?.checked||false,
     is_repeatable: document.getElementById('prog-is-repeatable')?.checked||false
@@ -798,6 +802,7 @@ function startNewProgram() {
     editingProgramId = null;
     programData = [{sessionNum:1, warmup:[], exercises:[]}];
     document.getElementById('prog-name').value = '';
+    document.getElementById('prog-desc').value = '';
     showUI(); renderTabs(); renderLists(); saveHistory();
 }
 
