@@ -163,7 +163,11 @@
                 <button class="btn btn-outline" style="font-size:0.7rem;" onclick="duplicateSession()">Copy Prev Session</button>
                 <button class="btn btn-outline" style="font-size:0.7rem; border-color:#ff4d4d; color:#ff4d4d;" onclick="deleteSession()">Delete Session</button>
             </div>
-
+<div style="margin-bottom:16px;">
+    <label>Session Description</label>
+    <input type="text" id="session-desc-input" placeholder="e.g. Focus on control and depth today." 
+        oninput="programData[currentWeekIndex].description=this.value; triggerAutoSave();">
+</div>
             <div class="section-divider">
                 <span onclick="toggleWarmupCollapse()" style="flex:1;"><i class="fas fa-fire"></i> WARM UP <i id="warmup-chevron" class="fas fa-chevron-down"></i></span>
                 <span onclick="saveSectionTemplate('warmup')" style="font-size:0.6rem; color:#666; cursor:pointer; margin-left:10px;"><i class="fas fa-star"></i> SAVE AS TEMPLATE</span>
@@ -584,6 +588,8 @@ async function loadProgram(id) {
 
 // ── RENDER ────────────────────────────────────────
 function renderLists() {
+    const descEl = document.getElementById('session-desc-input');
+    if (descEl) descEl.value = programData[currentWeekIndex].description || '';
     renderListMarkup('warmup-list', programData[currentWeekIndex].warmup, 'warmup');
     renderListMarkup('workout-list', programData[currentWeekIndex].exercises, 'exercises');
 }
