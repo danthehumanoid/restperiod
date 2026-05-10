@@ -163,8 +163,9 @@
             </div>
 <div style="margin-bottom:16px;">
     <label>Session Description</label>
-    <input type="text" id="session-desc-input" placeholder="e.g. Focus on control and depth today." 
-    onblur="programData[currentWeekIndex].description=this.value; setTimeout(()=>{saveHistory();triggerAutoSave();},50);">
+    <input type="text" id="session-desc-input" placeholder="e.g. Focus on control and depth today."
+        oninput="programData[currentWeekIndex].description=this.value;"
+        onblur="triggerAutoSave();">
 </div>
             <div class="section-divider">
                 <span onclick="toggleWarmupCollapse()" style="flex:1;"><i class="fas fa-fire"></i> WARM UP <i id="warmup-chevron" class="fas fa-chevron-down"></i></span>
