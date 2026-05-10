@@ -368,14 +368,15 @@ function renderList(containerId, list, type) {
                 <input type="text" placeholder="Notes..." value="${(ex.notes||'').replace(/"/g,'&quot;')}" onchange="sessions[currentSession].${type}[${i}].notes=this.value" style="flex:1; padding:6px; margin-bottom:0;">
             </div>
             ${ex.setsData.map((s, si) => `
-                <div class="metrics-grid">
-                    <div class="metric-col"><label>SET ${si+1}</label></div>
-                    <div class="metric-col"><label>REPS</label><input type="text" value="${s.reps||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].reps=this.value"></div>
-                    <div class="metric-col"><label>KG</label><input type="text" value="${s.weight||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].weight=this.value"></div>
-                    <div class="metric-col"><label>TEMPO</label><input type="text" value="${s.tempo||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].tempo=this.value"></div>
-                    <div class="metric-col"><label>RPE</label><input type="text" value="${s.rpe||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].rpe=this.value"></div>
-                    <i class="fas fa-minus-circle" style="color:#b71c1c; cursor:pointer; align-self:center;" onclick="sessions[currentSession].${type}[${i}].setsData.splice(${si},1); renderSections();"></i>
-                </div>`).join('')}
+                <div class="metrics-grid" style="grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 0.3fr;">
+    <div class="metric-col"><label>SET ${si+1}</label></div>
+    <div class="metric-col"><label>REPS</label><input type="text" value="${s.reps||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].reps=this.value"></div>
+    <div class="metric-col"><label>KG</label><input type="text" value="${s.weight||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].weight=this.value"></div>
+    <div class="metric-col"><label>REST</label><input type="text" value="${s.rest||''}" placeholder="90s" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].rest=this.value"></div>
+    <div class="metric-col"><label>TEMPO</label><input type="text" value="${s.tempo||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].tempo=this.value"></div>
+    <div class="metric-col"><label>RPE</label><input type="text" value="${s.rpe||''}" onchange="sessions[currentSession].${type}[${i}].setsData[${si}].rpe=this.value"></div>
+    <i class="fas fa-minus-circle" style="color:#b71c1c; cursor:pointer; align-self:center;" onclick="sessions[currentSession].${type}[${i}].setsData.splice(${si},1); renderSections();"></i>
+</div>`).join('')}
             <button class="btn btn-outline" style="padding:5px 10px; font-size:0.6rem; width:auto; margin-top:10px;" onclick="sessions[currentSession].${type}[${i}].setsData.push({...sessions[currentSession].${type}[${i}].setsData.slice(-1)[0]}); renderSections();">+ SET</button>
         </div>`).join('');
 }
@@ -384,7 +385,7 @@ function addToSession(name, type) {
     sessions[currentSession][type].push({
         name: cleanTitle(name),
         grouping: '', notes: '',
-        setsData: [{ reps: '10', weight: '0', tempo: '//', rpe: '7' }]
+        setsData: [{ reps: '10', weight: '0', rest: '', tempo: '//', rpe: '7' }]
     });
     renderSections();
     showToast(`Added to ${type === 'warmup' ? 'Warm Up' : 'Main Workout'}`);
@@ -556,11 +557,12 @@ async function loadTemplate(id) {
         let data = typeof rec.workout_data === 'string' ? JSON.parse(rec.workout_data) : rec.workout_data;
 
         if (rec.type === 'full') {
-            sessions = Array.isArray(data) ? data.map((s, i) => ({
-                sessionNum: s.sessionNum || i + 1,
-                warmup: s.warmup || [],
-                exercises: s.exercises || []
-            })) : [{ sessionNum: 1, warmup: [], exercises: [] }];
+           sessions = Array.isArray(data) ? data.map((s, i) => ({
+    sessionNum: s.sessionNum || i + 1,
+    warmup: s.warmup || [],
+    exercises: s.exercises || [],
+    description: s.description || ''
+})) : [{ sessionNum: 1, warmup: [], exercises: [] }];
         } else {
             // Section template — load into session 0
             sessions = [{ sessionNum: 1, warmup: [], exercises: [] }];
