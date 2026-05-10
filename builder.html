@@ -122,8 +122,6 @@
             <div id="program-info-area" style="margin-top:20px; display:none;">
                 <label>Block Name</label>
                 <input type="text" id="prog-name" placeholder="e.g. Hypertrophy Phase 1" oninput="triggerAutoSave()">
-                <label style="margin-top:10px;">Session Description</label>
-                <input type="text" id="prog-desc" placeholder="e.g. Focus on control and depth today." oninput="triggerAutoSave()">
             </div>
         </div>
 
@@ -166,7 +164,7 @@
 <div style="margin-bottom:16px;">
     <label>Session Description</label>
     <input type="text" id="session-desc-input" placeholder="e.g. Focus on control and depth today." 
-    onblur="programData[currentWeekIndex].description=this.value; saveHistory(); triggerAutoSave();">
+    onblur="programData[currentWeekIndex].description=this.value; setTimeout(()=>{saveHistory();triggerAutoSave();},50);">
 </div>
             <div class="section-divider">
                 <span onclick="toggleWarmupCollapse()" style="flex:1;"><i class="fas fa-fire"></i> WARM UP <i id="warmup-chevron" class="fas fa-chevron-down"></i></span>
@@ -574,7 +572,6 @@ async function loadProgram(id) {
         const p = await pb.collection('programs').getOne(id);
         editingProgramId = p.id;
         document.getElementById('prog-name').value = p.name||'';
-        document.getElementById('prog-desc').value = p.description||'';
         document.getElementById('prog-is-template').checked = p.is_template||false;
         document.getElementById('prog-is-free').checked = p.is_free||false;
         document.getElementById('prog-is-repeatable').checked = p.is_repeatable||false;
@@ -800,7 +797,6 @@ function startNewProgram() {
     editingProgramId = null;
     programData = [{sessionNum:1, warmup:[], exercises:[]}];
     document.getElementById('prog-name').value = '';
-    document.getElementById('prog-desc').value = '';
     showUI(); renderTabs(); renderLists(); saveHistory();
 }
 
