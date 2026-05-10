@@ -176,14 +176,17 @@
             </div>
             <div id="workout-list"></div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:20px; margin-bottom:10px;">
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.7rem;color:#888;">
-                    <input type="checkbox" id="prog-is-template" style="width:auto;margin:0;" onchange="triggerAutoSave()"> Coach Template
-                </label>
-                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.7rem;color:#888;">
-                    <input type="checkbox" id="prog-is-free" style="width:auto;margin:0;" onchange="triggerAutoSave()"> Free / Public
-                </label>
-            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px;">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.7rem;color:#888;">
+        <input type="checkbox" id="prog-is-template" style="width:auto;margin:0;" onchange="triggerAutoSave()"> Coach Template
+    </label>
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.7rem;color:#888;">
+        <input type="checkbox" id="prog-is-free" style="width:auto;margin:0;" onchange="triggerAutoSave()"> Free / Public
+    </label>
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.7rem;color:#26C6DA;" title="Repeatable sessions can be logged multiple times — great for circuits or single sessions done weekly">
+        <input type="checkbox" id="prog-is-repeatable" style="width:auto;margin:0;" onchange="triggerAutoSave()"> 🔁 Repeatable
+    </label>
+</div>
             <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:10px;">
                 <button class="btn btn-green" onclick="saveProgramToDB()">💾 PUBLISH PROGRAM</button>
                 <button class="btn btn-outline" onclick="saveAsTemplate()">🧬 TEMPLATE</button>
@@ -570,6 +573,7 @@ async function loadProgram(id) {
         document.getElementById('prog-desc').value = p.description||'';
         document.getElementById('prog-is-template').checked = p.is_template||false;
         document.getElementById('prog-is-free').checked = p.is_free||false;
+        document.getElementById('prog-is-repeatable').checked = p.is_repeatable||false;
         let data = typeof p.workout_data==='string' ? JSON.parse(p.workout_data) : p.workout_data;
         programData = data.schedule || data;
         programData = programData.map((s,i) => ({...s, sessionNum: s.sessionNum||s.weekNum||i+1}));
@@ -695,7 +699,8 @@ async function saveProgramToDB(silent=false) {
     name: document.getElementById('prog-name').value,
     description: document.getElementById('prog-desc').value,
     is_template: document.getElementById('prog-is-template')?.checked||false,
-    is_free: document.getElementById('prog-is-free')?.checked||false
+    is_free: document.getElementById('prog-is-free')?.checked||false,
+    is_repeatable: document.getElementById('prog-is-repeatable')?.checked||false
 };
     try {
         if (editingProgramId) await pb.collection('programs').update(editingProgramId, payload);
