@@ -535,7 +535,11 @@ function renderContent() {
     const session = currentProgram.schedule[currentWeekIndex];
     const scheduledStr = session.scheduledDate ? new Date(session.scheduledDate+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'}) : null;
     const completedStr = session.sessionDate ? new Date(session.sessionDate).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'}) : null;
+const descHtml = session.description
+    ? `<div style="background:#0a1a2a;border:1px solid #1a2a35;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">💬 ${session.description}</div>`
+    : '';
 
+let html = descHtml + `<div class="date-row">
     let html = `<div class="date-row">
         <div>
             <span class="quad-title">Session Date</span>

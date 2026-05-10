@@ -169,7 +169,14 @@
             <div id="session-tabs-area" style="margin-bottom:16px;">
                 <div class="tab-bar" id="tab-bar"></div>
             </div>
-
+<div style="margin-bottom:16px;">
+    <label>Session Description</label>
+    <input type="text" id="session-desc" placeholder="e.g. Focus on control and depth today." onchange="sessions[currentSession].description=this.value">
+</div>
+<div style="display:flex; gap:8px; margin-bottom:16px;">
+    <button class="btn btn-outline btn-sm" onclick="copyToPrevSession()">⬅ Copy From Previous</button>
+    <button class="btn btn-danger btn-sm" onclick="deleteCurrentSession()">✕ Delete Session</button>
+</div>
             <!-- SECTION TYPE (section templates only) -->
             <div id="section-type-area" style="display:none; margin-bottom:10px;">
                 <label>Section</label>
@@ -314,7 +321,7 @@ function switchSession(i) {
 }
 
 function addSession() {
-    sessions.push({ sessionNum: sessions.length + 1, warmup: [], exercises: [] });
+    sessions.push({ sessionNum: sessions.length + 1, warmup: [], exercises: [], description: '' });
     currentSession = sessions.length - 1;
     renderTabs();
     renderSections();
@@ -333,6 +340,7 @@ function deleteCurrentSession() {
 // ── RENDER SECTIONS ───────────────────────────────
 function renderSections() {
     const s = sessions[currentSession];
+    document.getElementById('session-desc').value = s.description || '';
     renderList('warmup-list', s.warmup, 'warmup');
     renderList('workout-list', s.exercises, 'exercises');
 }
@@ -404,7 +412,15 @@ function buildFilterUI() {
             </div>
         </div>`).join('');
 }
-
+function copyToPrevSession() {
+    if (currentSession === 0) return alert('No previous session to copy from.');
+    if (!confirm('Copy exercises from previous session into this one?')) return;
+    const prev = sessions[currentSession - 1];
+    sessions[currentSession].warmup = JSON.parse(JSON.stringify(prev.warmup));
+    sessions[currentSession].exercises = JSON.parse(JSON.stringify(prev.exercises));
+    renderSections();
+    showToast('Copied from Session ' + (currentSession));
+}
 function toggleFilter(tag) {
     activeFilters.has(tag) ? activeFilters.delete(tag) : activeFilters.add(tag);
     document.querySelectorAll(`.filter-tag[data-tag="${tag}"]`).forEach(el => el.classList.toggle('active', activeFilters.has(tag)));
