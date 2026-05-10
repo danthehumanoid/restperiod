@@ -495,9 +495,16 @@ function openMyProgram(id) {
     document.getElementById('session-title').textContent = prog.name;
     document.getElementById('session-card').style.display = 'block';
     document.getElementById('session-card').scrollIntoView({ behavior: 'smooth' });
-    renderWeekTabs();
-    renderWorkout();
-    updateProgressBar();
+
+    if (prog.is_repeatable) {
+        document.getElementById('week-tabs').innerHTML = '';
+        document.getElementById('progress-bar').style.width = '0%';
+        renderRepeatableUI();
+    } else {
+        renderWeekTabs();
+        renderWorkout();
+        updateProgressBar();
+    }
 }
 
 function closeSession() {
@@ -552,12 +559,13 @@ async function claimProgram(templateId) {
         const template = allFreePrograms.find(p => p.id === templateId);
         if (!template) return;
         const newProg = await pb.collection('programs').create({
-            name: template.name,
-            client: pb.authStore.model.id,
-            workout_data: template.workout_data,
-            is_free: false,
-            archived: false
-        });
+    name: template.name,
+    client: pb.authStore.model.id,
+    workout_data: template.workout_data,
+    is_free: false,
+    is_repeatable: template.is_repeatable || false,
+    archived: false
+});
         myPrograms.unshift(newProg);
         renderMyPrograms();
         // Open it immediately
@@ -697,7 +705,154 @@ function updateProgressBar() {
     });
     document.getElementById('progress-bar').style.width = (total ? Math.round((done/total)*100) : 0) + '%';
 }
+// ── REPEATABLE MODE ───────────────────────────────
+async function renderRepeatableUI() {
+    const content = document.getElementById('workout-content');
+    content.innerHTML = `<div style="text-align:center;padding:20px 0 30px;">
+        <div style="font-size:0.8rem;color:#888;margin-bottom:16px;">🔁 Repeatable session — log each time you do it</div>
+        <button onclick="startRepeatableSession()" style="background:var(--brand-accent);color:#000;border:none;padding:14px 32px;border-radius:8px;font-family:'Montserrat';font-weight:800;font-size:0.9rem;cursor:pointer;">▶ Log New Session</button>
+    </div>
+    <div id="repeat-history"></div>
+    <div id="repeat-active" style="display:none;"></div>`;
+    await loadRepeatHistory();
+}
 
+async function loadRepeatHistory() {
+    try {
+        const logs = await pb.collection('session_logs').getFullList({
+            filter: `program = "${currentProgram.id}" && client = "${pb.authStore.model.id}"`,
+            sort: '-date',
+            requestKey: null
+        });
+        const el = document.getElementById('repeat-history');
+        if (!logs.length) { el.innerHTML = '<div style="color:#555;font-size:0.8rem;text-align:center;padding:10px;">No sessions logged yet.</div>'; return; }
+        el.innerHTML = `<div style="font-family:\'Montserrat\';font-size:0.7rem;font-weight:800;color:var(--brand-accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📈 Session History</div>` +
+        logs.map(log => {
+            let data = log.workout_data;
+            if (typeof data === 'string') data = JSON.parse(data);
+            const allEx = [...(data.warmup||[]), ...(data.exercises||[])];
+            let total = 0, done = 0;
+            allEx.forEach(ex => (ex.setsData||[]).forEach(s => { total++; if (s.act_reps && s.act_weight) done++; }));
+            const pct = total ? Math.round((done/total)*100) : 0;
+            const dateStr = new Date(log.date+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+            const highlights = allEx.slice(0,3).map(ex => {
+                const best = (ex.setsData||[]).reduce((b,s) => s.act_weight && parseFloat(s.act_weight) > parseFloat(b||0) ? s.act_weight : b, null);
+                const name = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim()||ex.name;
+                return best ? `<div style="font-size:0.72rem;color:#888;margin-top:3px;">${name} — top ${best}kg</div>` : '';
+            }).join('');
+            return `<div style="background:#050d12;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-weight:700;font-size:0.88rem;">📅 ${dateStr}</span>
+                    <span style="font-family:\'Montserrat\';font-weight:800;font-size:0.8rem;color:${pct===100?'#4ade80':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span>
+                </div>
+                ${highlights}
+            </div>`;
+        }).join('');
+    } catch(e) { console.error(e); }
+}
+
+function startRepeatableSession() {
+    const session = JSON.parse(JSON.stringify(currentProgram.schedule[0]));
+    session.sessionDate = new Date().toISOString().split('T')[0];
+    // Clear any previous act_ data
+    ['warmup','exercises'].forEach(type => {
+        (session[type]||[]).forEach(ex => {
+            (ex.setsData||[]).forEach(s => { delete s.act_reps; delete s.act_weight; delete s.act_rpe; delete s.act_rest; delete s.act_note; });
+        });
+    });
+    currentProgram._activeRepeat = session;
+    renderRepeatSession(session);
+}
+
+function renderRepeatSession(session) {
+    const wrapper = document.getElementById('repeat-active');
+    wrapper.style.display = 'block';
+    wrapper.scrollIntoView({ behavior: 'smooth' });
+
+    let html = `<div class="date-bar" style="margin-top:16px;">
+        <div>
+            <span class="date-label">Session Date</span>
+            <input type="date" class="date-input" value="${session.sessionDate||''}" onchange="currentProgram._activeRepeat.sessionDate=this.value">
+        </div>
+        <div style="background:#003B5C;border:1px solid var(--brand-accent);border-radius:6px;padding:5px 10px;font-size:0.72rem;color:var(--brand-accent);font-weight:800;">🔁 New Session</div>
+    </div>`;
+
+    if (session.warmup?.length) html += `<div class="section-header">WARM UP</div>` + generateRepeatHTML(session.warmup, 'warmup');
+    if (session.exercises?.length) html += `<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>` + generateRepeatHTML(session.exercises, 'exercises');
+
+    html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;">
+        <button onclick="saveRepeatSession()" class="btn-finish" style="margin:0;">💾 SAVE SESSION</button>
+        <button onclick="document.getElementById('repeat-active').style.display=\'none\'" style="background:transparent;border:1px solid #555;color:#888;padding:14px;border-radius:6px;font-family:\'Montserrat\';font-weight:800;font-size:0.85rem;cursor:pointer;width:100%;">✕ CANCEL</button>
+    </div>`;
+
+    wrapper.innerHTML = html;
+}
+
+function generateRepeatHTML(list, type) {
+    return list.map((ex, i) => {
+        const cleanName = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || ex.name;
+        const groupBadge = ex.grouping ? `<div style="display:inline-block;background:var(--brand-primary);color:var(--brand-accent);padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:800;margin-bottom:8px;border:1px solid var(--brand-accent);">${ex.grouping.toUpperCase()}</div>` : '';
+        return `<div class="exercise-card">
+            ${groupBadge}
+            <h4 class="exercise-title" onclick="previewExercise('${ex.name.replace(/'/g,"\\'")}')">
+                ${cleanName} <i class="fas fa-play-circle" style="font-size:0.8em;opacity:0.5;margin-left:5px;"></i>
+            </h4>
+            ${(ex.setsData||[]).map((s, si) => {
+                const baseId = `r-${type}-${i}-${si}`;
+                return `<div class="set-container">
+                    <div class="set-row-top">
+                        <div style="font-weight:800;color:var(--brand-accent);">#${si+1}</div>
+                        <div style="font-size:0.85rem;color:#888;line-height:1.5;border-right:1px solid #222;padding-right:6px;">
+                            <b>${s.reps}</b> × <b>${s.weight}</b>kg<br>
+                            <span style="font-size:0.72rem;color:var(--brand-accent);">⏱ ${s.tempo||'N/A'}</span>
+                        </div>
+                        <div><span class="act-label">REPS</span><input type="number" id="${baseId}-reps" class="actual-input" placeholder="0" onchange="setRepeatVal('${type}',${i},${si},'act_reps',this.value)"></div>
+                        <div><span class="act-label">KG</span><input type="number" id="${baseId}-kg" class="actual-input" placeholder="0" onchange="setRepeatVal('${type}',${i},${si},'act_weight',this.value)"></div>
+                        <div><span class="act-label">RPE</span><input type="number" step="0.5" id="${baseId}-rpe" class="actual-input" placeholder="-" onchange="setRepeatVal('${type}',${i},${si},'act_rpe',this.value)"></div>
+                    </div>
+                    <div class="set-row-bottom">
+                        <input type="text" class="note-input" placeholder="Notes..." maxlength="80" onchange="setRepeatVal('${type}',${i},${si},'act_note',this.value)">
+                        <input type="checkbox" class="tick-box" onclick="fillRepeatVal('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe||''}','${baseId}',this.checked)">
+                    </div>
+                </div>`;
+            }).join('')}
+        </div>`;
+    }).join('');
+}
+
+function setRepeatVal(type, exIdx, setIdx, field, val) {
+    if (!currentProgram._activeRepeat) return;
+    currentProgram._activeRepeat[type][exIdx].setsData[setIdx][field] = val;
+}
+
+function fillRepeatVal(type, exIdx, setIdx, reps, weight, rpe, baseId, checked) {
+    if (!checked || !currentProgram._activeRepeat) return;
+    const set = currentProgram._activeRepeat[type][exIdx].setsData[setIdx];
+    const repsEl = document.getElementById(`${baseId}-reps`);
+    const kgEl = document.getElementById(`${baseId}-kg`);
+    const rpeEl = document.getElementById(`${baseId}-rpe`);
+    if (!repsEl.value) { repsEl.value = reps; set.act_reps = reps; }
+    if (!kgEl.value) { kgEl.value = weight; set.act_weight = weight; }
+    if (!rpeEl.value && parseFloat(rpe)) { rpeEl.value = rpe; set.act_rpe = rpe; }
+}
+
+async function saveRepeatSession() {
+    const session = currentProgram._activeRepeat;
+    if (!session) return;
+    showToast('Saving...');
+    try {
+        await pb.collection('session_logs').create({
+            program: currentProgram.id,
+            client: pb.authStore.model.id,
+            date: session.sessionDate || new Date().toISOString().split('T')[0],
+            workout_data: JSON.stringify({ warmup: session.warmup, exercises: session.exercises })
+        });
+        currentProgram._activeRepeat = null;
+        document.getElementById('repeat-active').style.display = 'none';
+        showToast('Session saved! 🔥');
+        await loadRepeatHistory();
+    } catch(e) { alert('Save failed: ' + e.message); }
+}
 function showToast(msg) {
     const toast = document.getElementById('sync-toast');
     toast.textContent = msg; toast.style.display = 'block';
