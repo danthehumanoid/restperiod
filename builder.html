@@ -316,6 +316,14 @@ window.onload = async () => {
     document.getElementById('sched-start').value = new Date().toISOString().split('T')[0];
     setupFilterUI();
     await loadDashboard();
+    const urlParams = new URLSearchParams(window.location.search);
+const editId = urlParams.get('editId');
+const editClientId = urlParams.get('clientId');
+if (editId && editClientId) {
+    document.getElementById('client-select').value = editClientId;
+    await loadProgramHistory();
+    await loadProgram(editId);
+}
     await loadCustomExercises();
     await fetchSectionTemplates();
     runLibrarySearch();

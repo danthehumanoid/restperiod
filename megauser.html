@@ -20,13 +20,14 @@
         .nav-brand { font-family: 'Montserrat'; font-weight: 800; font-size: 1.1rem; }
         .nav-brand span { color: var(--brand-accent); }
         .nav-links { display: flex; gap: 16px; }
-        .nav-links a { color: #888; text-decoration: none; font-family: 'Montserrat'; font-weight: 700; font-size: 0.75rem; }
+        .nav-links a { color: #888; text-decoration: none; font-family: 'Montserrat'; font-weight: 700; font-size: 0.75rem; transition: 0.2s; }
+        .nav-links a:hover { color: var(--brand-accent); }
         .nav-links a.active { color: white; border-bottom: 2px solid var(--brand-accent); }
 
         .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
 
         /* STAT CARDS */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
         .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px 16px; text-align: center; position: relative; overflow: hidden; }
         .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--brand-accent); }
         .stat-card.green::before { background: var(--brand-secondary); }
@@ -39,32 +40,38 @@
         .stat-card.purple .stat-val { color: #c084fc; }
         .stat-label { font-size: 0.65rem; color: #888; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* SECTION */
-        .section-title { font-family: 'Montserrat'; font-size: 0.72rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
-        .section-title span { color: #555; font-size: 0.65rem; }
-
-        /* TABLES */
+        /* DATA CARDS */
         .data-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 24px; overflow: hidden; }
         .data-card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         .data-card-title { font-family: 'Montserrat'; font-size: 0.72rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* TABLES */
         .data-table { width: 100%; border-collapse: collapse; }
         .data-table th { padding: 10px 16px; text-align: left; font-size: 0.58rem; font-family: 'Montserrat'; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); background: #050d12; }
         .data-table td { padding: 11px 16px; font-size: 0.82rem; border-bottom: 1px solid #0a1520; vertical-align: middle; }
         .data-table tr:last-child td { border-bottom: none; }
         .data-table tr:hover td { background: rgba(38,198,218,0.03); }
+
         .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.6rem; font-weight: 800; font-family: 'Montserrat'; }
         .badge-blue { background: #26C6DA22; color: var(--brand-accent); border: 1px solid #26C6DA44; }
         .badge-green { background: #2E7D3222; color: #4ade80; border: 1px solid #2E7D3244; }
         .badge-purple { background: #c084fc22; color: #c084fc; border: 1px solid #c084fc44; }
         .badge-red { background: #ff525222; color: #ff5252; border: 1px solid #ff525244; }
+        .badge-orange { background: #fb923c22; color: #fb923c; border: 1px solid #fb923c44; }
 
-        /* ADD COACH */
+        /* ADD COACH FORM */
         .add-coach-form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end; padding: 16px 18px; background: #050d12; border-top: 1px solid var(--border); }
         .form-group label { font-size: 0.58rem; font-family: 'Montserrat'; font-weight: 800; color: #888; text-transform: uppercase; display: block; margin-bottom: 4px; }
         .form-group input { width: 100%; background: var(--card-bg); border: 1px solid var(--border); color: white; padding: 9px 12px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; }
         .form-group input:focus { outline: none; border-color: var(--brand-accent); }
-        .btn-add { background: var(--brand-accent); color: #000; border: none; padding: 9px 20px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .btn-add:hover { background: #fff; }
+
+        .btn { border: none; padding: 9px 18px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-block; }
+        .btn-accent { background: var(--brand-accent); color: #000; }
+        .btn-accent:hover { background: #fff; color: #000; }
+        .btn-green { background: var(--brand-secondary); color: white; }
+        .btn-green:hover { background: #3a9a3e; }
+        .btn-danger { background: transparent; border: 1px solid var(--brand-danger); color: var(--brand-danger); }
+        .btn-danger:hover { background: var(--brand-danger); color: white; }
 
         /* PROGRESS BAR */
         .mini-bar { background: #0a1520; border-radius: 4px; height: 5px; overflow: hidden; margin-top: 4px; }
@@ -74,25 +81,34 @@
         .table-search { background: #050d12; border: 1px solid var(--border); color: white; padding: 7px 12px; border-radius: 6px; font-family: inherit; font-size: 0.82rem; width: 200px; }
         .table-search:focus { outline: none; border-color: var(--brand-accent); }
 
+        /* FREE PROGRAM CARD */
+        .free-prog-card { background: #050d12; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin: 0 16px 12px; transition: 0.2s; }
+        .free-prog-card:hover { border-color: var(--brand-accent); }
+        .free-prog-name { font-family: 'Montserrat'; font-weight: 800; font-size: 0.92rem; color: white; margin-bottom: 4px; }
+        .free-prog-desc { font-size: 0.75rem; color: #888; font-style: italic; margin-bottom: 10px; min-height: 18px; }
+        .free-prog-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .free-prog-actions { display: flex; gap: 8px; margin-top: 10px; }
+
         /* LOADING */
         .loading { text-align: center; padding: 40px; color: #333; font-size: 0.85rem; }
         .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #1a2a35; border-top-color: var(--brand-accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        @media (max-width: 700px) {
+        @media (max-width: 900px) {
             .add-coach-form { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .data-table th:nth-child(n+4), .data-table td:nth-child(n+4) { display: none; }
+            .two-col { grid-template-columns: 1fr !important; }
         }
     </style>
 </head>
 <body>
 
 <div class="nav-top">
-    <div class="nav-brand">REST <span>PERIOD</span> <span style="font-size:0.65rem; color:#555; font-weight:700; margin-left:8px;">MEGA DASHBOARD</span></div>
+    <div class="nav-brand">REST <span>PERIOD</span> <span style="font-size:0.65rem;color:#555;font-weight:700;margin-left:8px;">MEGA DASHBOARD</span></div>
     <div class="nav-links">
-        <a href="dashboard.html">Coach Dashboard</a>
+        <a href="dashboard.html">Coach</a>
         <a href="builder.html">Builder</a>
+        <a href="library.html">Library</a>
         <a href="megauser.html" class="active">Mega</a>
         <a href="#" onclick="handleLogout()">Logout</a>
     </div>
@@ -100,35 +116,30 @@
 
 <div class="container">
 
-    <!-- STAT CARDS -->
+    <!-- STATS -->
     <div class="stats-grid" id="stats-grid">
         <div class="loading"><span class="spinner"></span>Loading...</div>
     </div>
 
-    <!-- TWO COLUMN LAYOUT -->
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;">
+    <!-- TWO COL: TRAINERS + FREE USERS -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px;" class="two-col">
 
         <!-- TRAINERS -->
         <div class="data-card">
             <div class="data-card-header">
                 <div class="data-card-title">🏋️ Trainers</div>
-                <button class="btn-add" onclick="toggleAddCoach()">+ Add Trainer</button>
+                <button class="btn btn-accent" onclick="toggleAddCoach()">+ Add Trainer</button>
             </div>
             <div id="add-coach-form" style="display:none;">
                 <div class="add-coach-form">
                     <div class="form-group"><label>Name</label><input type="text" id="new-coach-name" placeholder="Jane Smith"></div>
                     <div class="form-group"><label>Email</label><input type="email" id="new-coach-email" placeholder="jane@gym.com"></div>
                     <div class="form-group"><label>Password</label><input type="text" id="new-coach-pass" placeholder="Temp password"></div>
-                    <button class="btn-add" onclick="saveNewCoach()">Create</button>
+                    <button class="btn btn-green" onclick="saveNewCoach()">Create</button>
                 </div>
             </div>
             <table class="data-table">
-                <thead><tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Clients</th>
-                    <th>Programs</th>
-                </tr></thead>
+                <thead><tr><th>Name</th><th>Email</th><th>Clients</th><th>Programs</th></tr></thead>
                 <tbody id="trainers-table"><tr><td colspan="4" class="loading"><span class="spinner"></span></td></tr></tbody>
             </table>
         </div>
@@ -140,49 +151,43 @@
                 <input type="text" class="table-search" placeholder="Search..." oninput="filterFreeUsers(this.value)">
             </div>
             <table class="data-table">
-                <thead><tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Joined</th>
-                </tr></thead>
+                <thead><tr><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
                 <tbody id="free-users-table"><tr><td colspan="3" class="loading"><span class="spinner"></span></td></tr></tbody>
             </table>
         </div>
     </div>
 
-    <!-- CLIENTS TABLE -->
+    <!-- CLIENTS -->
     <div class="data-card" style="margin-bottom:24px;">
         <div class="data-card-header">
             <div class="data-card-title">👥 All Clients</div>
             <input type="text" class="table-search" placeholder="Search clients..." oninput="filterClients(this.value)">
         </div>
         <table class="data-table">
-            <thead><tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Trainer</th>
-                <th>Programs</th>
-                <th>Joined</th>
-            </tr></thead>
-            <tbody id="clients-table"><tr><td colspan="5" class="loading"><span class="spinner"></span></td></tr></tbody>
+            <thead><tr><th>Name</th><th>Email</th><th>Programs</th><th>Joined</th></tr></thead>
+            <tbody id="clients-table"><tr><td colspan="4" class="loading"><span class="spinner"></span></td></tr></tbody>
         </table>
     </div>
 
-    <!-- PROGRAMS TABLE -->
+    <!-- FREE PROGRAMS MANAGER -->
+    <div class="data-card" style="margin-bottom:24px;">
+        <div class="data-card-header">
+            <div class="data-card-title">🌐 Free Programs</div>
+            <a href="builder.html" class="btn btn-green">+ Create in Builder</a>
+        </div>
+        <div id="free-programs-list" style="padding:8px 0;">
+            <div class="loading"><span class="spinner"></span></div>
+        </div>
+    </div>
+
+    <!-- ALL PROGRAMS -->
     <div class="data-card">
         <div class="data-card-header">
             <div class="data-card-title">📋 Active Programs</div>
             <input type="text" class="table-search" placeholder="Search programs..." oninput="filterPrograms(this.value)">
         </div>
         <table class="data-table">
-            <thead><tr>
-                <th>Program</th>
-                <th>Client</th>
-                <th>Progress</th>
-                <th>Sessions</th>
-                <th>Last Active</th>
-                <th>Status</th>
-            </tr></thead>
+            <thead><tr><th>Program</th><th>Client</th><th>Progress</th><th>Sessions</th><th>Last Active</th><th>Status</th></tr></thead>
             <tbody id="programs-table"><tr><td colspan="6" class="loading"><span class="spinner"></span></td></tr></tbody>
         </table>
     </div>
@@ -190,21 +195,15 @@
 </div>
 
 <script>
-
-    (function() {
+(function() {
     const pb2 = new PocketBase('https://restperiod.org');
     if (!pb2.authStore.isValid) { window.location.href = '/index.html'; return; }
-    const role = pb2.authStore.model.role;
-    if (role !== 'admin') { window.location.href = '/index.html'; }
+    if (pb2.authStore.model.role !== 'admin') { window.location.href = '/index.html'; }
 })();
-const pb = new PocketBase('https://restperiod.org');
 
-let allTrainers = [];
-let allClients = [];
-let allFreeUsers = [];
-let allPrograms = [];
-let clientProgramMap = {}; // clientId -> programs[]
-let trainerClientMap = {}; // trainerId -> clients[]
+const pb = new PocketBase('https://restperiod.org');
+let allTrainers = [], allClients = [], allFreeUsers = [], allPrograms = [], allFreePrograms = [];
+let clientProgramMap = {};
 
 window.onload = async () => {
     if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
@@ -213,17 +212,19 @@ window.onload = async () => {
 
 async function loadAll() {
     try {
-        const [usersRes, programsRes] = await Promise.all([
+        const [usersRes, programsRes, freeProgsRes] = await Promise.all([
             pb.collection('users').getFullList({ sort: 'name', requestKey: null }),
-            pb.collection('programs').getFullList({ filter: 'archived=false', sort: '-created', requestKey: null })
+            pb.collection('programs').getFullList({ filter: 'archived=false', sort: '-created', requestKey: null }),
+            pb.collection('programs').getFullList({ filter: 'is_free=true && archived=false', sort: 'name', requestKey: null })
         ]);
 
         allTrainers = usersRes.filter(u => u.role === 'trainer' || u.role === 'admin');
         allClients = usersRes.filter(u => u.role === 'client');
         allFreeUsers = usersRes.filter(u => u.role === 'free');
         allPrograms = programsRes;
+        allFreePrograms = freeProgsRes;
 
-        // Build maps
+        clientProgramMap = {};
         allPrograms.forEach(p => {
             if (!clientProgramMap[p.client]) clientProgramMap[p.client] = [];
             clientProgramMap[p.client].push(p);
@@ -233,6 +234,7 @@ async function loadAll() {
         renderTrainers();
         renderClients();
         renderFreeUsers();
+        renderFreePrograms();
         renderPrograms();
 
     } catch(e) { console.error(e); }
@@ -240,73 +242,40 @@ async function loadAll() {
 
 // ── STATS ──────────────────────────────────────────
 function renderStats() {
-    // Count programs in progress (has at least one completed session but not all)
     let inProgress = 0, newThisMonth = 0;
     const thisMonth = new Date(); thisMonth.setDate(1); thisMonth.setHours(0,0,0,0);
 
     allPrograms.forEach(p => {
-    let data = p.workout_data;
-    if (typeof data === 'string') { try { data = JSON.parse(data); } catch(e) { return; } }
-    if (!data) return;
-    const schedule = data.schedule || data;
-    if (!Array.isArray(schedule)) return;
-        const completedSessions = schedule.filter(s => s.sessionDate).length;
-        if (completedSessions > 0 && completedSessions < schedule.length) inProgress++;
+        try {
+            let data = p.workout_data;
+            if (typeof data === 'string') data = JSON.parse(data);
+            if (!data) return;
+            const schedule = data.schedule || data;
+            if (!Array.isArray(schedule)) return;
+            const done = schedule.filter(s => s.sessionDate).length;
+            if (done > 0 && done < schedule.length) inProgress++;
+        } catch(e) {}
         if (new Date(p.created) >= thisMonth) newThisMonth++;
     });
 
     const totalSessions = allPrograms.reduce((acc, p) => {
-    try {
-        let data = p.workout_data;
-        if (typeof data === 'string') data = JSON.parse(data);
-        if (!data) return acc;
-        const schedule = data.schedule || data;
-        if (!Array.isArray(schedule)) return acc;
-        return acc + schedule.filter(s => s.sessionDate).length;
-    } catch(e) { return acc; }
-}, 0);
+        try {
+            let data = p.workout_data;
+            if (typeof data === 'string') data = JSON.parse(data);
+            const schedule = data.schedule || data;
+            return acc + (Array.isArray(schedule) ? schedule.filter(s => s.sessionDate).length : 0);
+        } catch(e) { return acc; }
+    }, 0);
 
     document.getElementById('stats-grid').innerHTML = `
-        <div class="stat-card">
-            <div class="stat-icon">🏋️</div>
-            <div class="stat-val">${allTrainers.length}</div>
-            <div class="stat-label">Trainers</div>
-        </div>
-        <div class="stat-card green">
-            <div class="stat-icon">👥</div>
-            <div class="stat-val">${allClients.length}</div>
-            <div class="stat-label">Clients</div>
-        </div>
-        <div class="stat-card purple">
-            <div class="stat-icon">🆓</div>
-            <div class="stat-val">${allFreeUsers.length}</div>
-            <div class="stat-label">Free Users</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">📋</div>
-            <div class="stat-val">${allPrograms.length}</div>
-            <div class="stat-label">Total Programs</div>
-        </div>
-        <div class="stat-card green">
-            <div class="stat-icon">🔥</div>
-            <div class="stat-val">${inProgress}</div>
-            <div class="stat-label">In Progress</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">✨</div>
-            <div class="stat-val">${newThisMonth}</div>
-            <div class="stat-label">New This Month</div>
-        </div>
-        <div class="stat-card green">
-            <div class="stat-icon">✅</div>
-            <div class="stat-val">${totalSessions}</div>
-            <div class="stat-label">Sessions Logged</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">👤</div>
-            <div class="stat-val">${allTrainers.length + allClients.length + allFreeUsers.length}</div>
-            <div class="stat-label">Total Users</div>
-        </div>
+        <div class="stat-card"><div class="stat-icon">🏋️</div><div class="stat-val">${allTrainers.length}</div><div class="stat-label">Trainers</div></div>
+        <div class="stat-card green"><div class="stat-icon">👥</div><div class="stat-val">${allClients.length}</div><div class="stat-label">Clients</div></div>
+        <div class="stat-card purple"><div class="stat-icon">🆓</div><div class="stat-val">${allFreeUsers.length}</div><div class="stat-label">Free Users</div></div>
+        <div class="stat-card"><div class="stat-icon">🌐</div><div class="stat-val">${allFreePrograms.length}</div><div class="stat-label">Free Programs</div></div>
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-val">${allPrograms.length}</div><div class="stat-label">Total Programs</div></div>
+        <div class="stat-card green"><div class="stat-icon">🔥</div><div class="stat-val">${inProgress}</div><div class="stat-label">In Progress</div></div>
+        <div class="stat-card"><div class="stat-icon">✨</div><div class="stat-val">${newThisMonth}</div><div class="stat-label">New This Month</div></div>
+        <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-val">${totalSessions}</div><div class="stat-label">Sessions Logged</div></div>
     `;
 }
 
@@ -317,58 +286,41 @@ function renderTrainers() {
         return;
     }
     document.getElementById('trainers-table').innerHTML = allTrainers.map(t => {
-        const clients = allClients.filter(c => {
-            // clients don't have a trainer field directly — count programs assigned to them
-            const clientProgs = clientProgramMap[c.id] || [];
-            return clientProgs.length > 0;
-        });
-        const trainerPrograms = allPrograms.filter(p => {
-            const client = allClients.find(c => c.id === p.client);
-            return client !== undefined;
-        });
-        const clientCount = allClients.length; // simplified — all clients belong to trainers
         const progCount = allPrograms.filter(p => !p.is_free && !p.is_template).length;
         return `<tr>
             <td><strong>${t.name}</strong></td>
             <td style="color:#888;font-size:0.78rem;">${t.email}</td>
-            <td><span class="badge badge-blue">${clientCount}</span></td>
+            <td><span class="badge badge-blue">${allClients.length}</span></td>
             <td><span class="badge badge-green">${progCount}</span></td>
         </tr>`;
     }).join('');
 }
 
 // ── CLIENTS ───────────────────────────────────────
-let _allClientsCache = [];
 function renderClients(filter = '') {
-    _allClientsCache = allClients;
     const filtered = filter ? allClients.filter(c =>
         c.name.toLowerCase().includes(filter) || c.email.toLowerCase().includes(filter)
     ) : allClients;
 
     if (!filtered.length) {
-        document.getElementById('clients-table').innerHTML = '<tr><td colspan="5" style="text-align:center;color:#555;padding:20px;">No clients found.</td></tr>';
+        document.getElementById('clients-table').innerHTML = '<tr><td colspan="4" style="text-align:center;color:#555;padding:20px;">No clients found.</td></tr>';
         return;
     }
-
     document.getElementById('clients-table').innerHTML = filtered.map(c => {
         const progs = clientProgramMap[c.id] || [];
         const joined = new Date(c.created).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});
         return `<tr>
             <td><strong>${c.name}</strong></td>
             <td style="color:#888;font-size:0.78rem;">${c.email}</td>
-            <td><span class="badge badge-blue">${allTrainers[0]?.name || '—'}</span></td>
             <td><span class="badge badge-green">${progs.length} program${progs.length!==1?'s':''}</span></td>
             <td style="color:#555;font-size:0.78rem;">${joined}</td>
         </tr>`;
     }).join('');
 }
-
 function filterClients(q) { renderClients(q.toLowerCase()); }
 
 // ── FREE USERS ────────────────────────────────────
-let _freeUsersCache = [];
 function renderFreeUsers(filter = '') {
-    _freeUsersCache = allFreeUsers;
     const filtered = filter ? allFreeUsers.filter(u =>
         u.name.toLowerCase().includes(filter) || u.email.toLowerCase().includes(filter)
     ) : allFreeUsers;
@@ -377,7 +329,6 @@ function renderFreeUsers(filter = '') {
         document.getElementById('free-users-table').innerHTML = '<tr><td colspan="3" style="text-align:center;color:#555;padding:20px;">No free users yet.</td></tr>';
         return;
     }
-
     document.getElementById('free-users-table').innerHTML = filtered.map(u => {
         const joined = new Date(u.created).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});
         return `<tr>
@@ -387,10 +338,61 @@ function renderFreeUsers(filter = '') {
         </tr>`;
     }).join('');
 }
-
 function filterFreeUsers(q) { renderFreeUsers(q.toLowerCase()); }
 
-// ── PROGRAMS ──────────────────────────────────────
+// ── FREE PROGRAMS MANAGER ─────────────────────────
+function renderFreePrograms() {
+    const container = document.getElementById('free-programs-list');
+    if (!allFreePrograms.length) {
+        container.innerHTML = `<div style="text-align:center;color:#555;padding:30px;font-size:0.85rem;">
+            No free programs yet.<br><br>
+            <a href="builder.html" class="btn btn-accent" style="font-size:0.72rem;">Create one in Builder →</a>
+        </div>`;
+        return;
+    }
+    container.innerHTML = allFreePrograms.map(p => {
+        let data = p.workout_data;
+        if (typeof data === 'string') try { data = JSON.parse(data); } catch(e) { data = {}; }
+        const schedule = data.schedule || data || [];
+        const sessionCount = Array.isArray(schedule) ? schedule.length : 0;
+        const typeBadge = p.is_repeatable
+            ? `<span class="badge badge-purple">🔁 Repeatable</span>`
+            : `<span class="badge badge-blue">${sessionCount} session${sessionCount!==1?'s':''}</span>`;
+
+        // Count how many free users have claimed this
+        const claimedCount = allPrograms.filter(pr =>
+            pr.name === p.name && !pr.is_free && pr.client
+        ).length;
+
+        return `<div class="free-prog-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+                <div style="flex:1;">
+                    <div class="free-prog-name">${p.name}</div>
+                    <div class="free-prog-desc">${p.description || 'No description'}</div>
+                    <div class="free-prog-meta">
+                        ${typeBadge}
+                        ${claimedCount > 0 ? `<span class="badge badge-green">👥 ${claimedCount} claimed</span>` : ''}
+                        ${p.is_repeatable ? '' : `<span style="font-size:0.7rem;color:#555;">${sessionCount} sessions</span>`}
+                    </div>
+                </div>
+                <div class="free-prog-actions">
+                    <a href="builder.html?editId=${p.id}&clientId=${p.client}" class="btn btn-accent" style="font-size:0.65rem;padding:6px 12px;">✏️ Edit</a>
+                    <button onclick="removeFreeProgram('${p.id}')" class="btn btn-danger" style="font-size:0.65rem;padding:6px 12px;">🗑</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function removeFreeProgram(id) {
+    if (!confirm('Remove this from the free program library? Clients who already claimed it keep their copy.')) return;
+    try {
+        await pb.collection('programs').update(id, { is_free: false });
+        await loadAll();
+    } catch(e) { alert(e.message); }
+}
+
+// ── ALL PROGRAMS ──────────────────────────────────
 function renderPrograms(filter = '') {
     const filtered = filter ? allPrograms.filter(p =>
         p.name.toLowerCase().includes(filter)
@@ -417,16 +419,11 @@ function renderPrograms(filter = '') {
             });
         }
         const pct = totalSets > 0 ? Math.round((doneSets/totalSets)*100) : 0;
-
-        // Last active
         const lastSession = Array.isArray(schedule) ? schedule.filter(s=>s.sessionDate).sort((a,b)=>b.sessionDate>a.sessionDate?1:-1)[0] : null;
         const lastActive = lastSession ? new Date(lastSession.sessionDate).toLocaleDateString([],{day:'numeric',month:'short'}) : '—';
-
-        // Client name
         const client = allClients.find(c => c.id === p.client);
         const clientName = client?.name || (p.is_free ? 'Free/Public' : '—');
 
-        // Status
         let statusBadge = '';
         if (p.is_free) statusBadge = `<span class="badge badge-purple">Free</span>`;
         else if (completedSessions === 0) statusBadge = `<span class="badge badge-red">Not Started</span>`;
@@ -434,7 +431,7 @@ function renderPrograms(filter = '') {
         else statusBadge = `<span class="badge badge-blue">In Progress</span>`;
 
         return `<tr>
-            <td><strong>${p.name}</strong></td>
+            <td><strong>${p.name}</strong>${p.is_repeatable ? ' <span class="badge badge-purple" style="font-size:0.5rem;">🔁</span>' : ''}</td>
             <td style="color:#888;font-size:0.78rem;">${clientName}</td>
             <td>
                 <div style="font-size:0.75rem;color:var(--brand-accent);font-weight:700;">${pct}%</div>
@@ -446,7 +443,6 @@ function renderPrograms(filter = '') {
         </tr>`;
     }).join('');
 }
-
 function filterPrograms(q) { renderPrograms(q.toLowerCase()); }
 
 // ── ADD COACH ─────────────────────────────────────
@@ -461,12 +457,7 @@ async function saveNewCoach() {
     const pass = document.getElementById('new-coach-pass').value.trim();
     if (!name || !email || !pass) return alert('Please fill in all fields.');
     try {
-        await pb.collection('users').create({
-            name, email,
-            password: pass,
-            passwordConfirm: pass,
-            role: 'trainer'
-        });
+        await pb.collection('users').create({ name, email, password: pass, passwordConfirm: pass, role: 'trainer' });
         document.getElementById('new-coach-name').value = '';
         document.getElementById('new-coach-email').value = '';
         document.getElementById('new-coach-pass').value = '';
