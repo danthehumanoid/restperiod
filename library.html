@@ -17,7 +17,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
 
-        /* NAV */
         .nav-top { display: flex; justify-content: space-between; padding: 15px 25px; background: #000; border-bottom: 1px solid #004d7a; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .nav-brand { font-weight: 800; font-size: 1.2rem; font-family: 'Montserrat'; }
         .nav-brand span { color: var(--brand-accent); }
@@ -25,10 +24,8 @@
         .nav-links a:hover { color: var(--brand-accent); }
         .nav-links a.active { color: white; border-bottom: 2px solid var(--brand-accent); }
 
-        /* LAYOUT */
         .page { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 65px); }
 
-        /* SIDEBAR FILTERS */
         .sidebar { background: #000; border-right: 1px solid #0a1a25; padding: 20px; overflow-y: auto; height: calc(100vh - 65px); position: sticky; top: 65px; }
         .sidebar-search { width: 100%; background: var(--input-bg); border: 1px solid #004d7a; color: white; padding: 10px 12px; border-radius: 6px; font-size: 0.85rem; font-family: inherit; margin-bottom: 16px; }
         .sidebar-search:focus { outline: none; border-color: var(--brand-accent); }
@@ -40,9 +37,9 @@
         .filter-tag.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
         .filter-clear { width: 100%; padding: 8px; background: none; border: 1px solid #1a2a35; color: #555; border-radius: 6px; cursor: pointer; font-size: 0.65rem; font-family: 'Montserrat'; font-weight: 800; margin-top: 8px; transition: 0.2s; text-transform: uppercase; }
         .filter-clear:hover { border-color: var(--brand-danger); color: var(--brand-danger); }
-        .active-count { background: var(--brand-accent); color: #000; border-radius: 20px; padding: 2px 8px; font-size: 0.6rem; font-weight: 800; margin-left: 6px; }
+        .filter-tag[data-tag="NO-VIDEO"] { border-color: var(--brand-danger); color: var(--brand-danger); }
+        .filter-tag[data-tag="NO-VIDEO"].active { background: var(--brand-danger); color: white; }
 
-        /* MAIN CONTENT */
         .main { padding: 20px; overflow-y: auto; }
         .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
         .results-count { font-size: 0.75rem; color: #555; font-family: 'Montserrat'; font-weight: 700; }
@@ -50,11 +47,6 @@
         .btn-add { background: var(--brand-secondary); color: white; border: none; padding: 10px 18px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .btn-add:hover { background: #3a9a3e; }
 
-        /* NO-VIDEO filter highlight */
-        .filter-tag[data-tag="NO-VIDEO"] { border-color: var(--brand-danger); color: var(--brand-danger); }
-        .filter-tag[data-tag="NO-VIDEO"].active { background: var(--brand-danger); color: white; }
-
-        /* VIDEO GRID */
         .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
         .video-card { background: var(--card-bg); border: 1px solid #1a2a35; border-radius: 10px; overflow: hidden; transition: 0.2s; }
         .video-card:hover { border-color: var(--brand-accent); transform: translateY(-2px); }
@@ -69,33 +61,47 @@
         .card-title { font-family: 'Montserrat'; font-weight: 800; font-size: 0.85rem; color: white; margin-bottom: 6px; line-height: 1.3; }
         .card-tags { display: flex; flex-wrap: wrap; gap: 4px; }
         .card-tag { padding: 2px 7px; border-radius: 20px; font-size: 0.55rem; font-weight: 800; font-family: 'Montserrat'; background: #001a30; color: var(--brand-accent); border: 1px solid #004d7a; text-transform: uppercase; }
-        .card-tag.movement { background: #001a30; color: var(--brand-accent); border-color: #004d7a; }
         .card-tag.no-video-tag { background: #2a0a0a; color: var(--brand-danger); border-color: #4a1a1a; }
-        .card-custom-badge { position: absolute; top: 8px; right: 8px; background: var(--brand-secondary); color: white; font-size: 0.5rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .card-tag.custom-tag { background: #1a1a30; color: #c084fc; border-color: #4a4a7a; }
+        .card-custom-badge { position: absolute; top: 8px; left: 8px; background: var(--brand-secondary); color: white; font-size: 0.5rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        .edit-btn { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); border: 1px solid var(--brand-accent); color: var(--brand-accent); padding: 5px 10px; border-radius: 4px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.55rem; cursor: pointer; transition: 0.2s; }
+        .edit-btn:hover { background: var(--brand-accent); color: #000; }
 
-        /* EMPTY */
         .empty { color: #333; text-align: center; padding: 80px 20px; grid-column: 1/-1; font-size: 0.9rem; }
         .empty i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
-
-        /* LOAD MORE */
         .load-more-wrap { text-align: center; margin-top: 30px; }
         .btn-load { padding: 12px 30px; background: var(--brand-accent); border: none; font-weight: 800; font-family: 'Montserrat'; cursor: pointer; border-radius: 6px; color: #000; transition: 0.2s; font-size: 0.75rem; }
         .btn-load:hover { background: #fff; }
 
-        /* ADD MODAL */
+        /* MODALS */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 6000; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.open { display: flex; }
-        .modal { background: var(--card-bg); border: 1px solid var(--brand-accent); border-radius: 12px; padding: 24px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
+        .modal { background: var(--card-bg); border: 1px solid var(--brand-accent); border-radius: 12px; padding: 24px; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; }
         .modal h3 { font-family: 'Montserrat'; font-size: 0.9rem; color: var(--brand-accent); margin-bottom: 20px; }
         .form-field { margin-bottom: 14px; }
         .form-label { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; font-family: 'Montserrat'; }
         .form-input { width: 100%; background: #050d12; border: 1px solid #1a2a35; color: white; padding: 10px 12px; border-radius: 6px; font-family: inherit; font-size: 0.9rem; }
         .form-input:focus { outline: none; border-color: var(--brand-accent); }
-        .tag-picker { display: flex; flex-wrap: wrap; gap: 6px; }
-        .tag-pick-btn { padding: 5px 12px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; cursor: pointer; font-size: 0.65rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
+
+        /* TAG PICKER */
+        .tag-section-label { font-size: 0.55rem; color: #444; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 6px; }
+        .tag-picker { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 4px; }
+        .tag-pick-btn { padding: 4px 10px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; cursor: pointer; font-size: 0.62rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
         .tag-pick-btn:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
         .tag-pick-btn.selected { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
-        .tag-section-label { font-size: 0.55rem; color: #444; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 6px; }
+
+        /* CUSTOM TAG INPUT */
+        .custom-tag-area { margin-top: 10px; }
+        .custom-tag-input-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .custom-tag-input { flex: 1; background: #050d12; border: 1px solid #1a2a35; color: white; padding: 8px 12px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; }
+        .custom-tag-input:focus { outline: none; border-color: #c084fc; }
+        .btn-add-tag { background: #1a1a3a; border: 1px solid #c084fc; color: #c084fc; padding: 8px 14px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.65rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .btn-add-tag:hover { background: #c084fc; color: #000; }
+        .custom-tags-list { display: flex; flex-wrap: wrap; gap: 5px; }
+        .custom-tag-pill { background: #1a1a3a; border: 1px solid #c084fc; color: #c084fc; padding: 3px 10px; border-radius: 20px; font-size: 0.62rem; font-weight: 800; font-family: 'Montserrat'; display: flex; align-items: center; gap: 5px; }
+        .custom-tag-pill button { background: none; border: none; color: #c084fc; cursor: pointer; font-size: 0.7rem; padding: 0; line-height: 1; }
+
+        /* UPLOAD AREA */
         .upload-area { border: 2px dashed #1a2a35; border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: 0.2s; }
         .upload-area:hover { border-color: var(--brand-accent); }
         .upload-area i { font-size: 2rem; color: #333; margin-bottom: 8px; display: block; }
@@ -105,9 +111,11 @@
         .progress-fill { background: var(--brand-secondary); height: 100%; width: 0%; transition: width 0.3s; }
         .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
         .btn-save { background: var(--brand-secondary); color: white; border: none; padding: 12px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-cancel { background: #1a2a35; color: #888; border: none; padding: 12px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
-        .no-video-notice { background: #1a0a0a; border: 1px solid #4a1a1a; border-radius: 6px; padding: 10px 12px; font-size: 0.72rem; color: #f87171; margin-top: 8px; display: none; }
+        .no-video-notice { background: #1a0a0a; border: 1px solid #4a1a1a; border-radius: 6px; padding: 10px 12px; font-size: 0.72rem; color: #f87171; margin-top: 8px; }
         .no-video-notice i { margin-right: 6px; }
+        .video-status-ok { background: #0a1a0a; border: 1px solid #166534; border-radius: 6px; padding: 8px 12px; font-size: 0.72rem; color: #4ade80; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -118,48 +126,22 @@
 </div>
 
 <div class="page">
-
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <input type="text" class="sidebar-search" id="search-input" placeholder="Search exercises..." oninput="resetAndRender()">
-
         <div id="active-filters-bar" style="display:none; margin-bottom:14px;">
             <div style="font-size:0.6rem;color:#555;font-family:'Montserrat';font-weight:800;text-transform:uppercase;margin-bottom:6px;">Active Filters</div>
             <div id="active-filter-pills" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
             <button class="filter-clear" onclick="clearAllFilters()">✕ Clear All Filters</button>
         </div>
-
-        <div class="filter-section">
-            <div class="filter-section-title">Movement</div>
-            <div class="filter-tags" id="fg-movement"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Direction</div>
-            <div class="filter-tags" id="fg-direction"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Limbs</div>
-            <div class="filter-tags" id="fg-limbs"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Body Part</div>
-            <div class="filter-tags" id="fg-bodypart"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Joint</div>
-            <div class="filter-tags" id="fg-joint"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Equipment</div>
-            <div class="filter-tags" id="fg-equipment"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Other</div>
-            <div class="filter-tags" id="fg-other"></div>
-        </div>
+        <div class="filter-section"><div class="filter-section-title">Movement</div><div class="filter-tags" id="fg-movement"></div></div>
+        <div class="filter-section"><div class="filter-section-title">Direction</div><div class="filter-tags" id="fg-direction"></div></div>
+        <div class="filter-section"><div class="filter-section-title">Limbs</div><div class="filter-tags" id="fg-limbs"></div></div>
+        <div class="filter-section"><div class="filter-section-title">Body Part</div><div class="filter-tags" id="fg-bodypart"></div></div>
+        <div class="filter-section"><div class="filter-section-title">Joint</div><div class="filter-tags" id="fg-joint"></div></div>
+        <div class="filter-section"><div class="filter-section-title">Equipment</div><div class="filter-tags" id="fg-equipment"></div></div>
+        <div class="filter-section"><div class="filter-section-title">Other</div><div class="filter-tags" id="fg-other"></div></div>
     </div>
 
-    <!-- MAIN -->
     <div class="main">
         <div class="main-header">
             <div class="results-count" id="results-count">Loading...</div>
@@ -177,25 +159,28 @@
 <!-- ADD MODAL -->
 <div class="modal-overlay" id="add-modal" onclick="if(event.target===this)closeAddModal()">
     <div class="modal">
-        <h3>➕ Add Exercise to Your Library</h3>
+        <h3>➕ Add Exercise</h3>
         <div class="form-field">
             <span class="form-label">Exercise Name</span>
             <input type="text" class="form-input" id="ex-name" placeholder="e.g. Bench press eccentric" />
         </div>
         <div class="form-field">
             <span class="form-label">Tags</span>
-            <div class="tag-section-label">Movement</div>
-            <div class="tag-picker" id="tp-movement"></div>
-            <div class="tag-section-label">Direction</div>
-            <div class="tag-picker" id="tp-direction"></div>
-            <div class="tag-section-label">Limbs</div>
-            <div class="tag-picker" id="tp-limbs"></div>
-            <div class="tag-section-label">Body Part</div>
-            <div class="tag-picker" id="tp-bodypart"></div>
-            <div class="tag-section-label">Joint</div>
-            <div class="tag-picker" id="tp-joint"></div>
-            <div class="tag-section-label">Equipment</div>
-            <div class="tag-picker" id="tp-equipment"></div>
+            <div class="tag-section-label">Movement</div><div class="tag-picker" id="tp-movement"></div>
+            <div class="tag-section-label">Direction</div><div class="tag-picker" id="tp-direction"></div>
+            <div class="tag-section-label">Limbs</div><div class="tag-picker" id="tp-limbs"></div>
+            <div class="tag-section-label">Body Part</div><div class="tag-picker" id="tp-bodypart"></div>
+            <div class="tag-section-label">Joint</div><div class="tag-picker" id="tp-joint"></div>
+            <div class="tag-section-label">Equipment</div><div class="tag-picker" id="tp-equipment"></div>
+
+            <div class="custom-tag-area">
+                <div class="tag-section-label" style="color:#c084fc;">Custom Tags</div>
+                <div class="custom-tag-input-row">
+                    <input type="text" class="custom-tag-input" id="custom-tag-input" placeholder="e.g. EXPLOSIVE, BILATERAL..." onkeydown="if(event.key==='Enter'){addCustomTag('add');event.preventDefault();}">
+                    <button class="btn-add-tag" onclick="addCustomTag('add')">+ Add</button>
+                </div>
+                <div class="custom-tags-list" id="add-custom-tags-list"></div>
+            </div>
         </div>
         <div class="form-field">
             <span class="form-label">Video <span style="color:#555;font-size:0.55rem;">(optional)</span></span>
@@ -206,12 +191,55 @@
             </div>
             <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
             <div class="no-video-notice" id="no-video-notice">
-                <i class="fas fa-film"></i> No video added — this exercise will be tagged <strong>NO-VIDEO</strong> so you can find it later to film.
+                <i class="fas fa-film"></i> No video added — exercise will be tagged <strong>NO-VIDEO</strong>
             </div>
         </div>
         <div class="modal-actions">
-            <button class="btn-save" onclick="saveExercise()">Save Exercise</button>
+            <button class="btn-save" id="add-save-btn" onclick="saveExercise()">Save Exercise</button>
             <button class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
+    <div class="modal">
+        <h3>✏️ Edit Exercise</h3>
+        <div class="form-field">
+            <span class="form-label">Exercise Name</span>
+            <input type="text" class="form-input" id="edit-ex-name" />
+        </div>
+        <div class="form-field">
+            <span class="form-label">Tags</span>
+            <div class="tag-section-label">Movement</div><div class="tag-picker" id="etp-movement"></div>
+            <div class="tag-section-label">Direction</div><div class="tag-picker" id="etp-direction"></div>
+            <div class="tag-section-label">Limbs</div><div class="tag-picker" id="etp-limbs"></div>
+            <div class="tag-section-label">Body Part</div><div class="tag-picker" id="etp-bodypart"></div>
+            <div class="tag-section-label">Joint</div><div class="tag-picker" id="etp-joint"></div>
+            <div class="tag-section-label">Equipment</div><div class="tag-picker" id="etp-equipment"></div>
+
+            <div class="custom-tag-area">
+                <div class="tag-section-label" style="color:#c084fc;">Custom Tags</div>
+                <div class="custom-tag-input-row">
+                    <input type="text" class="custom-tag-input" id="edit-custom-tag-input" placeholder="e.g. EXPLOSIVE, BILATERAL..." onkeydown="if(event.key==='Enter'){addCustomTag('edit');event.preventDefault();}">
+                    <button class="btn-add-tag" onclick="addCustomTag('edit')">+ Add</button>
+                </div>
+                <div class="custom-tags-list" id="edit-custom-tags-list"></div>
+            </div>
+        </div>
+        <div class="form-field">
+            <span class="form-label">Video</span>
+            <div id="edit-current-video" style="margin-bottom:10px;"></div>
+            <div class="upload-area" id="edit-upload-area" onclick="document.getElementById('edit-ex-video').click()">
+                <i class="fas fa-video"></i>
+                <p id="edit-upload-label">Click to upload a new video <span style="color:var(--brand-accent);">or drag and drop</span></p>
+                <input type="file" id="edit-ex-video" accept="video/*" style="display:none" onchange="handleEditVideoSelect(this)" />
+            </div>
+            <div class="progress-bar" id="edit-progress-bar"><div class="progress-fill" id="edit-progress-fill"></div></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-save" id="edit-save-btn" onclick="saveEditExercise()">💾 Save Changes</button>
+            <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
         </div>
     </div>
 </div>
@@ -219,7 +247,6 @@
 <script>
 const pb = new PocketBase('https://restperiod.org');
 
-// ── FILTER GROUPS ─────────────────────────────────
 const filterGroups = {
     movement:  ['PUSH','PULL','SQUAT','HINGE','CORE','PLYO','RUN','MOBILITY','PRIMER','RECOVERY','SKILLS'],
     direction: ['HORIZONTAL','VERTICAL','LATERAL','ANTERIOR','POSTERIOR','SIDE','MIXED','TOTAL-CORE-STABILITY'],
@@ -229,43 +256,69 @@ const filterGroups = {
     equipment: ['BODYWEIGHT','DUMBBELL','BARBELL','KETTLEBELL','BAND','WEIGHTED','TRAP-BAR'],
     other:     ['NO-VIDEO']
 };
+const KNOWN_TAGS = Object.values(filterGroups).flat();
 
-// ── STATE ─────────────────────────────────────────
-let allExercises = [];
-let filteredList = [];
+let allExercises = [], filteredList = [];
 let activeFilters = new Set();
 let currentPage = 1;
 const PAGE_SIZE = 48;
 let selectedFile = null;
 let selectedTags = new Set();
+let addCustomTags = [];
+let editCustomTags = [];
 let isTrainer = false;
+let editingExId = null;
+let editFile = null;
 
 // ── INIT ──────────────────────────────────────────
 window.onload = async () => {
     if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
     const role = pb.authStore.model.role;
     isTrainer = role === 'trainer' || role === 'admin';
-const navLinks = document.getElementById('nav-links');
-if (isTrainer) {
-    navLinks.innerHTML = `
-        <a href="dashboard.html">DASHBOARD</a>
-        <a href="builder.html">BUILDER</a>
-        <a href="library.html" class="active">LIBRARY</a>
-        <a href="templates.html">TEMPLATES</a>
-        <a href="#" onclick="pb.authStore.clear();window.location.href='index.html'">LOGOUT</a>
-    `;
-} else {
-    navLinks.innerHTML = `
-        <a href="free.html">HOME</a>
-        <a href="library.html" class="active">LIBRARY</a>
-        <a href="#" onclick="pb.authStore.clear();window.location.href='index.html'">LOGOUT</a>
-    `;
-}
+
+    const navLinks = document.getElementById('nav-links');
+    if (isTrainer) {
+        navLinks.innerHTML = `
+            <a href="dashboard.html">DASHBOARD</a>
+            <a href="builder.html">BUILDER</a>
+            <a href="library.html" class="active">LIBRARY</a>
+            <a href="templates.html">TEMPLATES</a>
+            <a href="#" onclick="pb.authStore.clear();window.location.href='index.html'">LOGOUT</a>`;
+    } else {
+        navLinks.innerHTML = `
+            <a href="free.html">HOME</a>
+            <a href="library.html" class="active">LIBRARY</a>
+            <a href="#" onclick="pb.authStore.clear();window.location.href='index.html'">LOGOUT</a>`;
+    }
+
     if (isTrainer) document.getElementById('add-btn').style.display = 'flex';
 
     buildFilterUI();
-    buildTagPicker();
+    buildTagPickers();
     await loadExercises();
+
+    // Drag and drop for add modal
+    document.getElementById('upload-area').addEventListener('dragover', e => { e.preventDefault(); });
+    document.getElementById('upload-area').addEventListener('drop', e => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('video/')) {
+            selectedFile = file;
+            document.getElementById('upload-label').textContent = `✓ ${file.name}`;
+            document.getElementById('no-video-notice').style.display = 'none';
+        }
+    });
+
+    // Drag and drop for edit modal
+    document.getElementById('edit-upload-area').addEventListener('dragover', e => { e.preventDefault(); });
+    document.getElementById('edit-upload-area').addEventListener('drop', e => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('video/')) {
+            editFile = file;
+            document.getElementById('edit-upload-label').textContent = `✓ ${file.name}`;
+        }
+    });
 };
 
 // ── FILTER UI ─────────────────────────────────────
@@ -273,38 +326,80 @@ function buildFilterUI() {
     Object.entries(filterGroups).forEach(([group, tags]) => {
         const el = document.getElementById(`fg-${group}`);
         if (!el) return;
-        el.innerHTML = tags.map(tag => `
-            <button class="filter-tag ${tag==='NO-VIDEO'?'no-video':''}"
-                data-tag="${tag}"
-                onclick="toggleFilter('${tag}')">
-                ${tag.replace(/-/g,' ')}
-            </button>`).join('');
+        el.innerHTML = tags.map(tag =>
+            `<button class="filter-tag" data-tag="${tag}" onclick="toggleFilter('${tag}')">${tag.replace(/-/g,' ')}</button>`
+        ).join('');
     });
 }
 
-function buildTagPicker() {
+function buildTagPickers() {
     Object.entries(filterGroups).forEach(([group, tags]) => {
         if (group === 'other') return;
-        const el = document.getElementById(`tp-${group}`);
-        if (!el) return;
-        el.innerHTML = tags.map(tag => `
-            <button class="tag-pick-btn" data-tag="${tag}" onclick="togglePickTag('${tag}')">
-                ${tag.replace(/-/g,' ')}
-            </button>`).join('');
+        // Add modal pickers
+        const addEl = document.getElementById(`tp-${group}`);
+        if (addEl) addEl.innerHTML = tags.map(tag =>
+            `<button class="tag-pick-btn" data-tag="${tag}" onclick="togglePickTag('${tag}','add')">${tag.replace(/-/g,' ')}</button>`
+        ).join('');
+        // Edit modal pickers
+        const editEl = document.getElementById(`etp-${group}`);
+        if (editEl) editEl.innerHTML = tags.map(tag =>
+            `<button class="tag-pick-btn" data-tag="${tag}" onclick="togglePickTag('${tag}','edit')">${tag.replace(/-/g,' ')}</button>`
+        ).join('');
     });
+}
+
+function togglePickTag(tag, mode) {
+    if (mode === 'add') {
+        selectedTags.has(tag) ? selectedTags.delete(tag) : selectedTags.add(tag);
+        document.querySelectorAll(`#add-modal .tag-pick-btn[data-tag="${tag}"]`).forEach(el =>
+            el.classList.toggle('selected', selectedTags.has(tag))
+        );
+    } else {
+        // edit mode — store in editCustomTags conceptually via selectedTags reuse
+        // we use a separate set for edit
+        if (!window.editSelectedTags) window.editSelectedTags = new Set();
+        window.editSelectedTags.has(tag) ? window.editSelectedTags.delete(tag) : window.editSelectedTags.add(tag);
+        document.querySelectorAll(`#edit-modal .tag-pick-btn[data-tag="${tag}"]`).forEach(el =>
+            el.classList.toggle('selected', window.editSelectedTags.has(tag))
+        );
+    }
+}
+
+// ── CUSTOM TAGS ───────────────────────────────────
+function addCustomTag(mode) {
+    const inputId = mode === 'add' ? 'custom-tag-input' : 'edit-custom-tag-input';
+    const listId = mode === 'add' ? 'add-custom-tags-list' : 'edit-custom-tags-list';
+    const arr = mode === 'add' ? addCustomTags : editCustomTags;
+    const val = document.getElementById(inputId).value.trim().toUpperCase().replace(/\s+/g,'-');
+    if (!val || arr.includes(val)) { document.getElementById(inputId).value = ''; return; }
+    arr.push(val);
+    document.getElementById(inputId).value = '';
+    renderCustomTagsList(mode);
+}
+
+function removeCustomTag(mode, tag) {
+    const arr = mode === 'add' ? addCustomTags : editCustomTags;
+    const idx = arr.indexOf(tag);
+    if (idx > -1) arr.splice(idx, 1);
+    renderCustomTagsList(mode);
+}
+
+function renderCustomTagsList(mode) {
+    const listId = mode === 'add' ? 'add-custom-tags-list' : 'edit-custom-tags-list';
+    const arr = mode === 'add' ? addCustomTags : editCustomTags;
+    document.getElementById(listId).innerHTML = arr.map(tag =>
+        `<span class="custom-tag-pill">${tag} <button onclick="removeCustomTag('${mode}','${tag}')">✕</button></span>`
+    ).join('');
 }
 
 // ── LOAD DATA ─────────────────────────────────────
 async function loadExercises() {
-    // Static exercises
     allExercises = (typeof exerciseDatabase !== 'undefined') ? [...exerciseDatabase] : [];
-
-    // Custom exercises — only this trainer's
     try {
-        const recs = await pb.collection('custom_exercises').getFullList({ 
-    filter: `uploaded_by = "${pb.authStore.model.id}"`,
-    requestKey: null 
-});
+        const recs = await pb.collection('custom_exercises').getFullList({
+            filter: `uploaded_by = "${pb.authStore.model.id}"`,
+            requestKey: null
+        });
         recs.forEach(r => {
             if (!allExercises.some(e => e.id === r.id)) {
                 allExercises.push({
@@ -317,20 +412,15 @@ async function loadExercises() {
             }
         });
     } catch(e) { console.log('Custom exercises:', e.message); }
-
     resetAndRender();
 }
 
 // ── FILTERING ─────────────────────────────────────
 function toggleFilter(tag) {
-    if (activeFilters.has(tag)) {
-        activeFilters.delete(tag);
-    } else {
-        activeFilters.add(tag);
-    }
-    document.querySelectorAll(`.filter-tag[data-tag="${tag}"]`).forEach(el => {
-        el.classList.toggle('active', activeFilters.has(tag));
-    });
+    activeFilters.has(tag) ? activeFilters.delete(tag) : activeFilters.add(tag);
+    document.querySelectorAll(`.filter-tag[data-tag="${tag}"]`).forEach(el =>
+        el.classList.toggle('active', activeFilters.has(tag))
+    );
     updateActiveFilterBar();
     resetAndRender();
 }
@@ -355,22 +445,20 @@ function updateActiveFilterBar() {
 function resetAndRender() {
     currentPage = 1;
     const q = document.getElementById('search-input').value.toLowerCase().trim();
-
     filteredList = allExercises.filter(e => {
-    const search = (e.searchStr || '').toUpperCase();
-    const title = (e.title || '').toLowerCase();
-    const matchesText = !q || title.includes(q) || search.toLowerCase().includes(q);
-    const matchesTags = activeFilters.size === 0 || Array.from(activeFilters).every(tag => {
-        const regex = new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i');
-        return regex.test(search);
+        const search = (e.searchStr || '').toUpperCase();
+        const title = (e.title || '').toLowerCase();
+        const matchesText = !q || title.includes(q) || search.toLowerCase().includes(q);
+        const matchesTags = activeFilters.size === 0 || Array.from(activeFilters).every(tag => {
+            const regex = new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i');
+            return regex.test(search);
+        });
+        return matchesText && matchesTags;
     });
-    return matchesText && matchesTags;
-});
-filteredList.sort((a, b) => cleanTitle(a.title).localeCompare(cleanTitle(b.title)));
+    filteredList.sort((a, b) => cleanTitle(a.title).localeCompare(cleanTitle(b.title)));
     document.getElementById('video-grid').innerHTML = '';
     document.getElementById('results-count').innerHTML =
         `<span>${filteredList.length}</span> exercise${filteredList.length !== 1 ? 's' : ''} found`;
-
     renderBatch();
 }
 
@@ -382,7 +470,7 @@ function renderBatch() {
     const loadBtn = document.getElementById('load-btn');
 
     if (batch.length === 0 && currentPage === 1) {
-        grid.innerHTML = `<div class="empty"><i class="fas fa-search"></i>No exercises found matching your filters.</div>`;
+        grid.innerHTML = `<div class="empty"><i class="fas fa-search"></i>No exercises found.</div>`;
         loadBtn.style.display = 'none';
         return;
     }
@@ -390,23 +478,19 @@ function renderBatch() {
     batch.forEach(ex => {
         const card = document.createElement('div');
         card.className = `video-card${!ex.src ? ' no-video' : ''}`;
-
         const videoHtml = ex.src ? buildVideoHtml(ex.src) :
             `<div class="no-video-placeholder"><i class="fas fa-film"></i><span>No Video Yet</span></div>`;
-
-        // Extract tags from searchStr for display
         const displayTags = extractDisplayTags(ex.searchStr || '');
-
         card.innerHTML = `
-    <div class="video-thumb" style="position:relative;">
-        ${videoHtml}
-        ${ex.isCustom ? '<span class="card-custom-badge">Custom</span>' : ''}
-        ${ex.isCustom && isTrainer ? `<button onclick="openEditModal('${ex.id}')" style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);border:1px solid var(--brand-accent);color:var(--brand-accent);padding:4px 8px;border-radius:4px;font-family:'Montserrat';font-weight:800;font-size:0.55rem;cursor:pointer;">✏️ EDIT</button>` : ''}
-    </div>
-    <div class="card-body">
-        <div class="card-title">${cleanTitle(ex.title)}</div>
-        <div class="card-tags">${displayTags}</div>
-    </div>`;
+            <div class="video-thumb" style="position:relative;">
+                ${videoHtml}
+                ${ex.isCustom ? '<span class="card-custom-badge">Custom</span>' : ''}
+                ${ex.isCustom && isTrainer ? `<button class="edit-btn" onclick="openEditModal('${ex.id}')">✏️ EDIT</button>` : ''}
+            </div>
+            <div class="card-body">
+                <div class="card-title">${cleanTitle(ex.title)}</div>
+                <div class="card-tags">${displayTags}</div>
+            </div>`;
         grid.appendChild(card);
     });
 
@@ -415,20 +499,16 @@ function renderBatch() {
 
 function buildVideoHtml(src) {
     if (!src) return '';
-    // PocketBase hosted video
-    if (src.includes('pocketbase') || src.includes('.mp4') || src.includes('.mov') || src.startsWith('videos/')) {
-        const url = src.startsWith('videos/') ? src : src;
-        return `<video src="${url}" preload="metadata" controls style="width:100%;height:100%;object-fit:cover;"></video>`;
+    if (src.includes('.mp4') || src.includes('.mov') || src.startsWith('videos/') || src.includes('pocketbase')) {
+        return `<video src="${src}" preload="metadata" controls style="width:100%;height:100%;object-fit:cover;"></video>`;
     }
-    // YouTube
     const embedUrl = toYouTubeEmbed(src);
     if (embedUrl) return `<iframe src="${embedUrl}" loading="lazy" allowfullscreen></iframe>`;
     return `<video src="${src}" preload="metadata" controls style="width:100%;height:100%;object-fit:cover;"></video>`;
 }
 
 function toYouTubeEmbed(url) {
-    if (!url) return null;
-    if (url.includes('embed')) return url;
+    if (!url || url.includes('embed')) return url;
     let id = '';
     if (url.includes('v=')) id = url.split('v=')[1].split('&')[0];
     else if (url.includes('youtu.be/')) id = url.split('youtu.be/')[1];
@@ -437,22 +517,28 @@ function toYouTubeEmbed(url) {
 }
 
 function cleanTitle(title) {
-    // Strip leading tag codes — anything ALL-CAPS or hyphenated-caps at the start
     return title.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || title;
 }
 
 function extractDisplayTags(searchStr) {
     const upper = searchStr.toUpperCase();
-    const allTags = Object.values(filterGroups).flat();
-    const found = allTags.filter(tag => {
+    const allKnown = Object.values(filterGroups).flat();
+    const found = allKnown.filter(tag => {
         const regex = new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i');
         return regex.test(upper);
     });
-    const movementTags = filterGroups.movement;
-    return found.slice(0, 6).map(tag => {
+    // Also extract custom tags (anything NOT in known tags)
+    const words = upper.split(/\s+/).filter(w => w.length > 1);
+    const customFound = words.filter(w => !allKnown.includes(w) && w !== 'NO-VIDEO' && !/^\d+$/.test(w));
+
+    const knownHtml = found.slice(0, 4).map(tag => {
         const isNoVideo = tag === 'NO-VIDEO';
-return `<span class="card-tag ${isNoVideo?'no-video-tag':''}">${tag.replace(/-/g,' ')}</span>`;
+        return `<span class="card-tag ${isNoVideo?'no-video-tag':''}">${tag.replace(/-/g,' ')}</span>`;
     }).join('');
+    const customHtml = customFound.slice(0, 2).map(tag =>
+        `<span class="card-tag custom-tag">${tag.replace(/-/g,' ')}</span>`
+    ).join('');
+    return knownHtml + customHtml;
 }
 
 function loadNextBatch() { currentPage++; renderBatch(); }
@@ -465,24 +551,16 @@ function openAddModal() {
     document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('progress-fill').style.width = '0%';
     document.getElementById('no-video-notice').style.display = 'block';
+    document.getElementById('custom-tag-input').value = '';
     selectedFile = null;
     selectedTags.clear();
-    document.querySelectorAll('.tag-pick-btn').forEach(b => b.classList.remove('selected'));
+    addCustomTags = [];
+    renderCustomTagsList('add');
+    document.querySelectorAll('#add-modal .tag-pick-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('add-modal').classList.add('open');
 }
 
 function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
-
-function togglePickTag(tag) {
-    if (selectedTags.has(tag)) {
-        selectedTags.delete(tag);
-    } else {
-        selectedTags.add(tag);
-    }
-    document.querySelectorAll(`.tag-pick-btn[data-tag="${tag}"]`).forEach(el => {
-        el.classList.toggle('selected', selectedTags.has(tag));
-    });
-}
 
 function handleVideoSelect(input) {
     selectedFile = input.files[0];
@@ -496,101 +574,89 @@ async function saveExercise() {
     const name = document.getElementById('ex-name').value.trim();
     if (!name) return alert('Please enter an exercise name');
 
-    const tags = Array.from(selectedTags);
+    const tags = [...Array.from(selectedTags), ...addCustomTags];
     const hasVideo = !!selectedFile;
-
-    // Build searchStr from tags + name + NO-VIDEO if needed
     const searchParts = [...tags, name.toLowerCase()];
     if (!hasVideo) searchParts.push('NO-VIDEO');
     const searchStr = searchParts.join(' ');
-
-    // Build full title with tags prefixed
     const fullTitle = tags.length > 0 ? `${tags.join(' ')} ${name}` : name;
 
-    const btn = document.querySelector('.btn-save');
+    const btn = document.getElementById('add-save-btn');
     btn.disabled = true;
     btn.textContent = 'Saving...';
 
     try {
         if (hasVideo) {
-            // Upload with video using XHR for progress
             const fd = new FormData();
             fd.append('title', fullTitle);
             fd.append('searchStr', searchStr);
             fd.append('video', selectedFile);
             fd.append('uploaded_by', pb.authStore.model.id);
-
-            const bar = document.getElementById('progress-bar');
-            const fill = document.getElementById('progress-fill');
-            bar.style.display = 'block';
-
+            document.getElementById('progress-bar').style.display = 'block';
             await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
                 xhr.upload.onprogress = e => {
                     if (e.lengthComputable) {
                         const p = Math.round(e.loaded/e.total*100);
-                        fill.style.width = p + '%';
+                        document.getElementById('progress-fill').style.width = p + '%';
                         btn.textContent = `Uploading ${p}%...`;
                     }
                 };
-                xhr.onload = () => xhr.status === 200 ? resolve(JSON.parse(xhr.responseText)) : reject(new Error('Upload failed'));
+                xhr.onload = () => xhr.status === 200 ? resolve() : reject(new Error('Upload failed'));
                 xhr.onerror = () => reject(new Error('Network error'));
                 xhr.open('POST', `https://restperiod.org/api/collections/custom_exercises/records`);
                 xhr.setRequestHeader('Authorization', pb.authStore.token);
                 xhr.send(fd);
             });
         } else {
-            await pb.collection('custom_exercises').create({
-                title: fullTitle,
-                searchStr,
-                uploaded_by: pb.authStore.model.id
-            });
+            await pb.collection('custom_exercises').create({ title: fullTitle, searchStr, uploaded_by: pb.authStore.model.id });
         }
-
         closeAddModal();
         await loadExercises();
-    } catch(e) {
-        alert('Save failed: ' + e.message);
-    }
+    } catch(e) { alert('Save failed: ' + e.message); }
 
     btn.disabled = false;
     btn.textContent = 'Save Exercise';
 }
 
-// ── DRAG AND DROP ON UPLOAD AREA ──────────────────
-const uploadArea = document.getElementById('upload-area');
-uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.borderColor = 'var(--brand-accent)'; });
-uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor = '#1a2a35'; });
-uploadArea.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadArea.style.borderColor = '#1a2a35';
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('video/')) {
-        selectedFile = file;
-        document.getElementById('upload-label').textContent = `✓ ${file.name}`;
-        document.getElementById('no-video-notice').style.display = 'none';
-    }
-});
 // ── EDIT EXERCISE ─────────────────────────────────
-let editingExId = null;
-let editFile = null;
-
 async function openEditModal(id) {
     editingExId = id;
     editFile = null;
+    window.editSelectedTags = new Set();
+    editCustomTags = [];
     document.getElementById('edit-progress-bar').style.display = 'none';
     document.getElementById('edit-progress-fill').style.width = '0%';
     document.getElementById('edit-upload-label').textContent = 'Click to upload a new video or drag and drop';
     document.getElementById('edit-ex-video').value = '';
+    document.getElementById('edit-custom-tag-input').value = '';
+    document.querySelectorAll('#edit-modal .tag-pick-btn').forEach(b => b.classList.remove('selected'));
 
     try {
         const rec = await pb.collection('custom_exercises').getOne(id);
-        document.getElementById('edit-ex-name').value = cleanTitle(rec.title);
+        const cleanName = cleanTitle(rec.title);
+        document.getElementById('edit-ex-name').value = cleanName;
+
+        // Parse existing tags from searchStr
+        const searchWords = (rec.searchStr || '').toUpperCase().split(/\s+/);
+        searchWords.forEach(word => {
+            if (KNOWN_TAGS.includes(word)) {
+                window.editSelectedTags.add(word);
+                document.querySelectorAll(`#edit-modal .tag-pick-btn[data-tag="${word}"]`).forEach(el =>
+                    el.classList.add('selected')
+                );
+            } else if (word.length > 1 && word !== 'NO-VIDEO' && !/^\d+$/.test(word) && word !== cleanName.toUpperCase()) {
+                editCustomTags.push(word);
+            }
+        });
+        renderCustomTagsList('edit');
+
+        // Video status
         const currentVideo = document.getElementById('edit-current-video');
         if (rec.video) {
-            currentVideo.innerHTML = `✅ Has video: <span style="color:var(--brand-accent);">${rec.video.split('/').pop()}</span> — upload below to replace`;
+            currentVideo.innerHTML = `<div class="video-status-ok">✅ Has video — upload below to replace it</div>`;
         } else {
-            currentVideo.innerHTML = `<span style="color:#ff5252;">⚠️ No video yet</span>`;
+            currentVideo.innerHTML = `<div class="no-video-notice"><i class="fas fa-film"></i> No video yet — upload one below</div>`;
         }
     } catch(e) { alert(e.message); return; }
 
@@ -605,9 +671,7 @@ function closeEditModal() {
 
 function handleEditVideoSelect(input) {
     editFile = input.files[0];
-    if (editFile) {
-        document.getElementById('edit-upload-label').textContent = `✓ ${editFile.name}`;
-    }
+    if (editFile) document.getElementById('edit-upload-label').textContent = `✓ ${editFile.name}`;
 }
 
 async function saveEditExercise() {
@@ -619,28 +683,23 @@ async function saveEditExercise() {
     try {
         const rec = await pb.collection('custom_exercises').getOne(editingExId);
         const newName = document.getElementById('edit-ex-name').value.trim();
-
-        // Rebuild title preserving tags, swapping name part
-        const oldClean = cleanTitle(rec.title);
-        const tagPrefix = rec.title.replace(oldClean, '').trim();
-        const newTitle = tagPrefix ? `${tagPrefix} ${newName}` : newName;
+        const allTags = [...Array.from(window.editSelectedTags || new Set()), ...editCustomTags];
+        const newTitle = allTags.length > 0 ? `${allTags.join(' ')} ${newName}` : newName;
+        const hasVideo = editFile || rec.video;
+        const newSearchStr = [...allTags, newName.toLowerCase(), ...(hasVideo ? [] : ['NO-VIDEO'])].join(' ');
 
         if (editFile) {
-            // Upload with video via XHR for progress
             const fd = new FormData();
             fd.append('title', newTitle);
+            fd.append('searchStr', newSearchStr);
             fd.append('video', editFile);
-
-            const bar = document.getElementById('edit-progress-bar');
-            const fill = document.getElementById('edit-progress-fill');
-            bar.style.display = 'block';
-
+            document.getElementById('edit-progress-bar').style.display = 'block';
             await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
                 xhr.upload.onprogress = e => {
                     if (e.lengthComputable) {
                         const p = Math.round(e.loaded/e.total*100);
-                        fill.style.width = p + '%';
+                        document.getElementById('edit-progress-fill').style.width = p + '%';
                         btn.textContent = `Uploading ${p}%...`;
                     }
                 };
@@ -650,61 +709,19 @@ async function saveEditExercise() {
                 xhr.setRequestHeader('Authorization', pb.authStore.token);
                 xhr.send(fd);
             });
-
-            // Also strip NO-VIDEO from searchStr
-            const newSearchStr = (rec.searchStr || '').replace(/\bNO-VIDEO\b/gi, '').trim();
-            await pb.collection('custom_exercises').update(editingExId, {
-                title: newTitle,
-                searchStr: newSearchStr
-            });
+            // Update title and searchStr separately after file upload
+            await pb.collection('custom_exercises').update(editingExId, { title: newTitle, searchStr: newSearchStr });
         } else {
-            await pb.collection('custom_exercises').update(editingExId, { title: newTitle });
+            await pb.collection('custom_exercises').update(editingExId, { title: newTitle, searchStr: newSearchStr });
         }
 
         closeEditModal();
         await loadExercises();
-    } catch(e) {
-        alert('Save failed: ' + e.message);
-    }
+    } catch(e) { alert('Save failed: ' + e.message); }
 
     btn.disabled = false;
     btn.textContent = '💾 Save Changes';
 }
-
-// drag and drop on edit upload area
-document.getElementById('edit-upload-area').addEventListener('dragover', e => { e.preventDefault(); });
-document.getElementById('edit-upload-area').addEventListener('drop', e => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('video/')) {
-        editFile = file;
-        document.getElementById('edit-upload-label').textContent = `✓ ${file.name}`;
-    }
-});
 </script>
-<!-- EDIT MODAL -->
-<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
-    <div class="modal">
-        <h3>✏️ Edit Exercise</h3>
-        <div class="form-field">
-            <span class="form-label">Exercise Name</span>
-            <input type="text" class="form-input" id="edit-ex-name" />
-        </div>
-        <div class="form-field">
-            <span class="form-label">Video</span>
-            <div id="edit-current-video" style="margin-bottom:10px;font-size:0.75rem;color:#888;"></div>
-            <div class="upload-area" id="edit-upload-area" onclick="document.getElementById('edit-ex-video').click()">
-                <i class="fas fa-video"></i>
-                <p id="edit-upload-label">Click to upload a new video <span style="color:var(--brand-accent);">or drag and drop</span></p>
-                <input type="file" id="edit-ex-video" accept="video/*" style="display:none" onchange="handleEditVideoSelect(this)" />
-            </div>
-            <div class="progress-bar" id="edit-progress-bar"><div class="progress-fill" id="edit-progress-fill"></div></div>
-        </div>
-        <div class="modal-actions">
-            <button class="btn-save" id="edit-save-btn" onclick="saveEditExercise()">💾 Save Changes</button>
-            <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
-        </div>
-    </div>
-</div>
 </body>
 </html>
