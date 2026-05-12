@@ -244,7 +244,8 @@ let isTrainer = false;
 window.onload = async () => {
     if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
     const role = pb.authStore.model.role;
-    const navLinks = document.getElementById('nav-links');
+    isTrainer = role === 'trainer' || role === 'admin';
+const navLinks = document.getElementById('nav-links');
 if (isTrainer) {
     navLinks.innerHTML = `
         <a href="dashboard.html">DASHBOARD</a>
@@ -260,7 +261,6 @@ if (isTrainer) {
         <a href="#" onclick="pb.authStore.clear();window.location.href='index.html'">LOGOUT</a>
     `;
 }
-isTrainer = role === 'trainer' || role === 'admin';
     if (isTrainer) document.getElementById('add-btn').style.display = 'flex';
 
     buildFilterUI();
@@ -398,14 +398,15 @@ function renderBatch() {
         const displayTags = extractDisplayTags(ex.searchStr || '');
 
         card.innerHTML = `
-            <div class="video-thumb" style="position:relative;">
-                ${videoHtml}
-                ${ex.isCustom ? '<span class="card-custom-badge">Custom</span>' : ''}
-            </div>
-            <div class="card-body">
-                <div class="card-title">${cleanTitle(ex.title)}</div>
-                <div class="card-tags">${displayTags}</div>
-            </div>`;
+    <div class="video-thumb" style="position:relative;">
+        ${videoHtml}
+        ${ex.isCustom ? '<span class="card-custom-badge">Custom</span>' : ''}
+        ${ex.isCustom && isTrainer ? `<button onclick="openEditModal('${ex.id}')" style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);border:1px solid var(--brand-accent);color:var(--brand-accent);padding:4px 8px;border-radius:4px;font-family:'Montserrat';font-weight:800;font-size:0.55rem;cursor:pointer;">✏️ EDIT</button>` : ''}
+    </div>
+    <div class="card-body">
+        <div class="card-title">${cleanTitle(ex.title)}</div>
+        <div class="card-tags">${displayTags}</div>
+    </div>`;
         grid.appendChild(card);
     });
 
@@ -570,6 +571,140 @@ uploadArea.addEventListener('drop', e => {
         document.getElementById('no-video-notice').style.display = 'none';
     }
 });
+// ── EDIT EXERCISE ─────────────────────────────────
+let editingExId = null;
+let editFile = null;
+
+async function openEditModal(id) {
+    editingExId = id;
+    editFile = null;
+    document.getElementById('edit-progress-bar').style.display = 'none';
+    document.getElementById('edit-progress-fill').style.width = '0%';
+    document.getElementById('edit-upload-label').textContent = 'Click to upload a new video or drag and drop';
+    document.getElementById('edit-ex-video').value = '';
+
+    try {
+        const rec = await pb.collection('custom_exercises').getOne(id);
+        document.getElementById('edit-ex-name').value = cleanTitle(rec.title);
+        const currentVideo = document.getElementById('edit-current-video');
+        if (rec.video) {
+            currentVideo.innerHTML = `✅ Has video: <span style="color:var(--brand-accent);">${rec.video.split('/').pop()}</span> — upload below to replace`;
+        } else {
+            currentVideo.innerHTML = `<span style="color:#ff5252;">⚠️ No video yet</span>`;
+        }
+    } catch(e) { alert(e.message); return; }
+
+    document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal() {
+    document.getElementById('edit-modal').classList.remove('open');
+    editingExId = null;
+    editFile = null;
+}
+
+function handleEditVideoSelect(input) {
+    editFile = input.files[0];
+    if (editFile) {
+        document.getElementById('edit-upload-label').textContent = `✓ ${editFile.name}`;
+    }
+}
+
+async function saveEditExercise() {
+    if (!editingExId) return;
+    const btn = document.getElementById('edit-save-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    try {
+        const rec = await pb.collection('custom_exercises').getOne(editingExId);
+        const newName = document.getElementById('edit-ex-name').value.trim();
+
+        // Rebuild title preserving tags, swapping name part
+        const oldClean = cleanTitle(rec.title);
+        const tagPrefix = rec.title.replace(oldClean, '').trim();
+        const newTitle = tagPrefix ? `${tagPrefix} ${newName}` : newName;
+
+        if (editFile) {
+            // Upload with video via XHR for progress
+            const fd = new FormData();
+            fd.append('title', newTitle);
+            fd.append('video', editFile);
+
+            const bar = document.getElementById('edit-progress-bar');
+            const fill = document.getElementById('edit-progress-fill');
+            bar.style.display = 'block';
+
+            await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.upload.onprogress = e => {
+                    if (e.lengthComputable) {
+                        const p = Math.round(e.loaded/e.total*100);
+                        fill.style.width = p + '%';
+                        btn.textContent = `Uploading ${p}%...`;
+                    }
+                };
+                xhr.onload = () => xhr.status === 200 ? resolve() : reject(new Error('Upload failed'));
+                xhr.onerror = () => reject(new Error('Network error'));
+                xhr.open('PATCH', `https://restperiod.org/api/collections/custom_exercises/records/${editingExId}`);
+                xhr.setRequestHeader('Authorization', pb.authStore.token);
+                xhr.send(fd);
+            });
+
+            // Also strip NO-VIDEO from searchStr
+            const newSearchStr = (rec.searchStr || '').replace(/\bNO-VIDEO\b/gi, '').trim();
+            await pb.collection('custom_exercises').update(editingExId, {
+                title: newTitle,
+                searchStr: newSearchStr
+            });
+        } else {
+            await pb.collection('custom_exercises').update(editingExId, { title: newTitle });
+        }
+
+        closeEditModal();
+        await loadExercises();
+    } catch(e) {
+        alert('Save failed: ' + e.message);
+    }
+
+    btn.disabled = false;
+    btn.textContent = '💾 Save Changes';
+}
+
+// drag and drop on edit upload area
+document.getElementById('edit-upload-area').addEventListener('dragover', e => { e.preventDefault(); });
+document.getElementById('edit-upload-area').addEventListener('drop', e => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('video/')) {
+        editFile = file;
+        document.getElementById('edit-upload-label').textContent = `✓ ${file.name}`;
+    }
+});
 </script>
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
+    <div class="modal">
+        <h3>✏️ Edit Exercise</h3>
+        <div class="form-field">
+            <span class="form-label">Exercise Name</span>
+            <input type="text" class="form-input" id="edit-ex-name" />
+        </div>
+        <div class="form-field">
+            <span class="form-label">Video</span>
+            <div id="edit-current-video" style="margin-bottom:10px;font-size:0.75rem;color:#888;"></div>
+            <div class="upload-area" id="edit-upload-area" onclick="document.getElementById('edit-ex-video').click()">
+                <i class="fas fa-video"></i>
+                <p id="edit-upload-label">Click to upload a new video <span style="color:var(--brand-accent);">or drag and drop</span></p>
+                <input type="file" id="edit-ex-video" accept="video/*" style="display:none" onchange="handleEditVideoSelect(this)" />
+            </div>
+            <div class="progress-bar" id="edit-progress-bar"><div class="progress-fill" id="edit-progress-fill"></div></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-save" id="edit-save-btn" onclick="saveEditExercise()">💾 Save Changes</button>
+            <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
