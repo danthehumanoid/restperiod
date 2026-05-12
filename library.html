@@ -703,14 +703,15 @@ async function saveEditExercise() {
                         btn.textContent = `Uploading ${p}%...`;
                     }
                 };
-                xhr.onload = () => xhr.status === 200 ? resolve() : reject(new Error('Upload failed'));
+                xhr.onload = () => {
+                    if (xhr.status === 200) resolve();
+                    else reject(new Error(`Upload failed: ${xhr.status} ${xhr.responseText}`));
+                };
                 xhr.onerror = () => reject(new Error('Network error'));
                 xhr.open('PATCH', `https://restperiod.org/api/collections/custom_exercises/records/${editingExId}`);
                 xhr.setRequestHeader('Authorization', pb.authStore.token);
                 xhr.send(fd);
             });
-            // Update title and searchStr separately after file upload
-            await pb.collection('custom_exercises').update(editingExId, { title: newTitle, searchStr: newSearchStr });
         } else {
             await pb.collection('custom_exercises').update(editingExId, { title: newTitle, searchStr: newSearchStr });
         }
