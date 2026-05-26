@@ -13,11 +13,13 @@
             --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA;
             --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24; --input-bg: #002840;
         }
-        body { margin: 0; font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); padding-bottom: 90px; overflow-x: hidden; }
         * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); padding-bottom: 90px; overflow-x: hidden; }
 
         .nav-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #000; border-bottom: 1px solid #004d7a; position: sticky; top: 0; z-index: 1000; }
-        .nav-links a { color: #888; text-decoration: none; margin-left: 20px; font-family: 'Montserrat'; font-weight: 700; font-size: 0.9rem; }
+        .nav-brand { font-weight: 800; font-size: 1.4rem; font-family: 'Montserrat'; }
+        .nav-brand span { color: var(--brand-accent); }
+        .nav-links a { color: #888; text-decoration: none; margin-left: 20px; font-family: 'Montserrat'; font-weight: 700; font-size: 0.9rem; transition: 0.2s; }
         .nav-links a:hover { color: var(--brand-accent); }
         .nav-links a.active { color: white; border-bottom: 2px solid var(--brand-accent); }
 
@@ -31,8 +33,12 @@
         .client-table td { padding: 12px 10px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
         .client-table tr:hover { background: #002840; }
 
-        input, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid #004d7a; color: white; border-radius: 4px; margin-bottom: 10px; font-size: 0.9rem; font-family: inherit; }
-        label { font-size: 0.65rem; color: #aaa; text-transform: uppercase; display: block; margin-bottom: 4px; font-weight: 800; }
+        input[type=text], input[type=email], input[type=number], input[type=date], input[type=password], select, textarea {
+            width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid #004d7a;
+            color: white; border-radius: 4px; margin-bottom: 10px; font-size: 0.9rem; font-family: inherit;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brand-accent); }
+        label { font-size: 0.65rem; color: #aaa; text-transform: uppercase; display: block; margin-bottom: 4px; font-weight: 800; font-family: 'Montserrat'; }
 
         .btn { width: 100%; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 5px; transition: 0.2s; font-family: 'Montserrat'; font-size: 0.8rem; }
         .btn-green { background: var(--brand-secondary); color: white; }
@@ -50,7 +56,7 @@
         .metrics-grid { display: grid; gap: 5px; margin-top: 10px; }
         .metric-unit { display: flex; flex-direction: column; align-items: center; }
         .metric-unit label { font-size: 0.5rem; margin-bottom: 2px; color: var(--brand-accent); }
-        .metric-unit input { font-size: 0.85rem; text-align: center; background: #000; border: 1px solid #004d7a; width: 100%; padding: 6px; color: white; border-radius: 4px; }
+        .metric-unit input { font-size: 0.85rem; text-align: center; background: #000; border: 1px solid #004d7a; width: 100%; padding: 6px; color: white; border-radius: 4px; margin-bottom: 0; }
 
         .tab-container { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; }
         .tab { padding: 10px 18px; background: #001a2c; border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.8rem; color: #888; transition: 0.2s; font-weight: 700; white-space: nowrap; }
@@ -63,7 +69,6 @@
         .history-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #222; transition: 0.2s; }
         .history-row:hover { background: rgba(255,255,255,0.03); }
 
-        /* SCHEDULER */
         .scheduler-panel { background: #050d12; border: 1px solid #1a2a35; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
         .scheduler-title { font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
         .day-btn { padding: 6px 4px; background: transparent; border: 1px solid #333; color: #555; border-radius: 4px; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.2s; font-family: 'Montserrat'; text-transform: uppercase; }
@@ -72,7 +77,6 @@
         .freq-btn.active { background: var(--brand-secondary); color: white; border-color: var(--brand-secondary); }
         .sched-apply-btn { width: 100%; padding: 10px; background: var(--brand-secondary); color: white; border: none; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; margin-top: 4px; }
 
-        /* LIBRARY FILTERS */
         .lib-filter-btn { padding: 4px 10px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.2s; font-family: 'Montserrat'; text-transform: uppercase; }
         .lib-filter-btn:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
         .lib-filter-btn.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
@@ -84,15 +88,26 @@
         .add-small { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); padding: 4px 8px; font-size: 0.58rem; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 3px; margin-left: 4px; transition: 0.2s; white-space: nowrap; }
         .add-small:hover { background: var(--brand-accent); color: #000; }
 
-        /* MODAL TAGS */
         .modal-filter-btn { padding: 4px 10px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.2s; font-family: 'Montserrat'; text-transform: uppercase; }
         .modal-filter-btn.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
+
+        /* FREE PROGRAM EXTRAS */
+        .free-extras { background: #050d12; border: 1px solid #1a3a1a; border-radius: 8px; padding: 14px; margin-top: 10px; }
+        .free-extras-title { font-family: 'Montserrat'; font-size: 0.65rem; font-weight: 800; color: #4ade80; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .cover-upload-area { border: 2px dashed #1a2a35; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .cover-upload-area:hover { border-color: var(--brand-accent); }
+        .cover-preview { width: 100%; max-height: 140px; object-fit: cover; border-radius: 6px; border: 1px solid #004d7a; display: block; margin-bottom: 8px; }
+
+        /* FLAGS ROW */
+        .flags-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 12px 0; }
+        .flag-label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.7rem; color: #888; font-family: 'Montserrat'; font-weight: 700; }
+        .flag-label input[type=checkbox] { width: auto; margin: 0; }
     </style>
 </head>
 <body>
 
 <div class="nav-top">
-    <div style="font-weight:800; font-size:1.4rem; font-family:'Montserrat';">REST <span style="color:var(--brand-accent)">PERIOD</span></div>
+    <div class="nav-brand">REST <span>PERIOD</span></div>
     <div class="nav-links">
         <a href="dashboard.html">DASHBOARD</a>
         <a href="builder.html" class="active">BUILDER</a>
@@ -103,45 +118,89 @@
 </div>
 
 <div class="container">
-    <div class="card" style="grid-column: 1 / -1;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+
+    <!-- CLIENT ROSTER -->
+    <div class="card" style="grid-column:1/-1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
             <h3>📊 Client Roster</h3>
-            <button class="btn btn-outline" style="width:auto; padding:6px 15px; font-size:0.7rem;" onclick="openModal('addClientModal')">+ NEW CLIENT</button>
+            <button class="btn btn-outline" style="width:auto;padding:6px 15px;font-size:0.7rem;" onclick="openModal('addClientModal')">+ NEW CLIENT</button>
         </div>
         <table class="client-table"><tbody id="client-table-body"></tbody></table>
     </div>
 
+    <!-- LEFT COL: CLIENT + PROGRAM -->
     <div>
         <div class="card">
             <label>Active Client</label>
             <select id="client-select" onchange="loadProgramHistory()"><option value="">-- Select --</option></select>
-            <div id="history-panel" style="display:none; margin-top:20px;">
+            <div id="history-panel" style="display:none;margin-top:20px;">
                 <button class="btn btn-green" onclick="startNewProgram()">+ CREATE NEW TRAINING BLOCK</button>
                 <div id="history-list" style="margin-top:10px;"></div>
             </div>
-           <div id="program-info-area" style="margin-top:20px; display:none;">
-    <label>Block Name</label>
-    <input type="text" id="prog-name" placeholder="e.g. Hypertrophy Phase 1" oninput="triggerAutoSave()">
-    <label style="margin-top:8px;">Program Description</label>
-    <input type="text" id="prog-desc" placeholder="e.g. 6-week hypertrophy block focusing on progressive overload." oninput="triggerAutoSave()">
-</div>
+
+            <!-- PROGRAM META -->
+            <div id="program-info-area" style="display:none;margin-top:20px;">
+                <label>Block Name</label>
+                <input type="text" id="prog-name" placeholder="e.g. Hypertrophy Phase 1" oninput="triggerAutoSave()">
+                <label>Program Description</label>
+                <input type="text" id="prog-desc" placeholder="e.g. 6-week lower body strength block." oninput="triggerAutoSave()">
+                <label>Category</label>
+                <select id="prog-category" onchange="triggerAutoSave()">
+                    <option value="">-- Select Category --</option>
+                    <option value="STRENGTH">💪 Strength</option>
+                    <option value="POWER">⚡ Power</option>
+                    <option value="RUN">🏃 Run</option>
+                    <option value="CIRCUIT">🔄 Circuit</option>
+                    <option value="MOBILITY">🤸 Mobility</option>
+                    <option value="CARDIO">❤️ Cardio</option>
+                    <option value="OTHER">📋 Other</option>
+                </select>
+
+                <!-- FLAGS -->
+                <div class="flags-row">
+                    <label class="flag-label">
+                        <input type="checkbox" id="prog-is-template" onchange="triggerAutoSave()"> Coach Template
+                    </label>
+                    <label class="flag-label">
+                        <input type="checkbox" id="prog-is-free" onchange="onFreeToggle()"> Free / Public
+                    </label>
+                    <label class="flag-label" style="color:var(--brand-accent);" title="Can be logged multiple times">
+                        <input type="checkbox" id="prog-is-repeatable" onchange="triggerAutoSave()"> 🔁 Repeatable
+                    </label>
+                </div>
+
+                <!-- FREE PROGRAM EXTRAS (cover image) -->
+                <div class="free-extras" id="free-program-extras" style="display:none;">
+                    <div class="free-extras-title">🌐 Free Program Settings</div>
+                    <label>Cover Image <span style="color:#555;font-size:0.6rem;">(shown in free program library)</span></label>
+                    <img id="cover-img-thumb" class="cover-preview" style="display:none;" />
+                    <div id="cover-upload-area" class="cover-upload-area" onclick="document.getElementById('cover-image-input').click()">
+                        <i class="fas fa-image" style="font-size:1.5rem;color:#333;display:block;margin-bottom:6px;"></i>
+                        <p style="font-size:0.72rem;color:#555;margin:0;">Click to upload cover image</p>
+                        <input type="file" id="cover-image-input" accept="image/*" style="display:none" onchange="handleCoverImageSelect(this)">
+                    </div>
+                    <button id="cover-remove-btn" onclick="removeCoverImage()" style="display:none;margin-top:6px;background:none;border:1px solid #ff5252;color:#ff5252;padding:5px 12px;border-radius:4px;font-size:0.6rem;font-family:'Montserrat';font-weight:800;cursor:pointer;width:100%;">✕ Remove Image</button>
+                </div>
+            </div>
         </div>
 
+        <!-- BUILDER CARD -->
         <div class="card" id="schedule-card" style="display:none;">
+            <!-- SCHEDULER -->
             <div class="scheduler-panel">
                 <div class="scheduler-title">📅 Session Scheduler</div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
                     <div><label>Number of Sessions</label><input type="number" id="sched-count" value="6" min="1" max="52" style="margin-bottom:0;"></div>
                     <div><label>Start Date</label><input type="date" id="sched-start" style="margin-bottom:0;"></div>
                 </div>
                 <label style="margin-top:10px;">Frequency</label>
-                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
                     <button class="freq-btn active" id="freq-1" onclick="setFreq(1)">1× / week</button>
                     <button class="freq-btn" id="freq-2" onclick="setFreq(2)">2× / week</button>
                     <button class="freq-btn" id="freq-3" onclick="setFreq(3)">3× / week</button>
                 </div>
                 <label id="day-picker-label">Day of Week</label>
-                <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:10px;">
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:10px;">
                     <button class="day-btn" data-day="0" onclick="toggleDay(0)">Mon</button>
                     <button class="day-btn" data-day="1" onclick="toggleDay(1)">Tue</button>
                     <button class="day-btn" data-day="2" onclick="toggleDay(2)">Wed</button>
@@ -155,122 +214,117 @@
 
             <div class="tab-container" id="week-tabs-container"></div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">
                 <button class="btn btn-outline" onclick="undo()"><i class="fas fa-undo"></i> Undo</button>
                 <button class="btn btn-outline" onclick="redo()"><i class="fas fa-redo"></i> Redo</button>
             </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
                 <button class="btn btn-outline" style="font-size:0.7rem;" onclick="duplicateSession()">Copy Prev Session</button>
-                <button class="btn btn-outline" style="font-size:0.7rem; border-color:#ff4d4d; color:#ff4d4d;" onclick="deleteSession()">Delete Session</button>
+                <button class="btn btn-outline" style="font-size:0.7rem;border-color:#ff4d4d;color:#ff4d4d;" onclick="deleteSession()">Delete Session</button>
             </div>
-<div style="margin-bottom:16px;">
-    <label>Session Description</label>
-    <input type="text" id="session-desc-input" placeholder="e.g. Focus on control and depth today."
-        oninput="programData[currentWeekIndex].description=this.value;"
-        onblur="triggerAutoSave();">
-</div>
+
+            <div style="margin-bottom:16px;">
+                <label>Session Description</label>
+                <input type="text" id="session-desc-input" placeholder="e.g. Focus on control and depth today."
+                    oninput="programData[currentWeekIndex].description=this.value;"
+                    onblur="triggerAutoSave();">
+            </div>
+
             <div class="section-divider">
                 <span onclick="toggleWarmupCollapse()" style="flex:1;"><i class="fas fa-fire"></i> WARM UP <i id="warmup-chevron" class="fas fa-chevron-down"></i></span>
-                <span onclick="saveSectionTemplate('warmup')" style="font-size:0.6rem; color:#666; cursor:pointer; margin-left:10px;"><i class="fas fa-star"></i> SAVE AS TEMPLATE</span>
+                <span onclick="saveSectionTemplate('warmup')" style="font-size:0.6rem;color:#666;cursor:pointer;margin-left:10px;"><i class="fas fa-star"></i> SAVE AS TEMPLATE</span>
             </div>
             <div id="warmup-list"></div>
 
             <div class="section-divider" style="border-left-color:var(--brand-secondary);">
                 <span style="flex:1;"><i class="fas fa-dumbbell"></i> MAIN WORKOUT</span>
-                <span onclick="saveSectionTemplate('exercises')" style="font-size:0.6rem; color:#666; cursor:pointer; margin-left:10px;"><i class="fas fa-star"></i> SAVE AS TEMPLATE</span>
+                <span onclick="saveSectionTemplate('exercises')" style="font-size:0.6rem;color:#666;cursor:pointer;margin-left:10px;"><i class="fas fa-star"></i> SAVE AS TEMPLATE</span>
             </div>
             <div id="workout-list"></div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px;">
-    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.7rem;color:#888;">
-        <input type="checkbox" id="prog-is-template" style="width:auto;margin:0;" onchange="triggerAutoSave()"> Coach Template
-    </label>
-    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.7rem;color:#888;">
-        <input type="checkbox" id="prog-is-free" style="width:auto;margin:0;" onchange="triggerAutoSave()"> Free / Public
-    </label>
-    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.7rem;color:#26C6DA;" title="Repeatable sessions can be logged multiple times — great for circuits or single sessions done weekly">
-        <input type="checkbox" id="prog-is-repeatable" style="width:auto;margin:0;" onchange="triggerAutoSave()"> 🔁 Repeatable
-    </label>
-</div>
-            <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:10px;">
+            <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:10px;margin-top:20px;">
                 <button class="btn btn-green" onclick="saveProgramToDB()">💾 PUBLISH PROGRAM</button>
                 <button class="btn btn-outline" onclick="saveAsTemplate()">🧬 TEMPLATE</button>
             </div>
         </div>
     </div>
 
+    <!-- RIGHT COL: VAULT + REVIEW -->
     <div id="library-col" style="display:none;">
-        <div class="card" style="position:sticky; top:20px;">
-            <div style="display:flex; gap:4px; margin-bottom:16px; background:#050d12; padding:4px; border-radius:8px;">
-                <button id="col-lib-btn" style="flex:1; padding:8px; border:none; border-radius:6px; background:var(--brand-accent); color:#000; font-family:'Montserrat'; font-weight:800; font-size:0.7rem; cursor:pointer;" onclick="switchRightCol('library')">VAULT</button>
-                <button id="col-review-btn" style="flex:1; padding:8px; border:none; border-radius:6px; background:none; color:#555; font-family:'Montserrat'; font-weight:800; font-size:0.7rem; cursor:pointer;" onclick="switchRightCol('review')">CLIENT REVIEW</button>
+        <div class="card" style="position:sticky;top:20px;">
+            <div style="display:flex;gap:4px;margin-bottom:16px;background:#050d12;padding:4px;border-radius:8px;">
+                <button id="col-lib-btn" style="flex:1;padding:8px;border:none;border-radius:6px;background:var(--brand-accent);color:#000;font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;" onclick="switchRightCol('library')">VAULT</button>
+                <button id="col-review-btn" style="flex:1;padding:8px;border:none;border-radius:6px;background:none;color:#555;font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;" onclick="switchRightCol('review')">CLIENT REVIEW</button>
             </div>
 
             <div id="library-panel">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
                     <h3 style="margin:0;">VAULT</h3>
-                    <button class="btn btn-outline" style="width:auto; padding:4px 10px; font-size:0.6rem;" onclick="openModal('addExModal')">+ NEW TO LIB</button>
+                    <button class="btn btn-outline" style="width:auto;padding:4px 10px;font-size:0.6rem;" onclick="openModal('addExModal')">+ NEW TO LIB</button>
                 </div>
                 <label>📂 Load Full Training Block</label>
-                <select id="full-template-select" onchange="loadFullProgramTemplate(this.value)" style="border-color:var(--brand-secondary); margin-bottom:20px;"><option value="">-- Choose a Training Block --</option></select>
+                <select id="full-template-select" onchange="loadFullProgramTemplate(this.value)" style="border-color:var(--brand-secondary);margin-bottom:20px;"><option value="">-- Choose a Training Block --</option></select>
                 <label>Load Section Template</label>
-                <div style="display:flex; gap:8px; align-items:center; margin-bottom:15px;">
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:15px;">
                     <select id="section-template-select" onchange="loadSectionTemplate(this.value)" style="margin-bottom:0;"><option value="">-- Choose a template --</option></select>
-                    <i class="fas fa-trash-alt" style="color:#ff4d4d; cursor:pointer;" onclick="deleteSectionTemplate()"></i>
+                    <i class="fas fa-trash-alt" style="color:#ff4d4d;cursor:pointer;" onclick="deleteSectionTemplate()"></i>
                 </div>
                 <input type="text" id="lib-search-text" placeholder="Search exercises..." oninput="runLibrarySearch()">
-                <div id="filter-container" style="background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; border:1px solid #222; margin-bottom:10px;"></div>
-                <div id="lib-results" style="max-height:600px; overflow-y:auto; border:1px solid #1a2a35; border-radius:6px;"></div>
+                <div id="filter-container" style="background:rgba(0,0,0,0.3);padding:12px;border-radius:6px;border:1px solid #222;margin-bottom:10px;"></div>
+                <div id="lib-results" style="max-height:600px;overflow-y:auto;border:1px solid #1a2a35;border-radius:6px;"></div>
             </div>
 
             <div id="review-panel" style="display:none;">
                 <div style="margin-bottom:14px;">
                     <label>Review Session</label>
-                    <select id="review-week-select" onchange="renderReview()" style="background:#050d12; border:1px solid #333; color:white; padding:8px; border-radius:4px;"></select>
+                    <select id="review-week-select" onchange="renderReview()" style="background:#050d12;border:1px solid #333;color:white;padding:8px;border-radius:4px;"></select>
                 </div>
                 <div id="review-session-info" style="margin-bottom:14px;"></div>
-                <div id="review-content"><div style="color:#555; font-size:0.85rem; padding:20px; text-align:center;">Select a client and session to review</div></div>
+                <div id="review-content"><div style="color:#555;font-size:0.85rem;padding:20px;text-align:center;">Select a client and session to review</div></div>
             </div>
         </div>
     </div>
+
 </div>
 
-<!-- MODALS -->
+<!-- ADD CLIENT MODAL -->
 <div id="addClientModal" class="modal">
     <div class="modal-content">
-        <span onclick="closeModal('addClientModal')" style="float:right; cursor:pointer; font-size:1.5rem;">&times;</span>
+        <span onclick="closeModal('addClientModal')" style="float:right;cursor:pointer;font-size:1.5rem;">&times;</span>
         <h3>CREATE CLIENT ACCOUNT</h3>
         <label>Name</label><input type="text" id="new-client-name">
         <label>Email</label><input type="email" id="new-client-email">
-        <label>Password</label><input type="text" id="new-client-pass">
+        <label>Password</label><input type="password" id="new-client-pass">
         <button class="btn btn-green" onclick="saveNewClient()">CREATE CLIENT</button>
     </div>
 </div>
 
+<!-- ADD EXERCISE MODAL -->
 <div id="addExModal" class="modal">
     <div class="modal-content">
-        <span onclick="closeModal('addExModal')" style="float:right; cursor:pointer; font-size:1.5rem;">&times;</span>
+        <span onclick="closeModal('addExModal')" style="float:right;cursor:pointer;font-size:1.5rem;">&times;</span>
         <h3>ADD NEW TO VAULT</h3>
         <label>Exercise Name</label>
         <input type="text" id="new-ex-name" placeholder="e.g. Bench press eccentric">
         <label>Tags</label>
-        <div id="modal-tag-groups" style="background:rgba(0,0,0,0.4); padding:12px; border-radius:6px; margin-bottom:10px; text-align:left; max-height:300px; overflow-y:auto;"></div>
-        <label>Video URL <span style="color:#555; font-size:0.6rem;">(optional — leave blank for NO-VIDEO tag)</span></label>
+        <div id="modal-tag-groups" style="background:rgba(0,0,0,0.4);padding:12px;border-radius:6px;margin-bottom:10px;text-align:left;max-height:300px;overflow-y:auto;"></div>
+        <label>Video URL <span style="color:#555;font-size:0.6rem;">(optional — leave blank for NO-VIDEO tag)</span></label>
         <input type="text" id="new-ex-video" placeholder="YouTube URL or leave blank">
         <button class="btn btn-green" onclick="saveNewExerciseToLib()">SAVE TO DATABASE</button>
     </div>
 </div>
 
 <script>
-    (function() {
+(function() {
     const pb2 = new PocketBase('https://restperiod.org');
     if (!pb2.authStore.isValid) { window.location.href = '/index.html'; return; }
     const role = pb2.authStore.model.role;
     if (role !== 'trainer' && role !== 'admin') { window.location.href = '/index.html'; }
 })();
-const pb = new PocketBase('https://restperiod.org');
 
-// ── KNOWN TAGS & HELPERS ──────────────────────────
+const pb = new PocketBase('https://restperiod.org');
+const PB_URL = 'https://restperiod.org';
+
 const KNOWN_TAGS = [
     'PUSH','PULL','SQUAT','HINGE','CORE','PLYO','RUN','MOBILITY','PRIMER','RECOVERY','SKILLS',
     'HORIZONTAL','VERTICAL','LATERAL','ANTERIOR','POSTERIOR','SIDE','MIXED','TOTAL-CORE-STABILITY',
@@ -291,7 +345,6 @@ const filterGroups = {
 };
 
 function cleanExTitle(title) {
-    // Only strip tokens that are FULLY uppercase (all caps, digits, hyphens only)
     return title.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || title;
 }
 
@@ -309,6 +362,7 @@ let historyIndex = -1;
 let schedFreq = 1;
 let schedDays = [];
 let autoSaveTimer = null;
+let pendingCoverImage = null;
 
 // ── INIT ──────────────────────────────────────────
 window.onload = async () => {
@@ -316,14 +370,17 @@ window.onload = async () => {
     document.getElementById('sched-start').value = new Date().toISOString().split('T')[0];
     setupFilterUI();
     await loadDashboard();
+
+    // URL param: auto-load program for editing (from megauser)
     const urlParams = new URLSearchParams(window.location.search);
-const editId = urlParams.get('editId');
-const editClientId = urlParams.get('clientId');
-if (editId && editClientId) {
-    document.getElementById('client-select').value = editClientId;
-    await loadProgramHistory();
-    await loadProgram(editId);
-}
+    const editId = urlParams.get('editId');
+    const editClientId = urlParams.get('clientId');
+    if (editId && editClientId) {
+        document.getElementById('client-select').value = editClientId;
+        await loadProgramHistory();
+        await loadProgram(editId);
+    }
+
     await loadCustomExercises();
     await fetchSectionTemplates();
     runLibrarySearch();
@@ -336,7 +393,7 @@ function setupFilterUI() {
     Object.entries(filterGroups).forEach(([groupName, tags]) => {
         html += `<div style="margin-bottom:10px;">
             <div class="lib-filter-group-title">${groupName}</div>
-            <div style="display:flex; flex-wrap:wrap; gap:5px;">
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
                 ${tags.map(tag =>
                     `<button class="lib-filter-btn" data-tag="${tag}" onclick="toggleFilter('${tag}')">${tag.replace(/-/g,' ')}</button>`
                 ).join('')}
@@ -347,21 +404,16 @@ function setupFilterUI() {
 }
 
 function toggleFilter(tag) {
-    if (activeFilters.has(tag)) {
-        activeFilters.delete(tag);
-    } else {
-        activeFilters.add(tag);
-    }
-    document.querySelectorAll(`.lib-filter-btn[data-tag="${tag}"]`).forEach(el => {
-        el.classList.toggle('active', activeFilters.has(tag));
-    });
+    activeFilters.has(tag) ? activeFilters.delete(tag) : activeFilters.add(tag);
+    document.querySelectorAll(`.lib-filter-btn[data-tag="${tag}"]`).forEach(el =>
+        el.classList.toggle('active', activeFilters.has(tag))
+    );
     runLibrarySearch();
 }
 
 // ── LIBRARY SEARCH ────────────────────────────────
 function runLibrarySearch() {
     const q = (document.getElementById('lib-search-text').value || '').toLowerCase().trim();
-
     const res = (typeof exerciseDatabase !== 'undefined' ? exerciseDatabase : [])
         .filter(e => {
             const search = (e.searchStr || e.title || '').toLowerCase();
@@ -377,16 +429,15 @@ function runLibrarySearch() {
 
     const resultsEl = document.getElementById('lib-results');
     if (res.length === 0) {
-        resultsEl.innerHTML = '<div style="color:#555; font-size:0.8rem; padding:20px; text-align:center;">No exercises found</div>';
+        resultsEl.innerHTML = '<div style="color:#555;font-size:0.8rem;padding:20px;text-align:center;">No exercises found</div>';
         return;
     }
-
     resultsEl.innerHTML = res.slice(0, 80).map(e => {
         const cleanName = cleanExTitle(e.title);
         const safeName = e.title.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
         return `<div class="search-result">
             <div class="res-title">${cleanName}</div>
-            <div style="display:flex; gap:4px; flex-shrink:0;">
+            <div style="display:flex;gap:4px;flex-shrink:0;">
                 <button class="add-small" onclick="addEx('${safeName}','warmup')">+ Warm</button>
                 <button class="add-small" onclick="addEx('${safeName}','exercises')">+ Main</button>
             </div>
@@ -485,13 +536,13 @@ async function loadProgramHistory() {
         const progs = await pb.collection('programs').getList(1, 50, { filter: `client="${cid}" && archived=false`, sort: '-created' });
         document.getElementById('history-list').innerHTML = progs.items.map(p =>
             `<div class="history-row">
-                <span onclick="loadProgram('${p.id}')" style="cursor:pointer; font-weight:600;">${p.name}</span>
-                <div style="display:flex; gap:12px;">
-                    <i class="fas fa-archive" style="color:var(--brand-accent); cursor:pointer;" onclick="archiveProgram('${p.id}', true)"></i>
-                    <i class="fas fa-trash" style="color:#ff4d4d; cursor:pointer;" onclick="deleteProgram('${p.id}')"></i>
+                <span onclick="loadProgram('${p.id}')" style="cursor:pointer;font-weight:600;">${p.name}</span>
+                <div style="display:flex;gap:12px;">
+                    <i class="fas fa-archive" style="color:var(--brand-accent);cursor:pointer;" onclick="archiveProgram('${p.id}',true)"></i>
+                    <i class="fas fa-trash" style="color:#ff4d4d;cursor:pointer;" onclick="deleteProgram('${p.id}')"></i>
                 </div>
             </div>`
-        ).join('') || '<div style="color:#555; font-size:0.8rem; padding:10px;">No active programs.</div>';
+        ).join('') || '<div style="color:#555;font-size:0.8rem;padding:10px;">No active programs.</div>';
     } catch(e) { console.error(e); }
 }
 
@@ -572,6 +623,7 @@ async function loadFullProgramTemplate(id) {
         finalData = finalData.map((s,i) => ({...s, sessionNum: s.sessionNum||s.weekNum||i+1}));
         programData = finalData;
         currentWeekIndex = 0;
+        if (rec.description) document.getElementById('prog-desc').value = rec.description;
         saveHistory(); renderTabs(); renderLists();
         document.getElementById('full-template-select').value = '';
     } catch(e) { alert(e.message); document.getElementById('full-template-select').value=''; }
@@ -582,11 +634,25 @@ async function loadProgram(id) {
     try {
         const p = await pb.collection('programs').getOne(id);
         editingProgramId = p.id;
-        document.getElementById('prog-name').value = p.name||'';
-        document.getElementById('prog-is-template').checked = p.is_template||false;
-        document.getElementById('prog-is-free').checked = p.is_free||false;
-        document.getElementById('prog-is-repeatable').checked = p.is_repeatable||false;
-        document.getElementById('prog-desc').value = p.description||'';
+        document.getElementById('prog-name').value = p.name || '';
+        document.getElementById('prog-desc').value = p.description || '';
+        document.getElementById('prog-category').value = p.category || '';
+        document.getElementById('prog-is-template').checked = p.is_template || false;
+        document.getElementById('prog-is-free').checked = p.is_free || false;
+        document.getElementById('prog-is-repeatable').checked = p.is_repeatable || false;
+        onFreeToggle();
+
+        // Restore cover image if present
+        if (p.cover_image) {
+            const imgUrl = `${PB_URL}/api/files/programs/${p.id}/${p.cover_image}`;
+            document.getElementById('cover-img-thumb').src = imgUrl;
+            document.getElementById('cover-img-thumb').style.display = 'block';
+            document.getElementById('cover-upload-area').style.display = 'none';
+            document.getElementById('cover-remove-btn').style.display = 'block';
+        } else {
+            removeCoverImage();
+        }
+
         let data = typeof p.workout_data==='string' ? JSON.parse(p.workout_data) : p.workout_data;
         programData = data.schedule || data;
         programData = programData.map((s,i) => ({...s, sessionNum: s.sessionNum||s.weekNum||i+1}));
@@ -610,28 +676,28 @@ function renderListMarkup(id, list, type) {
              ondragover="event.preventDefault(); this.style.borderTop='2px solid var(--brand-accent)';"
              ondragleave="this.style.borderTop='none';"
              ondrop="handleDrop(event,${i},'${type}')">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <div style="display:flex; align-items:center;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div style="display:flex;align-items:center;">
                     <div class="move-controls">
                         <i class="fas fa-chevron-up move-arrow" onclick="moveElement(${i},'${type}',-1)"></i>
                         <i class="fas fa-chevron-down move-arrow" onclick="moveElement(${i},'${type}',1)"></i>
                     </div>
                     <strong class="exercise-name-title">${cleanExTitle(ex.name)}</strong>
                 </div>
-                <i class="fas fa-trash-alt" style="color:#555; cursor:pointer;" onclick="programData[currentWeekIndex].${type}.splice(${i},1); saveHistory(); renderLists();"></i>
+                <i class="fas fa-trash-alt" style="color:#555;cursor:pointer;" onclick="programData[currentWeekIndex].${type}.splice(${i},1); saveHistory(); renderLists();"></i>
             </div>
             <input type="text" value="${(ex.grouping||'').replace(/"/g,'&quot;')}" placeholder="Group (e.g. A1)" onchange="programData[currentWeekIndex].${type}[${i}].grouping=this.value; saveHistory();">
             ${ex.setsData.map((s,si) => `
-               <div class="metrics-grid" style="grid-template-columns: 0.6fr 1fr 1fr 1fr 1fr 1fr 0.4fr;">
-    <div class="metric-unit"><label>SET ${si+1}</label></div>
-    <div class="metric-unit"><label>REPS</label><input type="text" value="${s.reps||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].reps=this.value; saveHistory();"></div>
-    <div class="metric-unit"><label>KG</label><input type="text" value="${s.weight||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].weight=this.value; saveHistory();"></div>
-    <div class="metric-unit"><label>REST</label><input type="text" value="${s.rest||''}" placeholder="90s" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rest=this.value; saveHistory();"></div>
-    <div class="metric-unit"><label>RPE</label><input type="text" value="${s.rpe||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rpe=this.value; saveHistory();"></div>
-    <div class="metric-unit"><label>TEMPO</label><input type="text" value="${s.tempo||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].tempo=this.value; saveHistory();"></div>
-    <i class="fas fa-minus-circle" style="color:#b71c1c; cursor:pointer; align-self:center;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.splice(${si},1); saveHistory(); renderLists();"></i>
-</div>`).join('')}
-            <button class="btn btn-outline" style="padding:6px; font-size:0.6rem; width:auto; margin-top:12px;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.push({...programData[currentWeekIndex].${type}[${i}].setsData.slice(-1)[0]}); saveHistory(); renderLists();">+ SET</button>
+                <div class="metrics-grid" style="grid-template-columns:0.6fr 1fr 1fr 1fr 1fr 1fr 0.4fr;">
+                    <div class="metric-unit"><label>SET ${si+1}</label></div>
+                    <div class="metric-unit"><label>REPS</label><input type="text" value="${s.reps||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].reps=this.value; saveHistory();"></div>
+                    <div class="metric-unit"><label>KG</label><input type="text" value="${s.weight||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].weight=this.value; saveHistory();"></div>
+                    <div class="metric-unit"><label>REST</label><input type="text" value="${s.rest||''}" placeholder="90s" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rest=this.value; saveHistory();"></div>
+                    <div class="metric-unit"><label>RPE</label><input type="text" value="${s.rpe||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rpe=this.value; saveHistory();"></div>
+                    <div class="metric-unit"><label>TEMPO</label><input type="text" value="${s.tempo||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].tempo=this.value; saveHistory();"></div>
+                    <i class="fas fa-minus-circle" style="color:#b71c1c;cursor:pointer;align-self:center;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.splice(${si},1); saveHistory(); renderLists();"></i>
+                </div>`).join('')}
+            <button class="btn btn-outline" style="padding:6px;font-size:0.6rem;width:auto;margin-top:12px;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.push({...programData[currentWeekIndex].${type}[${i}].setsData.slice(-1)[0]}); saveHistory(); renderLists();">+ SET</button>
         </div>`).join('');
 }
 
@@ -708,18 +774,40 @@ async function saveProgramToDB(silent=false) {
     const cid = document.getElementById('client-select').value;
     if (!cid) { if (!silent) alert('Please select a client first.'); return; }
     const payload = {
-    workout_data: JSON.stringify({ schedule: programData }),
-    client: cid,
-    trainer: pb.authStore.model.id,
-    name: document.getElementById('prog-name').value,
-description: document.getElementById('prog-desc').value,
-    is_template: document.getElementById('prog-is-template')?.checked||false,
-    is_free: document.getElementById('prog-is-free')?.checked||false,
-    is_repeatable: document.getElementById('prog-is-repeatable')?.checked||false
-};
+        workout_data: JSON.stringify({ schedule: programData }),
+        client: cid,
+        trainer: pb.authStore.model.id,
+        name: document.getElementById('prog-name').value,
+        description: document.getElementById('prog-desc').value,
+        category: document.getElementById('prog-category').value || '',
+        is_template: document.getElementById('prog-is-template')?.checked || false,
+        is_free: document.getElementById('prog-is-free')?.checked || false,
+        is_repeatable: document.getElementById('prog-is-repeatable')?.checked || false
+    };
     try {
-        if (editingProgramId) await pb.collection('programs').update(editingProgramId, payload);
-        else { const rec = await pb.collection('programs').create(payload); editingProgramId = rec.id; }
+        let savedId;
+        if (editingProgramId) {
+            await pb.collection('programs').update(editingProgramId, payload);
+            savedId = editingProgramId;
+        } else {
+            const rec = await pb.collection('programs').create(payload);
+            editingProgramId = rec.id;
+            savedId = rec.id;
+        }
+        // Upload cover image if pending
+        if (pendingCoverImage && savedId) {
+            const fd = new FormData();
+            fd.append('cover_image', pendingCoverImage);
+            await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = () => xhr.status === 200 ? resolve() : reject(new Error('Image upload failed'));
+                xhr.onerror = () => reject(new Error('Network error'));
+                xhr.open('PATCH', `${PB_URL}/api/collections/programs/records/${savedId}`);
+                xhr.setRequestHeader('Authorization', pb.authStore.token);
+                xhr.send(fd);
+            });
+            pendingCoverImage = null;
+        }
         if (!silent) alert('PUBLISHED!');
         else showSaveToast();
     } catch(e) { if (!silent) alert(e.message); }
@@ -749,13 +837,42 @@ async function saveAsTemplate() {
     } catch(e) { alert(e.message); }
 }
 
-// ── ADD EXERCISE TO VAULT ─────────────────────────
+// ── COVER IMAGE ───────────────────────────────────
+function onFreeToggle() {
+    const isFree = document.getElementById('prog-is-free').checked;
+    document.getElementById('free-program-extras').style.display = isFree ? 'block' : 'none';
+    triggerAutoSave();
+}
+
+function handleCoverImageSelect(input) {
+    const file = input.files[0];
+    if (!file) return;
+    pendingCoverImage = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+        const thumb = document.getElementById('cover-img-thumb');
+        thumb.src = e.target.result;
+        thumb.style.display = 'block';
+        document.getElementById('cover-upload-area').style.display = 'none';
+        document.getElementById('cover-remove-btn').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeCoverImage() {
+    pendingCoverImage = null;
+    const thumb = document.getElementById('cover-img-thumb');
+    thumb.src = '';
+    thumb.style.display = 'none';
+    document.getElementById('cover-upload-area').style.display = 'block';
+    document.getElementById('cover-remove-btn').style.display = 'none';
+    document.getElementById('cover-image-input').value = '';
+}
+
+// ── VAULT ─────────────────────────────────────────
 async function loadCustomExercises() {
     try {
-        const recs = await pb.collection('custom_exercises').getFullList({ 
-    filter: `uploaded_by = "${pb.authStore.model.id}"`,
-    requestKey: null 
-});
+        const recs = await pb.collection('custom_exercises').getFullList({ requestKey: null });
         recs.forEach(r => {
             if (!exerciseDatabase.some(e => e.id===r.id))
                 exerciseDatabase.push({ id:r.id, title:r.title, searchStr:r.searchStr||r.title, video:r.video });
@@ -783,14 +900,13 @@ async function saveNewExerciseToLib() {
     } catch(e) { alert(e.message); }
 }
 
-// ── MODAL TAG BUILDER ─────────────────────────────
 function buildModalTags() {
     const container = document.getElementById('modal-tag-groups');
     let html = '';
     Object.entries(filterGroups).forEach(([groupName, tags]) => {
         html += `<div style="margin-bottom:10px;">
-            <div style="font-size:0.5rem; color:var(--brand-accent); font-weight:800; margin-bottom:5px; font-family:'Montserrat'; text-transform:uppercase;">${groupName}</div>
-            <div style="display:flex; flex-wrap:wrap; gap:4px;">
+            <div style="font-size:0.5rem;color:var(--brand-accent);font-weight:800;margin-bottom:5px;font-family:'Montserrat';text-transform:uppercase;">${groupName}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;">
                 ${tags.map(tag =>
                     `<button class="modal-filter-btn" data-tag="${tag}" onclick="toggleModalTag('${tag}',this)">${tag.replace(/-/g,' ')}</button>`
                 ).join('')}
@@ -808,9 +924,16 @@ function toggleModalTag(tag, btn) {
 // ── UI HELPERS ────────────────────────────────────
 function startNewProgram() {
     editingProgramId = null;
+    pendingCoverImage = null;
     programData = [{sessionNum:1, warmup:[], exercises:[]}];
     document.getElementById('prog-name').value = '';
     document.getElementById('prog-desc').value = '';
+    document.getElementById('prog-category').value = '';
+    document.getElementById('prog-is-template').checked = false;
+    document.getElementById('prog-is-free').checked = false;
+    document.getElementById('prog-is-repeatable').checked = false;
+    onFreeToggle();
+    removeCoverImage();
     showUI(); renderTabs(); renderLists(); saveHistory();
 }
 
@@ -832,7 +955,6 @@ function openModal(id) {
 }
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
 function handleLogout() { pb.authStore.clear(); window.location.href = 'index.html'; }
 
 function switchRightCol(mode) {
