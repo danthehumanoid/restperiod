@@ -272,7 +272,8 @@
     const role = pb2.authStore.model.role;
     if (role === 'free') { window.location.href = '/free.html'; return; }
     // clients, trainers, admins all allowed
-})();b = new PocketBase('https://restperiod.org');
+})();
+const pb = new PocketBase('https://restperiod.org');
 
 let allPrograms = [];
 let sessionMap = {};
