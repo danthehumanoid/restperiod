@@ -320,14 +320,14 @@ async function loadPrograms() {
 }
 
 const CATEGORY_META = {
-    STRENGTH: { emoji: '💪', thumbClass: 'thumb-strength' },
-    POWER:    { emoji: '⚡', thumbClass: 'thumb-power' },
-    RUN:      { emoji: '🏃', thumbClass: 'thumb-run' },
-    CIRCUIT:  { emoji: '🔄', thumbClass: 'thumb-circuit' },
-    MOBILITY: { emoji: '🤸', thumbClass: 'thumb-mobility' },
-    CARDIO:   { emoji: '❤️', thumbClass: 'thumb-cardio' },
-    'WARM UP':{ emoji: '🔥', thumbClass: 'thumb-other' },
-    OTHER:    { emoji: '📋', thumbClass: 'thumb-other' },
+    STRENGTH: { emoji: '💪', label: 'Strength', thumbClass: 'thumb-strength' },
+    POWER:    { emoji: '⚡', label: 'Power',    thumbClass: 'thumb-power' },
+    RUN:      { emoji: '🏃', label: 'Run',      thumbClass: 'thumb-run' },
+    CIRCUIT:  { emoji: '🔄', label: 'Circuit',  thumbClass: 'thumb-circuit' },
+    MOBILITY: { emoji: '🤸', label: 'Mobility', thumbClass: 'thumb-mobility' },
+    CARDIO:   { emoji: '❤️', label: 'Cardio',   thumbClass: 'thumb-cardio' },
+    'WARM UP':{ emoji: '🔥', label: 'Warm Up',  thumbClass: 'thumb-other' },
+    OTHER:    { emoji: '📋', label: 'Other',    thumbClass: 'thumb-other' },
 };
 
 function progCard(prog) {
@@ -374,23 +374,58 @@ function progCard(prog) {
     </div>`;
 }
 
+const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
+const CATEGORY_COLORS = {
+    STRENGTH:'#c084fc', POWER:'#fb923c', RUN:'#4ade80',
+    CIRCUIT:'#26C6DA', MOBILITY:'#a78bfa', CARDIO:'#f87171',
+    'WARM UP':'#fb923c', OTHER:'#888'
+};
+
+function renderCategoryGrid(progs) {
+    if (!progs.length) return '';
+    const grouped = {};
+    progs.forEach(p => {
+        const cat = (p.category || 'OTHER').toUpperCase();
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(p);
+    });
+    const sortedCats = Object.keys(grouped).sort((a,b) => {
+        const ai = CATEGORY_ORDER.indexOf(a), bi = CATEGORY_ORDER.indexOf(b);
+        return (ai===-1?99:ai) - (bi===-1?99:bi);
+    });
+    return sortedCats.map(cat => {
+        const meta = CATEGORY_META[cat] || CATEGORY_META.OTHER;
+        const color = CATEGORY_COLORS[cat] || '#888';
+        const programs = grouped[cat];
+        return `<div style="margin-bottom:24px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                <span style="font-size:1.1rem;">${meta.emoji}</span>
+                <span style="font-family:'Montserrat';font-size:0.85rem;font-weight:800;color:${color};text-transform:uppercase;letter-spacing:1px;">${meta.label || cat}</span>
+                <div style="flex:1;height:1px;background:#1a2a35;"></div>
+                <span style="font-size:0.6rem;color:#555;font-family:'Montserrat';font-weight:800;">${programs.length} program${programs.length!==1?'s':''}</span>
+            </div>
+            <div class="programs-grid">${programs.map(progCard).join('')}</div>
+        </div>`;
+    }).join('');
+}
+
 function renderPrograms(clientProgs, templateProgs, freeProgs) {
     const container = document.getElementById('programs-grid');
     let html = '';
 
     if (clientProgs.length > 0) {
         html += `<div class="section-title">📋 Your Programs</div>
-            <div class="programs-grid">${clientProgs.map(progCard).join('')}</div>`;
+            <div class="programs-grid" style="margin-bottom:24px;">${clientProgs.map(progCard).join('')}</div>`;
     } else {
         html += `<div class="no-programs">No custom programs yet — your coach will assign one soon.</div>`;
     }
     if (templateProgs.length > 0) {
-        html += `<div class="section-title" style="margin-top:20px;">📚 Coach Programs</div>
-            <div class="programs-grid">${templateProgs.map(progCard).join('')}</div>`;
+        html += `<div class="section-title" style="margin-top:8px;">📚 Coach Programs</div>
+            <div style="margin-bottom:8px;">${renderCategoryGrid(templateProgs)}</div>`;
     }
     if (freeProgs.length > 0) {
-        html += `<div class="section-title" style="margin-top:20px;">🌐 Pre-Made Programs</div>
-            <div class="programs-grid">${freeProgs.map(progCard).join('')}</div>`;
+        html += `<div class="section-title" style="margin-top:8px;">🌐 Pre-Made Programs</div>
+            <div>${renderCategoryGrid(freeProgs)}</div>`;
     }
     container.innerHTML = html;
     document.getElementById('greeting-sub').textContent = `${allPrograms.length} program${allPrograms.length!==1?'s':''} · Keep it up!`;
