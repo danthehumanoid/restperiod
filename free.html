@@ -365,6 +365,7 @@ const CATEGORY_META = {
     MOBILITY: { emoji: '🤸', label: 'Mobility', thumbClass: 'thumb-mobility', color: '#a78bfa' },
     CARDIO:   { emoji: '❤️', label: 'Cardio',   thumbClass: 'thumb-cardio',   color: '#f87171' },
     OTHER:    { emoji: '📋', label: 'Other',    thumbClass: 'thumb-other',    color: '#888' },
+    WARM UP:    { emoji: '🍳', label: 'Warm Up',    thumbClass: 'thumb-warm-up',    color: '#888' },
 };
 
 window.onload = async () => {
@@ -455,7 +456,7 @@ function renderFreeLibrary() {
     });
 
     // Order categories
-    const catOrder = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','OTHER'];
+    const catOrder = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','OTHER','WARM UP',];
     const sortedCats = [...Object.keys(grouped)].sort((a,b) => {
         const ai = catOrder.indexOf(a); const bi = catOrder.indexOf(b);
         return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
