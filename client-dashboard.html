@@ -348,12 +348,6 @@
         <div class="section-title">📂 My Claimed Programs</div>
         <div class="programs-grid" id="claimed-premade-grid"></div>
     </div>
-            <div style="text-align:center;padding:40px;color:#555;">
-                <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:10px;display:block;"></i>
-                Loading programs...
-            </div>
-        </div>
-    </div>
 
     <!-- ACTIVE SESSION -->
     <div class="session-overlay" id="session-card" style="display:none;">
@@ -665,22 +659,21 @@ async function loadMyProgramsClient() {
             filter: `client="${pb.authStore.model.id}" && archived=false`,
             sort: 'name', requestKey: null
         });
-        // Coach-assigned programs (not free copies) go in top grid
-        // Claimed free/premade programs go in the bottom section
-        const freeMasterNames = new Set(freeMasterPrograms.map(p => p.name));
-        const coachProgs = recs.filter(p => !freeMasterNames.has(p.name) && !p.is_template);
-        const claimedProgs = recs.filter(p => freeMasterNames.has(p.name));
         myPrograms = recs;
-        renderYourPrograms(coachProgs);
-        renderClaimedPrograms(claimedProgs);
+        splitAndRenderClientPrograms();
     } catch(e) { console.error(e); }
 }
-        myPrograms = recs;
-        renderYourPrograms();
-     catch(e) { console.error(e); }
+
+function splitAndRenderClientPrograms() {
+    const freeMasterNames = new Set(freeMasterPrograms.map(p => p.name));
+    const coachProgs = myPrograms.filter(p => !freeMasterNames.has(p.name) && !p.is_template && !p.is_free);
+    const claimedProgs = myPrograms.filter(p => freeMasterNames.has(p.name));
+    renderYourPrograms(coachProgs);
+    renderClaimedPrograms(claimedProgs);
+}
 
 function renderYourPrograms(progs) {
-    progs = progs || myPrograms;
+    progs = progs !== undefined ? progs : myPrograms;
     const grid = document.getElementById('your-programs-grid');
     if (!progs.length) {
         grid.innerHTML = '<div class="no-programs" style="grid-column:1/-1;">No programs yet — your coach will assign one soon.</div>';
@@ -688,14 +681,16 @@ function renderYourPrograms(progs) {
     }
     grid.innerHTML = progs.map(p => buildClientProgCard(p)).join('');
 }
+
 function renderClaimedPrograms(progs) {
     const section = document.getElementById('claimed-premade-section');
     const grid = document.getElementById('claimed-premade-grid');
     if (!section || !grid) return;
-    if (!progs.length) { section.style.display = 'none'; return; }
+    if (!progs || !progs.length) { section.style.display = 'none'; return; }
     section.style.display = 'block';
     grid.innerHTML = progs.map(p => buildClientProgCard(p)).join('');
 }
+
 function buildClientProgCard(prog) {
     let data = prog.workout_data;
     if (typeof data === 'string') data = JSON.parse(data);
@@ -868,11 +863,7 @@ async function claimProgram(templateId) {
         if (isFree) {
             renderMyProgramsFree();
         } else {
-            const freeMasterNames = new Set(freeMasterPrograms.map(p => p.name));
-            const coachProgs = myPrograms.filter(p => !freeMasterNames.has(p.name) && !p.is_template);
-            const claimedProgs = myPrograms.filter(p => freeMasterNames.has(p.name));
-            renderYourPrograms(coachProgs);
-            renderClaimedPrograms(claimedProgs);
+            splitAndRenderClientPrograms();
         }
         closeProgModal();
         renderShelves();
