@@ -589,12 +589,14 @@ window.onload = async () => {
         document.getElementById('my-programs-section').style.display = 'block';
         await Promise.all([loadMyProgramsFree(), loadFreePrograms()]);
         buildSessionMap();
+        await buildRepeatSessionMap();
         renderCalendarFree();
     } else {
         document.getElementById('your-programs-section').style.display = 'block';
         document.getElementById('checkins-section').style.display = 'block';
         await Promise.all([loadMyProgramsClient(), loadPlannedWorkouts(), loadFreePrograms()]);
         buildSessionMap();
+        await buildRepeatSessionMap();
         renderCalendar();
         loadCheckins();
     }
@@ -897,6 +899,34 @@ function buildSessionMap() {
 }
 
 // ── CALENDAR — FREE (completed sessions only, no drag) ──
+// ── REPEAT SESSION MAP ────────────────────────────
+async function buildRepeatSessionMap() {
+    try {
+        const logs = await pb.collection('session_logs').getFullList({
+            filter: `client="${pb.authStore.model.id}"`,
+            sort: '-date', requestKey: null
+        });
+        logs.forEach(log => {
+            const dateStr = log.date?.substring(0,10);
+            if (!dateStr) return;
+            const prog = myPrograms.find(p => p.id === log.program);
+            const progName = prog ? prog.name : 'Session';
+            if (!sessionMap[dateStr]) sessionMap[dateStr] = [];
+            if (!sessionMap[dateStr].find(s => s.logId === log.id)) {
+                sessionMap[dateStr].push({
+                    programName: progName,
+                    sessionNum: 1,
+                    pct: 100,
+                    isCompleted: true,
+                    progId: log.program,
+                    logId: log.id
+                });
+            }
+        });
+    } catch(e) { console.error(e); }
+}
+
+
 function renderCalendarFree() {
     renderCalendarShared(false);
 }
@@ -1239,7 +1269,7 @@ async function loadRepeatHistory(){
     const el=document.getElementById('repeat-history');
     if(!logs.length){el.innerHTML='<div style="color:#555;font-size:0.8rem;text-align:center;padding:10px;">No sessions logged yet.</div>';return;}
     el.innerHTML=`<div style="font-family:'Montserrat';font-size:0.7rem;font-weight:800;color:var(--brand-accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📈 Session History</div>`+
-    logs.map(log=>{let data=log.workout_data;if(typeof data==='string')data=JSON.parse(data);const allEx=[...(data.warmup||[]),...(data.exercises||[])];let total=0,done=0;allEx.forEach(ex=>(ex.setsData||[]).forEach(s=>{total++;if(s.act_reps&&s.act_weight)done++;}));const pct=total?Math.round((done/total)*100):0;const dateStr=new Date(log.date+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short',year:'numeric'});const highlights=allEx.slice(0,3).map(ex=>{const best=(ex.setsData||[]).reduce((b,s)=>s.act_weight&&parseFloat(s.act_weight)>parseFloat(b||0)?s.act_weight:b,null);const name=ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim()||ex.name;return best?`<div style="font-size:0.72rem;color:#888;margin-top:3px;">${name} — top ${best}kg</div>`:''}).join('');
+    logs.map(log=>{let data=log.workout_data;if(typeof data==='string')data=JSON.parse(data);const allEx=[...(data.warmup||[]),...(data.exercises||[])];let total=0,done=0;allEx.forEach(ex=>(ex.setsData||[]).forEach(s=>{total++;if(s.act_reps&&s.act_weight)done++;}));const pct=total?Math.round((done/total)*100):0;const dateStr=new Date(log.date.substring(0,10)+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short',year:'numeric'});const highlights=allEx.slice(0,3).map(ex=>{const best=(ex.setsData||[]).reduce((b,s)=>s.act_weight&&parseFloat(s.act_weight)>parseFloat(b||0)?s.act_weight:b,null);const name=ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim()||ex.name;return best?`<div style="font-size:0.72rem;color:#888;margin-top:3px;">${name} — top ${best}kg</div>`:''}).join('');
     return `<div style="background:#050d12;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;font-size:0.88rem;">📅 ${dateStr}</span><span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'#4ade80':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span></div>${highlights}</div>`;}).join('');}catch(e){console.error(e);}
 }
 
@@ -1261,7 +1291,7 @@ function renderRepeatSession(session){
 
 async function saveRepeatSession(){
     const session=currentProgram._activeRepeat;if(!session)return;showToast('Saving...');
-    try{await pb.collection('session_logs').create({program:currentProgram.id,client:pb.authStore.model.id,date:session.sessionDate||new Date().toISOString().split('T')[0],workout_data:JSON.stringify({warmup:session.warmup,exercises:session.exercises})});currentProgram._activeRepeat=null;document.getElementById('repeat-active').style.display='none';showToast('Session saved! 🔥');await loadRepeatHistory();}
+    try{await pb.collection('session_logs').create({program:currentProgram.id,client:pb.authStore.model.id,date:session.sessionDate||new Date().toISOString().split('T')[0],workout_data:JSON.stringify({warmup:session.warmup,exercises:session.exercises})});currentProgram._activeRepeat=null;document.getElementById('repeat-active').style.display='none';showToast('Session saved! 🔥');await loadRepeatHistory();buildSessionMap();await buildRepeatSessionMap();isFree?renderCalendarFree():renderCalendar();}
     catch(e){alert('Save failed: '+e.message);}
 }
 
