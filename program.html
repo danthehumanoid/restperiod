@@ -483,11 +483,14 @@ function renderContent() {
     const scheduledStr = session.scheduledDate ? new Date(session.scheduledDate+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short'}) : null;
     const completedStr = session.sessionDate ? new Date(session.sessionDate).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'}) : null;
 
-    const descHtml = session.description
-        ? `<div style="background:#0a1a2a;border:1px solid #1a2a35;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">💬 ${session.description}</div>`
-        : (currentProgram.description
-            ? `<div style="background:#0a1a2a;border:1px solid #1a2a35;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">💬 ${currentProgram.description}</div>`
-            : '');
+    const descHtml = [
+        currentProgram.description
+            ? `<div style="background:#0a1a2a;border:1px solid #1a2a35;border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">📋 ${currentProgram.description}</div>`
+            : '',
+        session.description
+            ? `<div style="background:#001a2c;border:1px solid #1a3a4a;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid #26C6DA;">💬 ${session.description}</div>`
+            : ''
+    ].join('');
 
     let html = descHtml + `<div class="date-row">
         <div><span class="quad-title">Session Date</span><input type="date" class="date-input" value="${session.sessionDate||''}" onchange="saveSessionDate(this.value)" /></div>
