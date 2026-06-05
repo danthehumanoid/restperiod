@@ -603,7 +603,17 @@ async function loadProgram(id) {
         let data = typeof p.workout_data==='string' ? JSON.parse(p.workout_data) : p.workout_data;
         programData = data.schedule || data;
         programData = programData.map((s,i) => ({...s, sessionNum: s.sessionNum||s.weekNum||i+1}));
-        programData.forEach(w => { if(!w.warmup) w.warmup=[]; if(!w.exercises) w.exercises=[]; });
+        programData.forEach(w => {
+            if(!w.warmup) w.warmup=[];
+            if(!w.exercises) w.exercises=[];
+            // Strip all client completion data — builder only works with program structure
+            [...w.warmup, ...w.exercises].forEach(ex => {
+                (ex.setsData||[]).forEach(s => {
+                    delete s.act_reps; delete s.act_weight; delete s.act_rpe;
+                    delete s.act_rest; delete s.act_note; delete s.act_done;
+                });
+            });
+        });
         showUI(); renderTabs(); renderLists(); saveHistory();
     } catch(e) { alert(e.message); }
 }
@@ -687,7 +697,11 @@ function duplicateSession() {
     programData[currentWeekIndex].exercises = stripActData(prev.exercises);
     // Also copy the session description but NOT sessionNotes (those are coach notes specific to that session)
     programData[currentWeekIndex].description = prev.description || '';
+    // Clear sessionDate too so the copied session isn't marked as completed
+    programData[currentWeekIndex].sessionDate = null;
     saveHistory(); renderLists();
+    // Save immediately so stripped data persists — don't wait for autosave
+    saveProgramToDB(true);
 }
 
 function moveElement(idx, type, dir) {
