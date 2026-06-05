@@ -678,7 +678,7 @@ function duplicateSession() {
         return JSON.parse(JSON.stringify(list)).map(ex => ({
             ...ex,
             setsData: (ex.setsData||[]).map(s => {
-                const { act_reps, act_weight, act_rpe, act_rest, act_note, ...clean } = s;
+                const { act_reps, act_weight, act_rpe, act_rest, act_note, act_done, ...clean } = s;
                 return clean;
             })
         }));
