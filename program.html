@@ -615,6 +615,16 @@ async function fillSetData(type, exIdx, setIdx, targetReps, targetWeight, target
         updateProgressBar();
         return;
     }
+    // Auto-set sessionDate to today if not already set
+    if (!currentProgram.schedule[currentWeekIndex].sessionDate) {
+        const today = new Date().toISOString().split('T')[0];
+        currentProgram.schedule[currentWeekIndex].sessionDate = today;
+        const dateInput = document.querySelector('.date-input');
+        if (dateInput) dateInput.value = today;
+        const badge = document.getElementById('session-date-badge');
+        if (badge) badge.innerHTML = `<div class="date-completed">✓ COMPLETED ${new Date(today+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'})}</div>`;
+        renderTabs();
+    }
     // Tick — fill in target values if empty
     set.act_done = true;
     const baseId = `${type}-${exIdx}-${setIdx}`;
