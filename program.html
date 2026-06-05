@@ -532,7 +532,8 @@ function generateExerciseHTML(list, type, isRepeat) {
             </div>
             ${(ex.setsData||[]).map((s, si) => {
                 const baseId = `${prefix}-${i}-${si}`;
-                const isChecked = s.act_done ? 'checked' : '';
+                const sessionStarted = !!currentProgram.schedule[currentWeekIndex].sessionDate;
+                const isChecked = (sessionStarted && s.act_done) ? 'checked' : '';
                 const onChangeFn = isRepeat
                     ? `updateRepeatSet('${type}',${i},${si},'FIELD',this.value)`
                     : `autoSaveSet('${type}',${i},${si},'FIELD',this.value)`;
