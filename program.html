@@ -121,10 +121,10 @@
 <div class="tooltip-overlay" id="tempo-tooltip" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="tooltip-box">
         <div class="tooltip-title">🕐 TEMPO — How to read it</div>
-        <div class="tooltip-row"><span class="tooltip-key">1st digit</span><span class="tooltip-val">Eccentric (muscle lengthening phase)</span></div>
-        <div class="tooltip-row"><span class="tooltip-key">2nd digit</span><span class="tooltip-val">Pause</span></div>
-        <div class="tooltip-row"><span class="tooltip-key">3rd digit</span><span class="tooltip-val">Concentric (muscle shortening phase)</span></div>
-        <div class="tooltip-row"><span class="tooltip-key">4th digit</span><span class="tooltip-val">Pause</span></div>
+        <div class="tooltip-row"><span class="tooltip-key">1st digit</span><span class="tooltip-val">Eccentric (lowering phase)</span></div>
+        <div class="tooltip-row"><span class="tooltip-key">2nd digit</span><span class="tooltip-val">Pause at bottom</span></div>
+        <div class="tooltip-row"><span class="tooltip-key">3rd digit</span><span class="tooltip-val">Concentric (lifting phase)</span></div>
+        <div class="tooltip-row"><span class="tooltip-key">4th digit</span><span class="tooltip-val">Pause at top</span></div>
         <div class="tooltip-row"><span class="tooltip-key">Example: 3-1-2-0</span><span class="tooltip-val">3s down, 1s pause, 2s up, no pause</span></div>
         <div class="tooltip-row"><span class="tooltip-key">X</span><span class="tooltip-val">Explosive / as fast as possible</span></div>
         <button class="tooltip-close" onclick="document.getElementById('tempo-tooltip').classList.remove('open')">Got it</button>
@@ -532,7 +532,7 @@ function generateExerciseHTML(list, type, isRepeat) {
             </div>
             ${(ex.setsData||[]).map((s, si) => {
                 const baseId = `${prefix}-${i}-${si}`;
-                const isChecked = (s.act_reps && s.act_weight) ? 'checked' : '';
+                const isChecked = s.act_done ? 'checked' : '';
                 const onChangeFn = isRepeat
                     ? `updateRepeatSet('${type}',${i},${si},'FIELD',this.value)`
                     : `autoSaveSet('${type}',${i},${si},'FIELD',this.value)`;
@@ -557,7 +557,7 @@ function generateExerciseHTML(list, type, isRepeat) {
                         <div><input type="number" step="0.5" id="rpe-${baseId}" class="did-cell" placeholder="—" value="${s.act_rpe||''}" onchange="${onChangeFn.replace('FIELD','act_rpe')}"></div>
                         <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
                             <span style="font-size:0.62rem;font-weight:800;font-family:'Montserrat';color:#4ade80;">DONE</span>
-                            <input type="checkbox" class="tick-box" ${isChecked} onclick="${tickFn}">
+                            <input type="checkbox" class="tick-box" ${isChecked} onchange="${tickFn};setTimeout(updateProgressBar,0)">
                         </div>
                     </div>
                     <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="80" value="${(s.act_note||'').replace(/"/g,'&quot;')}" onchange="${onChangeFn.replace('FIELD','act_note')}">
@@ -600,8 +600,22 @@ async function autoSaveSet(type, exIdx, setIdx, field, val) {
 }
 
 async function fillSetData(type, exIdx, setIdx, targetReps, targetWeight, targetRpe, isChecked) {
-    if (!isChecked) return;
     const set = currentProgram.schedule[currentWeekIndex][type][exIdx].setsData[setIdx];
+    if (!isChecked) {
+        // Untick — clear all act data
+        set.act_done = false;
+        set.act_reps = ''; set.act_weight = ''; set.act_rpe = ''; set.act_rest = '';
+        const baseId = `${type}-${exIdx}-${setIdx}`;
+        const inputReps = document.getElementById(`reps-${baseId}`), inputWeight = document.getElementById(`weight-${baseId}`), inputRpe = document.getElementById(`rpe-${baseId}`);
+        if (inputReps) inputReps.value = '';
+        if (inputWeight) inputWeight.value = '';
+        if (inputRpe) inputRpe.value = '';
+        await syncWorkoutToDB('Cleared');
+        updateProgressBar();
+        return;
+    }
+    // Tick — fill in target values if empty
+    set.act_done = true;
     const baseId = `${type}-${exIdx}-${setIdx}`;
     const inputReps = document.getElementById(`reps-${baseId}`), inputWeight = document.getElementById(`weight-${baseId}`), inputRpe = document.getElementById(`rpe-${baseId}`);
     if (!inputReps.value||inputReps.value==0){inputReps.value=targetReps;set.act_reps=targetReps;}
@@ -613,19 +627,10 @@ async function fillSetData(type, exIdx, setIdx, targetReps, targetWeight, target
 
 // ── PROGRESS — based on DONE checkboxes ───────────
 function updateProgressBar() {
-    let total = 0, done = 0;
-    const session = currentProgram.schedule[currentWeekIndex];
-    [...(session.warmup||[]), ...(session.exercises||[])].forEach(ex => {
-        (ex.setsData||[]).forEach(s => {
-            total++;
-            if (s.act_reps && s.act_weight) done++;
-        });
-    });
-    // Also count checked tick-boxes in DOM for immediate feedback
+    // Always count from DOM tick boxes — instant, no async lag
     const ticked = document.querySelectorAll('.tick-box:checked').length;
     const totalBoxes = document.querySelectorAll('.tick-box').length;
-    // Use DOM count if available (more responsive), fall back to data
-    const pct = totalBoxes > 0 ? Math.round((ticked/totalBoxes)*100) : (total > 0 ? Math.round((done/total)*100) : 0);
+    const pct = totalBoxes > 0 ? Math.round((ticked / totalBoxes) * 100) : 0;
     document.getElementById('progress-bar').style.width = pct + '%';
     document.getElementById('progress-percent').innerText = pct + '%';
 }
