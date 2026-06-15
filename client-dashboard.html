@@ -663,9 +663,10 @@ async function loadMyProgramsClient() {
 }
 
 function splitAndRenderClientPrograms() {
-    const freeMasterNames = new Set(freeMasterPrograms.map(p => p.name));
-    const coachProgs = myPrograms.filter(p => !freeMasterNames.has(p.name) && !p.is_template && !p.is_free);
-    const claimedProgs = myPrograms.filter(p => freeMasterNames.has(p.name));
+    // Coach-assigned = has a trainer field set
+    // Self-claimed from library = no trainer field (client claimed themselves)
+    const coachProgs = myPrograms.filter(p => p.trainer && !p.is_template && !p.is_free);
+    const claimedProgs = myPrograms.filter(p => !p.trainer && !p.is_template && !p.is_free);
     renderYourPrograms(coachProgs);
     renderClaimedPrograms(claimedProgs);
 }
