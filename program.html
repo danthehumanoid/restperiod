@@ -329,6 +329,7 @@ async function loadMasterLibrary() {
 
 function runNavClock() {
     const canvas = document.getElementById('nav-clock');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     function draw() {
         const now = new Date(), ms = now.getMilliseconds(), sec = now.getSeconds(), min = now.getMinutes();
