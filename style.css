@@ -2,15 +2,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght=400;600&display=swap');
 
 :root {
-    --brand-primary:   #003B5C;
-    --brand-secondary: #2E7D32;
-    --brand-accent:    #26C6DA;
-    --brand-bg:        #020c12;
+    --brand-primary:   #2A004E; /* Deep Indigo */
+    --brand-secondary: #2E7D32; 
+    --brand-accent:    #FF9100; /* Vibrant Neon Orange */
+    --brand-bg:        #0B0014; /* Dark Cyber Purple */
     --brand-danger:    #ff5252;
-    --text-main:       #E0F7FA;
-    --card-bg:         #0e1b24;
-    --input-bg:        #002840;
-    --border:          #1a2a35;
+    --text-main:       #F5E6FF; /* Pale Lilac Text */
+    --card-bg:         #160226; /* Slightly lighter purple for cards */
+    --input-bg:        #23053B;
+    --border:          #360B5A;
     --nav-height:      65px;
 }
 
