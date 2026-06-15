@@ -7,13 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
-        :root {
-            --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA;
-            --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24;
-            --input-bg: #002840; --border: #1a2a35; --nav-height: 65px;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: calc(var(--nav-height) + 20px); overflow-x: hidden; }
 
         /* ── PAGE HEADER ── */
@@ -126,6 +120,7 @@
 
         #toast { position: fixed; bottom: calc(var(--nav-height) + 12px); left: 50%; transform: translateX(-50%); background: var(--brand-secondary); color: white; padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; display: none; z-index: 9000; white-space: nowrap; font-family: 'Montserrat'; }
     </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -273,7 +268,7 @@ const THEORY_ITEMS = [
     { emoji:'🤸', tag:'Mobility', title:'Flexibility vs Mobility — The Difference' },
     { emoji:'❤️', tag:'Cardio', title:'Heart Rate Zones Demystified' },
     { emoji:'🔄', tag:'Programming', title:'Periodisation for Everyday Athletes' },
-    { emoji:'🥗', tag:'Training', title:'Principles of Training', file:'principlesoftraining.html' },
+    { emoji:'🥗', tag:'Nutrition', title:'Protein Timing and Muscle Repair' },
     { emoji:'🧘', tag:'Mindset', title:'The Stress-Recovery Cycle' },
     { emoji:'🦴', tag:'Anatomy', title:'Understanding the Posterior Chain' },
     { emoji:'🔥', tag:'Warm Up', title:'Why Warm Ups Actually Work' },
