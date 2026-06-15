@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Saved | RestPeriod</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
+        :root {
+            --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA;
+            --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24;
+            --input-bg: #002840; --border: #1a2a35; --nav-height: 65px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: calc(var(--nav-height) + 20px); }
+
+        .page-header { padding: 20px 20px 16px; }
+        .page-header h1 { font-family: 'Montserrat'; font-weight: 800; font-size: 1.6rem; color: white; margin-bottom: 4px; }
+        .page-header p { color: #555; font-size: 0.8rem; }
+
+        .container { padding: 0 20px; }
+        .section-title { font-family: 'Montserrat'; font-size: 0.65rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1.5px; margin: 20px 0 12px; }
+
+        /* SAVED LESSONS */
+        .saved-list { display: flex; flex-direction: column; gap: 10px; }
+        .saved-item { background: var(--card-bg); border: 1px solid #c084fc33; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: 0.2s; }
+        .saved-item:hover { border-color: #c084fc; }
+        .saved-num { font-family: 'Montserrat'; font-weight: 800; font-size: 1.3rem; color: #c084fc; min-width: 36px; }
+        .saved-info { flex: 1; }
+        .saved-label { font-size: 0.82rem; font-weight: 700; color: white; margin-bottom: 3px; }
+        .saved-sub { font-size: 0.65rem; color: #555; }
+        .saved-badges { display: flex; gap: 4px; margin-top: 6px; }
+        .badge-read { font-size: 0.48rem; background: #052e16; color: #4ade80; border: 1px solid #166534; padding: 2px 6px; border-radius: 10px; font-family: 'Montserrat'; font-weight: 800; }
+        .saved-remove { background: none; border: none; color: #333; cursor: pointer; font-size: 0.9rem; padding: 4px; transition: 0.2s; }
+        .saved-remove:hover { color: #ff5252; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: #333; }
+        .empty-state i { font-size: 2.5rem; display: block; margin-bottom: 16px; color: #1a2a35; }
+        .empty-state p { font-size: 0.85rem; line-height: 1.6; margin-bottom: 16px; }
+        .empty-state a { color: var(--brand-accent); text-decoration: none; font-family: 'Montserrat'; font-weight: 800; font-size: 0.8rem; }
+
+        /* READER MODAL */
+        .reader-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; flex-direction: column; }
+        .reader-modal.open { display: flex; }
+        .reader-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); background: #000; flex-shrink: 0; }
+        .reader-lesson-num { font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; color: var(--brand-accent); }
+        .reader-actions { display: flex; gap: 8px; align-items: center; }
+        .reader-close { background: none; border: none; color: #555; font-size: 1.3rem; cursor: pointer; padding: 4px; }
+        .reader-frame-wrap { flex: 1; overflow: hidden; }
+        .reader-frame { width: 100%; height: 100%; border: none; background: #000; }
+        .reader-footer { padding: 12px 20px; border-top: 1px solid var(--border); background: #000; display: flex; gap: 10px; flex-shrink: 0; }
+        .btn-mark-read { flex: 1; padding: 13px; border: none; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
+        .btn-mark-read.unread { background: var(--brand-accent); color: #000; }
+        .btn-mark-read.read { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+        .btn-prev-next { background: var(--card-bg); border: 1px solid var(--border); color: #888; padding: 13px 16px; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
+        .btn-prev-next:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: #000; border-top: 1px solid var(--border); display: flex; z-index: 3000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; color: #444; transition: 0.2s; text-decoration: none; border: none; background: none; padding: 0; }
+        .nav-item.active { color: var(--brand-accent); }
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item span { font-family: 'Montserrat'; font-weight: 800; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        #toast { position: fixed; bottom: calc(var(--nav-height) + 12px); left: 50%; transform: translateX(-50%); background: var(--brand-secondary); color: white; padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; display: none; z-index: 9000; white-space: nowrap; font-family: 'Montserrat'; }
+    </style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- READER MODAL -->
+<div class="reader-modal" id="reader-modal">
+    <div class="reader-header">
+        <span class="reader-lesson-num" id="reader-lesson-num">Lesson 1</span>
+        <div class="reader-actions">
+            <button class="reader-close" onclick="closeReader()"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+    <div class="reader-frame-wrap">
+        <iframe class="reader-frame" id="reader-frame" src="about:blank"></iframe>
+    </div>
+    <div class="reader-footer">
+        <button class="btn-mark-read unread" id="reader-mark-btn" onclick="toggleMarkRead()">Mark as Read</button>
+    </div>
+</div>
+
+<div class="page-header">
+    <h1>Saved</h1>
+    <p>Your saved lessons and content.</p>
+</div>
+
+<div class="container">
+    <div class="section-title">🔖 Saved Lessons</div>
+    <div id="saved-content"></div>
+</div>
+
+<nav class="bottom-nav">
+    <a href="client-dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    <a href="explore.html" class="nav-item">
+        <i class="fas fa-compass"></i>
+        <span>Explore</span>
+    </a>
+    <a href="library.html" class="nav-item">
+        <i class="fas fa-dumbbell"></i>
+        <span>Library</span>
+    </a>
+    <a href="saved.html" class="nav-item active">
+        <i class="fas fa-bookmark"></i>
+        <span>Saved</span>
+    </a>
+</nav>
+
+<script>
+(function() {
+    const pb2 = new PocketBase('https://restperiod.org');
+    if (!pb2.authStore.isValid) { window.location.href = '/index.html'; return; }
+})();
+
+const pb = new PocketBase('https://restperiod.org');
+
+const CHAPTERS = [
+    { num: 1,  file: 'rpchp1Chapter 1 - RUNNING IN THE THE WRONG PLACE.html' },
+    { num: 2,  file: 'rpchp2Chapter 2 - IMPOSSIBLE IS SOMETHING.html' },
+    { num: 3,  file: 'rpchp3Chapter 3 - LOW BUY IN.html' },
+    { num: 4,  file: 'rpchp4Chapter 4 - NO MATTER WHAT.html' },
+    { num: 5,  file: 'rpchp5Chapter 5 - WHAT WOULD AN ATHLETE DO?.html' },
+    { num: 6,  file: 'rpchp6Chapter 6 - ABOVE AVERAGE.html' },
+    { num: 7,  file: 'rpchp7Chapter 7  - THE FIRE HOSE AND THE OPEN WINDOW.html' },
+    { num: 8,  file: 'rpchp8Chapter 8 - UNMUCKUPABLE EXERCISES.html' },
+    { num: 9,  file: 'rpchp9Chapter 9 - LISTEN TO OTHERS, EVEN IF YOU DON\'T UNDERSTAND THEM.html' },
+    { num: 10, file: 'rpchp10Chapter 10 - OWN YOUR LOCAL AREA.html' },
+    { num: 11, file: 'rpchp11Chapter 11 - FIND AN OUTLET, THEN ANOTHER.html' },
+    { num: 12, file: 'rpchp12Chapter 12 - IGNORE PROGRESS.html' },
+    { num: 13, file: 'rpchp13Chapter 13 - DEATH, TAXES AND INJURIES.html' },
+    { num: 14, file: 'rpchp14Chapter 14 - START AGAIN.html' },
+    { num: 15, file: 'rpchp15Chapter 15 - SHOW ME THE RESULTS!.html' },
+    { num: 16, file: 'rpchp16Chapter 16 - HUMAN FIRST.html' },
+    { num: 17, file: 'rpchp17Chapter 17 -  GENERALIST SPECIALIST.html' },
+    { num: 18, file: 'rpchp18Chapter 18 - FLIP THE RATIO.html' },
+    { num: 19, file: 'rpchp19Chapter 19 - UNTIL THE DAY YOU DIE.html' },
+    { num: 20, file: 'rpchp20Chapter 20  - RESERVES.html' },
+    { num: 21, file: 'rpchp21Chapter 21 - USE IT OR LOSE IT.html' },
+    { num: 22, file: 'rpchp22Chapter 22 - BALLERINAS TALKING TO BOXERS.html' },
+    { num: 23, file: 'rpchp23Chapter 23 - RANDOM ANSWERS.html' },
+    { num: 24, file: 'rpchp24Chapter 24 - THINGS WE DON\'T GET ANYMORE.html' },
+    { num: 25, file: 'rpchp25Chapter 25 - DO NOTHING.html' },
+    { num: 26, file: 'rpchp26Chapter 26 - ENERGY (Jeff).html' },
+    { num: 27, file: 'rpchp27Chapter 27 - EVERYDAY INSPIRATIONS.html' },
+    { num: 28, file: 'rpchp28Chapter 28 - NEVER FORCE ANYTHING (Tareq).html' },
+    { num: 29, file: 'rpchp29Chapter 29 - GUARDING.html' },
+    { num: 30, file: 'rpchp30Chapter 30 - LET THE BODY DO THE THIN.html' },
+    { num: 31, file: 'rpchp31Chapter 31 - TRAIN, THEN PRACTICE..html' },
+    { num: 32, file: 'rpchp32Chapter 32 - DON\'T WIN, COMPETE.html' },
+    { num: 33, file: 'rpchp33Chapter 33 - 12 HOURS LATER.html' },
+    { num: 34, file: 'rpchp34Chapter 34 - EIGHT DAYS A WEEK.html' },
+    { num: 35, file: 'rpchp35Chapter 35- HOOK YOUR FUTURE SELF UP.html' },
+    { num: 36, file: 'rpchp36Chapter 36 - TO BUY OR NOT BUY THE KAYAK.html' },
+    { num: 37, file: 'rpchp37Chapter 37 - TRUST THE PROCESS... IF YOU KNOW IT.html' },
+];
+
+let readLessons = new Set();
+let savedLessons = new Set();
+let currentLessonNum = null;
+
+window.onload = () => {
+    if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
+    loadUserProgress();
+    renderSaved();
+};
+
+function loadUserProgress() {
+    const uid = pb.authStore.model.id;
+    const r = localStorage.getItem(`rp_read_${uid}`);
+    const s = localStorage.getItem(`rp_saved_${uid}`);
+    readLessons = r ? new Set(JSON.parse(r)) : new Set();
+    savedLessons = s ? new Set(JSON.parse(s)) : new Set();
+}
+
+function saveUserProgress() {
+    const uid = pb.authStore.model.id;
+    localStorage.setItem(`rp_read_${uid}`, JSON.stringify([...readLessons]));
+    localStorage.setItem(`rp_saved_${uid}`, JSON.stringify([...savedLessons]));
+}
+
+function renderSaved() {
+    const container = document.getElementById('saved-content');
+    const savedChapters = CHAPTERS.filter(ch => savedLessons.has(ch.num));
+    if (!savedChapters.length) {
+        container.innerHTML = `<div class="empty-state">
+            <i class="fas fa-bookmark"></i>
+            <p>You haven't saved any lessons yet.<br>Head to Explore to start reading.</p>
+            <a href="explore.html">Go to Explore →</a>
+        </div>`;
+        return;
+    }
+    container.innerHTML = `<div class="saved-list">
+        ${savedChapters.map(ch => {
+            const isRead = readLessons.has(ch.num);
+            return `<div class="saved-item" onclick="openLesson(${ch.num})">
+                <div class="saved-num">${String(ch.num).padStart(2,'0')}</div>
+                <div class="saved-info">
+                    <div class="saved-label">Lesson ${ch.num}</div>
+                    <div class="saved-sub">Rest Period</div>
+                    <div class="saved-badges">
+                        ${isRead ? '<span class="badge-read">✓ Read</span>' : ''}
+                    </div>
+                </div>
+                <button class="saved-remove" onclick="event.stopPropagation();removeLesson(${ch.num})" title="Remove from saved">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>`;
+        }).join('')}
+    </div>`;
+}
+
+function openLesson(num) {
+    const ch = CHAPTERS.find(c => c.num === num); if (!ch) return;
+    currentLessonNum = num;
+    document.getElementById('reader-lesson-num').textContent = `Lesson ${num} of ${CHAPTERS.length}`;
+    document.getElementById('reader-frame').src = ch.file;
+    updateReaderUI();
+    document.getElementById('reader-modal').classList.add('open');
+}
+
+function closeReader() {
+    document.getElementById('reader-modal').classList.remove('open');
+    document.getElementById('reader-frame').src = 'about:blank';
+    renderSaved();
+}
+
+function updateReaderUI() {
+    const isRead = readLessons.has(currentLessonNum);
+    const markBtn = document.getElementById('reader-mark-btn');
+    markBtn.textContent = isRead ? '✓ Marked as Read' : 'Mark as Read';
+    markBtn.className = `btn-mark-read ${isRead ? 'read' : 'unread'}`;
+}
+
+function toggleMarkRead() {
+    if (readLessons.has(currentLessonNum)) readLessons.delete(currentLessonNum);
+    else readLessons.add(currentLessonNum);
+    saveUserProgress();
+    updateReaderUI();
+    showToast(readLessons.has(currentLessonNum) ? '✓ Marked as read' : 'Unmarked');
+}
+
+function removeLesson(num) {
+    savedLessons.delete(num);
+    saveUserProgress();
+    renderSaved();
+    showToast('Removed from saved');
+}
+
+let toastTimer;
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.style.display='none', 2000);
+}
+</script>
+</body>
+</html>

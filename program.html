@@ -11,7 +11,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
         :root { --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA; --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24; --input-bg: #002840; }
         * { box-sizing: border-box; }
-        body { margin: 0; font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); padding-bottom: 80px; overflow-x: hidden; }
+        body { margin: 0; font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); padding-bottom: 85px; overflow-x: hidden; }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
@@ -131,9 +131,9 @@
     </div>
 </div>
 
-<div class="nav-top">
-    <canvas id="nav-clock" width="45" height="45" style="background:#000; border-radius:50%; border:1.5px solid var(--brand-accent); flex-shrink:0;"></canvas>
-    <div style="display:flex; gap:8px; overflow-x:auto; padding:0 10px; align-items:center; -webkit-overflow-scrolling:touch;">
+<div class="nav-top" style="display:flex;justify-content:space-between;align-items:center;padding:5px 15px;background:#000;border-bottom:1px solid #004d7a;position:sticky;top:0;z-index:1000;height:60px;">
+    <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:1rem;">REST <span style="color:#26C6DA;">PERIOD</span></div>
+    <div style="display:flex;gap:8px;overflow-x:auto;align-items:center;-webkit-overflow-scrolling:touch;">
         <div class="header-tool" onclick="openTool('pace-tool')"><i class="fas fa-running"></i></div>
         <div class="header-tool" onclick="openTool('onerm-tool')"><i class="fas fa-weight-hanging"></i></div>
         <div class="header-tool" onclick="openTool('metronome-tool')"><i class="fas fa-drum"></i></div>
@@ -141,7 +141,6 @@
         <div class="header-tool" onclick="openTool('countdown-tool')"><i class="fas fa-hourglass-half"></i></div>
         <div class="header-tool" onclick="openTool('stopwatch-tool')"><i class="fas fa-stopwatch"></i></div>
     </div>
-    <div onclick="openNav()" style="font-size:1.5rem; cursor:pointer; padding:8px;">&#9776;</div>
 </div>
 
 <div id="mySidebar" class="sidebar">
@@ -149,6 +148,25 @@
     <a href="client-dashboard.html">← MY DASHBOARD</a>
     <a href="#" onclick="pb.authStore.clear(); window.location.href='index.html';">LOGOUT</a>
 </div>
+<!-- BOTTOM NAV -->
+<nav style="position:fixed;bottom:0;left:0;right:0;height:65px;background:#000;border-top:1px solid #1a2a35;display:flex;z-index:3000;">
+    <a href="client-dashboard.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#444;text-decoration:none;">
+        <i class="fas fa-home" style="font-size:1.1rem;"></i>
+        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Home</span>
+    </a>
+    <a href="explore.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#26C6DA;text-decoration:none;">
+        <i class="fas fa-compass" style="font-size:1.1rem;"></i>
+        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Explore</span>
+    </a>
+    <a href="library.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#444;text-decoration:none;">
+        <i class="fas fa-dumbbell" style="font-size:1.1rem;"></i>
+        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Library</span>
+    </a>
+    <a href="saved.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#444;text-decoration:none;">
+        <i class="fas fa-bookmark" style="font-size:1.1rem;"></i>
+        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Saved</span>
+    </a>
+</nav>
 
 <div class="container">
     <div class="card">

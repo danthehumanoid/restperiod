@@ -15,7 +15,7 @@
             --input-bg: #002840; --border: #1a2a35; --brand-danger: #ff5252;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; overflow-x: hidden; }
+        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: 85px; overflow-x: hidden; }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
@@ -266,14 +266,12 @@
 <div id="sync-toast">Saved ✓</div>
 
 <!-- ── NAV ── -->
-<div class="nav-top">
+<div class="nav-top" style="display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:#000;border-bottom:1px solid #004d7a;position:sticky;top:0;z-index:200;">
     <div class="nav-brand">REST <span>PERIOD</span></div>
-    <div class="nav-right">
-        <span class="nav-user" id="nav-user"></span>
-        <button class="btn-nav primary client-only" onclick="window.location.href='program.html'" style="display:none;">▶ Train</button>
+    <div style="display:flex;align-items:center;gap:10px;">
+        <span class="nav-user" id="nav-user" style="font-size:0.72rem;color:#888;"></span>
         <button class="btn-nav client-only" onclick="window.location.href='checkin.html'" style="display:none;">📝 Check-In</button>
-        <a href="library.html" class="btn-nav free-only" style="display:none;">EXERCISE LIBRARY</a>
-        <button class="btn-nav" onclick="logout()">Logout</button>
+        <button class="btn-nav" onclick="logout()" style="background:none;border:1px solid #333;color:#888;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:0.7rem;font-family:Montserrat,sans-serif;font-weight:700;">Logout</button>
     </div>
 </div>
 
@@ -1378,5 +1376,25 @@ function tUpdateIntDisplay(){const m=Math.floor(tIntTime/60),s=tIntTime%60;docum
 function tSetIntPhase(phase,set,total){tIntPhase=phase;const label=document.getElementById('t-int-phase'),disp=document.getElementById('t-int-display'),sets=document.getElementById('t-int-sets-label');if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';disp.style.color='#fb923c';sets.textContent='';}else if(phase==='work'){label.textContent='WORK';label.style.color='#4ade80';disp.style.color='#4ade80';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';disp.style.color='#f87171';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='done'){label.textContent='DONE 🔥';label.style.color='var(--brand-accent)';disp.style.color='white';sets.textContent='';}}
 function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIntRunning){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntPhase='idle';document.getElementById('t-int-phase').textContent='READY';document.getElementById('t-int-phase').style.color='var(--brand-accent)';document.getElementById('t-int-display').style.color='white';document.getElementById('t-int-sets-label').textContent='';tIntTime=parseInt(document.getElementById('t-int-work').value)||30;tUpdateIntDisplay();return;}const warmup=parseInt(document.getElementById('t-int-warmup').value)||0,sets=parseInt(document.getElementById('t-int-sets').value)||5,work=parseInt(document.getElementById('t-int-work').value)||30,rest=parseInt(document.getElementById('t-int-rest').value)||15;tIntTotalSets=sets;tIntCurrentSet=1;tIntRunning=true;btn.textContent='Stop';btn.classList.add('running');if(warmup>0){tIntTime=warmup;tSetIntPhase('warmup',0,sets);}else{tIntTime=work;tSetIntPhase('work',1,sets);}tUpdateIntDisplay();tIntInterval=setInterval(()=>{tIntTime--;tUpdateIntDisplay();if(tIntTime>0)return;if(tIntPhase==='warmup'){tIntTime=work;tIntCurrentSet=1;tSetIntPhase('work',1,tIntTotalSets);}else if(tIntPhase==='work'){if(rest>0){tIntTime=rest;tSetIntPhase('rest',tIntCurrentSet,tIntTotalSets);}else{tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}}else if(tIntPhase==='rest'){tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}},1000);}
 </script>
+
+<!-- BOTTOM NAV -->
+<nav style="position:fixed;bottom:0;left:0;right:0;height:65px;background:#000;border-top:1px solid #1a2a35;display:flex;z-index:3000;">
+    <a href="client-dashboard.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#26C6DA;text-decoration:none;">
+        <i class="fas fa-home" style="font-size:1.1rem;"></i>
+        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Home</span>
+    </a>
+    <a href="explore.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#444;text-decoration:none;">
+        <i class="fas fa-compass" style="font-size:1.1rem;"></i>
+        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Explore</span>
+    </a>
+    <a href="library.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#444;text-decoration:none;">
+        <i class="fas fa-dumbbell" style="font-size:1.1rem;"></i>
+        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Library</span>
+    </a>
+    <a href="saved.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#444;text-decoration:none;">
+        <i class="fas fa-bookmark" style="font-size:1.1rem;"></i>
+        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Saved</span>
+    </a>
+</nav>
 </body>
 </html>

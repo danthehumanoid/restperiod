@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Explore | RestPeriod</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
+        :root {
+            --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA;
+            --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24;
+            --input-bg: #002840; --border: #1a2a35; --nav-height: 65px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: calc(var(--nav-height) + 20px); overflow-x: hidden; }
+
+        /* ── PAGE HEADER ── */
+        .page-header { padding: 20px 20px 0; }
+        .page-header h1 { font-family: 'Montserrat'; font-weight: 800; font-size: 1.6rem; color: white; margin-bottom: 4px; }
+        .page-header p { color: #555; font-size: 0.8rem; }
+
+        /* ── PILL TABS ── */
+        .pill-tabs { display: flex; gap: 8px; padding: 16px 20px 0; overflow-x: auto; scrollbar-width: none; }
+        .pill-tabs::-webkit-scrollbar { display: none; }
+        .pill { padding: 8px 20px; border-radius: 50px; border: 1px solid var(--border); background: var(--card-bg); color: #666; font-family: 'Montserrat'; font-weight: 800; font-size: 0.72rem; cursor: pointer; white-space: nowrap; transition: 0.2s; letter-spacing: 0.5px; }
+        .pill.active { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
+
+        /* ── TAB CONTENT ── */
+        .tab-panel { display: none; padding: 20px; }
+        .tab-panel.active { display: block; }
+
+        /* ── SECTION TITLE ── */
+        .section-title { font-family: 'Montserrat'; font-size: 0.65rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1.5px; margin: 24px 0 12px; }
+
+        /* ── TRAIN TAB — shelf cards ── */
+        .shelf-section { margin-bottom: 32px; }
+        .shelf-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .shelf-emoji { font-size: 1.1rem; }
+        .shelf-title { font-family: 'Montserrat'; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .shelf-line { flex: 1; height: 1px; background: var(--border); }
+        .shelf-count { font-size: 0.6rem; color: #555; font-family: 'Montserrat'; font-weight: 800; }
+        .shelf-scroll-wrap { position: relative; margin: 0 -20px; padding: 0 20px; }
+        .shelf-track { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .shelf-track::-webkit-scrollbar { display: none; }
+        .prog-card { width: 160px; min-width: 160px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+        .prog-card:hover { border-color: var(--brand-accent); transform: translateY(-2px); }
+        .prog-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+        .prog-thumb-placeholder { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+        .thumb-strength { background: linear-gradient(135deg, #1a0a3a, #003B5C); }
+        .thumb-power    { background: linear-gradient(135deg, #1a0a00, #3a2000); }
+        .thumb-run      { background: linear-gradient(135deg, #001a0a, #0a2a00); }
+        .thumb-circuit  { background: linear-gradient(135deg, #001a2c, #0a1a3a); }
+        .thumb-mobility { background: linear-gradient(135deg, #1a0a2a, #0a1a0a); }
+        .thumb-cardio   { background: linear-gradient(135deg, #2a0a0a, #1a0a0a); }
+        .thumb-warmup   { background: linear-gradient(135deg, #2a1000, #3a1500); }
+        .thumb-other    { background: linear-gradient(135deg, #0a0a1a, #1a1a2a); }
+        .prog-card-body { padding: 8px 10px 10px; }
+        .prog-name { font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; color: white; margin-bottom: 3px; line-height: 1.3; }
+        .prog-meta { font-size: 0.62rem; color: #555; }
+        .prog-badge { font-size: 0.5rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 5px; background: #001a2c; color: var(--brand-accent); border: 1px solid #26C6DA33; }
+
+        /* ── PHILOSOPHY TAB ── */
+        .lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+        .lesson-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; cursor: pointer; transition: 0.2s; position: relative; }
+        .lesson-card:hover { border-color: var(--brand-accent); }
+        .lesson-card.read { border-color: #2E7D32; background: #0a1a0a; }
+        .lesson-card.saved { border-color: #c084fc44; }
+        .lesson-num { font-family: 'Montserrat'; font-weight: 800; font-size: 1.4rem; color: var(--brand-accent); line-height: 1; margin-bottom: 6px; }
+        .lesson-card.read .lesson-num { color: #4ade80; }
+        .lesson-label { font-size: 0.62rem; color: #555; font-family: 'Montserrat'; font-weight: 700; text-transform: uppercase; }
+        .lesson-badges { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+        .badge-read { font-size: 0.48rem; background: #052e16; color: #4ade80; border: 1px solid #166534; padding: 2px 6px; border-radius: 10px; font-family: 'Montserrat'; font-weight: 800; }
+        .badge-saved { font-size: 0.48rem; background: #1a0a2a; color: #c084fc; border: 1px solid #c084fc44; padding: 2px 6px; border-radius: 10px; font-family: 'Montserrat'; font-weight: 800; }
+        .lesson-card .check-icon { position: absolute; top: 8px; right: 8px; color: #4ade80; font-size: 0.7rem; display: none; }
+        .lesson-card.read .check-icon { display: block; }
+
+        /* ── THEORY TAB ── */
+        .theory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; }
+        .theory-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 0.6; position: relative; }
+        .theory-card:hover { border-color: var(--brand-accent); opacity: 0.8; }
+        .theory-thumb { width: 100%; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .theory-body { padding: 10px 12px 12px; }
+        .theory-tag { font-size: 0.55rem; color: var(--brand-accent); font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .theory-title { font-family: 'Montserrat'; font-weight: 800; font-size: 0.78rem; color: white; line-height: 1.3; }
+        .theory-coming { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #555; font-size: 0.45rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+
+        /* ── CHAPTER READER MODAL ── */
+        .reader-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; flex-direction: column; }
+        .reader-modal.open { display: flex; }
+        .reader-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); background: #000; flex-shrink: 0; }
+        .reader-lesson-num { font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; color: var(--brand-accent); }
+        .reader-actions { display: flex; gap: 8px; align-items: center; }
+        .reader-close { background: none; border: none; color: #555; font-size: 1.3rem; cursor: pointer; padding: 4px; }
+        .reader-save-btn { background: none; border: 1px solid var(--border); color: #666; padding: 5px 12px; border-radius: 20px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.6rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
+        .reader-save-btn.saved { border-color: #c084fc; color: #c084fc; }
+        .reader-frame-wrap { flex: 1; overflow: hidden; position: relative; }
+        .reader-frame { width: 100%; height: 100%; border: none; background: #000; }
+        .reader-footer { padding: 12px 20px; border-top: 1px solid var(--border); background: #000; display: flex; gap: 10px; flex-shrink: 0; }
+        .btn-mark-read { flex: 1; padding: 13px; border: none; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; transition: 0.2s; }
+        .btn-mark-read.unread { background: var(--brand-accent); color: #000; }
+        .btn-mark-read.read { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+        .btn-prev-next { background: var(--card-bg); border: 1px solid var(--border); color: #888; padding: 13px 16px; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; transition: 0.2s; }
+        .btn-prev-next:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+        .btn-prev-next:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* ── PROGRAM DETAIL MODAL ── */
+        .prog-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; align-items: flex-end; justify-content: center; }
+        .prog-modal.open { display: flex; }
+        .prog-modal-box { background: var(--card-bg); border-radius: 16px 16px 0 0; border: 1px solid var(--border); border-bottom: none; width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto; padding: 24px; }
+        .prog-modal-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; margin-bottom: 16px; }
+        .prog-modal-title { font-family: 'Montserrat'; font-size: 1.1rem; font-weight: 800; color: white; margin-bottom: 8px; }
+        .prog-modal-desc { font-size: 0.82rem; color: #888; line-height: 1.6; margin-bottom: 16px; }
+        .prog-modal-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+        .prog-modal-meta span { font-size: 0.65rem; color: #888; background: #050d12; border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; font-family: 'Montserrat'; font-weight: 700; }
+        .btn-start { background: var(--brand-accent); color: #000; border: none; padding: 14px; width: 100%; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.9rem; cursor: pointer; margin-bottom: 8px; }
+        .btn-modal-close { background: none; border: 1px solid var(--border); color: #555; padding: 12px; width: 100%; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+
+        /* ── BOTTOM NAV ── */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: #000; border-top: 1px solid var(--border); display: flex; z-index: 3000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; color: #444; transition: 0.2s; text-decoration: none; border: none; background: none; padding: 0; }
+        .nav-item.active { color: var(--brand-accent); }
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item span { font-family: 'Montserrat'; font-weight: 800; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        #toast { position: fixed; bottom: calc(var(--nav-height) + 12px); left: 50%; transform: translateX(-50%); background: var(--brand-secondary); color: white; padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; display: none; z-index: 9000; white-space: nowrap; font-family: 'Montserrat'; }
+    </style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- CHAPTER READER MODAL -->
+<div class="reader-modal" id="reader-modal">
+    <div class="reader-header">
+        <span class="reader-lesson-num" id="reader-lesson-num">Lesson 1</span>
+        <div class="reader-actions">
+            <button class="reader-save-btn" id="reader-save-btn" onclick="toggleSaveLesson()">
+                <i class="fas fa-bookmark"></i> <span id="reader-save-label">Save</span>
+            </button>
+            <button class="reader-close" onclick="closeReader()"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+    <div class="reader-frame-wrap">
+        <iframe class="reader-frame" id="reader-frame" src="about:blank"></iframe>
+    </div>
+    <div class="reader-footer">
+        <button class="btn-prev-next" id="reader-prev" onclick="navigateLesson(-1)">← Prev</button>
+        <button class="btn-mark-read unread" id="reader-mark-btn" onclick="toggleMarkRead()">Mark as Read</button>
+        <button class="btn-prev-next" id="reader-next" onclick="navigateLesson(1)">Next →</button>
+    </div>
+</div>
+
+<!-- PROGRAM DETAIL MODAL -->
+<div class="prog-modal" id="prog-modal" onclick="if(event.target===this)closeProgModal()">
+    <div class="prog-modal-box">
+        <div id="prog-modal-content"></div>
+    </div>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <h1>Explore</h1>
+    <p>Train, learn and grow.</p>
+</div>
+
+<!-- PILL TABS -->
+<div class="pill-tabs">
+    <div class="pill active" onclick="switchTab('train')">🏋️ Train</div>
+    <div class="pill" onclick="switchTab('philosophy')">📖 Philosophy</div>
+    <div class="pill" onclick="switchTab('theory')">🧪 Theory</div>
+</div>
+
+<!-- TRAIN TAB -->
+<div class="tab-panel active" id="tab-train">
+    <div id="train-shelves">
+        <div style="text-align:center;padding:60px 0;color:#555;">
+            <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;display:block;margin-bottom:12px;"></i>
+            Loading programs...
+        </div>
+    </div>
+</div>
+
+<!-- PHILOSOPHY TAB -->
+<div class="tab-panel" id="tab-philosophy">
+    <div class="section-title">Rest Period — The Book</div>
+    <div class="lesson-grid" id="lesson-grid"></div>
+</div>
+
+<!-- THEORY TAB -->
+<div class="tab-panel" id="tab-theory">
+    <div class="section-title">Exercise Science</div>
+    <div class="theory-grid" id="theory-grid"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="client-dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    <a href="explore.html" class="nav-item active">
+        <i class="fas fa-compass"></i>
+        <span>Explore</span>
+    </a>
+    <a href="library.html" class="nav-item">
+        <i class="fas fa-dumbbell"></i>
+        <span>Library</span>
+    </a>
+    <a href="saved.html" class="nav-item">
+        <i class="fas fa-bookmark"></i>
+        <span>Saved</span>
+    </a>
+</nav>
+
+<script>
+(function() {
+    const pb2 = new PocketBase('https://restperiod.org');
+    if (!pb2.authStore.isValid) { window.location.href = '/index.html'; return; }
+})();
+
+const pb = new PocketBase('https://restperiod.org');
+const PB_URL = 'https://restperiod.org';
+
+// ── CHAPTERS ──────────────────────────────────────
+const CHAPTERS = [
+    { num: 1,  file: 'rpchp1Chapter 1 - RUNNING IN THE THE WRONG PLACE.html' },
+    { num: 2,  file: 'rpchp2Chapter 2 - IMPOSSIBLE IS SOMETHING.html' },
+    { num: 3,  file: 'rpchp3Chapter 3 - LOW BUY IN.html' },
+    { num: 4,  file: 'rpchp4Chapter 4 - NO MATTER WHAT.html' },
+    { num: 5,  file: 'rpchp5Chapter 5 - WHAT WOULD AN ATHLETE DO?.html' },
+    { num: 6,  file: 'rpchp6Chapter 6 - ABOVE AVERAGE.html' },
+    { num: 7,  file: 'rpchp7Chapter 7  - THE FIRE HOSE AND THE OPEN WINDOW.html' },
+    { num: 8,  file: 'rpchp8Chapter 8 - UNMUCKUPABLE EXERCISES.html' },
+    { num: 9,  file: 'rpchp9Chapter 9 - LISTEN TO OTHERS, EVEN IF YOU DON\'T UNDERSTAND THEM.html' },
+    { num: 10, file: 'rpchp10Chapter 10 - OWN YOUR LOCAL AREA.html' },
+    { num: 11, file: 'rpchp11Chapter 11 - FIND AN OUTLET, THEN ANOTHER.html' },
+    { num: 12, file: 'rpchp12Chapter 12 - IGNORE PROGRESS.html' },
+    { num: 13, file: 'rpchp13Chapter 13 - DEATH, TAXES AND INJURIES.html' },
+    { num: 14, file: 'rpchp14Chapter 14 - START AGAIN.html' },
+    { num: 15, file: 'rpchp15Chapter 15 - SHOW ME THE RESULTS!.html' },
+    { num: 16, file: 'rpchp16Chapter 16 - HUMAN FIRST.html' },
+    { num: 17, file: 'rpchp17Chapter 17 -  GENERALIST SPECIALIST.html' },
+    { num: 18, file: 'rpchp18Chapter 18 - FLIP THE RATIO.html' },
+    { num: 19, file: 'rpchp19Chapter 19 - UNTIL THE DAY YOU DIE.html' },
+    { num: 20, file: 'rpchp20Chapter 20  - RESERVES.html' },
+    { num: 21, file: 'rpchp21Chapter 21 - USE IT OR LOSE IT.html' },
+    { num: 22, file: 'rpchp22Chapter 22 - BALLERINAS TALKING TO BOXERS.html' },
+    { num: 23, file: 'rpchp23Chapter 23 - RANDOM ANSWERS.html' },
+    { num: 24, file: 'rpchp24Chapter 24 - THINGS WE DON\'T GET ANYMORE.html' },
+    { num: 25, file: 'rpchp25Chapter 25 - DO NOTHING.html' },
+    { num: 26, file: 'rpchp26Chapter 26 - ENERGY (Jeff).html' },
+    { num: 27, file: 'rpchp27Chapter 27 - EVERYDAY INSPIRATIONS.html' },
+    { num: 28, file: 'rpchp28Chapter 28 - NEVER FORCE ANYTHING (Tareq).html' },
+    { num: 29, file: 'rpchp29Chapter 29 - GUARDING.html' },
+    { num: 30, file: 'rpchp30Chapter 30 - LET THE BODY DO THE THIN.html' },
+    { num: 31, file: 'rpchp31Chapter 31 - TRAIN, THEN PRACTICE..html' },
+    { num: 32, file: 'rpchp32Chapter 32 - DON\'T WIN, COMPETE.html' },
+    { num: 33, file: 'rpchp33Chapter 33 - 12 HOURS LATER.html' },
+    { num: 34, file: 'rpchp34Chapter 34 - EIGHT DAYS A WEEK.html' },
+    { num: 35, file: 'rpchp35Chapter 35- HOOK YOUR FUTURE SELF UP.html' },
+    { num: 36, file: 'rpchp36Chapter 36 - TO BUY OR NOT BUY THE KAYAK.html' },
+    { num: 37, file: 'rpchp37Chapter 37 - TRUST THE PROCESS... IF YOU KNOW IT.html' },
+];
+
+// ── THEORY PLACEHOLDERS ───────────────────────────
+const THEORY_ITEMS = [
+    { emoji:'💪', tag:'Strength', title:'Progressive Overload Explained' },
+    { emoji:'🧠', tag:'Recovery', title:'Why Sleep is Your Secret Weapon' },
+    { emoji:'🏃', tag:'Running', title:'The Aerobic Base — What It Actually Means' },
+    { emoji:'⚡', tag:'Power', title:'Fast vs Slow Twitch Muscle Fibres' },
+    { emoji:'🤸', tag:'Mobility', title:'Flexibility vs Mobility — The Difference' },
+    { emoji:'❤️', tag:'Cardio', title:'Heart Rate Zones Demystified' },
+    { emoji:'🔄', tag:'Programming', title:'Periodisation for Everyday Athletes' },
+    { emoji:'🥗', tag:'Nutrition', title:'Protein Timing and Muscle Repair' },
+    { emoji:'🧘', tag:'Mindset', title:'The Stress-Recovery Cycle' },
+    { emoji:'🦴', tag:'Anatomy', title:'Understanding the Posterior Chain' },
+    { emoji:'🔥', tag:'Warm Up', title:'Why Warm Ups Actually Work' },
+    { emoji:'📊', tag:'Data', title:'Reading Your Body\'s Signals' },
+];
+
+// ── STATE ─────────────────────────────────────────
+let readLessons = new Set();
+let savedLessons = new Set();
+let currentLessonIndex = 0;
+let freeMasterPrograms = [];
+
+const CATEGORY_META = {
+    STRENGTH: { emoji:'💪', label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
+    POWER:    { emoji:'⚡', label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
+    RUN:      { emoji:'🏃', label:'Run',      thumbClass:'thumb-run',      color:'#4ade80' },
+    CIRCUIT:  { emoji:'🔄', label:'Circuit',  thumbClass:'thumb-circuit',  color:'#26C6DA' },
+    MOBILITY: { emoji:'🤸', label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
+    CARDIO:   { emoji:'❤️', label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
+    'WARM UP':{ emoji:'🔥', label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
+    OTHER:    { emoji:'📋', label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
+};
+const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
+
+// ── INIT ──────────────────────────────────────────
+window.onload = async () => {
+    if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
+    loadUserProgress();
+    renderLessons();
+    renderTheory();
+    await loadTrainPrograms();
+};
+
+// ── TABS ──────────────────────────────────────────
+function switchTab(tab) {
+    document.querySelectorAll('.pill').forEach((p,i) => p.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    const tabs = ['train','philosophy','theory'];
+    const idx = tabs.indexOf(tab);
+    document.querySelectorAll('.pill')[idx].classList.add('active');
+    document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+// ── USER PROGRESS (localStorage) ─────────────────
+function loadUserProgress() {
+    const uid = pb.authStore.model.id;
+    const r = localStorage.getItem(`rp_read_${uid}`);
+    const s = localStorage.getItem(`rp_saved_${uid}`);
+    readLessons = r ? new Set(JSON.parse(r)) : new Set();
+    savedLessons = s ? new Set(JSON.parse(s)) : new Set();
+}
+
+function saveUserProgress() {
+    const uid = pb.authStore.model.id;
+    localStorage.setItem(`rp_read_${uid}`, JSON.stringify([...readLessons]));
+    localStorage.setItem(`rp_saved_${uid}`, JSON.stringify([...savedLessons]));
+}
+
+// ── RENDER LESSONS ────────────────────────────────
+function renderLessons() {
+    const grid = document.getElementById('lesson-grid');
+    grid.innerHTML = CHAPTERS.map((ch, i) => {
+        const isRead = readLessons.has(ch.num);
+        const isSaved = savedLessons.has(ch.num);
+        return `<div class="lesson-card ${isRead?'read':''} ${isSaved?'saved':''}" onclick="openLesson(${i})">
+            <i class="fas fa-check check-icon"></i>
+            <div class="lesson-num">${String(ch.num).padStart(2,'0')}</div>
+            <div class="lesson-label">Lesson ${ch.num}</div>
+            <div class="lesson-badges">
+                ${isRead ? '<span class="badge-read">✓ Read</span>' : ''}
+                ${isSaved ? '<span class="badge-saved">🔖 Saved</span>' : ''}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ── RENDER THEORY ─────────────────────────────────
+function renderTheory() {
+    const grid = document.getElementById('theory-grid');
+    const colours = ['#1a0a3a','#001a0a','#1a0a00','#001a2c','#1a0a2a','#0a001a'];
+    grid.innerHTML = THEORY_ITEMS.map((t,i) => `
+        <div class="theory-card" onclick="showToast('Coming soon!')">
+            <span class="theory-coming">Coming soon</span>
+            <div class="theory-thumb" style="background:${colours[i%colours.length]};">${t.emoji}</div>
+            <div class="theory-body">
+                <div class="theory-tag">${t.tag}</div>
+                <div class="theory-title">${t.title}</div>
+            </div>
+        </div>`).join('');
+}
+
+// ── LESSON READER ─────────────────────────────────
+function openLesson(index) {
+    currentLessonIndex = index;
+    const ch = CHAPTERS[index];
+    document.getElementById('reader-lesson-num').textContent = `Lesson ${ch.num}`;
+    document.getElementById('reader-frame').src = ch.file;
+    updateReaderUI();
+    document.getElementById('reader-modal').classList.add('open');
+}
+
+function closeReader() {
+    document.getElementById('reader-modal').classList.remove('open');
+    document.getElementById('reader-frame').src = 'about:blank';
+    renderLessons();
+}
+
+function updateReaderUI() {
+    const ch = CHAPTERS[currentLessonIndex];
+    const isRead = readLessons.has(ch.num);
+    const isSaved = savedLessons.has(ch.num);
+    const markBtn = document.getElementById('reader-mark-btn');
+    markBtn.textContent = isRead ? '✓ Marked as Read' : 'Mark as Read';
+    markBtn.className = `btn-mark-read ${isRead ? 'read' : 'unread'}`;
+    const saveBtn = document.getElementById('reader-save-btn');
+    const saveLabel = document.getElementById('reader-save-label');
+    saveLabel.textContent = isSaved ? 'Saved' : 'Save';
+    saveBtn.className = `reader-save-btn ${isSaved ? 'saved' : ''}`;
+    document.getElementById('reader-prev').disabled = currentLessonIndex === 0;
+    document.getElementById('reader-next').disabled = currentLessonIndex === CHAPTERS.length - 1;
+    document.getElementById('reader-lesson-num').textContent = `Lesson ${ch.num} of ${CHAPTERS.length}`;
+}
+
+function toggleMarkRead() {
+    const ch = CHAPTERS[currentLessonIndex];
+    if (readLessons.has(ch.num)) readLessons.delete(ch.num);
+    else readLessons.add(ch.num);
+    saveUserProgress();
+    updateReaderUI();
+    showToast(readLessons.has(ch.num) ? '✓ Marked as read' : 'Unmarked');
+}
+
+function toggleSaveLesson() {
+    const ch = CHAPTERS[currentLessonIndex];
+    if (savedLessons.has(ch.num)) {
+        savedLessons.delete(ch.num);
+        showToast('Removed from saved');
+    } else {
+        savedLessons.add(ch.num);
+        showToast('🔖 Saved to your library');
+    }
+    saveUserProgress();
+    updateReaderUI();
+}
+
+function navigateLesson(dir) {
+    const next = currentLessonIndex + dir;
+    if (next < 0 || next >= CHAPTERS.length) return;
+    currentLessonIndex = next;
+    const ch = CHAPTERS[currentLessonIndex];
+    document.getElementById('reader-frame').src = ch.file;
+    updateReaderUI();
+}
+
+// ── TRAIN — FREE PROGRAMS ─────────────────────────
+async function loadTrainPrograms() {
+    try {
+        const recs = await pb.collection('programs').getFullList({
+            filter: 'is_free=true && archived=false', sort: 'name', requestKey: null
+        });
+        freeMasterPrograms = recs;
+        renderTrainShelves();
+    } catch(e) { console.error(e); }
+}
+
+function renderTrainShelves() {
+    const container = document.getElementById('train-shelves');
+    if (!freeMasterPrograms.length) {
+        container.innerHTML = '<div style="text-align:center;padding:60px 0;color:#555;">No programs yet.</div>';
+        return;
+    }
+    const grouped = {};
+    freeMasterPrograms.forEach(p => {
+        const cat = (p.category||'OTHER').toUpperCase();
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(p);
+    });
+    const sortedCats = Object.keys(grouped).sort((a,b) => {
+        const ai=CATEGORY_ORDER.indexOf(a), bi=CATEGORY_ORDER.indexOf(b);
+        return (ai===-1?99:ai)-(bi===-1?99:bi);
+    });
+    container.innerHTML = sortedCats.map(cat => {
+        const meta = CATEGORY_META[cat]||CATEGORY_META.OTHER;
+        const progs = grouped[cat];
+        return `<div class="shelf-section">
+            <div class="shelf-header">
+                <span class="shelf-emoji">${meta.emoji}</span>
+                <span class="shelf-title" style="color:${meta.color};">${meta.label}</span>
+                <div class="shelf-line"></div>
+                <span class="shelf-count">${progs.length}</span>
+            </div>
+            <div class="shelf-scroll-wrap">
+                <div class="shelf-track">
+                    ${progs.map(p => buildProgCard(p)).join('')}
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function buildProgCard(p) {
+    const cat = (p.category||'OTHER').toUpperCase();
+    const meta = CATEGORY_META[cat]||CATEGORY_META.OTHER;
+    let data = p.workout_data;
+    try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
+    const schedule = data?.schedule||data||[];
+    const sessionCount = Array.isArray(schedule)?schedule.length:0;
+    const thumbHtml = p.cover_image
+        ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;">${meta.emoji}</div>`
+        : `<div class="prog-thumb-placeholder ${meta.thumbClass}">${meta.emoji}</div>`;
+    return `<div class="prog-card" onclick="openProgModal('${p.id}')">
+        ${thumbHtml}
+        <div class="prog-card-body">
+            <div class="prog-name">${p.name}</div>
+            <div class="prog-badge">${p.is_repeatable?'🔁 Repeatable':sessionCount+' sessions'}</div>
+        </div>
+    </div>`;
+}
+
+function openProgModal(id) {
+    const p = freeMasterPrograms.find(x=>x.id===id); if (!p) return;
+    const cat = (p.category||'OTHER').toUpperCase();
+    const meta = CATEGORY_META[cat]||CATEGORY_META.OTHER;
+    let data = p.workout_data;
+    try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
+    const schedule = data?.schedule||data||[];
+    const sessionCount = Array.isArray(schedule)?schedule.length:0;
+    const thumbHtml = p.cover_image
+        ? `<img class="prog-modal-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" onerror="this.style.display='none'">`
+        : `<div class="prog-modal-thumb ${meta.thumbClass}" style="display:flex;align-items:center;justify-content:center;font-size:3rem;border-radius:8px;">${meta.emoji}</div>`;
+    document.getElementById('prog-modal-content').innerHTML = `
+        ${thumbHtml}
+        <div class="prog-modal-title">${p.name}</div>
+        <div class="prog-modal-desc">${p.description||'No description available.'}</div>
+        <div class="prog-modal-meta">
+            <span>${meta.emoji} ${meta.label}</span>
+            <span>${p.is_repeatable?'🔁 Repeatable':sessionCount+' sessions'}</span>
+        </div>
+        <button class="btn-start" onclick="startProgram('${p.id}')">▶ Start This Program</button>
+        <button class="btn-modal-close" onclick="closeProgModal()">Close</button>`;
+    document.getElementById('prog-modal').classList.add('open');
+}
+
+function closeProgModal() { document.getElementById('prog-modal').classList.remove('open'); }
+
+async function startProgram(templateId) {
+    const template = freeMasterPrograms.find(p=>p.id===templateId); if (!template) return;
+    try {
+        const newProg = await pb.collection('programs').create({
+            name: template.name, client: pb.authStore.model.id,
+            workout_data: template.workout_data, is_free: false,
+            is_repeatable: template.is_repeatable||false, category: template.category||'', archived: false
+        });
+        closeProgModal();
+        showToast('Program started! 🔥');
+        setTimeout(() => { window.location.href = `program.html?id=${newProg.id}`; }, 1000);
+    } catch(e) { alert('Failed: '+e.message); }
+}
+
+// ── TOAST ─────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.style.display='none', 2000);
+}
+</script>
+</body>
+</html>
