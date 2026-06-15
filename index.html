@@ -745,12 +745,6 @@
 </div>
 
 <script>
-(function() {
-    const pb2 = new PocketBase('https://restperiod.org');
-    if (!pb2.authStore.isValid) { window.location.href = '/index.html'; return; }
-    const role = pb2.authStore.model.role;
-    if (role !== 'trainer' && role !== 'admin') { window.location.href = '/index.html'; }
-})();
     const pb = new PocketBase('https://restperiod.org');
     if (pb.authStore.isValid) redirect(pb.authStore.model.role);
 
