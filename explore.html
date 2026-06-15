@@ -69,7 +69,7 @@
         .lesson-card.saved { border-color: #c084fc44; }
         .lesson-num { font-family: 'Montserrat'; font-weight: 800; font-size: 1.4rem; color: var(--brand-accent); line-height: 1; margin-bottom: 6px; }
         .lesson-card.read .lesson-num { color: #4ade80; }
-        .lesson-label { font-size: 0.62rem; color: #555; font-family: 'Montserrat'; font-weight: 700; text-transform: uppercase; }
+        .lesson-label { font-size: 0.62rem; color: #555; font-family: 'Montserrat'; font-weight: 700; text-transform: uppercase; line-height: 1.3; }
         .lesson-badges { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
         .badge-read { font-size: 0.48rem; background: #052e16; color: #4ade80; border: 1px solid #166534; padding: 2px 6px; border-radius: 10px; font-family: 'Montserrat'; font-weight: 800; }
         .badge-saved { font-size: 0.48rem; background: #1a0a2a; color: #c084fc; border: 1px solid #c084fc44; padding: 2px 6px; border-radius: 10px; font-family: 'Montserrat'; font-weight: 800; }
@@ -225,43 +225,43 @@ const PB_URL = 'https://restperiod.org';
 
 // ── CHAPTERS ──────────────────────────────────────
 const CHAPTERS = [
-    { num: 1,  file: 'rpchp1Chapter 1 - RUNNING IN THE THE WRONG PLACE.html' },
-    { num: 2,  file: 'rpchp2Chapter 2 - IMPOSSIBLE IS SOMETHING.html' },
-    { num: 3,  file: 'rpchp3Chapter 3 - LOW BUY IN.html' },
-    { num: 4,  file: 'rpchp4Chapter 4 - NO MATTER WHAT.html' },
-    { num: 5,  file: 'rpchp5Chapter 5 - WHAT WOULD AN ATHLETE DO?.html' },
-    { num: 6,  file: 'rpchp6Chapter 6 - ABOVE AVERAGE.html' },
-    { num: 7,  file: 'rpchp7Chapter 7  - THE FIRE HOSE AND THE OPEN WINDOW.html' },
-    { num: 8,  file: 'rpchp8Chapter 8 - UNMUCKUPABLE EXERCISES.html' },
-    { num: 9,  file: 'rpchp9Chapter 9 - LISTEN TO OTHERS, EVEN IF YOU DON\'T UNDERSTAND THEM.html' },
-    { num: 10, file: 'rpchp10Chapter 10 - OWN YOUR LOCAL AREA.html' },
-    { num: 11, file: 'rpchp11Chapter 11 - FIND AN OUTLET, THEN ANOTHER.html' },
-    { num: 12, file: 'rpchp12Chapter 12 - IGNORE PROGRESS.html' },
-    { num: 13, file: 'rpchp13Chapter 13 - DEATH, TAXES AND INJURIES.html' },
-    { num: 14, file: 'rpchp14Chapter 14 - START AGAIN.html' },
-    { num: 15, file: 'rpchp15Chapter 15 - SHOW ME THE RESULTS!.html' },
-    { num: 16, file: 'rpchp16Chapter 16 - HUMAN FIRST.html' },
-    { num: 17, file: 'rpchp17Chapter 17 -  GENERALIST SPECIALIST.html' },
-    { num: 18, file: 'rpchp18Chapter 18 - FLIP THE RATIO.html' },
-    { num: 19, file: 'rpchp19Chapter 19 - UNTIL THE DAY YOU DIE.html' },
-    { num: 20, file: 'rpchp20Chapter 20  - RESERVES.html' },
-    { num: 21, file: 'rpchp21Chapter 21 - USE IT OR LOSE IT.html' },
-    { num: 22, file: 'rpchp22Chapter 22 - BALLERINAS TALKING TO BOXERS.html' },
-    { num: 23, file: 'rpchp23Chapter 23 - RANDOM ANSWERS.html' },
-    { num: 24, file: 'rpchp24Chapter 24 - THINGS WE DON\'T GET ANYMORE.html' },
-    { num: 25, file: 'rpchp25Chapter 25 - DO NOTHING.html' },
-    { num: 26, file: 'rpchp26Chapter 26 - ENERGY (Jeff).html' },
-    { num: 27, file: 'rpchp27Chapter 27 - EVERYDAY INSPIRATIONS.html' },
-    { num: 28, file: 'rpchp28Chapter 28 - NEVER FORCE ANYTHING (Tareq).html' },
-    { num: 29, file: 'rpchp29Chapter 29 - GUARDING.html' },
-    { num: 30, file: 'rpchp30Chapter 30 - LET THE BODY DO THE THIN.html' },
-    { num: 31, file: 'rpchp31Chapter 31 - TRAIN, THEN PRACTICE..html' },
-    { num: 32, file: 'rpchp32Chapter 32 - DON\'T WIN, COMPETE.html' },
-    { num: 33, file: 'rpchp33Chapter 33 - 12 HOURS LATER.html' },
-    { num: 34, file: 'rpchp34Chapter 34 - EIGHT DAYS A WEEK.html' },
-    { num: 35, file: 'rpchp35Chapter 35- HOOK YOUR FUTURE SELF UP.html' },
-    { num: 36, file: 'rpchp36Chapter 36 - TO BUY OR NOT BUY THE KAYAK.html' },
-    { num: 37, file: 'rpchp37Chapter 37 - TRUST THE PROCESS... IF YOU KNOW IT.html' },
+    { num: 1,  title: 'RUNNING IN THE WRONG PLACE',           file: 'rpchp1Chapter 1 - RUNNING IN THE THE WRONG PLACE.html' },
+    { num: 2,  title: 'IMPOSSIBLE IS SOMETHING',              file: 'rpchp2Chapter 2 - IMPOSSIBLE IS SOMETHING.html' },
+    { num: 3,  title: 'LOW BUY IN',                           file: 'rpchp3Chapter 3 - LOW BUY IN.html' },
+    { num: 4,  title: 'NO MATTER WHAT',                       file: 'rpchp4Chapter 4 - NO MATTER WHAT.html' },
+    { num: 5,  title: 'WHAT WOULD AN ATHLETE DO?',            file: 'rpchp5Chapter 5 - WHAT WOULD AN ATHLETE DO?.html' },
+    { num: 6,  title: 'ABOVE AVERAGE',                        file: 'rpchp6Chapter 6 - ABOVE AVERAGE.html' },
+    { num: 7,  title: 'THE FIRE HOSE AND THE OPEN WINDOW',    file: 'rpchp7Chapter 7  - THE FIRE HOSE AND THE OPEN WINDOW.html' },
+    { num: 8,  title: 'UNMUCKUPABLE EXERCISES',               file: 'rpchp8Chapter 8 - UNMUCKUPABLE EXERCISES.html' },
+    { num: 9,  title: "LISTEN TO OTHERS, EVEN IF YOU DON'T UNDERSTAND THEM", file: "rpchp9Chapter 9 - LISTEN TO OTHERS, EVEN IF YOU DON'T UNDERSTAND THEM.html" },
+    { num: 10, title: 'OWN YOUR LOCAL AREA',                  file: 'rpchp10Chapter 10 - OWN YOUR LOCAL AREA.html' },
+    { num: 11, title: 'FIND AN OUTLET, THEN ANOTHER',         file: 'rpchp11Chapter 11 - FIND AN OUTLET, THEN ANOTHER.html' },
+    { num: 12, title: 'IGNORE PROGRESS',                      file: 'rpchp12Chapter 12 - IGNORE PROGRESS.html' },
+    { num: 13, title: 'DEATH, TAXES AND INJURIES',            file: 'rpchp13Chapter 13 - DEATH, TAXES AND INJURIES.html' },
+    { num: 14, title: 'START AGAIN',                          file: 'rpchp14Chapter 14 - START AGAIN.html' },
+    { num: 15, title: 'SHOW ME THE RESULTS!',                 file: 'rpchp15Chapter 15 - SHOW ME THE RESULTS!.html' },
+    { num: 16, title: 'HUMAN FIRST',                          file: 'rpchp16Chapter 16 - HUMAN FIRST.html' },
+    { num: 17, title: 'GENERALIST SPECIALIST',                file: 'rpchp17Chapter 17 -  GENERALIST SPECIALIST.html' },
+    { num: 18, title: 'FLIP THE RATIO',                       file: 'rpchp18Chapter 18 - FLIP THE RATIO.html' },
+    { num: 19, title: 'UNTIL THE DAY YOU DIE',                file: 'rpchp19Chapter 19 - UNTIL THE DAY YOU DIE.html' },
+    { num: 20, title: 'RESERVES',                             file: 'rpchp20Chapter 20  - RESERVES.html' },
+    { num: 21, title: 'USE IT OR LOSE IT',                    file: 'rpchp21Chapter 21 - USE IT OR LOSE IT.html' },
+    { num: 22, title: 'BALLERINAS TALKING TO BOXERS',         file: 'rpchp22Chapter 22 - BALLERINAS TALKING TO BOXERS.html' },
+    { num: 23, title: 'RANDOM ANSWERS',                       file: 'rpchp23Chapter 23 - RANDOM ANSWERS.html' },
+    { num: 24, title: "THINGS WE DON'T GET ANYMORE",          file: "rpchp24Chapter 24 - THINGS WE DON'T GET ANYMORE.html" },
+    { num: 25, title: 'DO NOTHING',                           file: 'rpchp25Chapter 25 - DO NOTHING.html' },
+    { num: 26, title: 'ENERGY (Jeff)',                        file: 'rpchp26Chapter 26 - ENERGY (Jeff).html' },
+    { num: 27, title: 'EVERYDAY INSPIRATIONS',                file: 'rpchp27Chapter 27 - EVERYDAY INSPIRATIONS.html' },
+    { num: 28, title: 'NEVER FORCE ANYTHING (Tareq)',         file: 'rpchp28Chapter 28 - NEVER FORCE ANYTHING (Tareq).html' },
+    { num: 29, title: 'GUARDING',                             file: 'rpchp29Chapter 29 - GUARDING.html' },
+    { num: 30, title: 'LET THE BODY DO THE THING',            file: 'rpchp30Chapter 30 - LET THE BODY DO THE THIN.html' },
+    { num: 31, title: 'TRAIN, THEN PRACTICE',                 file: 'rpchp31Chapter 31 - TRAIN, THEN PRACTICE..html' },
+    { num: 32, title: "DON'T WIN, COMPETE",                   file: "rpchp32Chapter 32 - DON'T WIN, COMPETE.html" },
+    { num: 33, title: '12 HOURS LATER',                       file: 'rpchp33Chapter 33 - 12 HOURS LATER.html' },
+    { num: 34, title: 'EIGHT DAYS A WEEK',                    file: 'rpchp34Chapter 34 - EIGHT DAYS A WEEK.html' },
+    { num: 35, title: 'HOOK YOUR FUTURE SELF UP',             file: 'rpchp35Chapter 35- HOOK YOUR FUTURE SELF UP.html' },
+    { num: 36, title: 'TO BUY OR NOT BUY THE KAYAK',          file: 'rpchp36Chapter 36 - TO BUY OR NOT BUY THE KAYAK.html' },
+    { num: 37, title: 'TRUST THE PROCESS... IF YOU KNOW IT',  file: 'rpchp37Chapter 37 - TRUST THE PROCESS... IF YOU KNOW IT.html' },
 ];
 
 // ── THEORY PLACEHOLDERS ───────────────────────────
@@ -341,7 +341,7 @@ function renderLessons() {
         return `<div class="lesson-card ${isRead?'read':''} ${isSaved?'saved':''}" onclick="openLesson(${i})">
             <i class="fas fa-check check-icon"></i>
             <div class="lesson-num">${String(ch.num).padStart(2,'0')}</div>
-            <div class="lesson-label">Lesson ${ch.num}</div>
+            <div class="lesson-label" style="font-size:0.7rem;font-weight:700;color:#aaa;line-height:1.3;margin-top:4px;">${ch.title}</div>
             <div class="lesson-badges">
                 ${isRead ? '<span class="badge-read">✓ Read</span>' : ''}
                 ${isSaved ? '<span class="badge-saved">🔖 Saved</span>' : ''}

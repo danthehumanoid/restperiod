@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Exercise Library | RestPeriod</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
@@ -12,237 +12,232 @@
         :root {
             --brand-bg: #020c12; --card-bg: #0e1b24; --brand-accent: #26C6DA;
             --brand-secondary: #2E7D32; --text-main: #E0F7FA; --input-bg: #002840;
-            --brand-danger: #ff5252;
+            --brand-danger: #ff5252; --border: #1a2a35; --nav-height: 65px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
+        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: calc(var(--nav-height) + 20px); }
 
-        .nav-top { display: flex; justify-content: space-between; padding: 15px 25px; background: #000; border-bottom: 1px solid #004d7a; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .nav-brand { font-weight: 800; font-size: 1.2rem; font-family: 'Montserrat'; }
+        /* ── TOP BAR ── */
+        .top-bar { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #000; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 200; }
+        .nav-brand { font-weight: 800; font-size: 1rem; font-family: 'Montserrat'; white-space: nowrap; }
         .nav-brand span { color: var(--brand-accent); }
-        .nav-links a { color: #888; text-decoration: none; margin-left: 20px; font-family: 'Montserrat'; font-weight: 700; font-size: 0.8rem; transition: 0.2s; }
-        .nav-links a:hover { color: var(--brand-accent); }
-        .nav-links a.active { color: white; border-bottom: 2px solid var(--brand-accent); }
+        .search-bar { flex: 1; background: var(--input-bg); border: 1px solid var(--border); color: white; padding: 9px 14px; border-radius: 8px; font-size: 0.85rem; font-family: inherit; min-width: 0; }
+        .search-bar:focus { outline: none; border-color: var(--brand-accent); }
+        .btn-filter-toggle { background: var(--card-bg); border: 1px solid var(--border); color: var(--brand-accent); padding: 9px 14px; border-radius: 8px; cursor: pointer; font-family: 'Montserrat'; font-weight: 800; font-size: 0.65rem; white-space: nowrap; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .btn-filter-toggle.has-active { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
+        .filter-count-badge { background: #000; color: var(--brand-accent); border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 800; }
+        .btn-filter-toggle.has-active .filter-count-badge { background: rgba(0,0,0,0.3); color: #000; }
 
-        .page { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 65px); }
-
-        .sidebar { background: #000; border-right: 1px solid #0a1a25; padding: 20px; overflow-y: auto; height: calc(100vh - 65px); position: sticky; top: 65px; }
-        .sidebar-search { width: 100%; background: var(--input-bg); border: 1px solid #004d7a; color: white; padding: 10px 12px; border-radius: 6px; font-size: 0.85rem; font-family: inherit; margin-bottom: 16px; }
-        .sidebar-search:focus { outline: none; border-color: var(--brand-accent); }
-        .filter-section { margin-bottom: 18px; }
-        .filter-section-title { font-family: 'Montserrat'; font-size: 0.6rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        /* ── FILTER DRAWER ── */
+        .filter-drawer { background: #000; border-bottom: 1px solid var(--border); overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
+        .filter-drawer.open { max-height: 70vh; overflow-y: auto; }
+        .filter-drawer-inner { padding: 16px; }
+        .active-filter-bar { display: none; margin-bottom: 12px; }
+        .active-filter-bar.visible { display: block; }
+        .active-filter-label { font-size: 0.55rem; color: #555; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+        .active-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+        .active-pill { background: var(--brand-accent); color: #000; padding: 3px 10px; border-radius: 20px; font-size: 0.6rem; font-family: 'Montserrat'; font-weight: 800; cursor: pointer; }
+        .btn-clear-all { background: none; border: 1px solid var(--brand-danger); color: var(--brand-danger); border-radius: 6px; padding: 5px 12px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.6rem; cursor: pointer; }
+        .filter-section { margin-bottom: 14px; }
+        .filter-section-title { font-family: 'Montserrat'; font-size: 0.55rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; }
         .filter-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-        .filter-tag { padding: 4px 10px; background: transparent; border: 1px solid #1a2a35; color: #666; border-radius: 20px; cursor: pointer; font-size: 0.65rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
+        .filter-tag { padding: 4px 10px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; cursor: pointer; font-size: 0.6rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
         .filter-tag:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
         .filter-tag.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
-        .filter-clear { width: 100%; padding: 8px; background: none; border: 1px solid #1a2a35; color: #555; border-radius: 6px; cursor: pointer; font-size: 0.65rem; font-family: 'Montserrat'; font-weight: 800; margin-top: 8px; transition: 0.2s; text-transform: uppercase; }
-        .filter-clear:hover { border-color: var(--brand-danger); color: var(--brand-danger); }
         .filter-tag[data-tag="NO-VIDEO"] { border-color: var(--brand-danger); color: var(--brand-danger); }
-        .filter-tag[data-tag="NO-VIDEO"].active { background: var(--brand-danger); color: white; }
+        .filter-tag[data-tag="NO-VIDEO"].active { background: var(--brand-danger); color: white; border-color: var(--brand-danger); }
 
-        .main { padding: 20px; overflow-y: auto; }
-        .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-        .results-count { font-size: 0.75rem; color: #555; font-family: 'Montserrat'; font-weight: 700; }
+        /* ── MAIN ── */
+        .main { padding: 14px 16px; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+        .results-count { font-size: 0.72rem; color: #555; font-family: 'Montserrat'; font-weight: 700; }
         .results-count span { color: var(--brand-accent); }
-        .btn-add { background: var(--brand-secondary); color: white; border: none; padding: 10px 18px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
-        .btn-add:hover { background: #3a9a3e; }
+        .btn-add { background: var(--brand-secondary); color: white; border: none; padding: 8px 14px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.65rem; cursor: pointer; display: none; align-items: center; gap: 6px; }
 
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-        .video-card { background: var(--card-bg); border: 1px solid #1a2a35; border-radius: 10px; overflow: hidden; transition: 0.2s; }
-        .video-card:hover { border-color: var(--brand-accent); transform: translateY(-2px); }
+        /* ── VIDEO GRID ── */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+        @media (max-width: 480px) { .video-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+        .video-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: 0.2s; }
+        .video-card:hover { border-color: var(--brand-accent); }
         .video-card.no-video { border-color: #2a1a1a; }
         .video-thumb { width: 100%; aspect-ratio: 9/16; background: #050d12; position: relative; overflow: hidden; }
         .video-thumb iframe { width: 100%; height: 100%; border: none; }
         .video-thumb video { width: 100%; height: 100%; object-fit: cover; }
         .no-video-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #333; }
-        .no-video-placeholder i { font-size: 2rem; }
-        .no-video-placeholder span { font-size: 0.65rem; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; }
-        .card-body { padding: 12px; }
-        .card-title { font-family: 'Montserrat'; font-weight: 800; font-size: 0.85rem; color: white; margin-bottom: 6px; line-height: 1.3; }
-        .card-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-        .card-tag { padding: 2px 7px; border-radius: 20px; font-size: 0.55rem; font-weight: 800; font-family: 'Montserrat'; background: #001a30; color: var(--brand-accent); border: 1px solid #004d7a; text-transform: uppercase; }
+        .no-video-placeholder i { font-size: 1.8rem; }
+        .no-video-placeholder span { font-size: 0.6rem; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; }
+        .card-body { padding: 10px; }
+        .card-title { font-family: 'Montserrat'; font-weight: 800; font-size: 0.78rem; color: white; margin-bottom: 5px; line-height: 1.3; }
+        .card-tags { display: flex; flex-wrap: wrap; gap: 3px; }
+        .card-tag { padding: 2px 6px; border-radius: 20px; font-size: 0.5rem; font-weight: 800; font-family: 'Montserrat'; background: #001a30; color: var(--brand-accent); border: 1px solid #004d7a; text-transform: uppercase; }
         .card-tag.no-video-tag { background: #2a0a0a; color: var(--brand-danger); border-color: #4a1a1a; }
-        .card-tag.custom-tag { background: #1a1a30; color: #c084fc; border-color: #4a4a7a; }
-        .card-custom-badge { position: absolute; top: 8px; left: 8px; background: var(--brand-secondary); color: white; font-size: 0.5rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
-        .edit-btn { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.8); border: 1px solid var(--brand-accent); color: var(--brand-accent); padding: 5px 10px; border-radius: 4px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.55rem; cursor: pointer; transition: 0.2s; }
-        .edit-btn:hover { background: var(--brand-accent); color: #000; }
+        .card-custom-badge { position: absolute; top: 6px; right: 6px; background: var(--brand-secondary); color: white; font-size: 0.45rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 5px; border-radius: 4px; text-transform: uppercase; }
 
-        .empty { color: #333; text-align: center; padding: 80px 20px; grid-column: 1/-1; font-size: 0.9rem; }
-        .empty i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
-        .load-more-wrap { text-align: center; margin-top: 30px; }
-        .btn-load { padding: 12px 30px; background: var(--brand-accent); border: none; font-weight: 800; font-family: 'Montserrat'; cursor: pointer; border-radius: 6px; color: #000; transition: 0.2s; font-size: 0.75rem; }
-        .btn-load:hover { background: #fff; }
+        /* ── EMPTY + LOAD MORE ── */
+        .empty { color: #333; text-align: center; padding: 60px 20px; grid-column: 1/-1; font-size: 0.85rem; }
+        .empty i { font-size: 2rem; margin-bottom: 12px; display: block; }
+        .load-more-wrap { text-align: center; margin-top: 24px; }
+        .btn-load { padding: 12px 30px; background: var(--brand-accent); border: none; font-weight: 800; font-family: 'Montserrat'; cursor: pointer; border-radius: 6px; color: #000; font-size: 0.75rem; display: none; }
 
-        /* MODALS */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 6000; align-items: center; justify-content: center; padding: 20px; }
+        /* ── ADD MODAL ── */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 6000; align-items: flex-end; justify-content: center; padding: 0; }
         .modal-overlay.open { display: flex; }
-        .modal { background: var(--card-bg); border: 1px solid var(--brand-accent); border-radius: 12px; padding: 24px; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; }
+        .modal { background: var(--card-bg); border: 1px solid var(--brand-accent); border-radius: 16px 16px 0 0; padding: 24px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
         .modal h3 { font-family: 'Montserrat'; font-size: 0.9rem; color: var(--brand-accent); margin-bottom: 20px; }
         .form-field { margin-bottom: 14px; }
         .form-label { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; font-family: 'Montserrat'; }
-        .form-input { width: 100%; background: #050d12; border: 1px solid #1a2a35; color: white; padding: 10px 12px; border-radius: 6px; font-family: inherit; font-size: 0.9rem; }
+        .form-input { width: 100%; background: #050d12; border: 1px solid var(--border); color: white; padding: 10px 12px; border-radius: 6px; font-family: inherit; font-size: 0.9rem; }
         .form-input:focus { outline: none; border-color: var(--brand-accent); }
-
-        /* TAG PICKER */
-        .tag-section-label { font-size: 0.55rem; color: #444; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 6px; }
-        .tag-picker { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 4px; }
-        .tag-pick-btn { padding: 4px 10px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; cursor: pointer; font-size: 0.62rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
-        .tag-pick-btn:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+        .tag-picker { display: flex; flex-wrap: wrap; gap: 6px; }
+        .tag-pick-btn { padding: 5px 12px; background: transparent; border: 1px solid var(--border); color: #555; border-radius: 20px; cursor: pointer; font-size: 0.6rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
         .tag-pick-btn.selected { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
-
-        /* CUSTOM TAG INPUT */
-        .custom-tag-area { margin-top: 10px; }
-        .custom-tag-input-row { display: flex; gap: 8px; margin-bottom: 8px; }
-        .custom-tag-input { flex: 1; background: #050d12; border: 1px solid #1a2a35; color: white; padding: 8px 12px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; }
-        .custom-tag-input:focus { outline: none; border-color: #c084fc; }
-        .btn-add-tag { background: #1a1a3a; border: 1px solid #c084fc; color: #c084fc; padding: 8px 14px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.65rem; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .btn-add-tag:hover { background: #c084fc; color: #000; }
-        .custom-tags-list { display: flex; flex-wrap: wrap; gap: 5px; }
-        .custom-tag-pill { background: #1a1a3a; border: 1px solid #c084fc; color: #c084fc; padding: 3px 10px; border-radius: 20px; font-size: 0.62rem; font-weight: 800; font-family: 'Montserrat'; display: flex; align-items: center; gap: 5px; }
-        .custom-tag-pill button { background: none; border: none; color: #c084fc; cursor: pointer; font-size: 0.7rem; padding: 0; line-height: 1; }
-
-        /* UPLOAD AREA */
-        .upload-area { border: 2px dashed #1a2a35; border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .tag-section-label { font-size: 0.55rem; color: #444; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 6px; }
+        .upload-area { border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
         .upload-area:hover { border-color: var(--brand-accent); }
-        .upload-area i { font-size: 2rem; color: #333; margin-bottom: 8px; display: block; }
-        .upload-area p { font-size: 0.75rem; color: #555; }
+        .upload-area i { font-size: 1.8rem; color: #333; margin-bottom: 8px; display: block; }
+        .upload-area p { font-size: 0.72rem; color: #555; }
         .upload-area p span { color: var(--brand-accent); }
-        .progress-bar { background: #1a2a35; border-radius: 6px; height: 6px; margin-top: 10px; overflow: hidden; display: none; }
+        .progress-bar { background: var(--border); border-radius: 6px; height: 6px; margin-top: 10px; overflow: hidden; display: none; }
         .progress-fill { background: var(--brand-secondary); height: 100%; width: 0%; transition: width 0.3s; }
         .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .btn-save { background: var(--brand-secondary); color: white; border: none; padding: 12px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
-        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn-cancel { background: #1a2a35; color: #888; border: none; padding: 12px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
-        .no-video-notice { background: #1a0a0a; border: 1px solid #4a1a1a; border-radius: 6px; padding: 10px 12px; font-size: 0.72rem; color: #f87171; margin-top: 8px; }
-        .no-video-notice i { margin-right: 6px; }
-        .video-status-ok { background: #0a1a0a; border: 1px solid #166534; border-radius: 6px; padding: 8px 12px; font-size: 0.72rem; color: #4ade80; margin-bottom: 10px; }
+        .btn-save { background: var(--brand-secondary); color: white; border: none; padding: 12px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
+        .btn-cancel { background: #1a2a35; color: #888; border: none; padding: 12px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
+        .no-video-notice { background: #1a0a0a; border: 1px solid #4a1a1a; border-radius: 6px; padding: 10px 12px; font-size: 0.72rem; color: #f87171; margin-top: 8px; display: none; }
+
+        /* ── BOTTOM NAV ── */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: #000; border-top: 1px solid var(--border); display: flex; z-index: 3000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; color: #444; transition: 0.2s; text-decoration: none; border: none; background: none; padding: 0; }
+        .nav-item.active { color: var(--brand-accent); }
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item span { font-family: 'Montserrat'; font-weight: 800; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
 
-<div class="nav-top">
+<!-- TOP BAR -->
+<div class="top-bar">
     <div class="nav-brand">REST <span>PERIOD</span></div>
-    <div class="nav-links" id="nav-links"></div>
+    <input type="text" class="search-bar" id="search-input" placeholder="Search exercises..." oninput="resetAndRender()">
+    <button class="btn-filter-toggle" id="filter-toggle-btn" onclick="toggleFilterDrawer()">
+        <i class="fas fa-sliders-h"></i> Filter
+        <span class="filter-count-badge" id="filter-count" style="display:none;">0</span>
+    </button>
 </div>
 
-<div class="page">
-    <div class="sidebar">
-        <input type="text" class="sidebar-search" id="search-input" placeholder="Search exercises..." oninput="resetAndRender()">
-        <div id="active-filters-bar" style="display:none; margin-bottom:14px;">
-            <div style="font-size:0.6rem;color:#555;font-family:'Montserrat';font-weight:800;text-transform:uppercase;margin-bottom:6px;">Active Filters</div>
-            <div id="active-filter-pills" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
-            <button class="filter-clear" onclick="clearAllFilters()">✕ Clear All Filters</button>
+<!-- FILTER DRAWER -->
+<div class="filter-drawer" id="filter-drawer">
+    <div class="filter-drawer-inner">
+        <div class="active-filter-bar" id="active-filter-bar">
+            <div class="active-filter-label">Active Filters</div>
+            <div class="active-pills" id="active-pills"></div>
+            <button class="btn-clear-all" onclick="clearAllFilters()">✕ Clear All</button>
         </div>
-        <div class="filter-section"><div class="filter-section-title">Movement</div><div class="filter-tags" id="fg-movement"></div></div>
-        <div class="filter-section"><div class="filter-section-title">Direction</div><div class="filter-tags" id="fg-direction"></div></div>
-        <div class="filter-section"><div class="filter-section-title">Limbs</div><div class="filter-tags" id="fg-limbs"></div></div>
-        <div class="filter-section"><div class="filter-section-title">Body Part</div><div class="filter-tags" id="fg-bodypart"></div></div>
-        <div class="filter-section"><div class="filter-section-title">Joint</div><div class="filter-tags" id="fg-joint"></div></div>
-        <div class="filter-section"><div class="filter-section-title">Equipment</div><div class="filter-tags" id="fg-equipment"></div></div>
-        <div class="filter-section"><div class="filter-section-title">Other</div><div class="filter-tags" id="fg-other"></div></div>
+        <div class="filter-section">
+            <div class="filter-section-title">Movement</div>
+            <div class="filter-tags" id="fg-movement"></div>
+        </div>
+        <div class="filter-section">
+            <div class="filter-section-title">Direction</div>
+            <div class="filter-tags" id="fg-direction"></div>
+        </div>
+        <div class="filter-section">
+            <div class="filter-section-title">Limbs</div>
+            <div class="filter-tags" id="fg-limbs"></div>
+        </div>
+        <div class="filter-section">
+            <div class="filter-section-title">Body Part</div>
+            <div class="filter-tags" id="fg-bodypart"></div>
+        </div>
+        <div class="filter-section">
+            <div class="filter-section-title">Joint</div>
+            <div class="filter-tags" id="fg-joint"></div>
+        </div>
+        <div class="filter-section">
+            <div class="filter-section-title">Equipment</div>
+            <div class="filter-tags" id="fg-equipment"></div>
+        </div>
+        <div class="filter-section">
+            <div class="filter-section-title">Other</div>
+            <div class="filter-tags" id="fg-other"></div>
+        </div>
     </div>
+</div>
 
-    <div class="main">
-        <div class="main-header">
-            <div class="results-count" id="results-count">Loading...</div>
-            <button class="btn-add" id="add-btn" style="display:none;" onclick="openAddModal()">
-                <i class="fas fa-plus"></i> Add Exercise
-            </button>
-        </div>
-        <div class="video-grid" id="video-grid"></div>
-        <div class="load-more-wrap">
-            <button class="btn-load" id="load-btn" style="display:none;" onclick="loadNextBatch()">Show More</button>
-        </div>
+<!-- MAIN -->
+<div class="main">
+    <div class="main-header">
+        <div class="results-count" id="results-count">Loading...</div>
+        <button class="btn-add" id="add-btn" onclick="openAddModal()">
+            <i class="fas fa-plus"></i> Add Exercise
+        </button>
+    </div>
+    <div class="video-grid" id="video-grid"></div>
+    <div class="load-more-wrap">
+        <button class="btn-load" id="load-btn" onclick="loadNextBatch()">Show More</button>
     </div>
 </div>
 
 <!-- ADD MODAL -->
 <div class="modal-overlay" id="add-modal" onclick="if(event.target===this)closeAddModal()">
     <div class="modal">
-        <h3>➕ Add Exercise</h3>
+        <h3>➕ Add Exercise to Your Library</h3>
         <div class="form-field">
             <span class="form-label">Exercise Name</span>
             <input type="text" class="form-input" id="ex-name" placeholder="e.g. Bench press eccentric" />
         </div>
         <div class="form-field">
             <span class="form-label">Tags</span>
-            <div class="tag-section-label">Movement</div><div class="tag-picker" id="tp-movement"></div>
-            <div class="tag-section-label">Direction</div><div class="tag-picker" id="tp-direction"></div>
-            <div class="tag-section-label">Limbs</div><div class="tag-picker" id="tp-limbs"></div>
-            <div class="tag-section-label">Body Part</div><div class="tag-picker" id="tp-bodypart"></div>
-            <div class="tag-section-label">Joint</div><div class="tag-picker" id="tp-joint"></div>
-            <div class="tag-section-label">Equipment</div><div class="tag-picker" id="tp-equipment"></div>
-
-            <div class="custom-tag-area">
-                <div class="tag-section-label" style="color:#c084fc;">Custom Tags</div>
-                <div class="custom-tag-input-row">
-                    <input type="text" class="custom-tag-input" id="custom-tag-input" placeholder="e.g. EXPLOSIVE, BILATERAL..." onkeydown="if(event.key==='Enter'){addCustomTag('add');event.preventDefault();}">
-                    <button class="btn-add-tag" onclick="addCustomTag('add')">+ Add</button>
-                </div>
-                <div class="custom-tags-list" id="add-custom-tags-list"></div>
-            </div>
+            <div class="tag-section-label">Movement</div>
+            <div class="tag-picker" id="tp-movement"></div>
+            <div class="tag-section-label">Direction</div>
+            <div class="tag-picker" id="tp-direction"></div>
+            <div class="tag-section-label">Limbs</div>
+            <div class="tag-picker" id="tp-limbs"></div>
+            <div class="tag-section-label">Body Part</div>
+            <div class="tag-picker" id="tp-bodypart"></div>
+            <div class="tag-section-label">Joint</div>
+            <div class="tag-picker" id="tp-joint"></div>
+            <div class="tag-section-label">Equipment</div>
+            <div class="tag-picker" id="tp-equipment"></div>
         </div>
         <div class="form-field">
             <span class="form-label">Video <span style="color:#555;font-size:0.55rem;">(optional)</span></span>
             <div class="upload-area" id="upload-area" onclick="document.getElementById('ex-video').click()">
                 <i class="fas fa-video"></i>
-                <p id="upload-label">Click to upload a video <span>or drag and drop</span></p>
+                <p id="upload-label">Tap to upload a video <span>or drag and drop</span></p>
                 <input type="file" id="ex-video" accept="video/*" style="display:none" onchange="handleVideoSelect(this)" />
             </div>
             <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
             <div class="no-video-notice" id="no-video-notice">
-                <i class="fas fa-film"></i> No video added — exercise will be tagged <strong>NO-VIDEO</strong>
+                <i class="fas fa-film"></i> No video — tagged as <strong>NO-VIDEO</strong> so you can find it later to film.
             </div>
         </div>
         <div class="modal-actions">
-            <button class="btn-save" id="add-save-btn" onclick="saveExercise()">Save Exercise</button>
+            <button class="btn-save" onclick="saveExercise()">Save Exercise</button>
             <button class="btn-cancel" onclick="closeAddModal()">Cancel</button>
         </div>
     </div>
 </div>
 
-<!-- EDIT MODAL -->
-<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
-    <div class="modal">
-        <h3>✏️ Edit Exercise</h3>
-        <div class="form-field">
-            <span class="form-label">Exercise Name</span>
-            <input type="text" class="form-input" id="edit-ex-name" />
-        </div>
-        <div class="form-field">
-            <span class="form-label">Tags</span>
-            <div class="tag-section-label">Movement</div><div class="tag-picker" id="etp-movement"></div>
-            <div class="tag-section-label">Direction</div><div class="tag-picker" id="etp-direction"></div>
-            <div class="tag-section-label">Limbs</div><div class="tag-picker" id="etp-limbs"></div>
-            <div class="tag-section-label">Body Part</div><div class="tag-picker" id="etp-bodypart"></div>
-            <div class="tag-section-label">Joint</div><div class="tag-picker" id="etp-joint"></div>
-            <div class="tag-section-label">Equipment</div><div class="tag-picker" id="etp-equipment"></div>
-
-            <div class="custom-tag-area">
-                <div class="tag-section-label" style="color:#c084fc;">Custom Tags</div>
-                <div class="custom-tag-input-row">
-                    <input type="text" class="custom-tag-input" id="edit-custom-tag-input" placeholder="e.g. EXPLOSIVE, BILATERAL..." onkeydown="if(event.key==='Enter'){addCustomTag('edit');event.preventDefault();}">
-                    <button class="btn-add-tag" onclick="addCustomTag('edit')">+ Add</button>
-                </div>
-                <div class="custom-tags-list" id="edit-custom-tags-list"></div>
-            </div>
-        </div>
-        <div class="form-field">
-            <span class="form-label">Video</span>
-            <div id="edit-current-video" style="margin-bottom:10px;"></div>
-            <div class="upload-area" id="edit-upload-area" onclick="document.getElementById('edit-ex-video').click()">
-                <i class="fas fa-video"></i>
-                <p id="edit-upload-label">Click to upload a new video <span style="color:var(--brand-accent);">or drag and drop</span></p>
-                <input type="file" id="edit-ex-video" accept="video/*" style="display:none" onchange="handleEditVideoSelect(this)" />
-            </div>
-            <div class="progress-bar" id="edit-progress-bar"><div class="progress-fill" id="edit-progress-fill"></div></div>
-        </div>
-        <div class="modal-actions">
-            <button class="btn-save" id="edit-save-btn" onclick="saveEditExercise()">💾 Save Changes</button>
-            <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
-        </div>
-    </div>
-</div>
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <a href="client-dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    <a href="explore.html" class="nav-item">
+        <i class="fas fa-compass"></i>
+        <span>Explore</span>
+    </a>
+    <a href="library.html" class="nav-item active">
+        <i class="fas fa-dumbbell"></i>
+        <span>Library</span>
+    </a>
+    <a href="saved.html" class="nav-item">
+        <i class="fas fa-bookmark"></i>
+        <span>Saved</span>
+    </a>
+</nav>
 
 <script>
 const pb = new PocketBase('https://restperiod.org');
@@ -256,72 +251,33 @@ const filterGroups = {
     equipment: ['BODYWEIGHT','DUMBBELL','BARBELL','KETTLEBELL','BAND','WEIGHTED','TRAP-BAR'],
     other:     ['NO-VIDEO']
 };
-const KNOWN_TAGS = Object.values(filterGroups).flat();
 
-let allExercises = [], filteredList = [];
+let allExercises = [];
+let filteredList = [];
 let activeFilters = new Set();
 let currentPage = 1;
 const PAGE_SIZE = 48;
 let selectedFile = null;
 let selectedTags = new Set();
-let addCustomTags = [];
-let editCustomTags = [];
 let isTrainer = false;
-let editingExId = null;
-let editFile = null;
+let filterDrawerOpen = false;
 
-// ── INIT ──────────────────────────────────────────
 window.onload = async () => {
     if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
     const role = pb.authStore.model.role;
     isTrainer = role === 'trainer' || role === 'admin';
-
-    const navLinks = document.getElementById('nav-links');
-    if (isTrainer) {
-        navLinks.innerHTML = `
-            <a href="dashboard.html">DASHBOARD</a>
-            <a href="builder.html">BUILDER</a>
-            <a href="library.html" class="active">LIBRARY</a>
-            <a href="templates.html">TEMPLATES</a>
-            <a href="#" onclick="pb.authStore.clear();window.location.href='index.html'">LOGOUT</a>`;
-    } else {
-        navLinks.innerHTML = `
-            <a href="free.html">HOME</a>
-            <a href="library.html" class="active">LIBRARY</a>
-            <a href="#" onclick="pb.authStore.clear();window.location.href='index.html'">LOGOUT</a>`;
-    }
-
-    if (isTrainer) document.getElementById('add-btn').style.display = 'flex';
-
+    if (isTrainer) { document.getElementById('add-btn').style.display = 'flex'; }
     buildFilterUI();
-    buildTagPickers();
+    buildTagPicker();
     await loadExercises();
-
-    // Drag and drop for add modal
-    document.getElementById('upload-area').addEventListener('dragover', e => { e.preventDefault(); });
-    document.getElementById('upload-area').addEventListener('drop', e => {
-        e.preventDefault();
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('video/')) {
-            selectedFile = file;
-            document.getElementById('upload-label').textContent = `✓ ${file.name}`;
-            document.getElementById('no-video-notice').style.display = 'none';
-        }
-    });
-
-    // Drag and drop for edit modal
-    document.getElementById('edit-upload-area').addEventListener('dragover', e => { e.preventDefault(); });
-    document.getElementById('edit-upload-area').addEventListener('drop', e => {
-        e.preventDefault();
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('video/')) {
-            editFile = file;
-            document.getElementById('edit-upload-label').textContent = `✓ ${file.name}`;
-        }
-    });
 };
 
-// ── FILTER UI ─────────────────────────────────────
+// ── FILTER DRAWER ─────────────────────────────────
+function toggleFilterDrawer() {
+    filterDrawerOpen = !filterDrawerOpen;
+    document.getElementById('filter-drawer').classList.toggle('open', filterDrawerOpen);
+}
+
 function buildFilterUI() {
     Object.entries(filterGroups).forEach(([group, tags]) => {
         const el = document.getElementById(`fg-${group}`);
@@ -332,90 +288,17 @@ function buildFilterUI() {
     });
 }
 
-function buildTagPickers() {
+function buildTagPicker() {
     Object.entries(filterGroups).forEach(([group, tags]) => {
         if (group === 'other') return;
-        // Add modal pickers
-        const addEl = document.getElementById(`tp-${group}`);
-        if (addEl) addEl.innerHTML = tags.map(tag =>
-            `<button class="tag-pick-btn" data-tag="${tag}" onclick="togglePickTag('${tag}','add')">${tag.replace(/-/g,' ')}</button>`
-        ).join('');
-        // Edit modal pickers
-        const editEl = document.getElementById(`etp-${group}`);
-        if (editEl) editEl.innerHTML = tags.map(tag =>
-            `<button class="tag-pick-btn" data-tag="${tag}" onclick="togglePickTag('${tag}','edit')">${tag.replace(/-/g,' ')}</button>`
+        const el = document.getElementById(`tp-${group}`);
+        if (!el) return;
+        el.innerHTML = tags.map(tag =>
+            `<button class="tag-pick-btn" data-tag="${tag}" onclick="togglePickTag('${tag}')">${tag.replace(/-/g,' ')}</button>`
         ).join('');
     });
 }
 
-function togglePickTag(tag, mode) {
-    if (mode === 'add') {
-        selectedTags.has(tag) ? selectedTags.delete(tag) : selectedTags.add(tag);
-        document.querySelectorAll(`#add-modal .tag-pick-btn[data-tag="${tag}"]`).forEach(el =>
-            el.classList.toggle('selected', selectedTags.has(tag))
-        );
-    } else {
-        // edit mode — store in editCustomTags conceptually via selectedTags reuse
-        // we use a separate set for edit
-        if (!window.editSelectedTags) window.editSelectedTags = new Set();
-        window.editSelectedTags.has(tag) ? window.editSelectedTags.delete(tag) : window.editSelectedTags.add(tag);
-        document.querySelectorAll(`#edit-modal .tag-pick-btn[data-tag="${tag}"]`).forEach(el =>
-            el.classList.toggle('selected', window.editSelectedTags.has(tag))
-        );
-    }
-}
-
-// ── CUSTOM TAGS ───────────────────────────────────
-function addCustomTag(mode) {
-    const inputId = mode === 'add' ? 'custom-tag-input' : 'edit-custom-tag-input';
-    const listId = mode === 'add' ? 'add-custom-tags-list' : 'edit-custom-tags-list';
-    const arr = mode === 'add' ? addCustomTags : editCustomTags;
-    const val = document.getElementById(inputId).value.trim().toUpperCase().replace(/\s+/g,'-');
-    if (!val || arr.includes(val)) { document.getElementById(inputId).value = ''; return; }
-    arr.push(val);
-    document.getElementById(inputId).value = '';
-    renderCustomTagsList(mode);
-}
-
-function removeCustomTag(mode, tag) {
-    const arr = mode === 'add' ? addCustomTags : editCustomTags;
-    const idx = arr.indexOf(tag);
-    if (idx > -1) arr.splice(idx, 1);
-    renderCustomTagsList(mode);
-}
-
-function renderCustomTagsList(mode) {
-    const listId = mode === 'add' ? 'add-custom-tags-list' : 'edit-custom-tags-list';
-    const arr = mode === 'add' ? addCustomTags : editCustomTags;
-    document.getElementById(listId).innerHTML = arr.map(tag =>
-        `<span class="custom-tag-pill">${tag} <button onclick="removeCustomTag('${mode}','${tag}')">✕</button></span>`
-    ).join('');
-}
-
-// ── LOAD DATA ─────────────────────────────────────
-async function loadExercises() {
-    allExercises = (typeof exerciseDatabase !== 'undefined') ? [...exerciseDatabase] : [];
-    try {
-        const recs = await pb.collection('custom_exercises').getFullList({
-            filter: `uploaded_by = "${pb.authStore.model.id}"`,
-            requestKey: null
-        });
-        recs.forEach(r => {
-            if (!allExercises.some(e => e.id === r.id)) {
-                allExercises.push({
-                    id: r.id,
-                    title: r.title,
-                    searchStr: r.searchStr || r.title.toLowerCase(),
-                    src: r.video || null,
-                    isCustom: true
-                });
-            }
-        });
-    } catch(e) { console.log('Custom exercises:', e.message); }
-    resetAndRender();
-}
-
-// ── FILTERING ─────────────────────────────────────
 function toggleFilter(tag) {
     activeFilters.has(tag) ? activeFilters.delete(tag) : activeFilters.add(tag);
     document.querySelectorAll(`.filter-tag[data-tag="${tag}"]`).forEach(el =>
@@ -433,13 +316,42 @@ function clearAllFilters() {
 }
 
 function updateActiveFilterBar() {
-    const bar = document.getElementById('active-filters-bar');
-    const pills = document.getElementById('active-filter-pills');
-    if (activeFilters.size === 0) { bar.style.display = 'none'; return; }
-    bar.style.display = 'block';
-    pills.innerHTML = Array.from(activeFilters).map(tag =>
-        `<span style="background:var(--brand-accent);color:#000;padding:2px 8px;border-radius:20px;font-size:0.6rem;font-family:'Montserrat';font-weight:800;cursor:pointer;" onclick="toggleFilter('${tag}')">${tag.replace(/-/g,' ')} ✕</span>`
-    ).join('');
+    const bar = document.getElementById('active-filter-bar');
+    const pills = document.getElementById('active-pills');
+    const countBadge = document.getElementById('filter-count');
+    const toggleBtn = document.getElementById('filter-toggle-btn');
+    if (activeFilters.size === 0) {
+        bar.classList.remove('visible');
+        countBadge.style.display = 'none';
+        toggleBtn.classList.remove('has-active');
+    } else {
+        bar.classList.add('visible');
+        countBadge.style.display = 'flex';
+        countBadge.textContent = activeFilters.size;
+        toggleBtn.classList.add('has-active');
+        pills.innerHTML = Array.from(activeFilters).map(tag =>
+            `<span class="active-pill" onclick="toggleFilter('${tag}')">${tag.replace(/-/g,' ')} ✕</span>`
+        ).join('');
+    }
+}
+
+// ── LOAD ──────────────────────────────────────────
+async function loadExercises() {
+    allExercises = (typeof exerciseDatabase !== 'undefined') ? [...exerciseDatabase] : [];
+    try {
+        const filter = isTrainer
+            ? `uploaded_by = "${pb.authStore.model.id}"`
+            : '';
+        const recs = await pb.collection('custom_exercises').getFullList({
+            filter, sort: 'title', requestKey: null
+        });
+        recs.forEach(r => {
+            if (!allExercises.some(e => e.id === r.id)) {
+                allExercises.push({ id: r.id, title: r.title, searchStr: r.searchStr || r.title.toLowerCase(), src: r.video || null, isCustom: true });
+            }
+        });
+    } catch(e) { console.log('Custom ex:', e.message); }
+    resetAndRender();
 }
 
 function resetAndRender() {
@@ -454,38 +366,33 @@ function resetAndRender() {
             return regex.test(search);
         });
         return matchesText && matchesTags;
-    });
-    filteredList.sort((a, b) => cleanTitle(a.title).localeCompare(cleanTitle(b.title)));
+    }).sort((a, b) => cleanTitle(a.title).localeCompare(cleanTitle(b.title)));
     document.getElementById('video-grid').innerHTML = '';
     document.getElementById('results-count').innerHTML =
         `<span>${filteredList.length}</span> exercise${filteredList.length !== 1 ? 's' : ''} found`;
     renderBatch();
 }
 
-// ── RENDER ────────────────────────────────────────
 function renderBatch() {
     const start = (currentPage - 1) * PAGE_SIZE;
     const batch = filteredList.slice(start, start + PAGE_SIZE);
     const grid = document.getElementById('video-grid');
     const loadBtn = document.getElementById('load-btn');
-
     if (batch.length === 0 && currentPage === 1) {
         grid.innerHTML = `<div class="empty"><i class="fas fa-search"></i>No exercises found.</div>`;
         loadBtn.style.display = 'none';
         return;
     }
-
     batch.forEach(ex => {
         const card = document.createElement('div');
         card.className = `video-card${!ex.src ? ' no-video' : ''}`;
         const videoHtml = ex.src ? buildVideoHtml(ex.src) :
-            `<div class="no-video-placeholder"><i class="fas fa-film"></i><span>No Video Yet</span></div>`;
+            `<div class="no-video-placeholder"><i class="fas fa-film"></i><span>No Video</span></div>`;
         const displayTags = extractDisplayTags(ex.searchStr || '');
         card.innerHTML = `
             <div class="video-thumb" style="position:relative;">
                 ${videoHtml}
                 ${ex.isCustom ? '<span class="card-custom-badge">Custom</span>' : ''}
-                ${ex.isCustom && isTrainer ? `<button class="edit-btn" onclick="openEditModal('${ex.id}')">✏️ EDIT</button>` : ''}
             </div>
             <div class="card-body">
                 <div class="card-title">${cleanTitle(ex.title)}</div>
@@ -493,15 +400,13 @@ function renderBatch() {
             </div>`;
         grid.appendChild(card);
     });
-
     loadBtn.style.display = (start + PAGE_SIZE) < filteredList.length ? 'block' : 'none';
 }
 
 function buildVideoHtml(src) {
     if (!src) return '';
-    if (src.includes('.mp4') || src.includes('.mov') || src.startsWith('videos/') || src.includes('pocketbase')) {
+    if (src.includes('pocketbase') || src.includes('.mp4') || src.includes('.mov') || src.startsWith('videos/'))
         return `<video src="${src}" preload="metadata" controls style="width:100%;height:100%;object-fit:cover;"></video>`;
-    }
     const embedUrl = toYouTubeEmbed(src);
     if (embedUrl) return `<iframe src="${embedUrl}" loading="lazy" allowfullscreen></iframe>`;
     return `<video src="${src}" preload="metadata" controls style="width:100%;height:100%;object-fit:cover;"></video>`;
@@ -522,23 +427,13 @@ function cleanTitle(title) {
 
 function extractDisplayTags(searchStr) {
     const upper = searchStr.toUpperCase();
-    const allKnown = Object.values(filterGroups).flat();
-    const found = allKnown.filter(tag => {
+    const allTags = Object.values(filterGroups).flat();
+    return allTags.filter(tag => {
         const regex = new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i');
         return regex.test(upper);
-    });
-    // Also extract custom tags (anything NOT in known tags)
-    const words = upper.split(/\s+/).filter(w => w.length > 1);
-    const customFound = words.filter(w => !allKnown.includes(w) && w !== 'NO-VIDEO' && !/^\d+$/.test(w));
-
-    const knownHtml = found.slice(0, 4).map(tag => {
-        const isNoVideo = tag === 'NO-VIDEO';
-        return `<span class="card-tag ${isNoVideo?'no-video-tag':''}">${tag.replace(/-/g,' ')}</span>`;
-    }).join('');
-    const customHtml = customFound.slice(0, 2).map(tag =>
-        `<span class="card-tag custom-tag">${tag.replace(/-/g,' ')}</span>`
+    }).slice(0, 5).map(tag =>
+        `<span class="card-tag ${tag==='NO-VIDEO'?'no-video-tag':''}">${tag.replace(/-/g,' ')}</span>`
     ).join('');
-    return knownHtml + customHtml;
 }
 
 function loadNextBatch() { currentPage++; renderBatch(); }
@@ -546,21 +441,24 @@ function loadNextBatch() { currentPage++; renderBatch(); }
 // ── ADD EXERCISE ──────────────────────────────────
 function openAddModal() {
     document.getElementById('ex-name').value = '';
-    document.getElementById('upload-label').textContent = 'Click to upload a video or drag and drop';
+    document.getElementById('upload-label').textContent = 'Tap to upload a video or drag and drop';
     document.getElementById('ex-video').value = '';
     document.getElementById('progress-bar').style.display = 'none';
     document.getElementById('progress-fill').style.width = '0%';
     document.getElementById('no-video-notice').style.display = 'block';
-    document.getElementById('custom-tag-input').value = '';
-    selectedFile = null;
-    selectedTags.clear();
-    addCustomTags = [];
-    renderCustomTagsList('add');
-    document.querySelectorAll('#add-modal .tag-pick-btn').forEach(b => b.classList.remove('selected'));
+    selectedFile = null; selectedTags.clear();
+    document.querySelectorAll('.tag-pick-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('add-modal').classList.add('open');
 }
 
 function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
+
+function togglePickTag(tag) {
+    selectedTags.has(tag) ? selectedTags.delete(tag) : selectedTags.add(tag);
+    document.querySelectorAll(`.tag-pick-btn[data-tag="${tag}"]`).forEach(el =>
+        el.classList.toggle('selected', selectedTags.has(tag))
+    );
+}
 
 function handleVideoSelect(input) {
     selectedFile = input.files[0];
@@ -573,32 +471,28 @@ function handleVideoSelect(input) {
 async function saveExercise() {
     const name = document.getElementById('ex-name').value.trim();
     if (!name) return alert('Please enter an exercise name');
-
-    const tags = [...Array.from(selectedTags), ...addCustomTags];
+    const tags = Array.from(selectedTags);
     const hasVideo = !!selectedFile;
     const searchParts = [...tags, name.toLowerCase()];
     if (!hasVideo) searchParts.push('NO-VIDEO');
     const searchStr = searchParts.join(' ');
     const fullTitle = tags.length > 0 ? `${tags.join(' ')} ${name}` : name;
-
-    const btn = document.getElementById('add-save-btn');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-
+    const btn = document.querySelector('.btn-save');
+    btn.disabled = true; btn.textContent = 'Saving...';
     try {
         if (hasVideo) {
             const fd = new FormData();
-            fd.append('title', fullTitle);
-            fd.append('searchStr', searchStr);
-            fd.append('video', selectedFile);
-            fd.append('uploaded_by', pb.authStore.model.id);
-            document.getElementById('progress-bar').style.display = 'block';
+            fd.append('title', fullTitle); fd.append('searchStr', searchStr);
+            fd.append('video', selectedFile); fd.append('uploaded_by', pb.authStore.model.id);
+            const bar = document.getElementById('progress-bar');
+            const fill = document.getElementById('progress-fill');
+            bar.style.display = 'block';
             await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
                 xhr.upload.onprogress = e => {
                     if (e.lengthComputable) {
                         const p = Math.round(e.loaded/e.total*100);
-                        document.getElementById('progress-fill').style.width = p + '%';
+                        fill.style.width = p + '%';
                         btn.textContent = `Uploading ${p}%...`;
                     }
                 };
@@ -611,118 +505,23 @@ async function saveExercise() {
         } else {
             await pb.collection('custom_exercises').create({ title: fullTitle, searchStr, uploaded_by: pb.authStore.model.id });
         }
-        closeAddModal();
-        await loadExercises();
+        closeAddModal(); await loadExercises();
     } catch(e) { alert('Save failed: ' + e.message); }
-
-    btn.disabled = false;
-    btn.textContent = 'Save Exercise';
+    btn.disabled = false; btn.textContent = 'Save Exercise';
 }
 
-// ── EDIT EXERCISE ─────────────────────────────────
-async function openEditModal(id) {
-    editingExId = id;
-    editFile = null;
-    window.editSelectedTags = new Set();
-    editCustomTags = [];
-    document.getElementById('edit-progress-bar').style.display = 'none';
-    document.getElementById('edit-progress-fill').style.width = '0%';
-    document.getElementById('edit-upload-label').textContent = 'Click to upload a new video or drag and drop';
-    document.getElementById('edit-ex-video').value = '';
-    document.getElementById('edit-custom-tag-input').value = '';
-    document.querySelectorAll('#edit-modal .tag-pick-btn').forEach(b => b.classList.remove('selected'));
-
-    try {
-        const rec = await pb.collection('custom_exercises').getOne(id);
-        const cleanName = cleanTitle(rec.title);
-        document.getElementById('edit-ex-name').value = cleanName;
-
-        // Parse existing tags from searchStr
-        const searchWords = (rec.searchStr || '').toUpperCase().split(/\s+/);
-        searchWords.forEach(word => {
-            if (KNOWN_TAGS.includes(word)) {
-                window.editSelectedTags.add(word);
-                document.querySelectorAll(`#edit-modal .tag-pick-btn[data-tag="${word}"]`).forEach(el =>
-                    el.classList.add('selected')
-                );
-            } else if (word.length > 1 && word !== 'NO-VIDEO' && !/^\d+$/.test(word) && word !== cleanName.toUpperCase()) {
-                editCustomTags.push(word);
-            }
-        });
-        renderCustomTagsList('edit');
-
-        // Video status
-        const currentVideo = document.getElementById('edit-current-video');
-        if (rec.video) {
-            currentVideo.innerHTML = `<div class="video-status-ok">✅ Has video — upload below to replace it</div>`;
-        } else {
-            currentVideo.innerHTML = `<div class="no-video-notice"><i class="fas fa-film"></i> No video yet — upload one below</div>`;
-        }
-    } catch(e) { alert(e.message); return; }
-
-    document.getElementById('edit-modal').classList.add('open');
-}
-
-function closeEditModal() {
-    document.getElementById('edit-modal').classList.remove('open');
-    editingExId = null;
-    editFile = null;
-}
-
-function handleEditVideoSelect(input) {
-    editFile = input.files[0];
-    if (editFile) document.getElementById('edit-upload-label').textContent = `✓ ${editFile.name}`;
-}
-
-async function saveEditExercise() {
-    if (!editingExId) return;
-    const btn = document.getElementById('edit-save-btn');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-
-    try {
-        const rec = await pb.collection('custom_exercises').getOne(editingExId);
-        const newName = document.getElementById('edit-ex-name').value.trim();
-        const allTags = [...Array.from(window.editSelectedTags || new Set()), ...editCustomTags];
-        const newTitle = allTags.length > 0 ? `${allTags.join(' ')} ${newName}` : newName;
-        const hasVideo = editFile || rec.video;
-        const newSearchStr = [...allTags, newName.toLowerCase(), ...(hasVideo ? [] : ['NO-VIDEO'])].join(' ');
-
-        if (editFile) {
-            const fd = new FormData();
-            fd.append('title', newTitle);
-            fd.append('searchStr', newSearchStr);
-            fd.append('video', editFile);
-            document.getElementById('edit-progress-bar').style.display = 'block';
-            await new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.upload.onprogress = e => {
-                    if (e.lengthComputable) {
-                        const p = Math.round(e.loaded/e.total*100);
-                        document.getElementById('edit-progress-fill').style.width = p + '%';
-                        btn.textContent = `Uploading ${p}%...`;
-                    }
-                };
-                xhr.onload = () => {
-                    if (xhr.status === 200) resolve();
-                    else reject(new Error(`Upload failed: ${xhr.status} ${xhr.responseText}`));
-                };
-                xhr.onerror = () => reject(new Error('Network error'));
-                xhr.open('PATCH', `https://restperiod.org/api/collections/custom_exercises/records/${editingExId}`);
-                xhr.setRequestHeader('Authorization', pb.authStore.token);
-                xhr.send(fd);
-            });
-        } else {
-            await pb.collection('custom_exercises').update(editingExId, { title: newTitle, searchStr: newSearchStr });
-        }
-
-        closeEditModal();
-        await loadExercises();
-    } catch(e) { alert('Save failed: ' + e.message); }
-
-    btn.disabled = false;
-    btn.textContent = '💾 Save Changes';
-}
+const uploadArea = document.getElementById('upload-area');
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.borderColor = 'var(--brand-accent)'; });
+uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor = '#1a2a35'; });
+uploadArea.addEventListener('drop', e => {
+    e.preventDefault(); uploadArea.style.borderColor = '#1a2a35';
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('video/')) {
+        selectedFile = file;
+        document.getElementById('upload-label').textContent = `✓ ${file.name}`;
+        document.getElementById('no-video-notice').style.display = 'none';
+    }
+});
 </script>
 </body>
 </html>
