@@ -167,9 +167,9 @@
 
 <!-- PILL TABS -->
 <div class="pill-tabs">
-    <div class="pill active" onclick="switchTab('train')">TRAIN</div>
-    <div class="pill" onclick="switchTab('philosophy')">READ</div>
-    <div class="pill" onclick="switchTab('theory')">THEORY</div>
+    <div class="pill active" onclick="switchTab('train')">🏋️ Train</div>
+    <div class="pill" onclick="switchTab('philosophy')">📖 Philosophy</div>
+    <div class="pill" onclick="switchTab('theory')">🧪 Theory</div>
 </div>
 
 <!-- TRAIN TAB -->
@@ -276,7 +276,6 @@ const THEORY_ITEMS = [
     { emoji:'🥗', tag:'Nutrition', title:'Protein Timing and Muscle Repair' },
     { emoji:'🧘', tag:'Mindset', title:'The Stress-Recovery Cycle' },
     { emoji:'🦴', tag:'Anatomy', title:'Understanding the Posterior Chain' },
-    { emoji:'📋', tag:'Training', title:'Principles of Training', file:'principlesoftraining' },
     { emoji:'🔥', tag:'Warm Up', title:'Why Warm Ups Actually Work' },
     { emoji:'📊', tag:'Data', title:'Reading Your Body\'s Signals' },
 ];
@@ -355,15 +354,31 @@ function renderLessons() {
 function renderTheory() {
     const grid = document.getElementById('theory-grid');
     const colours = ['#1a0a3a','#001a0a','#1a0a00','#001a2c','#1a0a2a','#0a001a'];
-    grid.innerHTML = THEORY_ITEMS.map((t,i) => `
-        <div class="theory-card" onclick="showToast('Coming soon!')">
-            <span class="theory-coming">Coming soon</span>
+    grid.innerHTML = THEORY_ITEMS.map((t,i) => {
+        const hasFile = !!t.file;
+        const onclick = hasFile ? `openTheoryLesson('${t.file}','${t.title}')` : `showToast('Coming soon!')`;
+        const comingSoon = hasFile ? '' : `<span class="theory-coming">Coming soon</span>`;
+        const cardStyle = hasFile ? '' : 'opacity:0.6;';
+        return `<div class="theory-card" style="${cardStyle}" onclick="${onclick}">
+            ${comingSoon}
             <div class="theory-thumb" style="background:${colours[i%colours.length]};">${t.emoji}</div>
             <div class="theory-body">
                 <div class="theory-tag">${t.tag}</div>
                 <div class="theory-title">${t.title}</div>
             </div>
-        </div>`).join('');
+        </div>`;
+    }).join('');
+}
+
+function openTheoryLesson(file, title) {
+    const filename = file.endsWith('.html') ? file : file + '.html';
+    document.getElementById('reader-lesson-num').textContent = title;
+    document.getElementById('reader-frame').src = filename;
+    document.getElementById('reader-save-btn').style.display = 'none';
+    document.getElementById('reader-prev').style.display = 'none';
+    document.getElementById('reader-next').style.display = 'none';
+    document.getElementById('reader-mark-btn').style.display = 'none';
+    document.getElementById('reader-modal').classList.add('open');
 }
 
 // ── LESSON READER ─────────────────────────────────
@@ -379,6 +394,11 @@ function openLesson(index) {
 function closeReader() {
     document.getElementById('reader-modal').classList.remove('open');
     document.getElementById('reader-frame').src = 'about:blank';
+    // Restore buttons for philosophy reader
+    document.getElementById('reader-save-btn').style.display = '';
+    document.getElementById('reader-prev').style.display = '';
+    document.getElementById('reader-next').style.display = '';
+    document.getElementById('reader-mark-btn').style.display = '';
     renderLessons();
 }
 
