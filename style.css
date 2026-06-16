@@ -1,16 +1,16 @@
 /* ── RESTPERIOD GLOBAL STYLES ── */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght=400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
 
 :root {
-    --brand-primary:   #2D3A22; /* Olive Drab */
-    --brand-secondary: #556B2F; /* Dark Olive */
-    --brand-accent:    #A3E635; /* High-Visibility Volt/Lime */
-    --brand-bg:        #0C0E0A; /* Earthy Charcoal Black */
-    --brand-danger:    #ff6b6b; /* Muted Danger Red */
-    --text-main:       #F4F9F1; /* Soft Linen White */
-    --card-bg:         #151912; /* Slate-Olive for cards */
-    --input-bg:        #0E110C; /* Dark Earth */
-    --border:          #272E21; /* Weathered Camo Border */
+    --brand-primary:   #003B5C;
+    --brand-secondary: #2E7D32;
+    --brand-accent:    #26C6DA;
+    --brand-bg:        #020c12;
+    --brand-danger:    #ff5252;
+    --text-main:       #E0F7FA;
+    --card-bg:         #0e1b24;
+    --input-bg:        #002840;
+    --border:          #1a2a35;
     --nav-height:      65px;
 }
 
@@ -213,12 +213,12 @@ input[type=number] { -moz-appearance: textfield; }
     font-weight: 800; padding: 2px 8px; border-radius: 10px;
     display: inline-block;
 }
-.badge-accent   { background: #001a2c; color: var(--brand-accent); border: 1px solid #26C6DA33; }
-.badge-green    { background: #052e16; color: #4ade80; border: 1px solid #166534; }
-.badge-purple   { background: #1a0a2a; color: #c084fc; border: 1px solid #c084fc44; }
-.badge-danger   { background: #2a0a0a; color: var(--brand-danger); border: 1px solid #4a1a1a; }
+.badge-accent  { background: #001a2c; color: var(--brand-accent); border: 1px solid #26C6DA33; }
+.badge-green   { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+.badge-purple  { background: #1a0a2a; color: #c084fc; border: 1px solid #c084fc44; }
+.badge-danger  { background: #2a0a0a; color: var(--brand-danger); border: 1px solid #4a1a1a; }
 
-/* ── PROGRAM CARD ── */
+/* ── PROGRAM CARD THUMBS ── */
 .prog-thumb-placeholder {
     width: 100%; aspect-ratio: 16/9;
     display: flex; align-items: center; justify-content: center; font-size: 2rem;
