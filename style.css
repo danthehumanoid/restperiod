@@ -2,15 +2,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
 
 :root {
-    --brand-primary:   #003B5C;
-    --brand-secondary: #2E7D32;
-    --brand-accent:    #26C6DA;
-    --brand-bg:        #020c12;
+    --brand-primary:   #0077B6;
+    --brand-secondary: #0096C7;
+    --brand-accent:    #48CAE4;
+    --brand-bg:        #03111A;
     --brand-danger:    #ff5252;
-    --text-main:       #E0F7FA;
-    --card-bg:         #0e1b24;
-    --input-bg:        #002840;
-    --border:          #1a2a35;
+    --text-main:       #E8F4F8;
+    --card-bg:         #071E2B;
+    --input-bg:        #0A2A3A;
+    --border:          #0E3A50;
     --nav-height:      65px;
 }
 
@@ -64,9 +64,9 @@ input[type=number] { -moz-appearance: textfield; }
     transition: 0.2s; text-decoration: none; white-space: nowrap;
 }
 .btn-primary   { background: var(--brand-accent); color: #000; }
-.btn-primary:hover { background: #1eb3c5; }
+.btn-primary:hover { background: #36b5cf; }
 .btn-secondary { background: var(--brand-secondary); color: #fff; }
-.btn-secondary:hover { background: #388E3C; }
+.btn-secondary:hover { background: #007aaa; }
 .btn-outline   { background: transparent; border: 1px solid var(--brand-accent); color: var(--brand-accent); }
 .btn-outline:hover { background: var(--brand-accent); color: #000; }
 .btn-danger    { background: transparent; border: 1px solid var(--brand-danger); color: var(--brand-danger); }
@@ -96,14 +96,14 @@ input[type=number] { -moz-appearance: textfield; }
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
     height: var(--nav-height);
-    background: #000;
+    background: #020e16;
     border-top: 1px solid var(--border);
     display: flex; z-index: 3000;
 }
 .nav-item {
     flex: 1; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    gap: 4px; cursor: pointer; color: #444;
+    gap: 4px; cursor: pointer; color: #2a5a70;
     transition: 0.2s; text-decoration: none;
     border: none; background: none; padding: 0;
 }
@@ -117,14 +117,14 @@ input[type=number] { -moz-appearance: textfield; }
 /* ── TOP NAV ── */
 .nav-top {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 20px; background: #000;
+    padding: 10px 20px; background: #020e16;
     border-bottom: 1px solid var(--border);
     position: sticky; top: 0; z-index: 200;
 }
 .nav-brand { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.1rem; }
 .nav-brand span { color: var(--brand-accent); }
 .btn-nav {
-    background: none; border: 1px solid #333; color: #888;
+    background: none; border: 1px solid var(--border); color: #5a8fa0;
     padding: 6px 12px; border-radius: 6px; cursor: pointer;
     font-size: 0.7rem; font-family: 'Montserrat', sans-serif;
     font-weight: 700; white-space: nowrap; transition: 0.2s;
@@ -142,7 +142,7 @@ input[type=number] { -moz-appearance: textfield; }
 .pill {
     padding: 8px 20px; border-radius: 50px;
     border: 1px solid var(--border); background: var(--card-bg);
-    color: #666; font-family: 'Montserrat', sans-serif;
+    color: #3a7a90; font-family: 'Montserrat', sans-serif;
     font-weight: 800; font-size: 0.72rem; cursor: pointer;
     white-space: nowrap; transition: 0.2s; letter-spacing: 0.5px;
 }
@@ -150,12 +150,12 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ── PROGRESS BAR ── */
 .progress-container {
-    width: 100%; background: #111; border-radius: 10px;
-    height: 8px; overflow: hidden; border: 1px solid #333;
+    width: 100%; background: #0a1e2a; border-radius: 10px;
+    height: 8px; overflow: hidden; border: 1px solid var(--border);
 }
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--brand-secondary), var(--brand-accent));
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
     border-radius: 10px; transition: width 0.5s;
 }
 
@@ -200,7 +200,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ── FORM HELPERS ── */
 .form-label {
-    font-size: 0.6rem; font-weight: 800; color: #888;
+    font-size: 0.6rem; font-weight: 800; color: #5a8fa0;
     text-transform: uppercase; letter-spacing: 0.5px;
     display: block; margin-bottom: 6px;
     font-family: 'Montserrat', sans-serif;
@@ -213,7 +213,7 @@ input[type=number] { -moz-appearance: textfield; }
     font-weight: 800; padding: 2px 8px; border-radius: 10px;
     display: inline-block;
 }
-.badge-accent  { background: #001a2c; color: var(--brand-accent); border: 1px solid #26C6DA33; }
+.badge-accent  { background: #071e2b; color: var(--brand-accent); border: 1px solid #48CAE433; }
 .badge-green   { background: #052e16; color: #4ade80; border: 1px solid #166534; }
 .badge-purple  { background: #1a0a2a; color: #c084fc; border: 1px solid #c084fc44; }
 .badge-danger  { background: #2a0a0a; color: var(--brand-danger); border: 1px solid #4a1a1a; }
@@ -223,7 +223,7 @@ input[type=number] { -moz-appearance: textfield; }
     width: 100%; aspect-ratio: 16/9;
     display: flex; align-items: center; justify-content: center; font-size: 2rem;
 }
-.thumb-strength { background: linear-gradient(135deg, #1a0a3a, #003B5C); }
+.thumb-strength { background: linear-gradient(135deg, #0a1a3a, #0077B6); }
 .thumb-power    { background: linear-gradient(135deg, #1a0a00, #3a2000); }
 .thumb-run      { background: linear-gradient(135deg, #001a0a, #0a2a00); }
 .thumb-circuit  { background: linear-gradient(135deg, #001a2c, #0a1a3a); }
@@ -234,8 +234,8 @@ input[type=number] { -moz-appearance: textfield; }
 
 /* ── UTILITY ── */
 .text-accent  { color: var(--brand-accent); }
-.text-dim     { color: #555; }
-.text-muted   { color: #888; }
+.text-dim     { color: #2a5a70; }
+.text-muted   { color: #5a8fa0; }
 .text-green   { color: #4ade80; }
 .text-danger  { color: var(--brand-danger); }
 .mt-0 { margin-top: 0; }     .mt-8 { margin-top: 8px; }
