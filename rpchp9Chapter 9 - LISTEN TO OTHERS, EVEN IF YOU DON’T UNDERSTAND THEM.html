@@ -5,31 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOME(eostasis) | DTH</title>
     
-    <!-- This links directly to your external sheet -->
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* --- PAGE LAYOUT (Pulls all colors from style.css variables) --- */
+        /* --- PAGE SPECIFIC ADJUSTMENTS MERGED WITH GLOBAL THEME --- */
         body {
             padding: 20px 16px;
-            background-color: var(--brand-bg);
-            color: var(--text-main);
-            font-family: 'Open Sans', sans-serif;
             scroll-behavior: smooth;
         }
         .header { text-align: center; margin: 20px 0; }
         
-        h1, h2, h3, h4, h6 { 
-            font-family: 'Montserrat', sans-serif; 
-            font-weight: 800; 
-            color: var(--brand-accent); 
-        }
-
-        p { margin-bottom: 1.25rem; line-height: 1.7; font-size: 0.95rem; color: var(--text-main); }
-        a { color: var(--brand-accent); text-decoration: none; transition: 0.2s; }
+        /* Map base tags to style guide expectations */
+        p { margin-bottom: 1.25rem; line-height: 1.7; font-size: 0.95rem; }
+        a { color: var(--brand-accent); transition: 0.2s; }
         a:hover { text-decoration: underline; }
 
-        /* --- NAVIGATION --- */
+        /* --- NAVIGATION STYLES ADAPTED TO THEME --- */
         .main-nav-container {
             max-width: 500px; margin: 24px auto 10px auto; padding: 12px;
             background: var(--card-bg); border: 1px solid var(--border);
@@ -37,44 +28,58 @@
         }
         .main-nav {
             display: flex; flex-wrap: wrap; justify-content: center;
-            align-items: center; gap: 8px; padding: 0; margin: 0; list-style: none;
+            align-items: center; gap: 8px; padding: 0;
+            margin: 0; list-style: none;
         }
         .nav-link {
             background-color: var(--input-bg); border: 1px solid var(--border); 
-            color: var(--text-main); padding: 8px 18px; border-radius: 6px; 
+            color: var(--text-main); padding: 8px 18px;
+            border-radius: 6px; cursor: pointer;
             font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.75rem;
             text-transform: uppercase; letter-spacing: 0.5px;
             transition: 0.2s; display: block; white-space: nowrap; text-decoration: none;
         }
         .nav-link:hover {
-            background-color: var(--brand-accent); color: #000; border-color: var(--brand-accent);
+            background-color: var(--brand-accent); color: #000;
+            border-color: var(--brand-accent);
         }
         .social-icons { text-align: center; margin-top: 24px; }
         .social-icons img { width: 50px; height: 50px; margin: 0 6px; transition: transform 0.2s ease; }
         .social-icons img:hover { transform: scale(1.1); }
 
-        /* --- CONTENT --- */
-        .content-wrapper { max-width: 680px; margin: 40px auto; text-align: left; }
-        .content-wrapper h1 { text-align: center; margin-bottom: 6px; font-size: 1.5rem; }
-        .content-wrapper p.chapter-subtitle { text-align: center; opacity: 0.6; font-weight: 600; margin-bottom: 32px; }
+        /* --- MAIN CONTENT STYLES --- */
+        .content-wrapper {
+            max-width: 680px; margin: 40px auto;
+            text-align: left; /* Left align long-form stories for vastly better reading mechanics */
+        }
+        .content-wrapper h1 { text-align: center; margin-bottom: 6px; font-size: 1.5rem; color: var(--brand-accent); }
+        .content-wrapper p.chapter-subtitle { text-align: center; color: var(--text-main); opacity: 0.6; font-weight: 600; margin-bottom: 32px; }
         .decorative-gif { display: block; max-width: 100%; margin: 0 auto 32px auto; border-radius: 10px; border: 1px solid var(--border); }
         .signature { font-style: italic; text-align: center; margin-bottom: 4px; }
         .signature-lead { margin-top: 32px; }
 
-        /* --- EMAIL BUTTON --- */
+        /* --- EMAIL BUTTON STYLES (Matches .btn-primary layout rules) --- */
         .email-container { margin-top: 48px; text-align: center; }
         #revealButton {
             background-color: var(--brand-accent); color: #000;
             border: none; padding: 12px 24px;
             font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.75rem;
             text-transform: uppercase; letter-spacing: 0.5px;
-            border-radius: 6px; cursor: pointer; margin-bottom: 15px; transition: 0.2s;
+            border-radius: 6px; cursor: pointer;
+            margin-bottom: 15px; transition: 0.2s;
         }
         #revealButton:hover { background-color: #fff; transform: translateY(-1px); }
-        #emailDisplay { display: none; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.9rem; margin-top: 8px; }
+        #emailDisplay {
+            display: none; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.9rem; margin-top: 8px;
+        }
 
-        /* --- FOOTER --- */
-        .footer-notice { text-align: center; font-style: italic; color: #555; font-size: 0.75rem; max-width: 800px; margin: 64px auto 20px auto; line-height: 1.5; }
+        /* --- FOOTER NOTICE --- */
+        .footer-notice {
+            text-align: center; font-style: italic;
+            color: #555; font-size: 0.75rem;
+            max-width: 800px; margin: 64px auto 20px auto;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
