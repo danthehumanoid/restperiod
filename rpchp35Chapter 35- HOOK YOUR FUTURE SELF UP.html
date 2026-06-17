@@ -3,113 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOME(eostasis) | DTH</title>
+    <title>REST PERIOD | PHILOSOPHY</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* --- STYLES ADAPTED FROM YOUR EXERCISE LIBRARY --- */
-        :root {
-            --brand-yellow: #ffde18;
-            --brand-red: #ce0104;
-            --brand-text: #ccc;
-        }
-        body {
-            margin: 0; padding: 20px;
-            font-family: 'Inter', Arial, sans-serif;
-            background-color: #000; color: white;
-            scroll-behavior: smooth;
-        }
-        .header, .page-footer { text-align: center; margin: 20px 0; }
-        h1, h2, h3, h4, h6 { font-family: monospace; font-weight: normal; color: var(--brand-red); }
-        p { color: var(--brand-text); }
-        a { color: var(--brand-yellow); text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
-        /* --- NAVIGATION STYLES --- */
-        .main-nav-container {
-            max-width: 1200px; margin: 20px auto 10px auto; padding: 15px;
-            background: #222; border-radius: 8px;
-        }
-        .main-nav {
-            display: flex; flex-wrap: wrap; justify-content: center;
-            align-items: center; gap: 10px; padding: 0;
-            margin: 0; list-style: none;
-        }
-        .nav-link {
-            background-color: #333; color: var(--brand-yellow);
-            border: 1px solid #555; padding: 10px 20px;
-            border-radius: 6px; cursor: pointer;
-            font-family: monospace; font-size: 1rem;
-            transition: background-color 0.3s, color 0.3s;
-            display: block; white-space: nowrap;
-        }
-        .nav-link:hover {
-            background-color: var(--brand-red); color: white;
-            text-decoration: none;
-        }
-        .social-icons { text-align: center; margin-top: 20px; }
-        .social-icons img { width: 60px; height: 60px; margin: 0 5px; transition: transform 0.2s ease; }
-        .social-icons img:hover { transform: scale(1.1); }
+        .chapter-header { padding: 40px 0 24px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+        .chapter-num { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.65rem; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .chapter-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.6rem; color: white; line-height: 1.2; margin-bottom: 0; }
 
-        /* --- MAIN CONTENT STYLES --- */
-        .content-wrapper {
-            max-width: 800px; margin: 40px auto;
-            text-align: center; line-height: 1.7;
-        }
-        .content-wrapper p { text-align: center; }
-        .decorative-gif { display: block; max-width: 100%; margin: 20px auto; border-radius: 8px; }
-        .signature { font-style: italic; color: #999; text-align: center; }
-
-        /* --- EMAIL BUTTON STYLES --- */
-        .email-container { margin-top: 40px; }
-        #revealButton {
-            background-color: var(--brand-yellow); color: #000;
-            border: none; padding: 12px 24px;
-            font-family: monospace; font-weight: bold;
-            border-radius: 6px; cursor: pointer;
-            margin-bottom: 15px; transition: background-color 0.2s;
-        }
-        #revealButton:hover { background-color: #fff; }
-        #emailDisplay {
-            display: none; /* Hides the email by default */
-            font-family: monospace; font-size: 1.1rem;
+        .chapter-body { font-size: 1rem; line-height: 1.8; color: #ccc; }
+        .chapter-body p { margin-bottom: 1.4em; }
+        .chapter-body blockquote {
+            border-left: 3px solid var(--brand-accent);
+            margin: 28px 0;
+            padding: 12px 20px;
+            background: var(--card-bg);
+            border-radius: 0 6px 6px 0;
+            font-style: italic;
+            color: var(--text-main);
         }
 
-        /* --- FOOTER NOTICE --- */
-        .footer-notice {
-            text-align: center; font-style: italic;
-            color: #888; font-size: 0.9rem;
-            max-width: 800px; margin: 40px auto 20px auto;
-            line-height: 1.5;
-        }
+        .chapter-footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); color: #555; font-size: 0.85rem; font-style: italic; }
+        .chapter-footer a { color: var(--brand-accent); text-decoration: none; }
+        .chapter-footer a:hover { text-decoration: underline; }
+
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
+        .back-link:hover { opacity: 0.8; }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <a href="index.html"><img src="RPLOGO Psychedelic.gif" alt="RPLOGO Psychedelic"></a>
-        
-        <nav class="main-nav-container">
-            <ul class="main-nav">
-                <li class="nav-item"><a href="index.html" class="nav-link">DTH - HOME</a></li>
-                <li class="nav-item"><a href="exlibindex.html" class="nav-link">REST PERIOD</a></li>
-            </ul>
-        </nav>
-
-        <div class="social-icons">
-            <a href="https://www.instagram.com/dan.thehuman/" target="_blank">
-                <img src="InstagramDTH.png" alt="Follow Dan The Human on Instagram">
-            </a>
-            <a href="https://buymeacoffee.com/deeteehacyh" target="_blank">
-                <img src="dthsupport.png" alt="Support DTH">
-            </a>
-            <a href="dthconnect.html" target="_blank">
-                <img src="dthemaillist.png" alt="DTH emaillist">
-            </a>
-        </div>
-    </header>
-
-    <main class="content-wrapper">
-       <img src="rpchp37.gif" alt="rpchp37.gif" class="decorative-gif">
-
+<a class="back-link" href="javascript:history.back()">← Back</a>
         <h1>EXERICSE - PHILOSOPHY</h1>
        <p><i>Chapter 35- HOOK YOUR FUTURE SELF UP</i></p>     
 
