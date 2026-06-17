@@ -295,7 +295,7 @@
 
     <!-- CLIENT: Your Programs grid -->
     <div id="your-programs-section" class="client-only" style="display:none;">
-        <div class="section-title">/div>
+        <div class="section-title">YOUR PROGRAMS</div>
         <div class="programs-grid" id="your-programs-grid">
             <div class="no-programs">Loading...</div>
         </div>
@@ -303,12 +303,12 @@
 
     <!-- FREE: My Programs list (claimed) -->
     <div id="my-programs-section" class="free-only" style="display:none;">
-        <div class="section-title">/div>
+        <div class="section-title">MY PROGRAMS</div>
         <div id="my-programs-list"></div>
     </div>
 
     <!-- CALENDAR (both) -->
-    <div class="section-title">/div>
+    <div class="section-title">TRAINING CALENDAR</div>
     <div class="cal-card">
         <div class="cal-controls">
             <div class="cal-toggle">
@@ -327,7 +327,7 @@
 
     <!-- PRE-MADE PROGRAMS (swipe shelves, both roles) -->
     <div id="premade-section">
-        <div class="section-title">-Made Programs</div>
+        <div class="section-title">Pre-Made Programs</div>
         <div id="premade-shelves">
             <div style="text-align:center;padding:40px;color:#555;">
                 <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:10px;display:block;"></i>
@@ -338,7 +338,7 @@
 
     <!-- CLAIMED PRE-MADE PROGRAMS (client only, below shelves) -->
     <div id="claimed-premade-section" class="client-only" style="display:none;">
-        <div class="section-title">/div>
+        <div class="section-title">MY CLAIMED PROGRAMS</div>
         <div class="programs-grid" id="claimed-premade-grid"></div>
     </div>
 
@@ -355,7 +355,7 @@
 
     <!-- CHECK-INS (client only) -->
     <div id="checkins-section" class="client-only" style="display:none;">
-        <div class="section-title">-ins</div>
+        <div class="section-title">Recent Check-ins</div>
         <div id="checkins-list"></div>
     </div>
 
@@ -557,14 +557,14 @@ const typeEmoji  = { strength:'', cardio:'', recovery:'', mobility:'', other:'' 
 const dayNames   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 const CATEGORY_META = {
-    STRENGTH: { emoji:'', label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
-    POWER:    { emoji:'', label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
-    RUN:      { emoji:'', label:'Run',      thumbClass:'thumb-run',      color:'#4ade80' },
-    CIRCUIT:  { emoji:'', label:'Circuit',  thumbClass:'thumb-circuit',  color:'#26C6DA' },
-    MOBILITY: { emoji:'', label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
-    CARDIO:   { emoji:'', label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
-    'WARM UP':{ emoji:'', label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
-    OTHER:    { emoji:'', label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
+    STRENGTH: { label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
+    POWER:    { label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
+    RUN:      { label:'Run',      thumbClass:'thumb-run',      color:'#4ade80' },
+    CIRCUIT:  { label:'Circuit',  thumbClass:'thumb-circuit',  color:'#26C6DA' },
+    MOBILITY: { label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
+    CARDIO:   { label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
+    'WARM UP':{ label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
+    OTHER:    { label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
 };
 const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
 
@@ -702,8 +702,8 @@ function buildClientProgCard(prog) {
     const meta = CATEGORY_META[cat] || CATEGORY_META.OTHER;
     const isRep = prog.is_repeatable;
     const thumbHtml = prog.cover_image
-        ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${prog.id}/${prog.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;">${meta.emoji}</div>`
-        : `<div class="prog-thumb-placeholder ${meta.thumbClass}">${meta.emoji}</div>`;
+        ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${prog.id}/${prog.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;"></div>`
+        : `<div class="prog-thumb-placeholder ${meta.thumbClass}"></div>`;
     const badge = isRep
         ? `<span class="prog-badge prog-badge-rep">Repeatable</span>`
         : `<span class="prog-badge prog-badge-block">${schedule.length} sessions</span>`;
@@ -742,8 +742,8 @@ function buildShelfCard(p) {
     const schedule = data?.schedule||data||[];
     const sessionCount = Array.isArray(schedule) ? schedule.length : 0;
     const thumbHtml = p.cover_image
-        ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;">${meta.emoji}</div>`
-        : `<div class="prog-thumb-placeholder ${meta.thumbClass}">${meta.emoji}</div>`;
+        ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;"></div>`
+        : `<div class="prog-thumb-placeholder ${meta.thumbClass}"></div>`;
     const badge = p.is_repeatable
         ? `<span class="prog-badge prog-badge-rep">Repeatable</span>`
         : `<span class="prog-badge prog-badge-block">${sessionCount} sessions</span>`;
@@ -783,7 +783,6 @@ function renderShelves() {
         const shelfId = `shelf-${cat.replace(/\s+/g,'-')}`;
         return `<div class="shelf-section">
             <div class="shelf-header">
-                <span class="shelf-emoji">${meta.emoji}</span>
                 <span class="shelf-title" style="color:${meta.color};">${meta.label}</span>
                 <div class="shelf-line"></div>
                 <span class="shelf-count">${progs.length} program${progs.length!==1?'s':''}</span>
@@ -1374,22 +1373,22 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
 </script>
 
 <!-- BOTTOM NAV -->
-<nav style="position:fixed;bottom:0;left:0;right:0;height:65px;background:#000;border-top:1px solid #1a2a35;display:flex;z-index:3000;">
-    <a href="client-dashboard.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#26C6DA;text-decoration:none;">
-        <i class="fas fa-home" style="font-size:1.1rem;"></i>
-        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Home</span>
+<nav class="bottom-nav">
+    <a href="client-dashboard.html" class="nav-item active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
     </a>
-    <a href="explore.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#444;text-decoration:none;">
-        <i class="fas fa-compass" style="font-size:1.1rem;"></i>
-        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Explore</span>
+    <a href="explore.html" class="nav-item">
+        <i class="fas fa-compass"></i>
+        <span>Explore</span>
     </a>
-    <a href="library.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#444;text-decoration:none;">
-        <i class="fas fa-dumbbell" style="font-size:1.1rem;"></i>
-        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Library</span>
+    <a href="library.html" class="nav-item">
+        <i class="fas fa-dumbbell"></i>
+        <span>Library</span>
     </a>
-    <a href="saved.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#444;text-decoration:none;">
-        <i class="fas fa-bookmark" style="font-size:1.1rem;"></i>
-        <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Saved</span>
+    <a href="saved.html" class="nav-item">
+        <i class="fas fa-bookmark"></i>
+        <span>Saved</span>
     </a>
 </nav>
 </body>
