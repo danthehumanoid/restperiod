@@ -258,14 +258,14 @@
 </head>
 <body>
 
-<div id="sync-toast">Saved ✓</div>
+<div id="sync-toast">Saved</div>
 
 <!-- ── NAV ── -->
 <div class="nav-top" style="display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:#000;border-bottom:1px solid #004d7a;position:sticky;top:0;z-index:200;">
     <div class="nav-brand">REST <span>PERIOD</span></div>
     <div style="display:flex;align-items:center;gap:10px;">
         <span class="nav-user" id="nav-user" style="font-size:0.72rem;color:#888;"></span>
-        <button class="btn-nav client-only" onclick="window.location.href='checkin.html'" style="display:none;">📝 Check-In</button>
+        <button class="btn-nav client-only" onclick="window.location.href='checkin.html'" style="display:none;">Check-In</button>
         <button class="btn-nav" onclick="logout()" style="background:none;border:1px solid #333;color:#888;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:0.7rem;font-family:Montserrat,sans-serif;font-weight:700;">Logout</button>
     </div>
 </div>
@@ -281,12 +281,12 @@
 </div>
 <div class="upgrade-banner free-only" style="display:none;">
     <p>You're on the <strong>free plan</strong> — tools, exercise library and free programs.</p>
-    <button class="btn-upgrade" onclick="alert('Upgrade coming soon!')">⚡ Upgrade</button>
+    <button class="btn-upgrade" onclick="alert('Upgrade coming soon!')">Upgrade</button>
 </div>
 
 <!-- ── GREETING ── -->
 <div class="greeting">
-    <h1>Hey, <span id="greeting-name"></span></h1>
+    <h1>Hey, <span id="greeting-name"></span> </h1>
     <p id="greeting-sub">Here's your training overview.</p>
 </div>
 
@@ -295,7 +295,7 @@
 
     <!-- CLIENT: Your Programs grid -->
     <div id="your-programs-section" class="client-only" style="display:none;">
-        <div class="section-title">📋 Your Programs</div>
+        <div class="section-title">/div>
         <div class="programs-grid" id="your-programs-grid">
             <div class="no-programs">Loading...</div>
         </div>
@@ -303,12 +303,12 @@
 
     <!-- FREE: My Programs list (claimed) -->
     <div id="my-programs-section" class="free-only" style="display:none;">
-        <div class="section-title">💪 My Programs</div>
+        <div class="section-title">/div>
         <div id="my-programs-list"></div>
     </div>
 
     <!-- CALENDAR (both) -->
-    <div class="section-title">📅 Training Calendar</div>
+    <div class="section-title">/div>
     <div class="cal-card">
         <div class="cal-controls">
             <div class="cal-toggle">
@@ -327,7 +327,7 @@
 
     <!-- PRE-MADE PROGRAMS (swipe shelves, both roles) -->
     <div id="premade-section">
-        <div class="section-title">🌐 Pre-Made Programs</div>
+        <div class="section-title">-Made Programs</div>
         <div id="premade-shelves">
             <div style="text-align:center;padding:40px;color:#555;">
                 <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:10px;display:block;"></i>
@@ -338,7 +338,7 @@
 
     <!-- CLAIMED PRE-MADE PROGRAMS (client only, below shelves) -->
     <div id="claimed-premade-section" class="client-only" style="display:none;">
-        <div class="section-title">My Claimed Programs</div>
+        <div class="section-title">/div>
         <div class="programs-grid" id="claimed-premade-grid"></div>
     </div>
 
@@ -355,7 +355,7 @@
 
     <!-- CHECK-INS (client only) -->
     <div id="checkins-section" class="client-only" style="display:none;">
-        <div class="section-title">Recent Check-ins</div>
+        <div class="section-title">-ins</div>
         <div id="checkins-list"></div>
     </div>
 
@@ -380,7 +380,7 @@
 <!-- ── PLAN MODAL (client only) ── -->
 <div class="plan-modal-overlay" id="plan-modal" onclick="if(event.target===this)closePlanModal()">
     <div class="plan-modal">
-        <h3 id="plan-modal-title">📅 Add Planned Workout</h3>
+        <h3 id="plan-modal-title">Add Planned Workout</h3>
         <input type="hidden" id="plan-id">
         <div class="plan-field"><span class="plan-label">Title</span><input type="text" class="plan-input" id="plan-title" placeholder="e.g. Morning Run"/></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
@@ -389,9 +389,9 @@
         </div>
         <div class="plan-field"><span class="plan-label">Type</span>
             <select class="plan-input" id="plan-type">
-                <option value="strength">STRENGTH</option><option value="cardio">CARDIO</option>
-                <option value="recovery">RECOVERY</option><option value="mobility">MOBILITY</option>
-                <option value="other"></option>
+                <option value="strength">Strength</option><option value="cardio">Cardio</option>
+                <option value="recovery">Recovery</option><option value="mobility">Mobility</option>
+                <option value="other">Other</option>
             </select>
         </div>
         <div class="plan-field"><span class="plan-label">Notes</span><textarea class="plan-input" id="plan-notes" rows="3" placeholder="Any details..."></textarea></div>
@@ -553,18 +553,18 @@ let currentProgram = null;
 let currentWeekIndex = 0;
 
 const typeColors = { strength:'#26C6DA', cardio:'#f87171', recovery:'#c084fc', mobility:'#4ade80', other:'#fb923c' };
-const typeEmoji  = { strength:'💪', cardio:'🏃', recovery:'🧘', mobility:'🤸', other:'⚡' };
+const typeEmoji  = { strength:'', cardio:'', recovery:'', mobility:'', other:'' };
 const dayNames   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 const CATEGORY_META = {
-    STRENGTH: { label: 'Strength', thumbClass: 'thumb-strength', color: '#c084fc' },
-    POWER:    { label: 'Power',    thumbClass: 'thumb-power',    color: '#fb923c' },
-    RUN:      { label: 'Run',      thumbClass: 'thumb-run',      color: '#4ade80' },
-    CIRCUIT:  { label: 'Circuit',  thumbClass: 'thumb-circuit',  color: '#26C6DA' },
-    MOBILITY: { label: 'Mobility', thumbClass: 'thumb-mobility', color: '#a78bfa' },
-    CARDIO:   { label: 'Cardio',   thumbClass: 'thumb-cardio',   color: '#f87171' },
-    'WARM UP':{ label: 'Warm Up',  thumbClass: 'thumb-warmup',   color: '#fb923c' },
-    OTHER:    { label: 'Other',    thumbClass: 'thumb-other',    color: '#888'    },
+    STRENGTH: { emoji:'', label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
+    POWER:    { emoji:'', label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
+    RUN:      { emoji:'', label:'Run',      thumbClass:'thumb-run',      color:'#4ade80' },
+    CIRCUIT:  { emoji:'', label:'Circuit',  thumbClass:'thumb-circuit',  color:'#26C6DA' },
+    MOBILITY: { emoji:'', label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
+    CARDIO:   { emoji:'', label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
+    'WARM UP':{ emoji:'', label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
+    OTHER:    { emoji:'', label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
 };
 const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
 
@@ -635,7 +635,7 @@ function renderMyProgramsFree() {
             pct = total ? Math.round((done/total)*100) : 0;
         }
         const started = new Date(p.created).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});
-        const repBadge = isRep ? `<span style="font-size:0.6rem;color:var(--brand-accent);border:1px solid var(--brand-accent);border-radius:4px;padding:1px 5px;margin-left:4px;">🔁</span>` : '';
+        const repBadge = isRep ? `<span style="font-size:0.6rem;color:var(--brand-accent);border:1px solid var(--brand-accent);border-radius:4px;padding:1px 5px;margin-left:4px;"></span>` : '';
         return `<div class="my-prog-item" onclick="openMyProgram('${p.id}')">
             <div>
                 <div class="my-prog-name">${p.name}${repBadge}</div>
@@ -705,7 +705,7 @@ function buildClientProgCard(prog) {
         ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${prog.id}/${prog.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;">${meta.emoji}</div>`
         : `<div class="prog-thumb-placeholder ${meta.thumbClass}">${meta.emoji}</div>`;
     const badge = isRep
-        ? `<span class="prog-badge prog-badge-rep">🔁 Repeatable</span>`
+        ? `<span class="prog-badge prog-badge-rep">Repeatable</span>`
         : `<span class="prog-badge prog-badge-block">${schedule.length} sessions</span>`;
     return `<div class="program-card" onclick="goToProgram('${prog.id}')">
         ${thumbHtml}
@@ -745,9 +745,9 @@ function buildShelfCard(p) {
         ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;">${meta.emoji}</div>`
         : `<div class="prog-thumb-placeholder ${meta.thumbClass}">${meta.emoji}</div>`;
     const badge = p.is_repeatable
-        ? `<span class="prog-badge prog-badge-rep">🔁 Repeatable</span>`
+        ? `<span class="prog-badge prog-badge-rep">Repeatable</span>`
         : `<span class="prog-badge prog-badge-block">${sessionCount} sessions</span>`;
-    const ribbon = claimed ? `<div class="claimed-ribbon">✓ Active</div>` : '';
+    const ribbon = claimed ? `<div class="claimed-ribbon">Active</div>` : '';
     return `<div class="program-card ${claimed?'claimed':''}" onclick="openProgModal('${p.id}')">
         ${ribbon}${thumbHtml}
         <div class="prog-card-body">
@@ -828,8 +828,8 @@ function openProgModal(id) {
         <div class="prog-modal-desc">${p.description||'No description available.'}</div>
         <div class="prog-modal-meta">
             <span>${meta.emoji} ${meta.label}</span>
-            <span>${p.is_repeatable?'🔁 Repeatable':sessionCount+' sessions'}</span>
-            ${p.is_repeatable?'':`<span>📅 Block Program</span>`}
+            <span>${p.is_repeatable?'Repeatable':sessionCount+' sessions'}</span>
+            ${p.is_repeatable?'':`<span>Block Program</span>`}
         </div>
         ${actionHtml}
         <button class="btn-modal-close" onclick="closeProgModal()">Close</button>`;
@@ -862,7 +862,7 @@ async function claimProgram(templateId) {
         closeProgModal();
         renderShelves();
         openMyProgram(newProg.id);
-        showToast('Program started! 🔥');
+        showToast('Program started');
     } catch(e) {
         alert('Failed to start program: '+e.message);
         if (btn) { btn.disabled=false; btn.textContent='▶ Start This Program'; }
@@ -1001,13 +1001,13 @@ function renderMonthView(withPlanned) {
             <div class="cal-mday-num" onclick="jumpToDay('${dateStr}')">${d}</div>
             ${sessions.map(s=>`<div class="cal-session-pill ${s.isCompleted?'completed':'scheduled'}" ${withPlanned?`draggable="true" ondragstart="handleSessionDragStart(event,'${s.progId}',${s.sessionNum})"`:''}
                 onclick="goToProgram('${s.progId}')">
-                ${s.isCompleted?'✓':'📅'} ${s.programName} · Sn${s.sessionNum}
+                ${s.programName} · Sn${s.sessionNum}
             </div>`).join('')}
             ${planned.map(pw=>`<div class="cal-session-pill planned"
                 style="background:${typeColors[pw.type]||'#888'}33;color:${typeColors[pw.type]||'#888'};"
                 draggable="true" ondragstart="handleDragStart(event,'${pw.id}')"
                 onclick="openPlanModal('${dateStr}','${pw.id}');event.stopPropagation();">
-                ${typeEmoji[pw.type]||'⚡'} ${pw.title}
+                ${typeEmoji[pw.type]||''} ${pw.title}
             </div>`).join('')}
             ${withPlanned?`<button class="add-plan-btn" onclick="openPlanModal('${dateStr}')">＋</button>`:''}
         </div>`;
@@ -1039,13 +1039,13 @@ function renderWeekView(withPlanned) {
             ${sessions.map(s=>`<div class="cal-wday-session ${s.isCompleted?'completed':'scheduled'}"
                 ${withPlanned?`draggable="true" ondragstart="handleSessionDragStart(event,'${s.progId}',${s.sessionNum})"`:''}
                 onclick="goToProgram('${s.progId}')">
-                <div class="cal-wday-prog">${s.isCompleted?'✓':'📅'} ${s.programName}</div>
+                <div class="cal-wday-prog">${s.programName}</div>
                 <div class="cal-wday-sub">Session ${s.sessionNum} · ${s.isCompleted?s.pct+'% complete':'scheduled'}</div>
             </div>`).join('')}
             ${planned.map(pw=>`<div class="cal-wday-session planned"
                 draggable="true" ondragstart="handleDragStart(event,'${pw.id}')"
                 onclick="openPlanModal('${dateStr}','${pw.id}')">
-                <div class="cal-wday-prog planned" style="color:${typeColors[pw.type]||'#888'}">${typeEmoji[pw.type]||'⚡'} ${pw.title}${pw.time?' · '+pw.time:''}</div>
+                <div class="cal-wday-prog planned" style="color:${typeColors[pw.type]||'#888'}">${typeEmoji[pw.type]||''} ${pw.title}${pw.time?' · '+pw.time:''}</div>
                 <div class="cal-wday-sub">${pw.type}${pw.repeat!=='none'?' · repeating':''}</div>
             </div>`).join('')}
         </div>`;
@@ -1065,7 +1065,7 @@ function renderDayView(withPlanned) {
     planned.forEach(pw=>{let si=32;if(pw.time){const[h,m]=pw.time.split(':').map(Number);si=h*4+Math.floor(m/15);}events.push({type:'plan',pw,slotIndex:si,durationSlots:4});});
     sessions.forEach((s,si)=>{events.push({type:'session',session:s,slotIndex:28+si*5,durationSlots:4});});
     let html=`<div class="cal-day-view"><div class="cal-day-header-bar"><div>
-        <div class="cal-day-title">${isToday?'📍 Today — ':''}${dayNames[calDate.getDay()]}</div>
+        <div class="cal-day-title">${isToday?'Today — ':''}${dayNames[calDate.getDay()]}</div>
         <div class="cal-day-subtitle">${calDate.toLocaleDateString([],{day:'numeric',month:'long',year:'numeric'})}</div>
     </div></div>
     <div class="day-scroll-wrap" id="day-scroll"><div style="position:relative;">`;
@@ -1082,8 +1082,8 @@ function renderDayView(withPlanned) {
             <div class="cal-slot-content" ${clickAttr} ${dropAttr}>
                 ${slotEvents.map(e=>{
                     if(e.type==='session'){const col=e.session.isCompleted?'#2E7D32':'#1a4a2a';return `<div class="cal-slot-event session-event" style="height:${e.durationSlots*28-4}px;background:${col};" ${withPlanned?`draggable="true" ondragstart="handleSessionDragStart(event,'${e.session.progId}',${e.session.sessionNum})"`:''}
-                        onclick="goToProgram('${e.session.progId}');event.stopPropagation();">${e.session.isCompleted?'✓':'📅'} ${e.session.programName} · Sn${e.session.sessionNum}</div>`;}
-                    else{const c=typeColors[e.pw.type]||'#888';return `<div class="cal-slot-event plan-event" style="height:${e.durationSlots*28-4}px;background:${c}22;color:${c};border:1px solid ${c}44;" draggable="true" ondragstart="handleDragStart(event,'${e.pw.id}')" onclick="openPlanModal('${dateStr}','${e.pw.id}');event.stopPropagation();">${typeEmoji[e.pw.type]||'⚡'} ${e.pw.title}${e.pw.time?' · '+e.pw.time:''}</div>`;}
+                        onclick="goToProgram('${e.session.progId}');event.stopPropagation();">${e.session.programName} · Sn${e.session.sessionNum}</div>`;}
+                    else{const c=typeColors[e.pw.type]||'#888';return `<div class="cal-slot-event plan-event" style="height:${e.durationSlots*28-4}px;background:${c}22;color:${c};border:1px solid ${c}44;" draggable="true" ondragstart="handleDragStart(event,'${e.pw.id}')" onclick="openPlanModal('${dateStr}','${e.pw.id}');event.stopPropagation();">${typeEmoji[e.pw.type]||''} ${e.pw.title}${e.pw.time?' · '+e.pw.time:''}</div>`;}
                 }).join('')}
             </div>
         </div>`;
@@ -1118,7 +1118,7 @@ function getPlannedForDate(dateStr) {
 function openPlanModal(dateStr,existingId) {
     document.getElementById('plan-id').value=existingId||'';
     document.getElementById('plan-date').value=dateStr||new Date().toISOString().split('T')[0];
-    document.getElementById('plan-modal-title').textContent=existingId?'✏️ Edit Planned Workout':'📅 Add Planned Workout';
+    document.getElementById('plan-modal-title').textContent=existingId?'Edit Planned Workout':'Add Planned Workout';
     document.getElementById('plan-delete-btn').style.display=existingId?'block':'none';
     if(existingId){const pw=plannedWorkouts.find(p=>p.id===existingId);if(pw){document.getElementById('plan-title').value=pw.title||'';document.getElementById('plan-time').value=pw.time||'';document.getElementById('plan-type').value=pw.type||'other';document.getElementById('plan-notes').value=pw.notes||'';document.getElementById('plan-repeat').value=pw.repeat||'none';document.getElementById('plan-repeat-until').value=pw.repeat_until?.substring(0,10)||'';if(pw.repeat==='custom'){const days=(pw.repeat_days||'').split(',');document.querySelectorAll('.repeat-day-cb').forEach(cb=>{cb.checked=days.includes(cb.value);});}}}
     else{document.getElementById('plan-title').value='';document.getElementById('plan-time').value='';document.getElementById('plan-type').value='strength';document.getElementById('plan-notes').value='';document.getElementById('plan-repeat').value='none';document.getElementById('plan-repeat-until').value='';document.querySelectorAll('.repeat-day-cb').forEach(cb=>cb.checked=false);}
@@ -1193,11 +1193,11 @@ function renderWeekTabs() {
 function renderWorkout() {
     const week=currentProgram.schedule[currentWeekIndex];
     const dateVal=week.sessionDate||'';
-    const descHtml=currentProgram.description?`<div style="background:#0a1a2a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">💬 ${currentProgram.description}</div>`:'';
+    const descHtml=currentProgram.description?`<div style="background:#0a1a2a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">${currentProgram.description}</div>`:'';
     let html=descHtml+`<div class="date-bar"><div><span class="date-label">Session Date</span><input type="date" class="date-input" value="${dateVal}" onchange="saveSessionDate(this.value)"></div>${dateVal?`<div style="background:#052e16;border:1px solid #166534;border-radius:6px;padding:5px 10px;font-size:0.72rem;color:#4ade80;font-weight:800;">✓ LOGGED ${new Date(dateVal+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'})}</div>`:`<div style="font-size:0.72rem;color:#555;">Not logged yet</div>`}</div>`;
     if(week.warmup?.length) html+=`<div class="section-header">WARM UP</div>`+generateExerciseHTML(week.warmup,'warmup');
     if(week.exercises?.length) html+=`<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>`+generateExerciseHTML(week.exercises,'exercises');
-    html+=`<button class="btn-finish" onclick="finishSession()">${dateVal?'FINISHED 🔥':'FINISH SESSION'}</button>`;
+    html+=`<button class="btn-finish" onclick="finishSession()">${dateVal?'Session Complete':'Finish Session'}</button>`;
     document.getElementById('workout-content').innerHTML=html;
 }
 
@@ -1258,7 +1258,7 @@ async function saveSessionDate(val){currentProgram.schedule[currentWeekIndex].se
 
 async function finishSession(){
     currentProgram.schedule[currentWeekIndex].sessionDate=currentProgram.schedule[currentWeekIndex].sessionDate||new Date().toISOString().split('T')[0];
-    await syncProgram('Finished 🔥');renderWorkout();
+    await syncProgram('Session Complete');renderWorkout();
     const idx=myPrograms.findIndex(p=>p.id===currentProgram.id);
     if(idx>-1)myPrograms[idx]={...myPrograms[idx],workout_data:JSON.stringify({schedule:currentProgram.schedule})};
     isFree?renderMyProgramsFree():renderYourPrograms();
@@ -1266,7 +1266,7 @@ async function finishSession(){
     isFree?renderCalendarFree():renderCalendar();
 }
 
-async function syncProgram(msg='Saved ✓'){
+async function syncProgram(msg='Saved'){
     try{await pb.collection('programs').update(currentProgram.id,{workout_data:JSON.stringify({schedule:currentProgram.schedule})});showToast(msg);}
     catch(e){console.error('Sync failed:',e);}
 }
@@ -1281,8 +1281,8 @@ function updateProgressBar(){
 // ── REPEATABLE MODE ───────────────────────────────
 async function renderRepeatableUI(){
     const content=document.getElementById('workout-content');
-    const descHtml=currentProgram.description?`<div style="background:#0a1a2a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">💬 ${currentProgram.description}</div>`:'';
-    content.innerHTML=`${descHtml}<div style="text-align:center;padding:20px 0 30px;"><div style="font-size:0.8rem;color:#888;margin-bottom:16px;">🔁 Repeatable session — log each time you do it</div><button onclick="startRepeatableSession()" style="background:var(--brand-accent);color:#000;border:none;padding:14px 32px;border-radius:8px;font-family:'Montserrat';font-weight:800;font-size:0.9rem;cursor:pointer;">▶ Log New Session</button></div><div id="repeat-history"></div><div id="repeat-active" style="display:none;"></div>`;
+    const descHtml=currentProgram.description?`<div style="background:#0a1a2a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">${currentProgram.description}</div>`:'';
+    content.innerHTML=`${descHtml}<div style="text-align:center;padding:20px 0 30px;"><div style="font-size:0.8rem;color:#888;margin-bottom:16px;">Repeatable session — log each time you do it</div><button onclick="startRepeatableSession()" style="background:var(--brand-accent);color:#000;border:none;padding:14px 32px;border-radius:8px;font-family:'Montserrat';font-weight:800;font-size:0.9rem;cursor:pointer;">▶ Log New Session</button></div><div id="repeat-history"></div><div id="repeat-active" style="display:none;"></div>`;
     await loadRepeatHistory();
 }
 
@@ -1290,9 +1290,9 @@ async function loadRepeatHistory(){
     try{const logs=await pb.collection('session_logs').getFullList({filter:`program="${currentProgram.id}" && client="${pb.authStore.model.id}"`,sort:'-date',requestKey:null});
     const el=document.getElementById('repeat-history');
     if(!logs.length){el.innerHTML='<div style="color:#555;font-size:0.8rem;text-align:center;padding:10px;">No sessions logged yet.</div>';return;}
-    el.innerHTML=`<div style="font-family:'Montserrat';font-size:0.7rem;font-weight:800;color:var(--brand-accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">📈 Session History</div>`+
+    el.innerHTML=`<div style="font-family:'Montserrat';font-size:0.7rem;font-weight:800;color:var(--brand-accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Session History</div>`+
     logs.map(log=>{let data=log.workout_data;if(typeof data==='string')data=JSON.parse(data);const allEx=[...(data.warmup||[]),...(data.exercises||[])];let total=0,done=0;allEx.forEach(ex=>(ex.setsData||[]).forEach(s=>{total++;if(s.act_reps&&s.act_weight)done++;}));const pct=total?Math.round((done/total)*100):0;const dateStr=new Date(log.date.substring(0,10)+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short',year:'numeric'});const highlights=allEx.slice(0,3).map(ex=>{const best=(ex.setsData||[]).reduce((b,s)=>s.act_weight&&parseFloat(s.act_weight)>parseFloat(b||0)?s.act_weight:b,null);const name=ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim()||ex.name;return best?`<div style="font-size:0.72rem;color:#888;margin-top:3px;">${name} — top ${best}kg</div>`:''}).join('');
-    return `<div style="background:#050d12;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;font-size:0.88rem;">📅 ${dateStr}</span><span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'#4ade80':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span></div>${highlights}</div>`;}).join('');}catch(e){console.error(e);}
+    return `<div style="background:#050d12;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;font-size:0.88rem;">${dateStr}</span><span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'#4ade80':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span></div>${highlights}</div>`;}).join('');}catch(e){console.error(e);}
 }
 
 function startRepeatableSession(){
@@ -1304,16 +1304,16 @@ function startRepeatableSession(){
 
 function renderRepeatSession(session){
     const wrapper=document.getElementById('repeat-active');wrapper.style.display='block';wrapper.scrollIntoView({behavior:'smooth'});
-    let html=`<div class="date-bar" style="margin-top:16px;"><div><span class="date-label">Session Date</span><input type="date" class="date-input" value="${session.sessionDate||''}" onchange="currentProgram._activeRepeat.sessionDate=this.value"></div><div style="background:#003B5C;border:1px solid var(--brand-accent);border-radius:6px;padding:5px 10px;font-size:0.72rem;color:var(--brand-accent);font-weight:800;">🔁 New Session</div></div>`;
+    let html=`<div class="date-bar" style="margin-top:16px;"><div><span class="date-label">Session Date</span><input type="date" class="date-input" value="${session.sessionDate||''}" onchange="currentProgram._activeRepeat.sessionDate=this.value"></div><div style="background:#003B5C;border:1px solid var(--brand-accent);border-radius:6px;padding:5px 10px;font-size:0.72rem;color:var(--brand-accent);font-weight:800;">New Session</div></div>`;
     if(session.warmup?.length)html+=`<div class="section-header">WARM UP</div>`+generateExerciseHTML(session.warmup,'warmup');
     if(session.exercises?.length)html+=`<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>`+generateExerciseHTML(session.exercises,'exercises');
-    html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;"><button onclick="saveRepeatSession()" class="btn-finish" style="margin:0;">💾 SAVE SESSION</button><button onclick="document.getElementById('repeat-active').style.display='none'" style="background:transparent;border:1px solid #555;color:#888;padding:14px;border-radius:6px;font-family:'Montserrat';font-weight:800;font-size:0.85rem;cursor:pointer;width:100%;">✕ CANCEL</button></div>`;
+    html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;"><button onclick="saveRepeatSession()" class="btn-finish" style="margin:0;">Save Session</button><button onclick="document.getElementById('repeat-active').style.display='none'" style="background:transparent;border:1px solid #555;color:#888;padding:14px;border-radius:6px;font-family:'Montserrat';font-weight:800;font-size:0.85rem;cursor:pointer;width:100%;">✕ CANCEL</button></div>`;
     wrapper.innerHTML=html;
 }
 
 async function saveRepeatSession(){
     const session=currentProgram._activeRepeat;if(!session)return;showToast('Saving...');
-    try{await pb.collection('session_logs').create({program:currentProgram.id,client:pb.authStore.model.id,date:session.sessionDate||new Date().toISOString().split('T')[0],workout_data:JSON.stringify({warmup:session.warmup,exercises:session.exercises})});currentProgram._activeRepeat=null;document.getElementById('repeat-active').style.display='none';showToast('Session saved! 🔥');await loadRepeatHistory();buildSessionMap();await buildRepeatSessionMap();isFree?renderCalendarFree():renderCalendar();}
+    try{await pb.collection('session_logs').create({program:currentProgram.id,client:pb.authStore.model.id,date:session.sessionDate||new Date().toISOString().split('T')[0],workout_data:JSON.stringify({warmup:session.warmup,exercises:session.exercises})});currentProgram._activeRepeat=null;document.getElementById('repeat-active').style.display='none';showToast('Session saved');await loadRepeatHistory();buildSessionMap();await buildRepeatSessionMap();isFree?renderCalendarFree():renderCalendar();}
     catch(e){alert('Save failed: '+e.message);}
 }
 
@@ -1338,7 +1338,7 @@ async function loadCheckins(){
     const el=document.getElementById('checkins-list');
     if(!recs.items.length){el.innerHTML=`<div class="no-programs">No check-ins yet — <a href="checkin.html" style="color:var(--brand-accent)">submit your first one</a>.</div>`;return;}
     el.innerHTML=recs.items.map(c=>{const date=new Date(c.created).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});const avg=Math.round((c.energy+c.sleep+c.mindset+c.training+c.nutrition+c.incidental)/6);
-    return `<div class="checkin-card"><div class="checkin-date"><span>${date}</span><span class="checkin-avg">avg ${avg}/10</span></div><div class="checkin-grid"><div class="checkin-stat"><div class="checkin-stat-icon">⚡</div><div class="checkin-stat-val">${c.energy}</div><div class="checkin-stat-label">Energy</div></div><div class="checkin-stat"><div class="checkin-stat-icon">😴</div><div class="checkin-stat-val">${c.sleep}</div><div class="checkin-stat-label">Sleep</div></div><div class="checkin-stat"><div class="checkin-stat-icon">🧠</div><div class="checkin-stat-val">${c.mindset}</div><div class="checkin-stat-label">Mindset</div></div><div class="checkin-stat"><div class="checkin-stat-icon">🏋️</div><div class="checkin-stat-val">${c.training}</div><div class="checkin-stat-label">Training</div></div><div class="checkin-stat"><div class="checkin-stat-icon">🥗</div><div class="checkin-stat-val">${c.nutrition}</div><div class="checkin-stat-label">Nutrition</div></div><div class="checkin-stat"><div class="checkin-stat-icon">🚶</div><div class="checkin-stat-val">${c.incidental}</div><div class="checkin-stat-label">Activity</div></div></div>${c.WIN?`<div class="checkin-text"><strong style="color:#4ade80;">WIN</strong> ${c.WIN}</div>`:''}${c.WORK_ON?`<div class="checkin-text"><strong style="color:#fb923c;">WORK ON</strong> ${c.WORK_ON}</div>`:''}</div>`;}).join('');}
+    return `<div class="checkin-card"><div class="checkin-date"><span>${date}</span><span class="checkin-avg">avg ${avg}/10</span></div><div class="checkin-grid"><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.energy}</div><div class="checkin-stat-label">Energy</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.sleep}</div><div class="checkin-stat-label">Sleep</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.mindset}</div><div class="checkin-stat-label">Mindset</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.training}</div><div class="checkin-stat-label">Training</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.nutrition}</div><div class="checkin-stat-label">Nutrition</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.incidental}</div><div class="checkin-stat-label">Activity</div></div></div>${c.WIN?`<div class="checkin-text"><strong style="color:#4ade80;">WIN</strong> ${c.WIN}</div>`:''}${c.WORK_ON?`<div class="checkin-text"><strong style="color:#fb923c;">WORK ON</strong> ${c.WORK_ON}</div>`:''}</div>`;}).join('');}
     catch(e){console.error(e);}
 }
 
@@ -1346,7 +1346,7 @@ async function loadCheckins(){
 function showToast(msg){const toast=document.getElementById('sync-toast');toast.textContent=msg;toast.style.display='block';setTimeout(()=>toast.style.display='none',1500);}
 
 // ── TOOLS (free only) ─────────────────────────────
-const toolTitles={'pace-tool':'🏃 Pace Solver','onerm-tool':'🏋️ 1RM Calculator','metronome-tool':'🥁 Metronome','interval-tool':'🔁 Interval Timer','countdown-tool':'⏱ Countdown','stopwatch-tool':'⏲ Stopwatch'};
+const toolTitles={'pace-tool':'Pace Solver','onerm-tool':' 1RM Calculator','metronome-tool':'Metronome','interval-tool':'Interval Timer','countdown-tool':'Countdown','stopwatch-tool':'Stopwatch'};
 function openTool(id){document.querySelectorAll('.tool-content').forEach(el=>el.style.display='none');document.getElementById(id).style.display='block';document.getElementById('tool-title').textContent=toolTitles[id]||'';document.getElementById('tool-modal').classList.add('open');}
 function closeTool(){document.getElementById('tool-modal').classList.remove('open');if(tMetroPlaying)tToggleMetronome();if(tIntRunning)tToggleInterval();if(tCdRunning){clearInterval(tCdInterval);tCdRunning=false;}}
 
@@ -1369,7 +1369,7 @@ function tToggleStopwatch(){const btn=document.getElementById('t-sw-btn');if(tSw
 function tResetStopwatch(){clearInterval(tSwInterval);tSwRunning=false;tSwElapsed=0;document.getElementById('t-sw-display').textContent='00:00.00';const btn=document.getElementById('t-sw-btn');btn.textContent='Start';btn.classList.remove('running');}
 let tIntRunning=false,tIntInterval=null,tIntPhase='idle',tIntCurrentSet=0,tIntTotalSets=0,tIntTime=0;
 function tUpdateIntDisplay(){const m=Math.floor(tIntTime/60),s=tIntTime%60;document.getElementById('t-int-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
-function tSetIntPhase(phase,set,total){tIntPhase=phase;const label=document.getElementById('t-int-phase'),disp=document.getElementById('t-int-display'),sets=document.getElementById('t-int-sets-label');if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';disp.style.color='#fb923c';sets.textContent='';}else if(phase==='work'){label.textContent='WORK';label.style.color='#4ade80';disp.style.color='#4ade80';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';disp.style.color='#f87171';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='done'){label.textContent='DONE 🔥';label.style.color='var(--brand-accent)';disp.style.color='white';sets.textContent='';}}
+function tSetIntPhase(phase,set,total){tIntPhase=phase;const label=document.getElementById('t-int-phase'),disp=document.getElementById('t-int-display'),sets=document.getElementById('t-int-sets-label');if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';disp.style.color='#fb923c';sets.textContent='';}else if(phase==='work'){label.textContent='WORK';label.style.color='#4ade80';disp.style.color='#4ade80';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';disp.style.color='#f87171';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='done'){label.textContent='DONE ';label.style.color='var(--brand-accent)';disp.style.color='white';sets.textContent='';}}
 function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIntRunning){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntPhase='idle';document.getElementById('t-int-phase').textContent='READY';document.getElementById('t-int-phase').style.color='var(--brand-accent)';document.getElementById('t-int-display').style.color='white';document.getElementById('t-int-sets-label').textContent='';tIntTime=parseInt(document.getElementById('t-int-work').value)||30;tUpdateIntDisplay();return;}const warmup=parseInt(document.getElementById('t-int-warmup').value)||0,sets=parseInt(document.getElementById('t-int-sets').value)||5,work=parseInt(document.getElementById('t-int-work').value)||30,rest=parseInt(document.getElementById('t-int-rest').value)||15;tIntTotalSets=sets;tIntCurrentSet=1;tIntRunning=true;btn.textContent='Stop';btn.classList.add('running');if(warmup>0){tIntTime=warmup;tSetIntPhase('warmup',0,sets);}else{tIntTime=work;tSetIntPhase('work',1,sets);}tUpdateIntDisplay();tIntInterval=setInterval(()=>{tIntTime--;tUpdateIntDisplay();if(tIntTime>0)return;if(tIntPhase==='warmup'){tIntTime=work;tIntCurrentSet=1;tSetIntPhase('work',1,tIntTotalSets);}else if(tIntPhase==='work'){if(rest>0){tIntTime=rest;tSetIntPhase('rest',tIntCurrentSet,tIntTotalSets);}else{tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}}else if(tIntPhase==='rest'){tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}},1000);}
 </script>
 
