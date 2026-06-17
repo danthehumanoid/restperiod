@@ -131,9 +131,9 @@
 
 <!-- PILL TABS -->
 <div class="pill-tabs">
-    <div class="pill active" onclick="switchTab('train')">🏋️ Train</div>
-    <div class="pill" onclick="switchTab('philosophy')">📖 Philosophy</div>
-    <div class="pill" onclick="switchTab('theory')">🧪 Theory</div>
+    <div class="pill active" onclick="switchTab('train')">TRAIN</div>
+    <div class="pill" onclick="switchTab('philosophy')">PHILOSOPHY</div>
+    <div class="pill" onclick="switchTab('theory')">THEORY</div>
 </div>
 
 <!-- TRAIN TAB -->
@@ -230,18 +230,18 @@ const CHAPTERS = [
 
 // ── THEORY PLACEHOLDERS ───────────────────────────
 const THEORY_ITEMS = [
-    { emoji:'💪', tag:'Strength', title:'Progressive Overload Explained' },
-    { emoji:'🧠', tag:'Recovery', title:'Why Sleep is Your Secret Weapon' },
-    { emoji:'🏃', tag:'Running', title:'The Aerobic Base — What It Actually Means' },
-    { emoji:'⚡', tag:'Power', title:'Fast vs Slow Twitch Muscle Fibres' },
-    { emoji:'🤸', tag:'Mobility', title:'Flexibility vs Mobility — The Difference' },
-    { emoji:'❤️', tag:'Cardio', title:'Heart Rate Zones Demystified' },
-    { emoji:'🔄', tag:'Programming', title:'Periodisation for Everyday Athletes' },
-    { emoji:'🥗', tag:'Nutrition', title:'Protein Timing and Muscle Repair' },
-    { emoji:'🧘', tag:'Mindset', title:'The Stress-Recovery Cycle' },
-    { emoji:'🦴', tag:'Anatomy', title:'Understanding the Posterior Chain' },
-    { emoji:'🔥', tag:'Warm Up', title:'Why Warm Ups Actually Work' },
-    { emoji:'📊', tag:'Data', title:'Reading Your Body\'s Signals' },
+    { tag:'Strength', title:'Progressive Overload Explained' },
+    { tag:'Recovery', title:'Why Sleep is Your Secret Weapon' },
+    { tag:'Running', title:'The Aerobic Base — What It Actually Means' },
+    { tag:'Power', title:'Fast vs Slow Twitch Muscle Fibres' },
+    { tag:'Mobility', title:'Flexibility vs Mobility — The Difference' },
+    { tag:'Cardio', title:'Heart Rate Zones Demystified' },
+    { tag:'Programming', title:'Periodisation for Everyday Athletes' },
+    { tag:'Nutrition', title:'Protein Timing and Muscle Repair' },
+    { tag:'Mindset', title:'The Stress-Recovery Cycle' },
+    { tag:'Anatomy', title:'Understanding the Posterior Chain' },
+    { tag:'Warm Up', title:'Why Warm Ups Actually Work' },
+    { tag:'Data', title:'Reading Your Body\'s Signals' },
 ];
 
 // ── STATE ─────────────────────────────────────────
@@ -251,14 +251,14 @@ let currentLessonIndex = 0;
 let freeMasterPrograms = [];
 
 const CATEGORY_META = {
-    STRENGTH: { emoji:'💪', label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
-    POWER:    { emoji:'⚡', label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
-    RUN:      { emoji:'🏃', label:'Run',      thumbClass:'thumb-run',      color:'#4ade80' },
-    CIRCUIT:  { emoji:'🔄', label:'Circuit',  thumbClass:'thumb-circuit',  color:'#26C6DA' },
-    MOBILITY: { emoji:'🤸', label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
-    CARDIO:   { emoji:'❤️', label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
-    'WARM UP':{ emoji:'🔥', label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
-    OTHER:    { emoji:'📋', label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
+    STRENGTH: { label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
+    POWER:    { label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
+    RUN:      { label:'Run',      thumbClass:'thumb-run',      color:'#4ade80' },
+    CIRCUIT:  { label:'Circuit',  thumbClass:'thumb-circuit',  color:'#26C6DA' },
+    MOBILITY: { label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
+    CARDIO:   { label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
+    'WARM UP':{ label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
+    OTHER:    { label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
 };
 const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
 
@@ -308,7 +308,7 @@ function renderLessons() {
             <div class="lesson-label" style="font-size:0.7rem;font-weight:700;color:#aaa;line-height:1.3;margin-top:4px;">${ch.title}</div>
             <div class="lesson-badges">
                 ${isRead ? '<span class="badge-read">✓ Read</span>' : ''}
-                ${isSaved ? '<span class="badge-saved">🔖 Saved</span>' : ''}
+                ${isSaved ? '<span class="badge-saved">Saved</span>' : ''}
             </div>
         </div>`;
     }).join('');
@@ -325,7 +325,7 @@ function renderTheory() {
         const cardStyle = hasFile ? '' : 'opacity:0.6;';
         return `<div class="theory-card" style="${cardStyle}" onclick="${onclick}">
             ${comingSoon}
-            <div class="theory-thumb" style="background:${colours[i%colours.length]};">${t.emoji}</div>
+            <div class="theory-thumb" style="background:${colours[i%colours.length]};"></div>
             <div class="theory-body">
                 <div class="theory-tag">${t.tag}</div>
                 <div class="theory-title">${t.title}</div>
@@ -398,7 +398,7 @@ function toggleSaveLesson() {
         showToast('Removed from saved');
     } else {
         savedLessons.add(ch.num);
-        showToast('🔖 Saved to your library');
+        showToast('Saved to your library');
     }
     saveUserProgress();
     updateReaderUI();
@@ -445,7 +445,6 @@ function renderTrainShelves() {
         const progs = grouped[cat];
         return `<div class="shelf-section">
             <div class="shelf-header">
-                <span class="shelf-emoji">${meta.emoji}</span>
                 <span class="shelf-title" style="color:${meta.color};">${meta.label}</span>
                 <div class="shelf-line"></div>
                 <span class="shelf-count">${progs.length}</span>
@@ -467,13 +466,13 @@ function buildProgCard(p) {
     const schedule = data?.schedule||data||[];
     const sessionCount = Array.isArray(schedule)?schedule.length:0;
     const thumbHtml = p.cover_image
-        ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;">${meta.emoji}</div>`
-        : `<div class="prog-thumb-placeholder ${meta.thumbClass}">${meta.emoji}</div>`;
+        ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;"></div>`
+        : `<div class="prog-thumb-placeholder ${meta.thumbClass}"></div>`;
     return `<div class="prog-card" onclick="openProgModal('${p.id}')">
         ${thumbHtml}
         <div class="prog-card-body">
             <div class="prog-name">${p.name}</div>
-            <div class="prog-badge">${p.is_repeatable?'🔁 Repeatable':sessionCount+' sessions'}</div>
+            <div class="prog-badge">${p.is_repeatable?'Repeatable':sessionCount+' sessions'}</div>
         </div>
     </div>`;
 }
@@ -488,14 +487,14 @@ function openProgModal(id) {
     const sessionCount = Array.isArray(schedule)?schedule.length:0;
     const thumbHtml = p.cover_image
         ? `<img class="prog-modal-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" onerror="this.style.display='none'">`
-        : `<div class="prog-modal-thumb ${meta.thumbClass}" style="display:flex;align-items:center;justify-content:center;font-size:3rem;border-radius:8px;">${meta.emoji}</div>`;
+        : `<div class="prog-modal-thumb ${meta.thumbClass}" style="display:flex;align-items:center;justify-content:center;font-size:3rem;border-radius:8px;"></div>`;
     document.getElementById('prog-modal-content').innerHTML = `
         ${thumbHtml}
         <div class="prog-modal-title">${p.name}</div>
         <div class="prog-modal-desc">${p.description||'No description available.'}</div>
         <div class="prog-modal-meta">
-            <span>${meta.emoji} ${meta.label}</span>
-            <span>${p.is_repeatable?'🔁 Repeatable':sessionCount+' sessions'}</span>
+            <span>${meta.label}</span>
+            <span>${p.is_repeatable?'Repeatable':sessionCount+' sessions'}</span>
         </div>
         <button class="btn-start" onclick="startProgram('${p.id}')">▶ Start This Program</button>
         <button class="btn-modal-close" onclick="closeProgModal()">Close</button>`;
@@ -513,7 +512,7 @@ async function startProgram(templateId) {
             is_repeatable: template.is_repeatable||false, category: template.category||'', archived: false
         });
         closeProgModal();
-        showToast('Program started! 🔥');
+        showToast('Program started');
         setTimeout(() => { window.location.href = `program.html?id=${newProg.id}`; }, 1000);
     } catch(e) { alert('Failed: '+e.message); }
 }
