@@ -286,7 +286,7 @@
 
 <!-- ── GREETING ── -->
 <div class="greeting">
-    <h1>Hey, <span id="greeting-name"></span> 👋</h1>
+    <h1>Hey, <span id="greeting-name"></span></h1>
     <p id="greeting-sub">Here's your training overview.</p>
 </div>
 
@@ -338,7 +338,7 @@
 
     <!-- CLAIMED PRE-MADE PROGRAMS (client only, below shelves) -->
     <div id="claimed-premade-section" class="client-only" style="display:none;">
-        <div class="section-title">📂 My Claimed Programs</div>
+        <div class="section-title">My Claimed Programs</div>
         <div class="programs-grid" id="claimed-premade-grid"></div>
     </div>
 
@@ -355,7 +355,7 @@
 
     <!-- CHECK-INS (client only) -->
     <div id="checkins-section" class="client-only" style="display:none;">
-        <div class="section-title">📝 Recent Check-ins</div>
+        <div class="section-title">Recent Check-ins</div>
         <div id="checkins-list"></div>
     </div>
 
@@ -389,9 +389,9 @@
         </div>
         <div class="plan-field"><span class="plan-label">Type</span>
             <select class="plan-input" id="plan-type">
-                <option value="strength">💪 Strength</option><option value="cardio">🏃 Cardio</option>
-                <option value="recovery">🧘 Recovery</option><option value="mobility">🤸 Mobility</option>
-                <option value="other">⚡ Other</option>
+                <option value="strength">STRENGTH</option><option value="cardio">CARDIO</option>
+                <option value="recovery">RECOVERY</option><option value="mobility">MOBILITY</option>
+                <option value="other"></option>
             </select>
         </div>
         <div class="plan-field"><span class="plan-label">Notes</span><textarea class="plan-input" id="plan-notes" rows="3" placeholder="Any details..."></textarea></div>
@@ -557,14 +557,14 @@ const typeEmoji  = { strength:'💪', cardio:'🏃', recovery:'🧘', mobility:'
 const dayNames   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 const CATEGORY_META = {
-    STRENGTH: { emoji:'💪', label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
-    POWER:    { emoji:'⚡', label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
-    RUN:      { emoji:'🏃', label:'Run',      thumbClass:'thumb-run',      color:'#4ade80' },
-    CIRCUIT:  { emoji:'🔄', label:'Circuit',  thumbClass:'thumb-circuit',  color:'#26C6DA' },
-    MOBILITY: { emoji:'🤸', label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
-    CARDIO:   { emoji:'❤️', label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
-    'WARM UP':{ emoji:'🔥', label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
-    OTHER:    { emoji:'📋', label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
+    STRENGTH: { label: 'Strength', thumbClass: 'thumb-strength', color: '#c084fc' },
+    POWER:    { label: 'Power',    thumbClass: 'thumb-power',    color: '#fb923c' },
+    RUN:      { label: 'Run',      thumbClass: 'thumb-run',      color: '#4ade80' },
+    CIRCUIT:  { label: 'Circuit',  thumbClass: 'thumb-circuit',  color: '#26C6DA' },
+    MOBILITY: { label: 'Mobility', thumbClass: 'thumb-mobility', color: '#a78bfa' },
+    CARDIO:   { label: 'Cardio',   thumbClass: 'thumb-cardio',   color: '#f87171' },
+    'WARM UP':{ label: 'Warm Up',  thumbClass: 'thumb-warmup',   color: '#fb923c' },
+    OTHER:    { label: 'Other',    thumbClass: 'thumb-other',    color: '#888'    },
 };
 const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
 
