@@ -134,6 +134,13 @@
     <div class="pill active" onclick="switchTab('train')">TRAIN</div>
     <div class="pill" onclick="switchTab('philosophy')">PHILOSOPHY</div>
     <div class="pill" onclick="switchTab('theory')">THEORY</div>
+    <div class="pill" onclick="switchTab('start')">START HERE</div>
+</div>
+
+<!-- START HERE TAB -->
+<div class="tab-panel" id="tab-start">
+    <div class="section-title">Welcome to Rest Period</div>
+    <!-- Add your content here -->
 </div>
 
 <!-- TRAIN TAB -->
@@ -230,12 +237,18 @@ const CHAPTERS = [
 
 // ── THEORY PLACEHOLDERS ───────────────────────────
 const THEORY_ITEMS = [
-    { tag:'Principles', title:'Principle of Reversibility',  file: 'principleofreversibility.html' },
-    { tag:'Principles', title:'Principles of Recovery',      file: 'principlesofrecovery.html' },
-    { tag:'Principles', title:'Principle of Progression',    file: 'principleofprogression.html' },
-    { tag:'Principles', title:'Principle of Overload',       file: 'principleofoverload.html' },
-    { tag:'Principles', title:'Principle of Specificity',    file: 'principleofspecificity.html' },
-    { tag:'Principles', title:'Principle of Individuality',  file: 'principleofindividuality.html' },
+    { tag:'Strength', title:'Progressive Overload Explained' },
+    { tag:'Recovery', title:'Why Sleep is Your Secret Weapon' },
+    { tag:'Running', title:'The Aerobic Base — What It Actually Means' },
+    { tag:'Power', title:'Fast vs Slow Twitch Muscle Fibres' },
+    { tag:'Mobility', title:'Flexibility vs Mobility — The Difference' },
+    { tag:'Cardio', title:'Heart Rate Zones Demystified' },
+    { tag:'Programming', title:'Periodisation for Everyday Athletes' },
+    { tag:'Nutrition', title:'Protein Timing and Muscle Repair' },
+    { tag:'Mindset', title:'The Stress-Recovery Cycle' },
+    { tag:'Anatomy', title:'Understanding the Posterior Chain' },
+    { tag:'Warm Up', title:'Why Warm Ups Actually Work' },
+    { tag:'Data', title:'Reading Your Body\'s Signals' },
 ];
 
 // ── STATE ─────────────────────────────────────────
@@ -269,7 +282,7 @@ window.onload = async () => {
 function switchTab(tab) {
     document.querySelectorAll('.pill').forEach((p,i) => p.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    const tabs = ['train','philosophy','theory'];
+    const tabs = ['train','philosophy','theory','start'];
     const idx = tabs.indexOf(tab);
     document.querySelectorAll('.pill')[idx].classList.add('active');
     document.getElementById(`tab-${tab}`).classList.add('active');
