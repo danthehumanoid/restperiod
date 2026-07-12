@@ -158,6 +158,12 @@
     </div>
 </div>
 
+<!-- SIGNUP BANNER -->
+<div id="guest-banner" style="margin:12px 16px;padding:14px 18px;background:rgba(38,198,218,0.07);border:1px solid rgba(38,198,218,0.2);border-radius:8px;font-size:0.82rem;color:#888;line-height:1.7;text-align:center;">
+    <a href="/index.html" style="color:var(--brand-accent);font-weight:800;text-decoration:none;">Create a free account or log in</a>
+    to access free warm ups, rehab and training programs, and education.
+</div>
+
 <!-- SAVED EXERCISES SECTION -->
 <div class="main" id="saved-section" style="display:none;">
     <div class="main-header">
@@ -274,6 +280,10 @@ window.onload = async () => {
     buildTagPicker();
     await loadExercises();
     renderSavedExercises();
+    if (pb.authStore.isValid) {
+        const b = document.getElementById('guest-banner');
+        if (b) b.style.display = 'none';
+    }
 };
 
 function renderSavedExercises() {
