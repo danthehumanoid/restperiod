@@ -457,13 +457,13 @@ function renderBatch() {
             </div>
             <div class="card-body">
                 <div class="card-title">${cleanTitle(ex.title)}</div>
-                <div class="card-tags">${displayTags}</div>
                 <button onclick="shareLibraryExercise('${exSlug}');event.stopPropagation();"
-                    style="margin-top:8px;width:100%;background:none;border:1px solid var(--border);color:var(--brand-accent);padding:5px;border-radius:4px;font-size:0.6rem;font-family:'Montserrat',sans-serif;font-weight:800;cursor:pointer;letter-spacing:0.5px;transition:0.2s;"
+                    style="margin-top:6px;width:100%;background:none;border:1px solid var(--border);color:var(--brand-accent);padding:5px;border-radius:4px;font-size:0.6rem;font-family:'Montserrat',sans-serif;font-weight:800;cursor:pointer;letter-spacing:0.5px;transition:0.2s;"
                     onmouseover="this.style.background='var(--brand-accent)';this.style.color='#000';"
                     onmouseout="this.style.background='none';this.style.color='var(--brand-accent)';">
                     SHARE
                 </button>
+                <div class="card-tags">${displayTags}</div>
             </div>`;
         grid.appendChild(card);
     });
