@@ -107,7 +107,7 @@
         <div class="search-row">
             <input type="text" class="search-input" id="search-input" placeholder="Search for an exercise..." oninput="runSearch()" />
             <button class="filter-toggle" id="filter-toggle-btn" onclick="toggleFilters()">FILTERS ▾</button>
-            <a href="library.html" class="filter-toggle" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">VIEW LIBRARY</a>
+            <a href="library.html" class="filter-toggle" style="text-decoration:none;text-align:center;">VIEW LIBRARY</a>
         </div>
         <div class="filter-panel" id="filter-panel"></div>
         <div class="results-count" id="results-count"></div>
@@ -325,15 +325,43 @@ function runSearch() {
         const videoUrl = e.video || e.src || '';
         const slug = encodeURIComponent(e.title);
         // (B) Share button
-        const shareBtn = `<button onclick="shareExercise('${slug}');event.stopPropagation();" style="background:none;border:none;color:#555;cursor:pointer;font-size:0.9rem;padding:4px 8px;" title="Share">⎘</button>`;
+        const isSaved = getSavedExercises().includes(e.title);
+        const shareBtn = `<button onclick="shareExercise('${slug}');event.stopPropagation();" style="background:none;border:1px solid #1a2a35;border-radius:4px;color:#888;cursor:pointer;font-size:0.65rem;padding:3px 8px;font-family:'Montserrat',sans-serif;font-weight:800;" title="Copy share link">SHARE</button>`;
+        const saveBtn = isLoggedIn ? `<button onclick="toggleSaveExercise('${e.title.replace(/'/g,"\\'")}');event.stopPropagation();" id="save-btn-${slug}" style="background:${isSaved?'var(--brand-accent)':'none'};border:1px solid ${isSaved?'var(--brand-accent)':'#1a2a35'};border-radius:4px;color:${isSaved?'#000':'#888'};cursor:pointer;font-size:0.65rem;padding:3px 8px;font-family:'Montserrat',sans-serif;font-weight:800;" title="${isSaved?'Remove from saved':'Save to library'}">${isSaved?'SAVED':'SAVE'}</button>` : '';
         return `<div class="result-item" onclick="openVideo('${e.title.replace(/'/g,"\\'")}','${videoUrl.replace(/'/g,"\\'")}')">
             <div><div class="result-name">${cleanName}</div><div class="result-tags">${tags}</div></div>
-            <div style="display:flex;align-items:center;gap:4px;">
+            <div style="display:flex;align-items:center;gap:6px;" onclick="event.stopPropagation()">
+                ${saveBtn}
                 ${shareBtn}
-                <span class="result-play">▶</span>
+                <span class="result-play" onclick="openVideo('${e.title.replace(/'/g,"\\'")}','${videoUrl.replace(/'/g,"\\'")}');event.stopPropagation();">▶</span>
             </div>
         </div>`;
     }).join('');
+}
+
+// (D) Save exercises to localStorage library
+function getSavedExercises() {
+    const uid = pb.authStore.isValid ? pb.authStore.model.id : 'guest';
+    const saved = localStorage.getItem(`rp_saved_exercises_${uid}`);
+    return saved ? JSON.parse(saved) : [];
+}
+
+function toggleSaveExercise(title) {
+    if (!isLoggedIn) { showShareToast('Sign in to save exercises'); return; }
+    const uid = pb.authStore.model.id;
+    let saved = getSavedExercises();
+    const slug = encodeURIComponent(title);
+    const btn = document.getElementById(`save-btn-${slug}`);
+    if (saved.includes(title)) {
+        saved = saved.filter(t => t !== title);
+        showShareToast('Removed from saved');
+        if (btn) { btn.textContent='SAVE'; btn.style.background='none'; btn.style.borderColor='#1a2a35'; btn.style.color='#888'; }
+    } else {
+        saved.push(title);
+        showShareToast('Saved to your library');
+        if (btn) { btn.textContent='SAVED'; btn.style.background='var(--brand-accent)'; btn.style.borderColor='var(--brand-accent)'; btn.style.color='#000'; }
+    }
+    localStorage.setItem(`rp_saved_exercises_${uid}`, JSON.stringify(saved));
 }
 
 // (B) Share exercise via link
