@@ -258,8 +258,7 @@ let isTrainer = false;
 let filterDrawerOpen = false;
 
 window.onload = async () => {
-    if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
-    const role = pb.authStore.model.role;
+    const role = pb.authStore.isValid ? pb.authStore.model.role : 'guest';
     isTrainer = role === 'trainer' || role === 'admin';
     if (isTrainer) { document.getElementById('add-btn').style.display = 'flex'; }
     buildFilterUI();
