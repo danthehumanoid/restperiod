@@ -2,521 +2,439 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Exercise Library | RestPeriod</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rest Period</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
     <script src="exercises.js"></script>
     <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: calc(var(--nav-height) + 20px); }
+        body { padding-bottom: 60px; }
 
-        /* ── TOP BAR ── */
-        .top-bar { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #000; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 200; }
-        .nav-brand { font-weight: 800; font-size: 1rem; font-family: 'Montserrat'; white-space: nowrap; }
-        .nav-brand span { color: var(--brand-accent); }
-        .search-bar { flex: 1; background: var(--input-bg); border: 1px solid var(--border); color: white; padding: 9px 14px; border-radius: 8px; font-size: 0.85rem; font-family: inherit; min-width: 0; }
-        .search-bar:focus { outline: none; border-color: var(--brand-accent); }
-        .btn-filter-toggle { background: var(--card-bg); border: 1px solid var(--border); color: var(--brand-accent); padding: 9px 14px; border-radius: 8px; cursor: pointer; font-family: 'Montserrat'; font-weight: 800; font-size: 0.65rem; white-space: nowrap; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
-        .btn-filter-toggle.has-active { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
-        .filter-count-badge { background: #000; color: var(--brand-accent); border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 800; }
-        .btn-filter-toggle.has-active .filter-count-badge { background: rgba(0,0,0,0.3); color: #000; }
+        .header { text-align: center; padding: 32px 20px 20px; }
+        .header img { width: 90px; height: 90px; object-fit: contain; margin-bottom: 12px; }
+        .header h1 { font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: 3px; }
+        .header h1 span { color: var(--brand-accent); }
 
-        /* ── FILTER DRAWER ── */
-        .filter-drawer { background: #000; border-bottom: 1px solid var(--border); overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
-        .filter-drawer.open { max-height: 70vh; overflow-y: auto; }
-        .filter-drawer-inner { padding: 16px; }
-        .active-filter-bar { display: none; margin-bottom: 12px; }
-        .active-filter-bar.visible { display: block; }
-        .active-filter-label { font-size: 0.55rem; color: #555; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
-        .active-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
-        .active-pill { background: var(--brand-accent); color: #000; padding: 3px 10px; border-radius: 20px; font-size: 0.6rem; font-family: 'Montserrat'; font-weight: 800; cursor: pointer; }
-        .btn-clear-all { background: none; border: 1px solid var(--brand-danger); color: var(--brand-danger); border-radius: 6px; padding: 5px 12px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.6rem; cursor: pointer; }
-        .filter-section { margin-bottom: 14px; }
-        .filter-section-title { font-family: 'Montserrat'; font-size: 0.55rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; }
-        .filter-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-        .filter-tag { padding: 4px 10px; background: transparent; border: 1px solid #1a2a35; color: #555; border-radius: 20px; cursor: pointer; font-size: 0.6rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
-        .filter-tag:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
-        .filter-tag.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
-        .filter-tag[data-tag="NO-VIDEO"] { border-color: var(--brand-danger); color: var(--brand-danger); }
-        .filter-tag[data-tag="NO-VIDEO"].active { background: var(--brand-danger); color: white; border-color: var(--brand-danger); }
+        .container { max-width: 860px; margin: 0 auto; padding: 0 16px; }
 
-        /* ── MAIN ── */
-        .main { padding: 14px 16px; }
-        .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
-        .results-count { font-size: 0.72rem; color: #555; font-family: 'Montserrat'; font-weight: 700; }
-        .results-count span { color: var(--brand-accent); }
-        .btn-add { background: var(--brand-secondary); color: white; border: none; padding: 8px 14px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.65rem; cursor: pointer; display: none; align-items: center; gap: 6px; }
+        /* SEARCH */
+        .search-section { margin-bottom: 16px; }
+        .search-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .search-input { flex: 1; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; color: white; padding: 14px 18px; font-size: 1rem; font-family: inherit; transition: border-color 0.2s; }
+        .search-input:focus { outline: none; border-color: var(--brand-accent); }
+        .filter-toggle { background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--brand-accent); padding: 0 18px; font-size: 0.75rem; font-family: 'Montserrat', sans-serif; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .filter-toggle:hover, .filter-toggle.active { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
+        .filter-panel { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 10px; display: none; }
+        .filter-panel.open { display: block; }
+        .filter-group { margin-bottom: 12px; }
+        .filter-group-label { font-size: 0.55rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        .filter-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .filter-btn { padding: 5px 12px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: #888; font-size: 0.65rem; font-weight: 800; font-family: 'Montserrat', sans-serif; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
+        .filter-btn.active { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
+        .results-count { font-size: 0.7rem; color: #555; margin-bottom: 8px; padding-left: 2px; }
+        .results-list { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; max-height: 320px; overflow-y: auto; display: none; }
+        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--brand-bg); cursor: pointer; transition: 0.15s; }
+        .result-item:last-child { border-bottom: none; }
+        .result-item:hover { background: #152733; }
+        .result-name { font-size: 0.9rem; font-weight: 600; }
+        .result-tags { font-size: 0.65rem; color: #555; margin-top: 2px; }
+        .result-play { color: var(--brand-accent); font-size: 1.2rem; opacity: 0.6; }
 
-        /* ── VIDEO GRID ── */
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-        @media (max-width: 480px) { .video-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
-        .video-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: 0.2s; }
-        .video-card:hover { border-color: var(--brand-accent); }
-        .video-card.no-video { border-color: #2a1a1a; }
-        .video-thumb { width: 100%; aspect-ratio: 9/16; background: #050d12; position: relative; overflow: hidden; }
-        .video-thumb iframe { width: 100%; height: 100%; border: none; }
-        .video-thumb video { width: 100%; height: 100%; object-fit: cover; }
-        .no-video-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #333; }
-        .no-video-placeholder i { font-size: 1.8rem; }
-        .no-video-placeholder span { font-size: 0.6rem; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; }
-        .card-body { padding: 10px; }
-        .card-title { font-family: 'Montserrat'; font-weight: 800; font-size: 0.78rem; color: white; margin-bottom: 5px; line-height: 1.3; }
-        .card-tags { display: flex; flex-wrap: wrap; gap: 3px; }
-        .card-tag { padding: 2px 6px; border-radius: 20px; font-size: 0.5rem; font-weight: 800; font-family: 'Montserrat'; background: #001a30; color: var(--brand-accent); border: 1px solid #004d7a; text-transform: uppercase; }
-        .card-tag.no-video-tag { background: #2a0a0a; color: var(--brand-danger); border-color: #4a1a1a; }
-        .card-custom-badge { position: absolute; top: 6px; right: 6px; background: var(--brand-secondary); color: white; font-size: 0.45rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 5px; border-radius: 4px; text-transform: uppercase; }
+        /* VIDEO MODAL */
+        .video-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .video-overlay.open { display: flex; }
+        .video-box { background: #000; border-radius: 12px; width: 100%; max-width: 700px; position: relative; }
+        .video-close { position: absolute; top: -44px; right: 0; background: none; border: none; color: white; font-size: 2.2rem; cursor: pointer; line-height: 1; z-index: 10; }
+        .video-title { padding: 14px 16px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.95rem; color: var(--brand-accent); }
 
-        /* ── EMPTY + LOAD MORE ── */
-        .empty { color: #333; text-align: center; padding: 60px 20px; grid-column: 1/-1; font-size: 0.85rem; }
-        .empty i { font-size: 2rem; margin-bottom: 12px; display: block; }
-        .load-more-wrap { text-align: center; margin-top: 24px; }
-        .btn-load { padding: 12px 30px; background: var(--brand-accent); border: none; font-weight: 800; font-family: 'Montserrat'; cursor: pointer; border-radius: 6px; color: #000; font-size: 0.75rem; display: none; }
-
-        /* ── ADD MODAL ── */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 6000; align-items: flex-end; justify-content: center; padding: 0; }
-        .modal-overlay.open { display: flex; }
-        .modal { background: var(--card-bg); border: 1px solid var(--brand-accent); border-radius: 16px 16px 0 0; padding: 24px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
-        .modal h3 { font-family: 'Montserrat'; font-size: 0.9rem; color: var(--brand-accent); margin-bottom: 20px; }
-        .form-field { margin-bottom: 14px; }
-        .form-label { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; font-family: 'Montserrat'; }
-        .form-input { width: 100%; background: #050d12; border: 1px solid var(--border); color: white; padding: 10px 12px; border-radius: 6px; font-family: inherit; font-size: 0.9rem; }
+        /* LOGIN */
+        .login-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 16px; }
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #050d12; padding: 4px; border-radius: 8px; }
+        .tab { flex: 1; padding: 9px; text-align: center; cursor: pointer; border-radius: 6px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75rem; color: #555; border: none; background: none; transition: 0.2s; }
+        .tab.active { background: var(--brand-accent); color: #000; }
+        .form-group { margin-bottom: 12px; }
+        .form-input { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; color: white; padding: 11px 12px; font-size: 0.9rem; font-family: inherit; }
         .form-input:focus { outline: none; border-color: var(--brand-accent); }
-        .tag-picker { display: flex; flex-wrap: wrap; gap: 6px; }
-        .tag-pick-btn { padding: 5px 12px; background: transparent; border: 1px solid var(--border); color: #555; border-radius: 20px; cursor: pointer; font-size: 0.6rem; font-weight: 800; font-family: 'Montserrat'; transition: 0.2s; text-transform: uppercase; }
-        .tag-pick-btn.selected { background: var(--brand-accent); border-color: var(--brand-accent); color: #000; }
-        .tag-section-label { font-size: 0.55rem; color: #444; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 6px; }
-        .upload-area { border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .upload-area:hover { border-color: var(--brand-accent); }
-        .upload-area i { font-size: 1.8rem; color: #333; margin-bottom: 8px; display: block; }
-        .upload-area p { font-size: 0.72rem; color: #555; }
-        .upload-area p span { color: var(--brand-accent); }
-        .progress-bar { background: var(--border); border-radius: 6px; height: 6px; margin-top: 10px; overflow: hidden; display: none; }
-        .progress-fill { background: var(--brand-secondary); height: 100%; width: 0%; transition: width 0.3s; }
-        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .btn-save { background: var(--brand-secondary); color: white; border: none; padding: 12px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
-        .btn-cancel { background: #1a2a35; color: #888; border: none; padding: 12px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
-        .no-video-notice { background: #1a0a0a; border: 1px solid #4a1a1a; border-radius: 6px; padding: 10px 12px; font-size: 0.72rem; color: #f87171; margin-top: 8px; display: none; }
+        .submit-btn { width: 100%; padding: 12px; border: none; border-radius: 6px; background: var(--brand-accent); color: #000; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; transition: 0.2s; }
+        .submit-btn:hover { background: #1eb3c5; }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .free-badge { background: rgba(38,198,218,0.07); border: 1px solid rgba(38,198,218,0.2); border-radius: 6px; padding: 10px 14px; font-size: 0.75rem; color: #888; margin-bottom: 16px; line-height: 1.6; }
+        .free-badge strong { color: var(--brand-accent); }
+        .msg { border-radius: 6px; padding: 9px 12px; font-size: 0.78rem; margin-top: 10px; display: none; }
+        .msg-error { background: rgba(255,82,82,0.1); border: 1px solid #ff5252; color: #ff5252; }
+        .msg-success { background: rgba(46,125,50,0.1); border: 1px solid #2E7D32; color: #4ade80; }
 
-        /* ── BOTTOM NAV ── */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: #000; border-top: 1px solid var(--border); display: flex; z-index: 3000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; color: #444; transition: 0.2s; text-decoration: none; border: none; background: none; padding: 0; }
-        .nav-item.active { color: var(--brand-accent); }
-        .nav-item i { font-size: 1.1rem; }
-        .nav-item span { font-family: 'Montserrat'; font-weight: 800; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* TOOLS */
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .tool-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+        .tool-title { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .timer-display { font-size: 2.6rem; font-family: 'Courier New', monospace; font-weight: bold; text-align: center; margin: 8px 0; color: white; }
+        .tool-input { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; color: white; padding: 8px 10px; font-size: 0.9rem; margin-bottom: 8px; font-family: inherit; }
+        .tool-input:focus { outline: none; border-color: var(--brand-accent); }
+        input[type="range"] { width: 100%; cursor: pointer; margin-bottom: 8px; accent-color: var(--brand-accent); }
+        .tool-btn { width: 100%; padding: 10px; border: none; border-radius: 6px; background: var(--brand-primary); color: white; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: 0.2s; margin-top: 4px; }
+        .tool-btn:hover { background: #004d7a; }
+        .tool-btn.running { background: #7f1d1d; color: #f87171; }
+        .tool-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        .tool-row .tool-input { margin-bottom: 0; }
+        .bpm-display { font-size: 3rem; font-family: 'Montserrat', sans-serif; font-weight: 800; text-align: center; color: var(--brand-accent); margin: 4px 0 8px; transition: transform 0.05s, color 0.05s; }
+        .result-output { background: #000; border-left: 3px solid var(--brand-accent); padding: 10px; border-radius: 4px; font-size: 0.8rem; margin-top: 8px; display: none; line-height: 1.8; }
+        .phase-label { text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; letter-spacing: 1px; margin-bottom: 4px; }
+        .solve-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+        .solve-field { display: flex; flex-direction: column; gap: 4px; }
+        .solve-label { font-size: 0.55rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        .solve-field .tool-input { margin-bottom: 0; }
+        .rm-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 8px; }
+        .rm-table th { color: var(--brand-accent); font-weight: 800; padding: 4px 6px; text-align: center; border-bottom: 1px solid var(--border); }
+        .rm-table td { padding: 4px 6px; text-align: center; border-bottom: 1px solid var(--card-bg); color: #ccc; }
+        .rm-table tr:last-child td { border-bottom: none; }
+        .rm-table tr.highlight td { color: var(--brand-accent); font-weight: 700; }
+        .section-gap { margin-bottom: 16px; }
+        .unit-toggle { padding: 5px 10px; border: none; background: none; color: #555; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.65rem; cursor: pointer; transition: 0.2s; }
+        .unit-toggle.active { background: var(--brand-accent); color: #000; }
     </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div class="top-bar">
-    <div class="nav-brand">REST <span>PERIOD</span></div>
-    <input type="text" class="search-bar" id="search-input" placeholder="Search exercises..." oninput="resetAndRender()">
-    <button class="btn-filter-toggle" id="filter-toggle-btn" onclick="toggleFilterDrawer()">
-        <i class="fas fa-sliders-h"></i> Filter
-        <span class="filter-count-badge" id="filter-count" style="display:none;">0</span>
-    </button>
+<div class="header">
+    <img src="restperiodmega.png" alt="Rest Period" />
+    <h1>REST <span>PERIOD</span></h1>
 </div>
 
-<!-- FILTER DRAWER -->
-<div class="filter-drawer" id="filter-drawer">
-    <div class="filter-drawer-inner">
-        <div class="active-filter-bar" id="active-filter-bar">
-            <div class="active-filter-label">Active Filters</div>
-            <div class="active-pills" id="active-pills"></div>
-            <button class="btn-clear-all" onclick="clearAllFilters()">✕ Clear All</button>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Movement</div>
-            <div class="filter-tags" id="fg-movement"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Direction</div>
-            <div class="filter-tags" id="fg-direction"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Limbs</div>
-            <div class="filter-tags" id="fg-limbs"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Body Part</div>
-            <div class="filter-tags" id="fg-bodypart"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Joint</div>
-            <div class="filter-tags" id="fg-joint"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Equipment</div>
-            <div class="filter-tags" id="fg-equipment"></div>
-        </div>
-        <div class="filter-section">
-            <div class="filter-section-title">Other</div>
-            <div class="filter-tags" id="fg-other"></div>
-        </div>
-    </div>
-</div>
+<div class="container">
 
-<!-- MAIN -->
-<div class="main">
-    <div class="main-header">
-        <div class="results-count" id="results-count">Loading...</div>
-        <button class="btn-add" id="add-btn" onclick="openAddModal()">
-            <i class="fas fa-plus"></i> Add Exercise
-        </button>
+    <div class="search-section section-gap">
+        <div class="search-row">
+            <input type="text" class="search-input" id="search-input" placeholder="Search for an exercise..." oninput="runSearch()" />
+            <button class="filter-toggle" id="filter-toggle-btn" onclick="toggleFilters()">FILTERS ▾</button>
+            <a href="library.html" class="filter-toggle" style="text-decoration:none;text-align:center;">VIEW LIBRARY</a>
+        </div>
+        <div class="filter-panel" id="filter-panel"></div>
+        <div class="results-count" id="results-count"></div>
+        <div class="results-list" id="results-list"></div>
     </div>
-    <div class="video-grid" id="video-grid"></div>
-    <div class="load-more-wrap">
-        <button class="btn-load" id="load-btn" onclick="loadNextBatch()">Show More</button>
-    </div>
-</div>
 
-<!-- ADD MODAL -->
-<div class="modal-overlay" id="add-modal" onclick="if(event.target===this)closeAddModal()">
-    <div class="modal">
-        <h3>➕ Add Exercise to Your Library</h3>
-        <div class="form-field">
-            <span class="form-label">Exercise Name</span>
-            <input type="text" class="form-input" id="ex-name" placeholder="e.g. Bench press eccentric" />
+    <div class="login-section section-gap">
+        <div class="tabs">
+            <button class="tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+            <button class="tab" id="tab-signup" onclick="switchTab('signup')">Sign Up Free</button>
         </div>
-        <div class="form-field">
-            <span class="form-label">Tags</span>
-            <div class="tag-section-label">Movement</div>
-            <div class="tag-picker" id="tp-movement"></div>
-            <div class="tag-section-label">Direction</div>
-            <div class="tag-picker" id="tp-direction"></div>
-            <div class="tag-section-label">Limbs</div>
-            <div class="tag-picker" id="tp-limbs"></div>
-            <div class="tag-section-label">Body Part</div>
-            <div class="tag-picker" id="tp-bodypart"></div>
-            <div class="tag-section-label">Joint</div>
-            <div class="tag-picker" id="tp-joint"></div>
-            <div class="tag-section-label">Equipment</div>
-            <div class="tag-picker" id="tp-equipment"></div>
+        <div id="login-form">
+            <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="login-email" placeholder="you@example.com" /></div>
+            <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="login-password" placeholder="••••••••" /></div>
+            <button class="submit-btn" id="login-btn" onclick="login()">Sign In</button>
+            <div class="msg msg-error" id="login-error"></div>
         </div>
-        <div class="form-field">
-            <span class="form-label">Video <span style="color:#555;font-size:0.55rem;">(optional)</span></span>
-            <div class="upload-area" id="upload-area" onclick="document.getElementById('ex-video').click()">
-                <i class="fas fa-video"></i>
-                <p id="upload-label">Tap to upload a video <span>or drag and drop</span></p>
-                <input type="file" id="ex-video" accept="video/*" style="display:none" onchange="handleVideoSelect(this)" />
-            </div>
-            <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-            <div class="no-video-notice" id="no-video-notice">
-                <i class="fas fa-film"></i> No video — tagged as <strong>NO-VIDEO</strong> so you can find it later to film.
+        <div id="signup-form" style="display:none;">
+            <div class="free-badge">Free accounts can <strong>search the full exercise library</strong> and <strong>access free programs</strong>. Upgrade anytime for full coaching features.</div>
+            <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-input" id="signup-name" placeholder="Your name" /></div>
+            <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="signup-email" placeholder="you@example.com" /></div>
+            <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="signup-password" placeholder="At least 8 characters" /></div>
+            <div class="form-group"><label class="form-label">Confirm Password</label><input type="password" class="form-input" id="signup-confirm" placeholder="Repeat password" /></div>
+            <button class="submit-btn" id="signup-btn" onclick="signup()">Create Free Account</button>
+            <div class="msg msg-error" id="signup-error"></div>
+            <div class="msg msg-success" id="signup-success"></div>
+        </div>
+    </div>
+
+    <div class="tools-grid section-gap">
+        <div class="tool-card">
+            <div class="tool-title">⏱ Countdown</div>
+            <input type="number" class="tool-input" id="cd-input" value="60" min="1" oninput="if(!cdRunning){cdTime=parseInt(this.value)||60;updateCDDisplay()}" />
+            <div class="timer-display" id="cd-display">01:00</div>
+            <button class="tool-btn" id="cd-btn" onclick="toggleCountdown()">Start</button>
+        </div>
+        <div class="tool-card">
+            <div class="tool-title">🥁 Metronome</div>
+            <div class="bpm-display" id="bpm-display">60</div>
+            <input type="range" id="bpm-slider" min="40" max="220" value="60" oninput="document.getElementById('bpm-display').textContent=this.value" />
+            <button class="tool-btn" id="metro-btn" onclick="toggleMetronome()">Start</button>
+        </div>
+    </div>
+
+    <div class="tools-grid section-gap">
+        <div class="tool-card">
+            <div class="tool-title">⏲ Stopwatch</div>
+            <div class="timer-display" id="sw-display">00:00.00</div>
+            <div class="tool-row">
+                <button class="tool-btn" id="sw-btn" onclick="toggleStopwatch()">Start</button>
+                <button class="tool-btn" onclick="resetStopwatch()">Reset</button>
             </div>
         </div>
-        <div class="modal-actions">
-            <button class="btn-save" onclick="saveExercise()">Save Exercise</button>
-            <button class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+        <div class="tool-card">
+            <div class="tool-title">🏋️ 1RM Calculator</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <span style="font-size:0.65rem;color:#555;">Epley &amp; Brzycki</span>
+                <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                    <button id="rm-kg-btn" class="unit-toggle active" onclick="setRMUnit('kg')">KG</button>
+                    <button id="rm-lb-btn" class="unit-toggle" onclick="setRMUnit('lb')">LB</button>
+                </div>
+            </div>
+            <div class="tool-row">
+                <div class="solve-field"><span class="solve-label" id="rm-weight-label">Weight (kg)</span><input type="number" class="tool-input" id="rm-weight" placeholder="e.g. 100" /></div>
+                <div class="solve-field"><span class="solve-label">Reps done</span><input type="number" class="tool-input" id="rm-reps" placeholder="e.g. 5" min="1" max="30" /></div>
+            </div>
+            <div class="tool-row">
+                <button class="tool-btn" onclick="calc1RM()">Calculate</button>
+                <button class="tool-btn" onclick="clear1RM()">Clear</button>
+            </div>
+            <div id="rm-output" style="display:none;margin-top:10px;max-height:220px;overflow-y:auto;">
+                <table class="rm-table"><thead><tr><th>Reps</th><th>Epley</th><th>Brzycki</th></tr></thead><tbody id="rm-table-body"></tbody></table>
+            </div>
         </div>
     </div>
+
+    <div class="tools-grid section-gap">
+        <div class="tool-card">
+            <div class="tool-title">🏃 Pace Solver</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <p style="font-size:0.65rem;color:#555;margin:0;">Fill any 2 — leave 1 blank to solve.</p>
+                <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                    <button id="pace-km-btn" class="unit-toggle active" onclick="setPaceUnit('km')">KM</button>
+                    <button id="pace-mi-btn" class="unit-toggle" onclick="setPaceUnit('mi')">MI</button>
+                </div>
+            </div>
+            <div class="solve-field" style="margin-bottom:8px;"><span class="solve-label" id="pace-dist-label">Distance (km)</span><input type="number" class="tool-input" id="pace-dist" placeholder="e.g. 10" step="0.01" /></div>
+            <div class="solve-field" style="margin-bottom:8px;"><span class="solve-label">Total Time</span>
+                <div class="tool-row" style="margin-bottom:0;">
+                    <div class="solve-field"><span class="solve-label">Min</span><input type="number" class="tool-input" id="pace-min" placeholder="0" min="0" /></div>
+                    <div class="solve-field"><span class="solve-label">Sec</span><input type="number" class="tool-input" id="pace-sec" placeholder="0" min="0" max="59" /></div>
+                </div>
+            </div>
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+                <div class="solve-field" style="flex:1;"><span class="solve-label" id="pace-pace-label">Pace /km</span>
+                    <div class="tool-row" style="margin-bottom:0;">
+                        <div class="solve-field"><span class="solve-label">Min</span><input type="number" class="tool-input" id="pace-pace-min" placeholder="0" /></div>
+                        <div class="solve-field"><span class="solve-label">Sec</span><input type="number" class="tool-input" id="pace-pace-sec" placeholder="0" /></div>
+                    </div>
+                </div>
+                <div class="solve-field" style="flex:1;"><span class="solve-label" id="pace-speed-label">Speed (km/h)</span><input type="number" class="tool-input" id="pace-speed" placeholder="e.g. 12" step="0.1" /></div>
+            </div>
+            <div class="tool-row">
+                <button class="tool-btn" onclick="solvePace()">Solve</button>
+                <button class="tool-btn" onclick="clearPace()">Clear</button>
+            </div>
+            <div class="result-output" id="pace-output"></div>
+        </div>
+
+        <div class="tool-card">
+            <div class="tool-title">🔁 Interval Timer</div>
+            <div class="tool-row">
+                <div class="solve-field"><span class="solve-label">Warm up (s)</span><input type="number" class="tool-input" id="int-warmup" value="0" min="0" /></div>
+                <div class="solve-field"><span class="solve-label">Sets</span><input type="number" class="tool-input" id="int-sets" value="5" min="1" /></div>
+            </div>
+            <div class="tool-row">
+                <div class="solve-field"><span class="solve-label">Work (s)</span><input type="number" class="tool-input" id="int-work" value="30" min="1" /></div>
+                <div class="solve-field"><span class="solve-label">Rest (s)</span><input type="number" class="tool-input" id="int-rest" value="15" min="0" /></div>
+            </div>
+            <div class="phase-label" id="int-phase-label" style="color:var(--brand-accent);">READY</div>
+            <div class="timer-display" id="int-display" style="font-size:2.2rem;">00:30</div>
+            <div style="font-size:0.65rem;color:#555;text-align:center;margin-bottom:6px;" id="int-sets-label"></div>
+            <button class="tool-btn" id="int-btn" onclick="toggleInterval()">Start</button>
+        </div>
+    </div>
+
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-    <a href="client-dashboard.html" class="nav-item">
-        <i class="fas fa-home"></i>
-        <span>Home</span>
-    </a>
-    <a href="explore.html" class="nav-item">
-        <i class="fas fa-compass"></i>
-        <span>Explore</span>
-    </a>
-    <a href="library.html" class="nav-item active">
-        <i class="fas fa-dumbbell"></i>
-        <span>Library</span>
-    </a>
-    <a href="saved.html" class="nav-item">
-        <i class="fas fa-bookmark"></i>
-        <span>Saved</span>
-    </a>
-</nav>
+<div class="video-overlay" id="video-overlay" onclick="handleVideoOverlayClick(event)">
+    <div class="video-box" id="video-box">
+        <button class="video-close" onclick="closeVideo()">✕</button>
+        <div class="video-title" id="video-title"></div>
+        <div id="video-content"></div>
+    </div>
+</div>
 
 <script>
 const pb = new PocketBase('https://restperiod.org');
 
-const filterGroups = {
-    movement:  ['PUSH','PULL','SQUAT','HINGE','CORE','PLYO','RUN','MOBILITY','PRIMER','RECOVERY','SKILLS'],
-    direction: ['HORIZONTAL','VERTICAL','LATERAL','ANTERIOR','POSTERIOR','SIDE','MIXED','TOTAL-CORE-STABILITY'],
-    limbs:     ['DOUBLE-ARM','SINGLE-ARM','DOUBLE-LEG','SINGLE-LEG','SPLIT-STANCE','FULL-BODY'],
-    bodypart:  ['UPPER-BODY','LOWER-BODY'],
-    joint:     ['FOOT','ANKLE','KNEE','HIP','SPINE','SHOULDER','ELBOW','WRIST','NECK'],
-    equipment: ['BODYWEIGHT','DUMBBELL','BARBELL','KETTLEBELL','BAND','WEIGHTED','TRAP-BAR'],
-    other:     ['NO-VIDEO']
-};
-
-let allExercises = [];
-let filteredList = [];
-let activeFilters = new Set();
-let currentPage = 1;
-const PAGE_SIZE = 48;
-let selectedFile = null;
-let selectedTags = new Set();
-let isTrainer = false;
-let filterDrawerOpen = false;
-
-window.onload = async () => {
-    if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
+// Only auto-redirect trainers/admins. Everyone else stays to use the exercise search.
+if (pb.authStore.isValid) {
     const role = pb.authStore.model.role;
-    isTrainer = role === 'trainer' || role === 'admin';
-    if (isTrainer) { document.getElementById('add-btn').style.display = 'flex'; }
-    buildFilterUI();
-    buildTagPicker();
-    await loadExercises();
+    if (role === 'trainer' || role === 'admin') {
+        window.location.href = '/dashboard.html';
+    }
+}
+
+// User role for feature gating
+const currentRole = pb.authStore.isValid ? pb.authStore.model.role : 'guest';
+const isTrainer = currentRole === 'trainer' || currentRole === 'admin';
+const isLoggedIn = pb.authStore.isValid;
+
+function redirect(role) {
+    if (role === 'trainer' || role === 'admin') window.location.href = '/dashboard.html';
+    else window.location.href = '/client-dashboard.html';
+}
+
+const filterGroups = {
+    "MOVEMENT": { "PUSH": "PUSH", "PULL": "PULL", "SQUAT": "SQUAT", "HINGE": "HINGE" },
+    "ANGLE":    { "HOR": "HORIZONTAL", "VER": "VERTICAL" },
+    "LIMBS":    { "DA": "DOUBLE ARM", "DL": "DOUBLE LEG", "SA": "SINGLE ARM", "SL": "SINGLE LEG" },
+    "EQUIPMENT":{ "BB": "BARBELL", "DB": "DUMBBELL", "BW": "BODYWEIGHT", "BND": "BAND" },
+    "TYPE":     { "MOB": "MOBILITY", "PRIMER": "PRIMER" },
+    "BODY PART":{ "UB": "UPPER BODY", "LB": "LOWER BODY" }
 };
 
-// ── FILTER DRAWER ─────────────────────────────────
-function toggleFilterDrawer() {
-    filterDrawerOpen = !filterDrawerOpen;
-    document.getElementById('filter-drawer').classList.toggle('open', filterDrawerOpen);
+let activeFilters = [], filterPanelOpen = false;
+const filterPanel = document.getElementById('filter-panel');
+for (const [group, options] of Object.entries(filterGroups)) {
+    const div = document.createElement('div');
+    div.className = 'filter-group';
+    div.innerHTML = `<div class="filter-group-label">${group}</div>
+        <div class="filter-tags">${Object.entries(options).map(([tag, label]) =>
+            `<button class="filter-btn" id="f-${tag}" onclick="toggleFilter('${tag}')">${label}</button>`
+        ).join('')}</div>`;
+    filterPanel.appendChild(div);
 }
 
-function buildFilterUI() {
-    Object.entries(filterGroups).forEach(([group, tags]) => {
-        const el = document.getElementById(`fg-${group}`);
-        if (!el) return;
-        el.innerHTML = tags.map(tag =>
-            `<button class="filter-tag" data-tag="${tag}" onclick="toggleFilter('${tag}')">${tag.replace(/-/g,' ')}</button>`
-        ).join('');
-    });
-}
-
-function buildTagPicker() {
-    Object.entries(filterGroups).forEach(([group, tags]) => {
-        if (group === 'other') return;
-        const el = document.getElementById(`tp-${group}`);
-        if (!el) return;
-        el.innerHTML = tags.map(tag =>
-            `<button class="tag-pick-btn" data-tag="${tag}" onclick="togglePickTag('${tag}')">${tag.replace(/-/g,' ')}</button>`
-        ).join('');
-    });
+function toggleFilters() {
+    filterPanelOpen = !filterPanelOpen;
+    filterPanel.classList.toggle('open', filterPanelOpen);
+    document.getElementById('filter-toggle-btn').classList.toggle('active', filterPanelOpen);
 }
 
 function toggleFilter(tag) {
-    activeFilters.has(tag) ? activeFilters.delete(tag) : activeFilters.add(tag);
-    document.querySelectorAll(`.filter-tag[data-tag="${tag}"]`).forEach(el =>
-        el.classList.toggle('active', activeFilters.has(tag))
-    );
-    updateActiveFilterBar();
-    resetAndRender();
+    const btn = document.getElementById(`f-${tag}`);
+    if (activeFilters.includes(tag)) { activeFilters = activeFilters.filter(f => f !== tag); btn.classList.remove('active'); }
+    else { activeFilters.push(tag); btn.classList.add('active'); }
+    runSearch();
 }
 
-function clearAllFilters() {
-    activeFilters.clear();
-    document.querySelectorAll('.filter-tag').forEach(el => el.classList.remove('active'));
-    updateActiveFilterBar();
-    resetAndRender();
-}
-
-function updateActiveFilterBar() {
-    const bar = document.getElementById('active-filter-bar');
-    const pills = document.getElementById('active-pills');
-    const countBadge = document.getElementById('filter-count');
-    const toggleBtn = document.getElementById('filter-toggle-btn');
-    if (activeFilters.size === 0) {
-        bar.classList.remove('visible');
-        countBadge.style.display = 'none';
-        toggleBtn.classList.remove('has-active');
-    } else {
-        bar.classList.add('visible');
-        countBadge.style.display = 'flex';
-        countBadge.textContent = activeFilters.size;
-        toggleBtn.classList.add('has-active');
-        pills.innerHTML = Array.from(activeFilters).map(tag =>
-            `<span class="active-pill" onclick="toggleFilter('${tag}')">${tag.replace(/-/g,' ')} ✕</span>`
-        ).join('');
-    }
-}
-
-// ── LOAD ──────────────────────────────────────────
-async function loadExercises() {
-    allExercises = (typeof exerciseDatabase !== 'undefined') ? [...exerciseDatabase] : [];
-    try {
-        const filter = isTrainer
-            ? `uploaded_by = "${pb.authStore.model.id}"`
-            : '';
-        const recs = await pb.collection('custom_exercises').getFullList({
-            filter, sort: 'title', requestKey: null
-        });
-        recs.forEach(r => {
-            if (!allExercises.some(e => e.id === r.id)) {
-                allExercises.push({ id: r.id, title: r.title, searchStr: r.searchStr || r.title.toLowerCase(), src: r.video || null, isCustom: true });
-            }
-        });
-    } catch(e) { console.log('Custom ex:', e.message); }
-    resetAndRender();
-}
-
-function resetAndRender() {
-    currentPage = 1;
+function runSearch() {
     const q = document.getElementById('search-input').value.toLowerCase().trim();
-    filteredList = allExercises.filter(e => {
-        const search = (e.searchStr || '').toUpperCase();
-        const title = (e.title || '').toLowerCase();
-        const matchesText = !q || title.includes(q) || search.toLowerCase().includes(q);
-        const matchesTags = activeFilters.size === 0 || Array.from(activeFilters).every(tag => {
-            const regex = new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i');
-            return regex.test(search);
-        });
-        return matchesText && matchesTags;
-    }).sort((a, b) => cleanTitle(a.title).localeCompare(cleanTitle(b.title)));
-    document.getElementById('video-grid').innerHTML = '';
-    document.getElementById('results-count').innerHTML =
-        `<span>${filteredList.length}</span> exercise${filteredList.length !== 1 ? 's' : ''} found`;
-    renderBatch();
-}
+    const resultsList = document.getElementById('results-list');
+    const resultsCount = document.getElementById('results-count');
+    if (!q && activeFilters.length === 0) { resultsList.style.display = 'none'; resultsCount.textContent = ''; return; }
 
-function renderBatch() {
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const batch = filteredList.slice(start, start + PAGE_SIZE);
-    const grid = document.getElementById('video-grid');
-    const loadBtn = document.getElementById('load-btn');
-    if (batch.length === 0 && currentPage === 1) {
-        grid.innerHTML = `<div class="empty"><i class="fas fa-search"></i>No exercises found.</div>`;
-        loadBtn.style.display = 'none';
-        return;
-    }
-    batch.forEach(ex => {
-        const card = document.createElement('div');
-        card.className = `video-card${!ex.src ? ' no-video' : ''}`;
-        const videoHtml = ex.src ? buildVideoHtml(ex.src) :
-            `<div class="no-video-placeholder"><i class="fas fa-film"></i><span>No Video</span></div>`;
-        const displayTags = extractDisplayTags(ex.searchStr || '');
-        card.innerHTML = `
-            <div class="video-thumb" style="position:relative;">
-                ${videoHtml}
-                ${ex.isCustom ? '<span class="card-custom-badge">Custom</span>' : ''}
-            </div>
-            <div class="card-body">
-                <div class="card-title">${cleanTitle(ex.title)}</div>
-                <div class="card-tags">${displayTags}</div>
-            </div>`;
-        grid.appendChild(card);
+    let results = exerciseDatabase.filter(e => {
+        const textMatch = !q || e.title.toLowerCase().includes(q) || (e.searchStr || '').toLowerCase().includes(q);
+        const filterMatch = activeFilters.every(f => (e.searchStr || '').toUpperCase().includes(f));
+        return textMatch && filterMatch;
     });
-    loadBtn.style.display = (start + PAGE_SIZE) < filteredList.length ? 'block' : 'none';
-}
 
-function buildVideoHtml(src) {
-    if (!src) return '';
-    if (src.includes('pocketbase') || src.includes('.mp4') || src.includes('.mov') || src.startsWith('videos/'))
-        return `<video src="${src}" preload="metadata" controls style="width:100%;height:100%;object-fit:cover;"></video>`;
-    const embedUrl = toYouTubeEmbed(src);
-    if (embedUrl) return `<iframe src="${embedUrl}" loading="lazy" allowfullscreen></iframe>`;
-    return `<video src="${src}" preload="metadata" controls style="width:100%;height:100%;object-fit:cover;"></video>`;
-}
-
-function toYouTubeEmbed(url) {
-    if (!url || url.includes('embed')) return url;
-    let id = '';
-    if (url.includes('v=')) id = url.split('v=')[1].split('&')[0];
-    else if (url.includes('youtu.be/')) id = url.split('youtu.be/')[1];
-    else if (url.includes('/shorts/')) id = url.split('/shorts/')[1];
-    return id ? `https://www.youtube.com/embed/${id}` : null;
-}
-
-function cleanTitle(title) {
-    return title.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || title;
-}
-
-function extractDisplayTags(searchStr) {
-    const upper = searchStr.toUpperCase();
-    const allTags = Object.values(filterGroups).flat();
-    return allTags.filter(tag => {
-        const regex = new RegExp(`\\b${tag.replace(/-/g,'[- ]')}\\b`, 'i');
-        return regex.test(upper);
-    }).slice(0, 5).map(tag =>
-        `<span class="card-tag ${tag==='NO-VIDEO'?'no-video-tag':''}">${tag.replace(/-/g,' ')}</span>`
-    ).join('');
-}
-
-function loadNextBatch() { currentPage++; renderBatch(); }
-
-// ── ADD EXERCISE ──────────────────────────────────
-function openAddModal() {
-    document.getElementById('ex-name').value = '';
-    document.getElementById('upload-label').textContent = 'Tap to upload a video or drag and drop';
-    document.getElementById('ex-video').value = '';
-    document.getElementById('progress-bar').style.display = 'none';
-    document.getElementById('progress-fill').style.width = '0%';
-    document.getElementById('no-video-notice').style.display = 'block';
-    selectedFile = null; selectedTags.clear();
-    document.querySelectorAll('.tag-pick-btn').forEach(b => b.classList.remove('selected'));
-    document.getElementById('add-modal').classList.add('open');
-}
-
-function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
-
-function togglePickTag(tag) {
-    selectedTags.has(tag) ? selectedTags.delete(tag) : selectedTags.add(tag);
-    document.querySelectorAll(`.tag-pick-btn[data-tag="${tag}"]`).forEach(el =>
-        el.classList.toggle('selected', selectedTags.has(tag))
-    );
-}
-
-function handleVideoSelect(input) {
-    selectedFile = input.files[0];
-    if (selectedFile) {
-        document.getElementById('upload-label').textContent = `✓ ${selectedFile.name}`;
-        document.getElementById('no-video-notice').style.display = 'none';
+    // (A) Hide video exercises from trainers/admins (they use builder instead)
+    if (isTrainer) {
+        results = results.filter(e => !(e.video || e.src));
     }
+
+    results = results.slice(0, 50);
+    resultsCount.textContent = `${results.length} exercise${results.length !== 1 ? 's' : ''} found`;
+    resultsList.style.display = results.length ? 'block' : 'none';
+    resultsList.innerHTML = results.map(e => {
+        const cleanName = e.title.replace(/^([A-Z0-9-]{2,}\s*)+/, '').trim();
+        const tags = (e.searchStr || '').split(' ').filter(t => t.length > 1 && t.length < 12).slice(0, 4).join(' · ');
+        const videoUrl = e.video || e.src || '';
+        const slug = encodeURIComponent(e.title);
+        // (B) Share button
+        const shareBtn = `<button onclick="shareExercise('${slug}');event.stopPropagation();" style="background:none;border:none;color:#555;cursor:pointer;font-size:0.9rem;padding:4px 8px;" title="Share">⎘</button>`;
+        return `<div class="result-item" onclick="openVideo('${e.title.replace(/'/g,"\\'")}','${videoUrl.replace(/'/g,"\\'")}')">
+            <div><div class="result-name">${cleanName}</div><div class="result-tags">${tags}</div></div>
+            <div style="display:flex;align-items:center;gap:4px;">
+                ${shareBtn}
+                <span class="result-play">▶</span>
+            </div>
+        </div>`;
+    }).join('');
 }
 
-async function saveExercise() {
-    const name = document.getElementById('ex-name').value.trim();
-    if (!name) return alert('Please enter an exercise name');
-    const tags = Array.from(selectedTags);
-    const hasVideo = !!selectedFile;
-    const searchParts = [...tags, name.toLowerCase()];
-    if (!hasVideo) searchParts.push('NO-VIDEO');
-    const searchStr = searchParts.join(' ');
-    const fullTitle = tags.length > 0 ? `${tags.join(' ')} ${name}` : name;
-    const btn = document.querySelector('.btn-save');
-    btn.disabled = true; btn.textContent = 'Saving...';
-    try {
-        if (hasVideo) {
-            const fd = new FormData();
-            fd.append('title', fullTitle); fd.append('searchStr', searchStr);
-            fd.append('video', selectedFile); fd.append('uploaded_by', pb.authStore.model.id);
-            const bar = document.getElementById('progress-bar');
-            const fill = document.getElementById('progress-fill');
-            bar.style.display = 'block';
-            await new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.upload.onprogress = e => {
-                    if (e.lengthComputable) {
-                        const p = Math.round(e.loaded/e.total*100);
-                        fill.style.width = p + '%';
-                        btn.textContent = `Uploading ${p}%...`;
-                    }
-                };
-                xhr.onload = () => xhr.status === 200 ? resolve() : reject(new Error('Upload failed'));
-                xhr.onerror = () => reject(new Error('Network error'));
-                xhr.open('POST', `https://restperiod.org/api/collections/custom_exercises/records`);
-                xhr.setRequestHeader('Authorization', pb.authStore.token);
-                xhr.send(fd);
-            });
-        } else {
-            await pb.collection('custom_exercises').create({ title: fullTitle, searchStr, uploaded_by: pb.authStore.model.id });
-        }
-        closeAddModal(); await loadExercises();
-    } catch(e) { alert('Save failed: ' + e.message); }
-    btn.disabled = false; btn.textContent = 'Save Exercise';
+// (B) Share exercise via link
+function shareExercise(slug) {
+    const url = `${window.location.origin}${window.location.pathname}?exercise=${slug}`;
+    navigator.clipboard.writeText(url).then(() => {
+        showShareToast('Link copied!');
+    }).catch(() => {
+        prompt('Copy this link:', url);
+    });
 }
 
-const uploadArea = document.getElementById('upload-area');
-uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.borderColor = 'var(--brand-accent)'; });
-uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor = '#1a2a35'; });
-uploadArea.addEventListener('drop', e => {
-    e.preventDefault(); uploadArea.style.borderColor = '#1a2a35';
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('video/')) {
-        selectedFile = file;
-        document.getElementById('upload-label').textContent = `✓ ${file.name}`;
-        document.getElementById('no-video-notice').style.display = 'none';
+function showShareToast(msg) {
+    let t = document.getElementById('share-toast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'share-toast';
+        t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#26C6DA;color:#000;padding:8px 20px;border-radius:50px;font-size:0.75rem;font-weight:800;z-index:9999;font-family:Montserrat,sans-serif;';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 2000);
+}
+
+// (B) On load, check for ?exercise= param and auto-open it
+window.addEventListener('load', () => {
+    const params = new URLSearchParams(window.location.search);
+    const ex = params.get('exercise');
+    if (ex) {
+        const name = decodeURIComponent(ex);
+        document.getElementById('search-input').value = name;
+        runSearch();
+        // Auto-open the video modal after a short delay
+        setTimeout(() => {
+            const match = exerciseDatabase.find(e => e.title === name);
+            if (match) openVideo(match.title, match.video || match.src || '');
+        }, 300);
     }
 });
+
+function openVideo(name, url) {
+    const cleanName = name.replace(/^([A-Z0-9-]{2,}\s*)+/, '').trim();
+    document.getElementById('video-title').textContent = cleanName;
+    const content = document.getElementById('video-content');
+    if (!url) { content.innerHTML = `<div style="padding:40px;text-align:center;color:#555;">No video available.</div>`; }
+    else if (url.includes('.mp4') || url.includes('.mov') || url.includes('pocketbase')) {
+        content.innerHTML = `<video controls autoplay loop playsinline style="width:100%;display:block;border-radius:0 0 12px 12px;max-height:70vh;"><source src="${url}" type="video/mp4"></video>`;
+    } else {
+        let videoId = '';
+        if (url.includes('v=')) videoId = url.split('v=')[1].split('&')[0];
+        else if (url.includes('youtu.be/')) videoId = url.split('youtu.be/')[1].split('?')[0];
+        content.innerHTML = `<div style="position:relative;padding-bottom:56.25%;height:0;"><iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:0 0 12px 12px;" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe></div>`;
+    }
+    document.getElementById('video-overlay').classList.add('open');
+}
+function handleVideoOverlayClick(e) { if (e.target === document.getElementById('video-overlay')) closeVideo(); }
+function closeVideo() { document.getElementById('video-overlay').classList.remove('open'); document.getElementById('video-content').innerHTML = ''; }
+
+// COUNTDOWN
+let cdRunning=false,cdTime=60,cdInterval=null;
+function updateCDDisplay(){const m=Math.floor(cdTime/60),s=cdTime%60;document.getElementById('cd-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+function toggleCountdown(){const btn=document.getElementById('cd-btn');if(cdRunning){clearInterval(cdInterval);cdRunning=false;btn.textContent='Start';btn.classList.remove('running');}else{cdTime=parseInt(document.getElementById('cd-input').value)||60;cdRunning=true;btn.textContent='Stop';btn.classList.add('running');cdInterval=setInterval(()=>{cdTime--;updateCDDisplay();if(cdTime<=0){clearInterval(cdInterval);cdRunning=false;btn.textContent='Start';btn.classList.remove('running');cdTime=parseInt(document.getElementById('cd-input').value)||60;updateCDDisplay();}},1000);}}
+
+// METRONOME
+let audioCtx=null,metroPlaying=false,metroTimerID=null,nextTickTime=0;
+function scheduleClick(time){const osc=audioCtx.createOscillator(),env=audioCtx.createGain();osc.type='sine';osc.frequency.value=1000;env.gain.setValueAtTime(1,time);env.gain.exponentialRampToValueAtTime(0.001,time+0.025);osc.connect(env);env.connect(audioCtx.destination);osc.start(time);osc.stop(time+0.03);const delay=Math.max(0,(time-audioCtx.currentTime)*1000);setTimeout(()=>{const d=document.getElementById('bpm-display');if(!d)return;d.style.color='#fff';d.style.transform='scale(1.18)';setTimeout(()=>{d.style.color='var(--brand-accent)';d.style.transform='scale(1)';},60);},delay);}
+function metroScheduler(){const bpm=parseFloat(document.getElementById('bpm-slider').value),spb=60/bpm;while(nextTickTime<audioCtx.currentTime+0.1){scheduleClick(nextTickTime);nextTickTime+=spb;}metroTimerID=setTimeout(metroScheduler,25);}
+function toggleMetronome(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const btn=document.getElementById('metro-btn');metroPlaying=!metroPlaying;if(metroPlaying){btn.textContent='Stop';btn.classList.add('running');nextTickTime=audioCtx.currentTime;metroScheduler();}else{btn.textContent='Start';btn.classList.remove('running');clearTimeout(metroTimerID);}}
+
+// STOPWATCH
+let swRunning=false,swStart=0,swElapsed=0,swInterval=null;
+function toggleStopwatch(){const btn=document.getElementById('sw-btn');if(swRunning){clearInterval(swInterval);swElapsed+=Date.now()-swStart;swRunning=false;btn.textContent='Start';btn.classList.remove('running');}else{swStart=Date.now();swRunning=true;btn.textContent='Stop';btn.classList.add('running');swInterval=setInterval(()=>{const t=swElapsed+(Date.now()-swStart),m=Math.floor(t/60000),s=Math.floor((t%60000)/1000),ms=Math.floor((t%1000)/10);document.getElementById('sw-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms).padStart(2,'0')}`;},50);}}
+function resetStopwatch(){clearInterval(swInterval);swRunning=false;swElapsed=0;document.getElementById('sw-display').textContent='00:00.00';const btn=document.getElementById('sw-btn');btn.textContent='Start';btn.classList.remove('running');}
+
+// 1RM
+let rmUnit='kg';
+function setRMUnit(u){rmUnit=u;document.getElementById('rm-kg-btn').classList.toggle('active',u==='kg');document.getElementById('rm-lb-btn').classList.toggle('active',u==='mi');document.getElementById('rm-weight-label').textContent=`Weight (${u})`;clear1RM();}
+function clear1RM(){document.getElementById('rm-weight').value='';document.getElementById('rm-reps').value='';document.getElementById('rm-output').style.display='none';document.getElementById('rm-table-body').innerHTML='';}
+function calc1RM(){let w=parseFloat(document.getElementById('rm-weight').value);const r=parseFloat(document.getElementById('rm-reps').value);if(!w||!r||r<1)return;if(rmUnit==='lb')w=w/2.2046;const tbody=document.getElementById('rm-table-body');tbody.innerHTML='';for(let reps=1;reps<=10;reps++){let e=w*(1+reps/30),b=reps<37?w*(36/(37-reps)):null;if(rmUnit==='lb'){e*=2.2046;if(b)b*=2.2046;}const fmt=v=>v?`${Math.round(v)}${rmUnit}`:'—';const row=document.createElement('tr');if(reps===Math.round(r))row.classList.add('highlight');row.innerHTML=`<td>${reps}</td><td>${fmt(e)}</td><td>${fmt(b)}</td>`;tbody.appendChild(row);}document.getElementById('rm-output').style.display='block';}
+
+// PACE
+let paceUnit='km';
+function setPaceUnit(u){paceUnit=u;document.getElementById('pace-km-btn').classList.toggle('active',u==='km');document.getElementById('pace-mi-btn').classList.toggle('active',u==='mi');document.getElementById('pace-dist-label').textContent=`Distance (${u})`;document.getElementById('pace-pace-label').textContent=`Pace /${u}`;document.getElementById('pace-speed-label').textContent=`Speed (${u}/h)`;clearPace();}
+function clearPace(){['pace-dist','pace-min','pace-sec','pace-pace-min','pace-pace-sec','pace-speed'].forEach(id=>document.getElementById(id).value='');const o=document.getElementById('pace-output');o.style.display='none';o.innerHTML='';}
+function solvePace(){const dist=document.getElementById('pace-dist').value,tMin=document.getElementById('pace-min').value,tSec=document.getElementById('pace-sec').value,pMin=document.getElementById('pace-pace-min').value,pSec=document.getElementById('pace-pace-sec').value,speed=document.getElementById('pace-speed').value,out=document.getElementById('pace-output'),u=paceUnit;const hasTime=tMin!==''||tSec!=='',hasPace=pMin!==''||pSec!=='',hasDist=dist!=='',hasSpeed=speed!=='';const tt=hasTime?(parseFloat(tMin)||0)*60+(parseFloat(tSec)||0):null,pp=hasPace?(parseFloat(pMin)||0)*60+(parseFloat(pSec)||0):null;let d=hasDist?parseFloat(dist):null,t=tt,p=pp,sp=hasSpeed?parseFloat(speed):null;if(d&&t&&!p)p=t/d;if(d&&t&&!sp)sp=d/(t/3600);if(d&&p&&!t)t=d*p;if(d&&p&&!sp)sp=3600/p;if(d&&sp&&!t)t=(d/sp)*3600;if(d&&sp&&!p)p=3600/sp;if(t&&p&&!d)d=t/p;if(t&&p&&!sp)sp=3600/p;if(t&&sp&&!d)d=sp*(t/3600);if(t&&sp&&!p)p=3600/sp;if(!d||!t||!p||!sp){out.innerHTML='Fill in any 2 fields to solve.';out.style.display='block';return;}const pM=Math.floor(p/60),pS=Math.round(p%60),tH=Math.floor(t/3600),tM=Math.floor((t%3600)/60),tSS=Math.round(t%60),ms=(d*1000)/t;out.innerHTML=`Distance: <b style="color:var(--brand-accent)">${d.toFixed(2)} ${u}</b><br>Time: <b style="color:var(--brand-accent)">${tH>0?tH+'h ':''} ${tM}m ${tSS}s</b><br>Pace: <b style="color:var(--brand-accent)">${pM}:${String(pS).padStart(2,'0')} /${u}</b><br>Speed: <b style="color:var(--brand-accent)">${sp.toFixed(2)} ${u}/h</b><br>Speed: <b style="color:var(--brand-accent)">${ms.toFixed(2)} m/s</b>`;out.style.display='block';}
+
+// INTERVAL
+let intRunning=false,intInterval=null,intPhase='idle',intCurrentSet=0,intTotalSets=0,intTime=0;
+function updateIntDisplay(){const m=Math.floor(intTime/60),s=intTime%60;document.getElementById('int-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+function setIntPhase(phase,set,total){intPhase=phase;const label=document.getElementById('int-phase-label'),display=document.getElementById('int-display'),setsLabel=document.getElementById('int-sets-label');if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';display.style.color='#fb923c';setsLabel.textContent='';}else if(phase==='work'){label.textContent='WORK';label.style.color='#4ade80';display.style.color='#4ade80';setsLabel.textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';display.style.color='#f87171';setsLabel.textContent=`Set ${set} of ${total}`;}else if(phase==='done'){label.textContent='DONE 🔥';label.style.color='var(--brand-accent)';display.style.color='white';setsLabel.textContent='';}}
+function toggleInterval(){const btn=document.getElementById('int-btn');if(intRunning){clearInterval(intInterval);intRunning=false;btn.textContent='Start';btn.classList.remove('running');intPhase='idle';document.getElementById('int-phase-label').textContent='READY';document.getElementById('int-phase-label').style.color='var(--brand-accent)';document.getElementById('int-display').style.color='white';document.getElementById('int-sets-label').textContent='';intTime=parseInt(document.getElementById('int-work').value)||30;updateIntDisplay();return;}const warmup=parseInt(document.getElementById('int-warmup').value)||0,sets=parseInt(document.getElementById('int-sets').value)||5,work=parseInt(document.getElementById('int-work').value)||30,rest=parseInt(document.getElementById('int-rest').value)||15;intTotalSets=sets;intCurrentSet=1;intRunning=true;btn.textContent='Stop';btn.classList.add('running');if(warmup>0){intTime=warmup;setIntPhase('warmup',0,sets);}else{intTime=work;setIntPhase('work',1,sets);}updateIntDisplay();intInterval=setInterval(()=>{intTime--;updateIntDisplay();if(intTime>0)return;if(intPhase==='warmup'){intTime=work;intCurrentSet=1;setIntPhase('work',intCurrentSet,intTotalSets);}else if(intPhase==='work'){if(rest>0){intTime=rest;setIntPhase('rest',intCurrentSet,intTotalSets);}else{intCurrentSet++;if(intCurrentSet>intTotalSets){clearInterval(intInterval);intRunning=false;btn.textContent='Start';btn.classList.remove('running');intTime=0;setIntPhase('done',0,0);updateIntDisplay();}else{intTime=work;setIntPhase('work',intCurrentSet,intTotalSets);}}}else if(intPhase==='rest'){intCurrentSet++;if(intCurrentSet>intTotalSets){clearInterval(intInterval);intRunning=false;btn.textContent='Start';btn.classList.remove('running');intTime=0;setIntPhase('done',0,0);updateIntDisplay();}else{intTime=work;setIntPhase('work',intCurrentSet,intTotalSets);}}},1000);}
+
+// AUTH
+function switchTab(tab){document.getElementById('tab-login').classList.toggle('active',tab==='login');document.getElementById('tab-signup').classList.toggle('active',tab==='signup');document.getElementById('login-form').style.display=tab==='login'?'block':'none';document.getElementById('signup-form').style.display=tab==='signup'?'block':'none';}
+
+async function login(){const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value,errEl=document.getElementById('login-error'),btn=document.getElementById('login-btn');errEl.style.display='none';btn.disabled=true;btn.textContent='Signing in...';try{const auth=await pb.collection('users').authWithPassword(email,password);redirect(auth.record.role);}catch(e){errEl.textContent='Invalid email or password.';errEl.style.display='block';btn.disabled=false;btn.textContent='Sign In';}}
+
+async function signup(){const name=document.getElementById('signup-name').value.trim(),email=document.getElementById('signup-email').value.trim(),password=document.getElementById('signup-password').value,confirm=document.getElementById('signup-confirm').value,errEl=document.getElementById('signup-error'),btn=document.getElementById('signup-btn');errEl.style.display='none';if(!name||!email||!password){errEl.textContent='Please fill in all fields.';errEl.style.display='block';return;}if(password.length<8){errEl.textContent='Password must be at least 8 characters.';errEl.style.display='block';return;}if(password!==confirm){errEl.textContent='Passwords do not match.';errEl.style.display='block';return;}btn.disabled=true;btn.textContent='Creating account...';try{await pb.collection('users').create({name,email,password,passwordConfirm:confirm,role:'free',emailVisibility:true});const auth=await pb.collection('users').authWithPassword(email,password);redirect(auth.record.role);}catch(e){const msg=e?.response?.data?.email?.message||e.message||'Signup failed.';errEl.textContent=msg;errEl.style.display='block';btn.disabled=false;btn.textContent='Create Free Account';}}
+
+document.addEventListener('keydown',(e)=>{if(e.key==='Enter'){const loginVisible=document.getElementById('login-form').style.display!=='none';if(loginVisible)login();else signup();}});
 </script>
 </body>
 </html>
