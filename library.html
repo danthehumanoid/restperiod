@@ -161,7 +161,7 @@
 <!-- SIGNUP BANNER -->
 <div id="guest-banner" style="margin:12px 16px;padding:14px 18px;background:rgba(38,198,218,0.07);border:1px solid rgba(38,198,218,0.2);border-radius:8px;font-size:0.82rem;color:#888;line-height:1.7;text-align:center;">
     <a href="/index.html" style="color:var(--brand-accent);font-weight:800;text-decoration:none;">Create a free account or log in</a>
-    to access free warm ups, rehab and training programs, education and more.
+    to access free warm ups, rehab and training programs, and education.
 </div>
 
 <!-- SAVED EXERCISES SECTION -->
@@ -312,6 +312,26 @@ function renderSavedExercises() {
     }).join('');
 }
 
+function toggleLibrarySave(slug, title, btn) {
+    if (!pb.authStore.isValid) { showLibraryToast('Sign in to save exercises'); return; }
+    const uid = pb.authStore.model.id;
+    let saved = JSON.parse(localStorage.getItem(`rp_saved_exercises_${uid}`) || '[]');
+    if (saved.includes(title)) {
+        saved = saved.filter(t => t !== title);
+        btn.textContent = 'SAVE';
+        btn.style.background = 'none';
+        btn.style.color = 'var(--brand-accent)';
+        showLibraryToast('Removed from saved');
+    } else {
+        saved.push(title);
+        btn.textContent = 'SAVED';
+        btn.style.background = 'var(--brand-accent)';
+        btn.style.color = '#000';
+        showLibraryToast('Saved!');
+    }
+    localStorage.setItem(`rp_saved_exercises_${uid}`, JSON.stringify(saved));
+}
+
 function shareLibraryExercise(slug) {
     const url = `${window.location.origin}/index.html?exercise=${slug}`;
     navigator.clipboard.writeText(url).then(() => {
@@ -460,6 +480,8 @@ function renderBatch() {
             `<div class="no-video-placeholder"><i class="fas fa-film"></i><span>No Video</span></div>`;
         const displayTags = extractDisplayTags(ex.searchStr || '');
         const exSlug = encodeURIComponent(ex.title);
+        const savedExList = JSON.parse(localStorage.getItem(`rp_saved_exercises_${pb.authStore.isValid ? pb.authStore.model.id : 'guest'}`) || '[]');
+        const isSavedEx = savedExList.includes(ex.title);
         card.innerHTML = `
             <div class="video-thumb" style="position:relative;">
                 ${videoHtml}
@@ -467,12 +489,17 @@ function renderBatch() {
             </div>
             <div class="card-body">
                 <div class="card-title">${cleanTitle(ex.title)}</div>
-                <button onclick="shareLibraryExercise('${exSlug}');event.stopPropagation();"
-                    style="margin-top:6px;width:100%;background:none;border:1px solid var(--border);color:var(--brand-accent);padding:5px;border-radius:4px;font-size:0.6rem;font-family:'Montserrat',sans-serif;font-weight:800;cursor:pointer;letter-spacing:0.5px;transition:0.2s;"
-                    onmouseover="this.style.background='var(--brand-accent)';this.style.color='#000';"
-                    onmouseout="this.style.background='none';this.style.color='var(--brand-accent)';">
-                    SHARE
-                </button>
+                <div style="display:flex;gap:4px;margin-top:6px;">
+                    <button onclick="shareLibraryExercise('${exSlug}');event.stopPropagation();"
+                        style="flex:1;background:none;border:1px solid var(--brand-accent);color:var(--brand-accent);padding:5px;border-radius:4px;font-size:0.6rem;font-family:'Montserrat',sans-serif;font-weight:800;cursor:pointer;transition:0.2s;"
+                        onmouseover="this.style.background='var(--brand-accent)';this.style.color='#000';"
+                        onmouseout="this.style.background='none';this.style.color='var(--brand-accent)';">SHARE</button>
+                    <button onclick="toggleLibrarySave('${exSlug}', '${ex.title.replace(/'/g, "\\'")}', this);event.stopPropagation();"
+                        id="lib-save-${exSlug}"
+                        style="flex:1;background:${isSavedEx?'var(--brand-accent)':'none'};border:1px solid var(--brand-accent);color:${isSavedEx?'#000':'var(--brand-accent)'};padding:5px;border-radius:4px;font-size:0.6rem;font-family:'Montserrat',sans-serif;font-weight:800;cursor:pointer;transition:0.2s;">
+                        ${isSavedEx?'SAVED':'SAVE'}
+                    </button>
+                </div>
                 <div class="card-tags">${displayTags}</div>
             </div>`;
         grid.appendChild(card);
