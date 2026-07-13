@@ -15,27 +15,27 @@
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        .nav-top { display: flex; justify-content: space-between; padding: 5px 15px; background: #000; border-bottom: 1px solid #004d7a; align-items: center; position: sticky; top: 0; z-index: 1000; height: 70px; }
+        .nav-top { display: flex; justify-content: space-between; padding: 5px 15px; background: #000; border-bottom: 1px solid var(--border); align-items: center; position: sticky; top: 0; z-index: 1000; height: 70px; }
         .header-tool { color: var(--brand-accent); border: 1.5px solid rgba(38,198,218,0.5); border-radius: 8px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; background: rgba(0,0,0,0.4); transition: 0.2s; }
         .header-tool:hover { background: rgba(38,198,218,0.1); border-color: var(--brand-accent); }
 
         .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-        .card { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid #004d7a; margin-bottom: 20px; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 20px; }
         .selector-divider { font-size: 0.6rem; color: #555; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin: 10px 0 4px; font-family: 'Montserrat'; display: block; }
         .quad-title { font-size: 0.65rem; color: #aaa; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; display: block; }
-        select { width: 100%; background: var(--input-bg); border: 1px solid #004d7a; color: white; padding: 10px; border-radius: 4px; font-family: inherit; font-size: 0.9rem; margin-bottom: 4px; }
+        select { width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; font-family: inherit; font-size: 0.9rem; margin-bottom: 4px; }
 
         .progress-container { width: 100%; background: #111; border-radius: 10px; height: 12px; margin: 15px 0; border: 1px solid #333; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--brand-secondary), var(--brand-accent)); width: 0%; transition: 0.5s; }
 
         .tab-wrap { display: flex; overflow-x: auto; margin-bottom: 20px; gap: 5px; -webkit-overflow-scrolling: touch; }
-        .tab { padding: 8px 14px; background: #001a2c; border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; color: #888; font-weight: 600; text-align: center; flex-shrink: 0; }
+        .tab { padding: 8px 14px; background: var(--input-bg); border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; color: #888; font-weight: 600; text-align: center; flex-shrink: 0; }
         .tab.active { background: var(--brand-accent); color: black; font-weight: 800; }
         .tab-date { font-size: 0.55rem; display: block; opacity: 0.7; margin-top: 2px; }
 
         .section-header { background: #000; color: white; padding: 12px 15px; border-radius: 4px; margin: 25px 0 10px 0; font-family: 'Montserrat'; font-weight: 800; border-left: 4px solid var(--brand-accent); font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        .exercise-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid #004d7a; margin-bottom: 20px; }
+        .exercise-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
         .exercise-title { font-family: 'Montserrat'; font-size: 1.1rem; font-weight: 800; color: var(--brand-accent); margin: 0 0 14px 0; border-bottom: 1px solid #222; padding-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
 
         .set-container { background: #000; border-radius: 8px; padding: 12px; margin-bottom: 10px; border: 1px solid #1a2c3a; }
@@ -46,8 +46,8 @@
         .cell-header { font-size: 0.8rem; font-weight: 800; font-family: 'Montserrat'; text-align: center; margin-bottom: 2px; display: flex; align-items: center; justify-content: center; gap: 3px; }
         .help-icon { width: 13px; height: 13px; border-radius: 50%; border: 1px solid currentColor; display: inline-flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 800; cursor: pointer; opacity: 0.6; flex-shrink: 0; transition: 0.2s; }
         .help-icon:hover { opacity: 1; }
-        .do-cell { padding: 9px 6px; text-align: center; border: 1px solid #26C6DA33; background: #00131c; font-size: 0.95rem; color: #26C6DA; font-weight: 700; border-radius: 4px; }
-        .did-cell { padding: 9px 6px; text-align: center; border: 1px solid #2E7D32; background: #0e1b24; font-size: 0.95rem; color: #4ade80; font-weight: 700; border-radius: 4px; width: 100%; font-family: inherit; }
+        .do-cell { padding: 9px 6px; text-align: center; border: 1px solid rgba(82,183,136,0.2); background: #00131c; font-size: 0.95rem; color: var(--brand-accent); font-weight: 700; border-radius: 4px; }
+        .did-cell { padding: 9px 6px; text-align: center; border: 1px solid #2E7D32; background: var(--card-bg); font-size: 0.95rem; color: #4ade80; font-weight: 700; border-radius: 4px; width: 100%; font-family: inherit; }
         .did-cell:focus { outline: none; border-color: #4ade80; }
         .tick-wrap { display: flex; justify-content: center; }
         .tick-box { appearance: none; -webkit-appearance: none; background-color: #111; border: 2px solid var(--brand-secondary); border-radius: 4px; width: 36px; height: 36px; cursor: pointer; position: relative; flex-shrink: 0; }
@@ -56,9 +56,9 @@
 
         .note-input { width: 100%; background: #111; border: 1px solid #333; color: #ccc; padding: 9px 10px; border-radius: 4px; font-size: 0.85rem; font-family: inherit; margin-top: 8px; }
 
-        .date-row { background: var(--card-bg); border: 1px solid #004d7a; border-radius: 8px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-        .date-input { background: #000; border: 1px solid #004d7a; color: white; padding: 8px 12px; border-radius: 4px; font-size: 0.9rem; font-family: inherit; }
-        .date-scheduled { font-size: 0.75rem; color: #888; padding: 6px 12px; background: #0a1a2a; border: 1px solid #1a2a35; border-radius: 6px; }
+        .date-row { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .date-input { background: #000; border: 1px solid var(--border); color: white; padding: 8px 12px; border-radius: 4px; font-size: 0.9rem; font-family: inherit; }
+        .date-scheduled { font-size: 0.75rem; color: #888; padding: 6px 12px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; }
         .date-scheduled span { color: var(--brand-accent); font-weight: 800; }
         .date-completed { font-size: 0.75rem; color: #4ade80; padding: 6px 12px; background: #052e16; border: 1px solid #166534; border-radius: 6px; font-weight: 800; }
         .date-not-logged { font-size: 0.75rem; color: #555; }
@@ -66,7 +66,7 @@
         /* SESSION REFLECTION */
         .reflection-area { margin-top: 24px; }
         .reflection-area label { font-size: 0.65rem; color: #888; text-transform: uppercase; font-weight: 800; font-family: 'Montserrat'; letter-spacing: 1px; display: block; margin-bottom: 8px; }
-        .reflection-area textarea { width: 100%; background: #050d12; border: 1px solid #1a2a35; color: #ccc; padding: 12px 14px; border-radius: 8px; font-size: 0.88rem; font-family: inherit; resize: vertical; min-height: 80px; transition: 0.2s; }
+        .reflection-area textarea { width: 100%; background: var(--card-bg); border: 1px solid var(--border); color: #ccc; padding: 12px 14px; border-radius: 8px; font-size: 0.88rem; font-family: inherit; resize: vertical; min-height: 80px; transition: 0.2s; }
         .reflection-area textarea:focus { outline: none; border-color: var(--brand-secondary); }
         .reflection-save-btn { margin-top: 8px; background: var(--brand-secondary); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.72rem; cursor: pointer; transition: 0.2s; }
         .reflection-save-btn:hover { background: #388E3C; }
@@ -76,11 +76,11 @@
         .tooltip-overlay.open { display: flex; }
         .tooltip-box { background: var(--card-bg); border: 1px solid var(--brand-accent); border-radius: 12px; padding: 20px; max-width: 340px; width: 100%; }
         .tooltip-title { font-family: 'Montserrat'; font-weight: 800; font-size: 0.9rem; color: var(--brand-accent); margin-bottom: 12px; }
-        .tooltip-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1a2a35; font-size: 0.82rem; }
+        .tooltip-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
         .tooltip-row:last-child { border-bottom: none; }
         .tooltip-key { color: var(--brand-accent); font-weight: 800; font-family: 'Montserrat'; }
         .tooltip-val { color: #aaa; text-align: right; }
-        .tooltip-close { width: 100%; margin-top: 14px; padding: 10px; background: #1a2a35; border: none; color: #888; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; }
+        .tooltip-close { width: 100%; margin-top: 14px; padding: 10px; background: var(--border); border: none; color: #888; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; }
 
         #sync-toast { position: fixed; bottom: 20px; right: 20px; background: var(--brand-secondary); color: white; padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; display: none; z-index: 7000; }
 
@@ -94,7 +94,7 @@
         .tool-inp { width: 100%; background: #000; border: 1px solid #1a2c3a; border-radius: 4px; color: white; padding: 9px 10px; font-size: 0.9rem; font-family: inherit; margin-bottom: 10px; }
         .tool-inp:focus { outline: none; border-color: var(--brand-accent); }
         .tool-action-btn { padding: 11px; border: none; border-radius: 6px; background: var(--brand-primary); color: white; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .tool-action-btn:hover { background: #004d7a; }
+        .tool-action-btn:hover { background: var(--border); }
         .tool-action-btn.running { background: #7f1d1d; color: #f87171; }
     </style>
 </head>
@@ -130,8 +130,8 @@
     </div>
 </div>
 
-<div class="nav-top" style="display:flex;justify-content:space-between;align-items:center;padding:5px 15px;background:#000;border-bottom:1px solid #004d7a;position:sticky;top:0;z-index:1000;height:60px;">
-    <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:1rem;">REST <span style="color:#26C6DA;">PERIOD</span></div>
+<div class="nav-top" style="display:flex;justify-content:space-between;align-items:center;padding:5px 15px;background:#000;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;height:60px;">
+    <div style="font-family:Montserrat,sans-serif;font-weight:800;font-size:1rem;">REST <span style="color:var(--brand-accent);">PERIOD</span></div>
     <div style="display:flex;gap:8px;overflow-x:auto;align-items:center;-webkit-overflow-scrolling:touch;">
         <div class="header-tool" onclick="openTool('pace-tool')"><i class="fas fa-running"></i></div>
         <div class="header-tool" onclick="openTool('onerm-tool')"><i class="fas fa-weight-hanging"></i></div>
@@ -148,12 +148,12 @@
     <a href="#" onclick="pb.authStore.clear(); window.location.href='index.html';">LOGOUT</a>
 </div>
 <!-- BOTTOM NAV -->
-<nav style="position:fixed;bottom:0;left:0;right:0;height:65px;background:#000;border-top:1px solid #1a2a35;display:flex;z-index:3000;">
+<nav style="position:fixed;bottom:0;left:0;right:0;height:65px;background:#000;border-top:1px solid var(--border);display:flex;z-index:3000;">
     <a href="client-dashboard.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#444;text-decoration:none;">
         <i class="fas fa-home" style="font-size:1.1rem;"></i>
         <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Home</span>
     </a>
-    <a href="explore.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#26C6DA;text-decoration:none;">
+    <a href="explore.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--brand-accent);text-decoration:none;">
         <i class="fas fa-compass" style="font-size:1.1rem;"></i>
         <span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Explore</span>
     </a>
@@ -204,7 +204,7 @@
         <div id="pace-tool" class="tool-content" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <p style="font-size:0.7rem; color:#555; margin:0;">Fill any 2 fields — leave 1 blank to solve.</p>
-                <div style="display:flex; border:1px solid #1a2a35; border-radius:6px; overflow:hidden;">
+                <div style="display:flex; border:1px solid var(--border); border-radius:6px; overflow:hidden;">
                     <button id="t-pace-km-btn" class="t-unit-btn active" onclick="tSetPaceUnit('km')">KM</button>
                     <button id="t-pace-mi-btn" class="t-unit-btn" onclick="tSetPaceUnit('mi')">MI</button>
                 </div>
@@ -238,7 +238,7 @@
         <div id="onerm-tool" class="tool-content" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <p style="font-size:0.7rem; color:#555; margin:0;">Epley &amp; Brzycki for 1–10 reps</p>
-                <div style="display:flex; border:1px solid #1a2a35; border-radius:6px; overflow:hidden;">
+                <div style="display:flex; border:1px solid var(--border); border-radius:6px; overflow:hidden;">
                     <button id="t-rm-kg-btn" class="t-unit-btn active" onclick="tSetRMUnit('kg')">KG</button>
                     <button id="t-rm-lb-btn" class="t-unit-btn" onclick="tSetRMUnit('lb')">LB</button>
                 </div>
@@ -254,9 +254,9 @@
             <div id="t-rm-output" style="display:none; margin-top:10px; max-height:220px; overflow-y:auto;">
                 <table style="width:100%; border-collapse:collapse; font-size:0.78rem;">
                     <thead><tr>
-                        <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Reps</th>
-                        <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Epley</th>
-                        <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid #1a2a35; text-align:center;">Brzycki</th>
+                        <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid var(--border); text-align:center;">Reps</th>
+                        <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid var(--border); text-align:center;">Epley</th>
+                        <th style="color:var(--brand-accent); padding:5px; border-bottom:1px solid var(--border); text-align:center;">Brzycki</th>
                     </tr></thead>
                     <tbody id="t-rm-table-body"></tbody>
                 </table>
@@ -334,7 +334,7 @@ function runNavClock() {
         const now = new Date(), ms = now.getMilliseconds(), sec = now.getSeconds(), min = now.getMinutes();
         ctx.clearRect(0,0,45,45); ctx.save(); ctx.translate(22.5,22.5);
         ctx.save(); ctx.rotate((min+sec/60)*(Math.PI/30)); ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-14); ctx.strokeStyle='#fff'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.stroke(); ctx.restore();
-        ctx.save(); ctx.rotate((sec+ms/1000)*(Math.PI/30)); ctx.beginPath(); ctx.moveTo(0,5); ctx.lineTo(0,-18); ctx.strokeStyle='#26C6DA'; ctx.lineWidth=1.5; ctx.stroke(); ctx.restore();
+        ctx.save(); ctx.rotate((sec+ms/1000)*(Math.PI/30)); ctx.beginPath(); ctx.moveTo(0,5); ctx.lineTo(0,-18); ctx.strokeStyle='var(--brand-accent)'; ctx.lineWidth=1.5; ctx.stroke(); ctx.restore();
         ctx.restore(); requestAnimationFrame(draw);
     }
     draw();
@@ -348,7 +348,7 @@ async function fetchUserPrograms() {
 
     if (clientId) {
         const banner = document.createElement('div');
-        banner.style.cssText = 'background:#003B5C;border-bottom:1px solid #004d7a;padding:8px 20px;font-size:0.75rem;color:var(--brand-accent);display:flex;justify-content:space-between;align-items:center;';
+        banner.style.cssText = 'background:var(--brand-primary);border-bottom:1px solid var(--border);padding:8px 20px;font-size:0.75rem;color:var(--brand-accent);display:flex;justify-content:space-between;align-items:center;';
         banner.innerHTML = `<span>📋 Logging as client</span><a href="dashboard.html" style="color:#888;font-size:0.7rem;">← Back to Dashboard</a>`;
         document.body.insertBefore(banner, document.body.firstChild);
     }
@@ -415,13 +415,13 @@ async function renderRepeatableMode() {
                     let total=0,done=0; allEx.forEach(ex=>(ex.setsData||[]).forEach(s=>{total++;if(s.act_reps&&s.act_weight)done++;}));
                     const pct=total?Math.round((done/total)*100):0;
                     const dateStr=new Date(log.date.substring(0,10)+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-                    return `<div style="background:#050d12;border:1px solid #1a2a35;border-radius:8px;padding:12px 14px;margin-bottom:8px;">
+                    return `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;">
                         <div style="display:flex;justify-content:space-between;align-items:center;">
                             <span style="font-weight:700;font-size:0.88rem;">📅 ${dateStr}</span>
                             <span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'#4ade80':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span>
                         </div>
                         ${allEx.slice(0,3).map(ex=>{const best=(ex.setsData||[]).reduce((b,s)=>s.act_weight&&parseFloat(s.act_weight)>(parseFloat(b)||0)?s.act_weight:b,null);const cleanName=ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim()||ex.name;return best?`<div style="font-size:0.72rem;color:#888;margin-top:4px;">${cleanName} — top ${best}kg</div>`:''}).join('')}
-                        ${log.reflection?`<div style="font-size:0.75rem;color:#888;margin-top:8px;padding-top:8px;border-top:1px solid #1a2a35;font-style:italic;">💬 ${log.reflection}</div>`:''}
+                        ${log.reflection?`<div style="font-size:0.75rem;color:#888;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-style:italic;">💬 ${log.reflection}</div>`:''}
                     </div>`;
                 }).join('')}
             </div>`;
@@ -503,10 +503,10 @@ function renderContent() {
 
     const descHtml = [
         currentProgram.description
-            ? `<div style="background:#0a1a2a;border:1px solid #1a2a35;border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">📋 ${currentProgram.description}</div>`
+            ? `<div style="background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">📋 ${currentProgram.description}</div>`
             : '',
         session.description
-            ? `<div style="background:#001a2c;border:1px solid #1a3a4a;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid #26C6DA;">💬 ${session.description}</div>`
+            ? `<div style="background:var(--input-bg);border:1px solid #1a3a4a;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">💬 ${session.description}</div>`
             : ''
     ].join('');
 
@@ -561,12 +561,12 @@ function generateExerciseHTML(list, type, isRepeat) {
                 return `<div class="set-container">
                     <div class="set-label">SET ${si+1}</div>
                     <div class="set-grid" style="grid-template-columns:36px 1fr 1fr 1fr 1fr 1fr;">
-                        <div class="set-row-label" style="color:#26C6DA;">DO</div>
-                        <div><div class="cell-header" style="color:#26C6DA88;">REPS</div><div class="do-cell">${s.reps||'—'}</div></div>
-                        <div><div class="cell-header" style="color:#26C6DA88;">KG</div><div class="do-cell">${s.weight||'—'}</div></div>
-                        <div><div class="cell-header" style="color:#26C6DA88;">REST</div><div class="do-cell">${s.rest||'—'}</div></div>
-                        <div><div class="cell-header" style="color:#26C6DA88;">RPE <span class="help-icon" style="color:#26C6DA88;" onclick="document.getElementById('rpe-tooltip').classList.add('open');event.stopPropagation();">?</span></div><div class="do-cell">${s.rpe||'—'}</div></div>
-                        <div><div class="cell-header" style="color:#26C6DA88;">TEMPO <span class="help-icon" style="color:#26C6DA88;" onclick="document.getElementById('tempo-tooltip').classList.add('open');event.stopPropagation();">?</span></div><div class="do-cell">${s.tempo||'—'}</div></div>
+                        <div class="set-row-label" style="color:var(--brand-accent);">DO</div>
+                        <div><div class="cell-header" style="color:var(--brand-accent)88;">REPS</div><div class="do-cell">${s.reps||'—'}</div></div>
+                        <div><div class="cell-header" style="color:var(--brand-accent)88;">KG</div><div class="do-cell">${s.weight||'—'}</div></div>
+                        <div><div class="cell-header" style="color:var(--brand-accent)88;">REST</div><div class="do-cell">${s.rest||'—'}</div></div>
+                        <div><div class="cell-header" style="color:var(--brand-accent)88;">RPE <span class="help-icon" style="color:var(--brand-accent)88;" onclick="document.getElementById('rpe-tooltip').classList.add('open');event.stopPropagation();">?</span></div><div class="do-cell">${s.rpe||'—'}</div></div>
+                        <div><div class="cell-header" style="color:var(--brand-accent)88;">TEMPO <span class="help-icon" style="color:var(--brand-accent)88;" onclick="document.getElementById('tempo-tooltip').classList.add('open');event.stopPropagation();">?</span></div><div class="do-cell">${s.tempo||'—'}</div></div>
                     </div>
                     <div class="set-grid" style="grid-template-columns:36px 1fr 1fr 1fr 1fr 1fr;">
                         <div class="set-row-label" style="color:#4ade80;">DID</div>
@@ -722,7 +722,7 @@ function tSolvePace(){const dist=document.getElementById('t-pace-dist').value,tM
 let tRmUnit='kg';
 function tSetRMUnit(u){tRmUnit=u;document.getElementById('t-rm-kg-btn').classList.toggle('active',u==='kg');document.getElementById('t-rm-lb-btn').classList.toggle('active',u==='lb');document.getElementById('t-rm-weight-label').textContent=`Weight (${u})`;tClear1RM();}
 function tClear1RM(){document.getElementById('t-rm-weight').value='';document.getElementById('t-rm-reps').value='';document.getElementById('t-rm-output').style.display='none';document.getElementById('t-rm-table-body').innerHTML='';}
-function tCalc1RM(){let w=parseFloat(document.getElementById('t-rm-weight').value);const r=parseFloat(document.getElementById('t-rm-reps').value);if(!w||!r||r<1)return;if(tRmUnit==='lb')w=w/2.2046;const tbody=document.getElementById('t-rm-table-body');tbody.innerHTML='';for(let reps=1;reps<=10;reps++){let epley=w*(1+reps/30),brzycki=reps<37?w*(36/(37-reps)):null;if(tRmUnit==='lb'){epley*=2.2046;if(brzycki)brzycki*=2.2046;}const fmt=v=>v?`${Math.round(v)}${tRmUnit}`:'—';const row=document.createElement('tr');if(reps===Math.round(r)){row.style.color='var(--brand-accent)';row.style.fontWeight='800';}row.innerHTML=`<td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${reps}</td><td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${fmt(epley)}</td><td style="padding:4px 6px;text-align:center;border-bottom:1px solid #0e1b24;">${fmt(brzycki)}</td>`;tbody.appendChild(row);}document.getElementById('t-rm-output').style.display='block';}
+function tCalc1RM(){let w=parseFloat(document.getElementById('t-rm-weight').value);const r=parseFloat(document.getElementById('t-rm-reps').value);if(!w||!r||r<1)return;if(tRmUnit==='lb')w=w/2.2046;const tbody=document.getElementById('t-rm-table-body');tbody.innerHTML='';for(let reps=1;reps<=10;reps++){let epley=w*(1+reps/30),brzycki=reps<37?w*(36/(37-reps)):null;if(tRmUnit==='lb'){epley*=2.2046;if(brzycki)brzycki*=2.2046;}const fmt=v=>v?`${Math.round(v)}${tRmUnit}`:'—';const row=document.createElement('tr');if(reps===Math.round(r)){row.style.color='var(--brand-accent)';row.style.fontWeight='800';}row.innerHTML=`<td style="padding:4px 6px;text-align:center;border-bottom:1px solid var(--card-bg);">${reps}</td><td style="padding:4px 6px;text-align:center;border-bottom:1px solid var(--card-bg);">${fmt(epley)}</td><td style="padding:4px 6px;text-align:center;border-bottom:1px solid var(--card-bg);">${fmt(brzycki)}</td>`;tbody.appendChild(row);}document.getElementById('t-rm-output').style.display='block';}
 function tMetroScheduler(){const bpm=parseFloat(document.getElementById('t-m-slider').value),spb=60/bpm;while(tNextTick<tAudioCtx.currentTime+0.1){const osc=tAudioCtx.createOscillator(),env=tAudioCtx.createGain();osc.frequency.value=1000;env.gain.setValueAtTime(1,tNextTick);env.gain.exponentialRampToValueAtTime(0.001,tNextTick+0.025);osc.connect(env);env.connect(tAudioCtx.destination);osc.start(tNextTick);osc.stop(tNextTick+0.03);const delay=Math.max(0,(tNextTick-tAudioCtx.currentTime)*1000);setTimeout(()=>{const d=document.getElementById('t-bpm-val');if(!d)return;d.style.color='#fff';d.style.transform='scale(1.15)';setTimeout(()=>{d.style.color='var(--brand-accent)';d.style.transform='scale(1)';},60);},delay);tNextTick+=spb;}tMetroTimerID=setTimeout(tMetroScheduler,25);}
 function tToggleMetronome(){if(!tAudioCtx)tAudioCtx=new(window.AudioContext||window.webkitAudioContext)();if(tAudioCtx.state==='suspended')tAudioCtx.resume();const btn=document.getElementById('t-metro-btn');tMetroPlaying=!tMetroPlaying;if(tMetroPlaying){btn.textContent='Stop';btn.classList.add('running');tNextTick=tAudioCtx.currentTime;tMetroScheduler();}else{btn.textContent='Start';btn.classList.remove('running');clearTimeout(tMetroTimerID);}}
 let tCdRunning=false,tCdTime=60,tCdInterval=null;

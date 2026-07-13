@@ -16,7 +16,7 @@
         input[type=number] { -moz-appearance: textfield; }
 
         /* ── NAV ── */
-        .nav-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #000; border-bottom: 1px solid #004d7a; position: sticky; top: 0; z-index: 200; gap: 10px; }
+        .nav-top { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #000; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 200; gap: 10px; }
         .nav-brand { font-family: 'Montserrat'; font-weight: 800; font-size: 1.1rem; white-space: nowrap; }
         .nav-brand span { color: var(--brand-accent); }
         .nav-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -31,7 +31,7 @@
         .header-tool:hover { background: rgba(38,198,218,0.1); border-color: var(--brand-accent); }
 
         /* ── UPGRADE BANNER (free only) ── */
-        .upgrade-banner { background: linear-gradient(135deg, #003B5C, #004d7a); border-bottom: 1px solid #004d7a; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .upgrade-banner { background: linear-gradient(135deg, var(--brand-primary), var(--border)); border-bottom: 1px solid var(--border); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
         .upgrade-banner p { font-size: 0.75rem; color: #aaa; }
         .upgrade-banner strong { color: var(--brand-accent); }
         .btn-upgrade { background: var(--brand-accent); color: #000; border: none; padding: 7px 16px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; }
@@ -57,23 +57,23 @@
         .prog-card-body { padding: 10px 12px 12px; }
         .prog-name { font-family: 'Montserrat'; font-weight: 800; font-size: 0.82rem; color: white; margin-bottom: 4px; line-height: 1.3; }
         .prog-meta { font-size: 0.68rem; color: #666; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .prog-bar-bg { background: #050d12; border-radius: 10px; height: 4px; overflow: hidden; margin-bottom: 6px; }
+        .prog-bar-bg { background: var(--card-bg); border-radius: 10px; height: 4px; overflow: hidden; margin-bottom: 6px; }
         .prog-bar-fill { height: 100%; background: linear-gradient(90deg, var(--brand-secondary), var(--brand-accent)); border-radius: 10px; transition: width 0.5s; }
         .prog-pct { font-size: 0.6rem; color: #555; display: flex; justify-content: space-between; }
         .prog-pct span { color: var(--brand-accent); font-weight: 800; }
         .prog-last { font-size: 0.6rem; color: #555; margin-top: 6px; }
         .prog-badge { font-size: 0.55rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 6px; }
         .prog-badge-rep { background: #1a1a3a; color: #c084fc; border: 1px solid #c084fc44; }
-        .prog-badge-block { background: #001a2c; color: var(--brand-accent); border: 1px solid #26C6DA44; }
+        .prog-badge-block { background: var(--input-bg); color: var(--brand-accent); border: 1px solid rgba(82,183,136,0.25); }
         .prog-badge-claimed { background: #052e16; color: #4ade80; border: 1px solid #166534; }
         .claimed-ribbon { position: absolute; top: 8px; right: 8px; background: var(--brand-secondary); color: white; font-size: 0.5rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; }
         .no-programs { color: #555; font-size: 0.85rem; text-align: center; padding: 30px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; }
 
         /* ── CATEGORY THUMB GRADIENTS ── */
-        .thumb-strength { background: linear-gradient(135deg, #1a0a3a, #003B5C); }
+        .thumb-strength { background: linear-gradient(135deg, #1a0a3a, var(--brand-primary)); }
         .thumb-power    { background: linear-gradient(135deg, #1a0a00, #3a2000); }
         .thumb-run      { background: linear-gradient(135deg, #001a0a, #0a2a00); }
-        .thumb-circuit  { background: linear-gradient(135deg, #001a2c, #0a1a3a); }
+        .thumb-circuit  { background: linear-gradient(135deg, var(--input-bg), #0a1a3a); }
         .thumb-mobility { background: linear-gradient(135deg, #1a0a2a, #0a1a0a); }
         .thumb-cardio   { background: linear-gradient(135deg, #2a0a0a, #1a0a0a); }
         .thumb-warmup   { background: linear-gradient(135deg, #2a1000, #3a1500); }
@@ -98,7 +98,7 @@
         @media (max-width: 600px) { .shelf-arrow { display: none; } }
 
         /* ── MY PROGRAMS LIST (free) ── */
-        .my-prog-item { display: flex; justify-content: space-between; align-items: center; background: #050d12; padding: 12px 14px; margin-bottom: 8px; border-radius: 6px; border: 1px solid var(--border); gap: 8px; cursor: pointer; transition: 0.2s; }
+        .my-prog-item { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 12px 14px; margin-bottom: 8px; border-radius: 6px; border: 1px solid var(--border); gap: 8px; cursor: pointer; transition: 0.2s; }
         .my-prog-item:hover { border-color: var(--brand-accent); }
         .my-prog-name { font-size: 0.88rem; font-weight: 700; }
         .my-prog-meta { font-size: 0.65rem; color: #555; margin-top: 2px; }
@@ -107,16 +107,16 @@
         /* ── CALENDAR ── */
         .cal-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; overflow: hidden; }
         .cal-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
-        .cal-toggle { display: flex; gap: 4px; background: #050d12; padding: 3px; border-radius: 6px; }
+        .cal-toggle { display: flex; gap: 4px; background: var(--card-bg); padding: 3px; border-radius: 6px; }
         .cal-toggle-btn { padding: 5px 12px; border: none; border-radius: 4px; background: none; color: #555; font-family: 'Montserrat'; font-weight: 700; font-size: 0.65rem; cursor: pointer; transition: 0.2s; }
         .cal-toggle-btn.active { background: var(--brand-accent); color: #000; }
         .cal-nav { display: flex; align-items: center; gap: 8px; }
-        .cal-nav button { background: #050d12; border: 1px solid var(--border); color: var(--brand-accent); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; transition: 0.2s; }
+        .cal-nav button { background: var(--card-bg); border: 1px solid var(--border); color: var(--brand-accent); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; transition: 0.2s; }
         .cal-nav button:hover { background: var(--card-bg); }
         .cal-period { font-family: 'Montserrat'; font-weight: 700; font-size: 0.8rem; color: white; }
         .cal-month-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
         .cal-dow { text-align: center; font-size: 0.55rem; color: #555; font-weight: 800; font-family: 'Montserrat'; padding: 4px 0; text-transform: uppercase; }
-        .cal-mday { min-height: 60px; background: #050d12; border-radius: 4px; padding: 4px; border: 1px solid transparent; position: relative; transition: 0.15s; overflow: hidden; }
+        .cal-mday { min-height: 60px; background: var(--card-bg); border-radius: 4px; padding: 4px; border: 1px solid transparent; position: relative; transition: 0.15s; overflow: hidden; }
         .cal-mday.today { border-color: var(--brand-accent) !important; }
         .cal-mday.other-month .cal-mday-num { color: #222; }
         .cal-mday.has-session { background: #0a1f0e; border-color: #1a3a1a; }
@@ -131,7 +131,7 @@
         .add-plan-btn { position: absolute; bottom: 3px; right: 3px; background: none; border: none; color: #333; cursor: pointer; font-size: 0.75rem; padding: 0; line-height: 1; transition: 0.2s; }
         .add-plan-btn:hover { color: var(--brand-accent); }
         .cal-week-list { display: flex; flex-direction: column; gap: 6px; }
-        .cal-wday { background: #050d12; border-radius: 6px; padding: 10px 12px; border: 1px solid var(--border); }
+        .cal-wday { background: var(--card-bg); border-radius: 6px; padding: 10px 12px; border: 1px solid var(--border); }
         .cal-wday.today { border-color: var(--brand-accent); }
         .cal-wday-label { font-size: 0.62rem; color: #555; font-family: 'Montserrat'; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
         .cal-wday-session { border-radius: 4px; padding: 8px 10px; margin-bottom: 4px; cursor: pointer; }
@@ -166,11 +166,11 @@
         .progress-container { width: 100%; background: #111; border-radius: 10px; height: 8px; margin-bottom: 16px; border: 1px solid #333; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--brand-secondary), var(--brand-accent)); width: 0%; transition: 0.5s; }
         .week-tabs { display: flex; overflow-x: auto; gap: 6px; margin-bottom: 16px; padding-bottom: 4px; }
-        .week-tab { padding: 7px 14px; background: #001a2c; border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; color: #888; font-weight: 600; font-family: 'Montserrat'; }
+        .week-tab { padding: 7px 14px; background: var(--input-bg); border: 1px solid #333; cursor: pointer; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; color: #888; font-weight: 600; font-family: 'Montserrat'; }
         .week-tab.active { background: var(--brand-accent); color: black; font-weight: 800; }
 
         /* ── EXERCISE CARDS ── */
-        .exercise-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid #004d7a; margin-bottom: 20px; }
+        .exercise-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
         .exercise-title { font-family: 'Montserrat'; font-size: 1rem; font-weight: 800; color: var(--brand-accent); margin: 0 0 14px 0; border-bottom: 1px solid #222; padding-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .section-header { background: #000; color: white; padding: 9px 14px; border-radius: 4px; margin: 16px 0 10px 0; font-family: 'Montserrat'; font-weight: 800; border-left: 4px solid var(--brand-accent); font-size: 0.82rem; }
         .set-container { background: #000; border-radius: 8px; padding: 12px; margin-bottom: 10px; border: 1px solid #1a2c3a; }
@@ -178,16 +178,16 @@
         .set-grid { display: grid; grid-template-columns: 36px 1fr 1fr 1fr 1fr 1fr; gap: 6px; align-items: center; margin-bottom: 6px; }
         .set-row-label { font-size: 0.80rem; font-weight: 800; font-family: 'Montserrat'; text-align: right; padding-right: 4px; }
         .cell-header { font-size: 0.8rem; font-weight: 800; font-family: 'Montserrat'; text-align: center; margin-bottom: 2px; }
-        .do-cell { padding: 9px 6px; text-align: center; border: 1px solid #26C6DA33; background: #00131c; font-size: 0.95rem; color: #26C6DA; font-weight: 700; border-radius: 4px; }
-        .did-cell { padding: 9px 6px; text-align: center; border: 1px solid #2E7D32; background: #0e1b24; font-size: 0.95rem; color: #4ade80; font-weight: 700; border-radius: 4px; width: 100%; font-family: inherit; }
+        .do-cell { padding: 9px 6px; text-align: center; border: 1px solid rgba(82,183,136,0.2); background: #00131c; font-size: 0.95rem; color: var(--brand-accent); font-weight: 700; border-radius: 4px; }
+        .did-cell { padding: 9px 6px; text-align: center; border: 1px solid #2E7D32; background: var(--card-bg); font-size: 0.95rem; color: #4ade80; font-weight: 700; border-radius: 4px; width: 100%; font-family: inherit; }
         .did-cell:focus { outline: none; border-color: #4ade80; }
         .tick-box { appearance: none; -webkit-appearance: none; background-color: #111; border: 2px solid var(--brand-secondary); border-radius: 4px; width: 36px; height: 36px; cursor: pointer; position: relative; flex-shrink: 0; }
         .tick-box:checked { background-color: var(--brand-secondary); }
         .tick-box:checked::after { content: '✔'; color: white; font-size: 1.1rem; font-weight: bold; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); }
         .note-input { width: 100%; background: #111; border: 1px solid #333; color: #ccc; padding: 9px 10px; border-radius: 4px; font-size: 0.85rem; font-family: inherit; margin-top: 8px; }
-        .date-bar { background: var(--card-bg); border: 1px solid #004d7a; border-radius: 8px; padding: 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .date-bar { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
         .date-label { font-size: 0.58rem; color: #aaa; text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 4px; font-family: 'Montserrat'; }
-        .date-input { background: #000; border: 1px solid #004d7a; color: white; padding: 7px 10px; border-radius: 4px; font-size: 0.85rem; font-family: inherit; }
+        .date-input { background: #000; border: 1px solid var(--border); color: white; padding: 7px 10px; border-radius: 4px; font-size: 0.85rem; font-family: inherit; }
         .btn-finish { background: var(--brand-secondary); color: white; font-weight: 800; margin-top: 16px; border: none; border-radius: 6px; padding: 14px; width: 100%; cursor: pointer; font-family: 'Montserrat'; font-size: 0.85rem; }
 
         /* ── CHECK-INS ── */
@@ -195,7 +195,7 @@
         .checkin-date { font-family: 'Montserrat'; font-weight: 800; font-size: 0.8rem; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .checkin-avg { background: var(--brand-secondary); border-radius: 20px; padding: 3px 10px; font-size: 0.7rem; font-weight: 800; }
         .checkin-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 10px; }
-        .checkin-stat { background: #050d12; border-radius: 6px; padding: 8px; text-align: center; border: 1px solid var(--border); }
+        .checkin-stat { background: var(--card-bg); border-radius: 6px; padding: 8px; text-align: center; border: 1px solid var(--border); }
         .checkin-stat-icon { font-size: 0.9rem; }
         .checkin-stat-val { font-size: 1rem; font-weight: 800; color: var(--brand-accent); }
         .checkin-stat-label { font-size: 0.55rem; color: #555; }
@@ -209,7 +209,7 @@
         .prog-modal-title { font-family: 'Montserrat'; font-size: 1.1rem; font-weight: 800; color: white; margin-bottom: 8px; }
         .prog-modal-desc { font-size: 0.82rem; color: #888; line-height: 1.6; margin-bottom: 16px; }
         .prog-modal-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-        .prog-modal-meta span { font-size: 0.65rem; color: #888; background: #050d12; border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; font-family: 'Montserrat'; font-weight: 700; }
+        .prog-modal-meta span { font-size: 0.65rem; color: #888; background: var(--card-bg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; font-family: 'Montserrat'; font-weight: 700; }
         .btn-claim { background: var(--brand-accent); color: #000; border: none; padding: 14px; width: 100%; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: 0.2s; margin-bottom: 8px; }
         .btn-claim:hover { background: #1eb3c5; }
         .btn-claim:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -229,12 +229,12 @@
         .plan-modal h3 { font-family: 'Montserrat'; font-size: 0.85rem; color: var(--brand-accent); margin: 0 0 16px; }
         .plan-field { margin-bottom: 12px; }
         .plan-label { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 5px; font-family: 'Montserrat'; }
-        .plan-input { width: 100%; background: #050d12; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; font-family: inherit; font-size: 0.9rem; }
+        .plan-input { width: 100%; background: var(--card-bg); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; font-family: inherit; font-size: 0.9rem; }
         .plan-input:focus { outline: none; border-color: var(--brand-accent); }
         .plan-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
         .plan-btn { padding: 10px; border: none; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
         .plan-btn-save { background: var(--brand-secondary); color: white; }
-        .plan-btn-cancel { background: #1a2a35; color: #888; }
+        .plan-btn-cancel { background: var(--border); color: #888; }
         .plan-btn-delete { background: rgba(255,82,82,0.1); color: #ff5252; border: 1px solid #ff5252; grid-column: 1/-1; }
 
         /* ── TOOL MODAL ── */
@@ -249,7 +249,7 @@
         .tool-inp { width: 100%; background: #000; border: 1px solid #1a2c3a; border-radius: 4px; color: white; padding: 9px 10px; font-size: 0.9rem; font-family: inherit; margin-bottom: 10px; }
         .tool-inp:focus { outline: none; border-color: var(--brand-accent); }
         .tool-action-btn { padding: 11px; border: none; border-radius: 6px; background: var(--brand-primary); color: white; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .tool-action-btn:hover { background: #004d7a; }
+        .tool-action-btn:hover { background: var(--border); }
         .tool-action-btn.running { background: #7f1d1d; color: #f87171; }
         .quad-label { font-size: 0.55rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px; }
 
@@ -261,7 +261,7 @@
 <div id="sync-toast">Saved</div>
 
 <!-- ── NAV ── -->
-<div class="nav-top" style="display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:#000;border-bottom:1px solid #004d7a;position:sticky;top:0;z-index:200;">
+<div class="nav-top" style="display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:#000;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;">
     <div class="nav-brand">REST <span>PERIOD</span></div>
     <div style="display:flex;align-items:center;gap:10px;">
         <span class="nav-user" id="nav-user" style="font-size:0.72rem;color:#888;"></span>
@@ -552,7 +552,7 @@ let draggedSession = null;
 let currentProgram = null;
 let currentWeekIndex = 0;
 
-const typeColors = { strength:'#26C6DA', cardio:'#f87171', recovery:'#c084fc', mobility:'#4ade80', other:'#fb923c' };
+const typeColors = { strength:'var(--brand-accent)', cardio:'#f87171', recovery:'#c084fc', mobility:'#4ade80', other:'#fb923c' };
 const typeEmoji  = { strength:'', cardio:'', recovery:'', mobility:'', other:'' };
 const dayNames   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
@@ -560,7 +560,7 @@ const CATEGORY_META = {
     STRENGTH: { label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
     POWER:    { label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
     RUN:      { label:'Run',      thumbClass:'thumb-run',      color:'#4ade80' },
-    CIRCUIT:  { label:'Circuit',  thumbClass:'thumb-circuit',  color:'#26C6DA' },
+    CIRCUIT:  { label:'Circuit',  thumbClass:'thumb-circuit',  color:'var(--brand-accent)' },
     MOBILITY: { label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
     CARDIO:   { label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
     'WARM UP':{ label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
@@ -1145,7 +1145,7 @@ async function savePlan() {
 
 async function deletePlan(){const id=document.getElementById('plan-id').value;if(!id||!confirm('Delete?'))return;try{await pb.collection('planned_workouts').delete(id);closePlanModal();await refreshPlanned();renderCalendar();}catch(e){alert('Delete failed: '+e.message);}}
 
-function showRepeatDialog(){return new Promise(resolve=>{const overlay=document.createElement('div');overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;';overlay.innerHTML=`<div style="background:var(--card-bg);border:1px solid var(--brand-accent);border-radius:12px;padding:24px;max-width:340px;width:100%;"><div style="font-family:'Montserrat';font-weight:800;font-size:0.9rem;color:var(--brand-accent);margin-bottom:10px;">Repeating Workout</div><p style="font-size:0.8rem;color:#888;margin-bottom:20px;line-height:1.6;">Change just this one, or all future?</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;"><button id="rep-one" style="padding:10px;border:none;border-radius:6px;background:#1a2a35;color:var(--brand-accent);font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">JUST THIS ONE</button><button id="rep-all" style="padding:10px;border:none;border-radius:6px;background:var(--brand-secondary);color:white;font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">ALL FUTURE</button></div><button id="rep-cancel" style="width:100%;padding:8px;border:none;border-radius:6px;background:none;color:#555;font-family:'Montserrat';font-weight:800;font-size:0.65rem;cursor:pointer;">CANCEL</button></div>`;document.body.appendChild(overlay);document.getElementById('rep-one').onclick=()=>{document.body.removeChild(overlay);resolve('one');};document.getElementById('rep-all').onclick=()=>{document.body.removeChild(overlay);resolve('all');};document.getElementById('rep-cancel').onclick=()=>{document.body.removeChild(overlay);resolve(null);};})}
+function showRepeatDialog(){return new Promise(resolve=>{const overlay=document.createElement('div');overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;';overlay.innerHTML=`<div style="background:var(--card-bg);border:1px solid var(--brand-accent);border-radius:12px;padding:24px;max-width:340px;width:100%;"><div style="font-family:'Montserrat';font-weight:800;font-size:0.9rem;color:var(--brand-accent);margin-bottom:10px;">Repeating Workout</div><p style="font-size:0.8rem;color:#888;margin-bottom:20px;line-height:1.6;">Change just this one, or all future?</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;"><button id="rep-one" style="padding:10px;border:none;border-radius:6px;background:var(--border);color:var(--brand-accent);font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">JUST THIS ONE</button><button id="rep-all" style="padding:10px;border:none;border-radius:6px;background:var(--brand-secondary);color:white;font-family:'Montserrat';font-weight:800;font-size:0.7rem;cursor:pointer;">ALL FUTURE</button></div><button id="rep-cancel" style="width:100%;padding:8px;border:none;border-radius:6px;background:none;color:#555;font-family:'Montserrat';font-weight:800;font-size:0.65rem;cursor:pointer;">CANCEL</button></div>`;document.body.appendChild(overlay);document.getElementById('rep-one').onclick=()=>{document.body.removeChild(overlay);resolve('one');};document.getElementById('rep-all').onclick=()=>{document.body.removeChild(overlay);resolve('all');};document.getElementById('rep-cancel').onclick=()=>{document.body.removeChild(overlay);resolve(null);};})}
 
 async function refreshPlanned(){plannedWorkouts=await pb.collection('planned_workouts').getFullList({filter:`user="${pb.authStore.model.id}"`,sort:'date',requestKey:null});}
 
@@ -1192,7 +1192,7 @@ function renderWeekTabs() {
 function renderWorkout() {
     const week=currentProgram.schedule[currentWeekIndex];
     const dateVal=week.sessionDate||'';
-    const descHtml=currentProgram.description?`<div style="background:#0a1a2a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">${currentProgram.description}</div>`:'';
+    const descHtml=currentProgram.description?`<div style="background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">${currentProgram.description}</div>`:'';
     let html=descHtml+`<div class="date-bar"><div><span class="date-label">Session Date</span><input type="date" class="date-input" value="${dateVal}" onchange="saveSessionDate(this.value)"></div>${dateVal?`<div style="background:#052e16;border:1px solid #166534;border-radius:6px;padding:5px 10px;font-size:0.72rem;color:#4ade80;font-weight:800;">✓ LOGGED ${new Date(dateVal+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'})}</div>`:`<div style="font-size:0.72rem;color:#555;">Not logged yet</div>`}</div>`;
     if(week.warmup?.length) html+=`<div class="section-header">WARM UP</div>`+generateExerciseHTML(week.warmup,'warmup');
     if(week.exercises?.length) html+=`<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>`+generateExerciseHTML(week.exercises,'exercises');
@@ -1213,12 +1213,12 @@ function generateExerciseHTML(list,type) {
                 const isChecked=(s.act_reps&&s.act_weight)?'checked':'';
                 return `<div class="set-container"><div class="set-label">SET ${si+1}</div>
                     <div class="set-grid">
-                        <div class="set-row-label" style="color:#26C6DA;">DO</div>
-                        <div><div class="cell-header" style="color:#26C6DA88;">REPS</div><div class="do-cell">${s.reps||'—'}</div></div>
-                        <div><div class="cell-header" style="color:#26C6DA88;">KG</div><div class="do-cell">${s.weight||'—'}</div></div>
-                        <div><div class="cell-header" style="color:#26C6DA88;">REST</div><div class="do-cell">${s.rest||'—'}</div></div>
-                        <div><div class="cell-header" style="color:#26C6DA88;">RPE</div><div class="do-cell">${s.rpe||'—'}</div></div>
-                        <div><div class="cell-header" style="color:#26C6DA88;">TEMPO</div><div class="do-cell">${s.tempo||'—'}</div></div>
+                        <div class="set-row-label" style="color:var(--brand-accent);">DO</div>
+                        <div><div class="cell-header" style="color:var(--brand-accent)88;">REPS</div><div class="do-cell">${s.reps||'—'}</div></div>
+                        <div><div class="cell-header" style="color:var(--brand-accent)88;">KG</div><div class="do-cell">${s.weight||'—'}</div></div>
+                        <div><div class="cell-header" style="color:var(--brand-accent)88;">REST</div><div class="do-cell">${s.rest||'—'}</div></div>
+                        <div><div class="cell-header" style="color:var(--brand-accent)88;">RPE</div><div class="do-cell">${s.rpe||'—'}</div></div>
+                        <div><div class="cell-header" style="color:var(--brand-accent)88;">TEMPO</div><div class="do-cell">${s.tempo||'—'}</div></div>
                     </div>
                     <div class="set-grid">
                         <div class="set-row-label" style="color:#4ade80;">DID</div>
@@ -1280,7 +1280,7 @@ function updateProgressBar(){
 // ── REPEATABLE MODE ───────────────────────────────
 async function renderRepeatableUI(){
     const content=document.getElementById('workout-content');
-    const descHtml=currentProgram.description?`<div style="background:#0a1a2a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">${currentProgram.description}</div>`:'';
+    const descHtml=currentProgram.description?`<div style="background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">${currentProgram.description}</div>`:'';
     content.innerHTML=`${descHtml}<div style="text-align:center;padding:20px 0 30px;"><div style="font-size:0.8rem;color:#888;margin-bottom:16px;">Repeatable session — log each time you do it</div><button onclick="startRepeatableSession()" style="background:var(--brand-accent);color:#000;border:none;padding:14px 32px;border-radius:8px;font-family:'Montserrat';font-weight:800;font-size:0.9rem;cursor:pointer;">▶ Log New Session</button></div><div id="repeat-history"></div><div id="repeat-active" style="display:none;"></div>`;
     await loadRepeatHistory();
 }
@@ -1291,7 +1291,7 @@ async function loadRepeatHistory(){
     if(!logs.length){el.innerHTML='<div style="color:#555;font-size:0.8rem;text-align:center;padding:10px;">No sessions logged yet.</div>';return;}
     el.innerHTML=`<div style="font-family:'Montserrat';font-size:0.7rem;font-weight:800;color:var(--brand-accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Session History</div>`+
     logs.map(log=>{let data=log.workout_data;if(typeof data==='string')data=JSON.parse(data);const allEx=[...(data.warmup||[]),...(data.exercises||[])];let total=0,done=0;allEx.forEach(ex=>(ex.setsData||[]).forEach(s=>{total++;if(s.act_reps&&s.act_weight)done++;}));const pct=total?Math.round((done/total)*100):0;const dateStr=new Date(log.date.substring(0,10)+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short',year:'numeric'});const highlights=allEx.slice(0,3).map(ex=>{const best=(ex.setsData||[]).reduce((b,s)=>s.act_weight&&parseFloat(s.act_weight)>parseFloat(b||0)?s.act_weight:b,null);const name=ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim()||ex.name;return best?`<div style="font-size:0.72rem;color:#888;margin-top:3px;">${name} — top ${best}kg</div>`:''}).join('');
-    return `<div style="background:#050d12;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;font-size:0.88rem;">${dateStr}</span><span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'#4ade80':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span></div>${highlights}</div>`;}).join('');}catch(e){console.error(e);}
+    return `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;font-size:0.88rem;">${dateStr}</span><span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'#4ade80':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span></div>${highlights}</div>`;}).join('');}catch(e){console.error(e);}
 }
 
 function startRepeatableSession(){
@@ -1303,7 +1303,7 @@ function startRepeatableSession(){
 
 function renderRepeatSession(session){
     const wrapper=document.getElementById('repeat-active');wrapper.style.display='block';wrapper.scrollIntoView({behavior:'smooth'});
-    let html=`<div class="date-bar" style="margin-top:16px;"><div><span class="date-label">Session Date</span><input type="date" class="date-input" value="${session.sessionDate||''}" onchange="currentProgram._activeRepeat.sessionDate=this.value"></div><div style="background:#003B5C;border:1px solid var(--brand-accent);border-radius:6px;padding:5px 10px;font-size:0.72rem;color:var(--brand-accent);font-weight:800;">New Session</div></div>`;
+    let html=`<div class="date-bar" style="margin-top:16px;"><div><span class="date-label">Session Date</span><input type="date" class="date-input" value="${session.sessionDate||''}" onchange="currentProgram._activeRepeat.sessionDate=this.value"></div><div style="background:var(--brand-primary);border:1px solid var(--brand-accent);border-radius:6px;padding:5px 10px;font-size:0.72rem;color:var(--brand-accent);font-weight:800;">New Session</div></div>`;
     if(session.warmup?.length)html+=`<div class="section-header">WARM UP</div>`+generateExerciseHTML(session.warmup,'warmup');
     if(session.exercises?.length)html+=`<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>`+generateExerciseHTML(session.exercises,'exercises');
     html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;"><button onclick="saveRepeatSession()" class="btn-finish" style="margin:0;">Save Session</button><button onclick="document.getElementById('repeat-active').style.display='none'" style="background:transparent;border:1px solid #555;color:#888;padding:14px;border-radius:6px;font-family:'Montserrat';font-weight:800;font-size:0.85rem;cursor:pointer;width:100%;">✕ CANCEL</button></div>`;
