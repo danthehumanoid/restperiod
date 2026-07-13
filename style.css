@@ -207,13 +207,13 @@ input[type=number] { -moz-appearance: textfield; }
 }
 .form-field { margin-bottom: 14px; }
 
-/* ── BADGE ── */
+/* ── BADGE (Now completely Blue-Free) ── */
 .badge {
     font-size: 0.55rem; font-family: 'Montserrat', sans-serif;
     font-weight: 800; padding: 2px 8px; border-radius: 10px;
     display: inline-block;
 }
-.badge-accent  { background: #111F17; color: var(--brand-accent); border: 1px solid rgba(82, 183, 136, 0.2); }
+.badge-accent  { background: #0A1C14; color: var(--brand-accent); border: 1px solid rgba(82, 183, 136, 0.25); }
 .badge-green   { background: #0A2F1D; color: #52B788; border: 1px solid #1B4D3E; }
 .badge-purple  { background: #220A2E; color: #D6A4FC; border: 1px solid rgba(214, 164, 252, 0.25); }
 .badge-danger  { background: #330C10; color: var(--brand-danger); border: 1px solid #5C161D; }
