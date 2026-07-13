@@ -88,6 +88,16 @@
         .tab-panel { display: none; padding: 20px; }
         .tab-panel.active { display: block; }
 
+        /* ── FAQ ACCORDION ── */
+        .faq-item { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+        .faq-question { padding: 14px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; color: var(--text-main); background: var(--card-bg); transition: 0.2s; user-select: none; }
+        .faq-question:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+        .faq-question.open { color: var(--brand-accent); border-bottom: 1px solid var(--border); }
+        .faq-chevron { font-size: 0.7rem; transition: transform 0.2s; }
+        .faq-question.open .faq-chevron { transform: rotate(180deg); }
+        .faq-answer { display: none; padding: 14px 16px; font-size: 0.82rem; color: #888; line-height: 1.8; background: var(--card-bg); }
+        .faq-answer.open { display: block; }
+
         #toast { position: fixed; bottom: calc(var(--nav-height) + 12px); left: 50%; transform: translateX(-50%); background: var(--brand-secondary); color: white; padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; display: none; z-index: 9000; white-space: nowrap; font-family: 'Montserrat'; }
     </style>
 </head>
@@ -139,8 +149,16 @@
 
 <!-- START HERE TAB -->
 <div class="tab-panel" id="tab-start">
-    <div class="section-title">Welcome to Rest Period</div>
-    <!-- Add your content here -->
+
+    <div class="section-title">About Rest Period</div>
+    <div style="font-size:0.88rem;color:#888;line-height:1.8;margin-bottom:24px;">
+        Rest Period is an online exercise and educational resource for people wanting help, guidance and support with their training. Built by Daniel Hardie — Strength and Conditioning Coach, Exercise Scientist and Educator — with 15 years in the fitness industry.<br><br>
+        The aim is simple: more humans moving better, more of the time, safely and enjoyably.
+    </div>
+
+    <div class="section-title">FAQ</div>
+    <div id="faq-list"></div>
+
 </div>
 
 <!-- TRAIN TAB -->
@@ -275,7 +293,11 @@ window.onload = async () => {
     loadUserProgress();
     renderLessons();
     renderTheory();
+    renderFAQ();
     await loadTrainPrograms();
+    // Check for ?tab= param in URL
+    const urlTab = new URLSearchParams(window.location.search).get('tab');
+    if (urlTab) switchTab(urlTab);
 };
 
 // ── TABS ──────────────────────────────────────────
@@ -522,6 +544,54 @@ async function startProgram(templateId) {
         showToast('Program started');
         setTimeout(() => { window.location.href = `program.html?id=${newProg.id}`; }, 1000);
     } catch(e) { alert('Failed: '+e.message); }
+}
+
+// ── FAQ ──────────────────────────────────────────
+const FAQ = [
+    {
+        q: "Is Rest Period free?",
+        a: "All of Rest Period is free — create an account, access the exercise library, start programs, log results and read educational resources. Over time a paid subscription will offer more programs, courses and coaching tools. There will always be a free tier, because we never want someone's financial position to be a barrier to starting exercise."
+    },
+    {
+        q: "Can I get 1-1 coaching?",
+        a: "Daniel offers 1-1 in-person coaching in Wellington, New Zealand and online coaching using Rest Period's coaching platform. Get in touch through the contact page to find out more."
+    },
+    {
+        q: "Where do I start?",
+        a: "Depending on your level of ability, you might choose from the warm ups to improve your readiness to train, sample a running drill workout, or dive right into a full training block adding your weights and reps along the way. If you're unsure, the Start Here tab is a great place to begin."
+    },
+    {
+        q: "What is Rest Period?",
+        a: "Rest Period is an exercise tool and educational resource. It includes a full exercise library, science-backed educational resources, guided warm up, strength, speed and mobility programs, and a philosophy section drawn from real conversations with clients over 15 years of coaching."
+    },
+    {
+        q: "Do I need to log in to use it?",
+        a: "Anyone can access the exercise library without logging in. Creating a free account gives you access to programs, session logging, read tracking and saved content."
+    },
+    {
+        q: "Is this suitable for beginners?",
+        a: "Yes. The programs range from beginner warm ups and mobility work through to full strength training blocks. As always, consult a medical professional to ensure you are ready and able to exercise safely before starting any program."
+    },
+];
+
+function renderFAQ() {
+    const list = document.getElementById('faq-list');
+    if (!list) return;
+    list.innerHTML = FAQ.map((item, i) => `
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(${i})" id="faq-q-${i}">
+                <span>${item.q}</span>
+                <span class="faq-chevron">▼</span>
+            </div>
+            <div class="faq-answer" id="faq-a-${i}">${item.a}</div>
+        </div>`).join('');
+}
+
+function toggleFAQ(i) {
+    const q = document.getElementById(`faq-q-${i}`);
+    const a = document.getElementById(`faq-a-${i}`);
+    q.classList.toggle('open');
+    a.classList.toggle('open');
 }
 
 // ── TOAST ─────────────────────────────────────────
