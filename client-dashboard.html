@@ -65,19 +65,19 @@
         .prog-badge { font-size: 0.55rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 6px; }
         .prog-badge-rep { background: #1a1a3a; color: #c084fc; border: 1px solid #c084fc44; }
         .prog-badge-block { background: var(--input-bg); color: var(--brand-accent); border: 1px solid rgba(82,183,136,0.25); }
-        .prog-badge-claimed { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+        .prog-badge-claimed { background: var(--input-bg); color: var(--brand-accent); border: 1px solid var(--brand-secondary); }
         .claimed-ribbon { position: absolute; top: 8px; right: 8px; background: var(--brand-secondary); color: white; font-size: 0.5rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; }
         .no-programs { color: #555; font-size: 0.85rem; text-align: center; padding: 30px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; }
 
         /* ── CATEGORY THUMB GRADIENTS ── */
         .thumb-strength { background: linear-gradient(135deg, #1a0a3a, var(--brand-primary)); }
-        .thumb-power    { background: linear-gradient(135deg, #1a0a00, #3a2000); }
-        .thumb-run      { background: linear-gradient(135deg, #001a0a, #0a2a00); }
+        .thumb-power    { background: linear-gradient(135deg, #241A08, #4D3308); }
+        .thumb-run      { background: linear-gradient(135deg, #08210D, #1E4D2B); }
         .thumb-circuit  { background: linear-gradient(135deg, var(--input-bg), #0a1a3a); }
-        .thumb-mobility { background: linear-gradient(135deg, #1a0a2a, #0a1a0a); }
-        .thumb-cardio   { background: linear-gradient(135deg, #2a0a0a, #1a0a0a); }
-        .thumb-warmup   { background: linear-gradient(135deg, #2a1000, #3a1500); }
-        .thumb-other    { background: linear-gradient(135deg, #0a0a1a, #1a1a2a); }
+        .thumb-mobility { background: linear-gradient(135deg, #1C0D21, #401B4D); }
+        .thumb-cardio   { background: linear-gradient(135deg, #2D0B10, #54141E); }
+        .thumb-warmup   { background: linear-gradient(135deg, #2B1D08, #543914); }
+        .thumb-other    { background: linear-gradient(135deg, #141A17, #2D3833); }
 
         /* ── SWIPE SHELF ── */
         .shelf-section { margin-bottom: 32px; }
@@ -119,26 +119,26 @@
         .cal-mday { min-height: 60px; background: var(--card-bg); border-radius: 4px; padding: 4px; border: 1px solid transparent; position: relative; transition: 0.15s; overflow: hidden; }
         .cal-mday.today { border-color: var(--brand-accent) !important; }
         .cal-mday.other-month .cal-mday-num { color: #222; }
-        .cal-mday.has-session { background: #0a1f0e; border-color: #1a3a1a; }
-        .cal-mday.has-scheduled { background: #0a1a0a; border-color: #1a3a1a; }
+        .cal-mday.has-session { background: #0a1f0e; border-color: var(--border); }
+        .cal-mday.has-scheduled { background: var(--input-bg); border-color: var(--border); }
         .cal-mday.has-planned { border-color: #2a1a3a; }
         .cal-mday-num { font-size: 0.65rem; color: #444; margin-bottom: 3px; cursor: pointer; }
         .cal-mday.today .cal-mday-num { color: var(--brand-accent); font-weight: 800; }
         .cal-session-pill { border-radius: 3px; padding: 2px 4px; font-size: 0.48rem; font-weight: 800; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; cursor: pointer; }
         .cal-session-pill.completed { background: var(--brand-secondary); color: white; }
-        .cal-session-pill.scheduled { background: #0a2a1a; border: 1px solid #2E7D32; color: #4ade80; }
+        .cal-session-pill.scheduled { background: var(--input-bg); border: 1px solid var(--brand-secondary); color: var(--brand-accent); }
         .cal-session-pill.planned { cursor: pointer; }
         .add-plan-btn { position: absolute; bottom: 3px; right: 3px; background: none; border: none; color: #333; cursor: pointer; font-size: 0.75rem; padding: 0; line-height: 1; transition: 0.2s; }
         .add-plan-btn:hover { color: var(--brand-accent); }
         .cal-week-list { display: flex; flex-direction: column; gap: 6px; }
         .cal-wday { background: var(--card-bg); border-radius: 6px; padding: 10px 12px; border: 1px solid var(--border); }
         .cal-wday.today { border-color: var(--brand-accent); }
-        .cal-wday-label { font-size: 0.62rem; color: #555; font-family: 'Montserrat'; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        .cal-wday-label { font-size: 0.62rem; color: #555; font-family: 'Montserrat'; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; display: flex; justify-content: flex-start; align-items: center; gap: 10px; }
         .cal-wday-session { border-radius: 4px; padding: 8px 10px; margin-bottom: 4px; cursor: pointer; }
-        .cal-wday-session.completed { background: #0e2a1a; border: 1px solid #1a4a2a; }
-        .cal-wday-session.scheduled { background: #0a2a1a; border: 1px solid #2E7D32; }
+        .cal-wday-session.completed { background: var(--input-bg); border: 1px solid var(--border); }
+        .cal-wday-session.scheduled { background: var(--input-bg); border: 1px solid var(--brand-secondary); }
         .cal-wday-session.planned { background: #1a0e2a; border: 1px solid #3a1a4a; }
-        .cal-wday-prog { font-size: 0.78rem; font-weight: 700; color: #4ade80; margin-bottom: 2px; }
+        .cal-wday-prog { font-size: 0.78rem; font-weight: 700; color: var(--brand-accent); margin-bottom: 2px; }
         .cal-wday-prog.planned { color: #c084fc; }
         .cal-wday-sub { font-size: 0.65rem; color: #555; }
         .cal-wday-empty { color: #333; font-size: 0.65rem; }
@@ -171,7 +171,7 @@
 
         /* ── EXERCISE CARDS ── */
         .exercise-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .exercise-title { font-family: 'Montserrat'; font-size: 1rem; font-weight: 800; color: var(--brand-accent); margin: 0 0 14px 0; border-bottom: 1px solid #222; padding-bottom: 8px; cursor: pointer; display: flex; justify-content: flex-start; align-items: center; }
+        .exercise-title { font-family: 'Montserrat'; font-size: 1rem; font-weight: 800; color: var(--brand-accent); margin: 0 0 14px 0; border-bottom: 1px solid #222; padding-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .section-header { background: #000; color: white; padding: 9px 14px; border-radius: 4px; margin: 16px 0 10px 0; font-family: 'Montserrat'; font-weight: 800; border-left: 4px solid var(--brand-accent); font-size: 0.82rem; }
         .set-container { background: #000; border-radius: 8px; padding: 12px; margin-bottom: 10px; border: 1px solid #1a2c3a; }
         .set-label { font-size: 0.8rem; font-weight: 800; color: var(--brand-accent); font-family: 'Montserrat'; margin-bottom: 8px; letter-spacing: 0.5px; }
@@ -179,8 +179,8 @@
         .set-row-label { font-size: 0.80rem; font-weight: 800; font-family: 'Montserrat'; text-align: right; padding-right: 4px; }
         .cell-header { font-size: 0.8rem; font-weight: 800; font-family: 'Montserrat'; text-align: center; margin-bottom: 2px; }
         .do-cell { padding: 9px 6px; text-align: center; border: 1px solid rgba(82,183,136,0.2); background: #00131c; font-size: 0.95rem; color: var(--brand-accent); font-weight: 700; border-radius: 4px; }
-        .did-cell { padding: 9px 6px; text-align: center; border: 1px solid #2E7D32; background: var(--card-bg); font-size: 0.95rem; color: #4ade80; font-weight: 700; border-radius: 4px; width: 100%; font-family: inherit; }
-        .did-cell:focus { outline: none; border-color: #4ade80; }
+        .did-cell { padding: 9px 6px; text-align: center; border: 1px solid var(--brand-secondary); background: var(--card-bg); font-size: 0.95rem; color: var(--brand-accent); font-weight: 700; border-radius: 4px; width: 100%; font-family: inherit; }
+        .did-cell:focus { outline: none; border-color: var(--brand-accent); }
         .tick-box { appearance: none; -webkit-appearance: none; background-color: #111; border: 2px solid var(--brand-secondary); border-radius: 4px; width: 36px; height: 36px; cursor: pointer; position: relative; flex-shrink: 0; }
         .tick-box:checked { background-color: var(--brand-secondary); }
         .tick-box:checked::after { content: '✔'; color: white; font-size: 1.1rem; font-weight: bold; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); }
@@ -552,14 +552,14 @@ let draggedSession = null;
 let currentProgram = null;
 let currentWeekIndex = 0;
 
-const typeColors = { strength:'var(--brand-accent)', cardio:'#f87171', recovery:'#c084fc', mobility:'#4ade80', other:'#fb923c' };
+const typeColors = { strength:'var(--brand-accent)', cardio:'#f87171', recovery:'#c084fc', mobility:'var(--brand-accent)', other:'#fb923c' };
 const typeEmoji  = { strength:'', cardio:'', recovery:'', mobility:'', other:'' };
 const dayNames   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 const CATEGORY_META = {
     STRENGTH: { label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
     POWER:    { label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
-    RUN:      { label:'Run',      thumbClass:'thumb-run',      color:'#4ade80' },
+    RUN:      { label:'Run',      thumbClass:'thumb-run',      color:'var(--brand-accent)' },
     CIRCUIT:  { label:'Circuit',  thumbClass:'thumb-circuit',  color:'var(--brand-accent)' },
     MOBILITY: { label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
     CARDIO:   { label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
@@ -818,7 +818,7 @@ function openProgModal(id) {
         ? `<img class="prog-modal-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" onerror="this.style.display='none'">`
         : `<div class="prog-modal-thumb ${meta.thumbClass}" style="display:flex;align-items:center;justify-content:center;font-size:3rem;border-radius:8px;">${meta.emoji}</div>`;
     const actionHtml = claimed
-        ? `<div style="margin-bottom:12px;font-size:0.78rem;color:#4ade80;text-align:center;padding:8px;background:#052e16;border-radius:6px;">✓ You already have this program</div>
+        ? `<div style="margin-bottom:12px;font-size:0.78rem;color:var(--brand-accent);text-align:center;padding:8px;background:var(--input-bg);border-radius:6px;">✓ You already have this program</div>
            <button class="btn-claim" onclick="closeProgModal();openMyProgram('${claimed.id}')">▶ Open My Copy</button>`
         : `<button class="btn-claim" id="modal-claim-btn" onclick="claimProgram('${p.id}')">▶ Start This Program</button>`;
     document.getElementById('prog-modal-content').innerHTML = `
@@ -1080,7 +1080,7 @@ function renderDayView(withPlanned) {
             <div class="cal-slot-time">${tl}</div>
             <div class="cal-slot-content" ${clickAttr} ${dropAttr}>
                 ${slotEvents.map(e=>{
-                    if(e.type==='session'){const col=e.session.isCompleted?'#2E7D32':'#1a4a2a';return `<div class="cal-slot-event session-event" style="height:${e.durationSlots*28-4}px;background:${col};" ${withPlanned?`draggable="true" ondragstart="handleSessionDragStart(event,'${e.session.progId}',${e.session.sessionNum})"`:''}
+                    if(e.type==='session'){const col=e.session.isCompleted?'var(--brand-secondary)':'var(--border)';return `<div class="cal-slot-event session-event" style="height:${e.durationSlots*28-4}px;background:${col};" ${withPlanned?`draggable="true" ondragstart="handleSessionDragStart(event,'${e.session.progId}',${e.session.sessionNum})"`:''}
                         onclick="goToProgram('${e.session.progId}');event.stopPropagation();">${e.session.programName} · Sn${e.session.sessionNum}</div>`;}
                     else{const c=typeColors[e.pw.type]||'#888';return `<div class="cal-slot-event plan-event" style="height:${e.durationSlots*28-4}px;background:${c}22;color:${c};border:1px solid ${c}44;" draggable="true" ondragstart="handleDragStart(event,'${e.pw.id}')" onclick="openPlanModal('${dateStr}','${e.pw.id}');event.stopPropagation();">${typeEmoji[e.pw.type]||''} ${e.pw.title}${e.pw.time?' · '+e.pw.time:''}</div>`;}
                 }).join('')}
@@ -1193,7 +1193,7 @@ function renderWorkout() {
     const week=currentProgram.schedule[currentWeekIndex];
     const dateVal=week.sessionDate||'';
     const descHtml=currentProgram.description?`<div style="background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">${currentProgram.description}</div>`:'';
-    let html=descHtml+`<div class="date-bar"><div><span class="date-label">Session Date</span><input type="date" class="date-input" value="${dateVal}" onchange="saveSessionDate(this.value)"></div>${dateVal?`<div style="background:#052e16;border:1px solid #166534;border-radius:6px;padding:5px 10px;font-size:0.72rem;color:#4ade80;font-weight:800;">✓ LOGGED ${new Date(dateVal+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'})}</div>`:`<div style="font-size:0.72rem;color:#555;">Not logged yet</div>`}</div>`;
+    let html=descHtml+`<div class="date-bar"><div><span class="date-label">Session Date</span><input type="date" class="date-input" value="${dateVal}" onchange="saveSessionDate(this.value)"></div>${dateVal?`<div style="background:var(--input-bg);border:1px solid var(--brand-secondary);border-radius:6px;padding:5px 10px;font-size:0.72rem;color:var(--brand-accent);font-weight:800;">✓ LOGGED ${new Date(dateVal+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'})}</div>`:`<div style="font-size:0.72rem;color:#555;">Not logged yet</div>`}</div>`;
     if(week.warmup?.length) html+=`<div class="section-header">WARM UP</div>`+generateExerciseHTML(week.warmup,'warmup');
     if(week.exercises?.length) html+=`<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>`+generateExerciseHTML(week.exercises,'exercises');
     html+=`<button class="btn-finish" onclick="finishSession()">${dateVal?'Session Complete':'Finish Session'}</button>`;
@@ -1221,13 +1221,13 @@ function generateExerciseHTML(list,type) {
                         <div><div class="cell-header" style="color:var(--brand-accent)88;">TEMPO</div><div class="do-cell">${s.tempo||'—'}</div></div>
                     </div>
                     <div class="set-grid">
-                        <div class="set-row-label" style="color:#4ade80;">DID</div>
+                        <div class="set-row-label" style="color:var(--brand-accent);">DID</div>
                         <div><input type="number" id="reps-${baseId}" class="did-cell" placeholder="0" value="${s.act_reps||''}" onchange="autoSave('${type}',${i},${si},'act_reps',this.value)"></div>
                         <div><input type="number" id="weight-${baseId}" class="did-cell" placeholder="0" value="${s.act_weight||''}" onchange="autoSave('${type}',${i},${si},'act_weight',this.value)"></div>
                         <div><input type="text" id="rest-${baseId}" class="did-cell" placeholder="—" value="${s.act_rest||''}" onchange="autoSave('${type}',${i},${si},'act_rest',this.value)"></div>
                         <div><input type="number" step="0.5" id="rpe-${baseId}" class="did-cell" placeholder="—" value="${s.act_rpe||''}" onchange="autoSave('${type}',${i},${si},'act_rpe',this.value)"></div>
                         <div style="display:flex;align-items:center;justify-content:center;gap:4px;">
-                            <span style="font-size:0.55rem;font-weight:800;font-family:'Montserrat';color:#4ade80;">DONE</span>
+                            <span style="font-size:0.55rem;font-weight:800;font-family:'Montserrat';color:var(--brand-accent);">DONE</span>
                             <input type="checkbox" class="tick-box" ${isChecked} onclick="quickFill('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe||''}',this.checked)">
                         </div>
                     </div>
@@ -1291,7 +1291,7 @@ async function loadRepeatHistory(){
     if(!logs.length){el.innerHTML='<div style="color:#555;font-size:0.8rem;text-align:center;padding:10px;">No sessions logged yet.</div>';return;}
     el.innerHTML=`<div style="font-family:'Montserrat';font-size:0.7rem;font-weight:800;color:var(--brand-accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Session History</div>`+
     logs.map(log=>{let data=log.workout_data;if(typeof data==='string')data=JSON.parse(data);const allEx=[...(data.warmup||[]),...(data.exercises||[])];let total=0,done=0;allEx.forEach(ex=>(ex.setsData||[]).forEach(s=>{total++;if(s.act_reps&&s.act_weight)done++;}));const pct=total?Math.round((done/total)*100):0;const dateStr=new Date(log.date.substring(0,10)+'T12:00:00').toLocaleDateString([],{weekday:'short',day:'numeric',month:'short',year:'numeric'});const highlights=allEx.slice(0,3).map(ex=>{const best=(ex.setsData||[]).reduce((b,s)=>s.act_weight&&parseFloat(s.act_weight)>parseFloat(b||0)?s.act_weight:b,null);const name=ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim()||ex.name;return best?`<div style="font-size:0.72rem;color:#888;margin-top:3px;">${name} — top ${best}kg</div>`:''}).join('');
-    return `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;font-size:0.88rem;">${dateStr}</span><span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'#4ade80':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span></div>${highlights}</div>`;}).join('');}catch(e){console.error(e);}
+    return `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;font-size:0.88rem;">${dateStr}</span><span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'var(--brand-accent)':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span></div>${highlights}</div>`;}).join('');}catch(e){console.error(e);}
 }
 
 function startRepeatableSession(){
@@ -1337,7 +1337,7 @@ async function loadCheckins(){
     const el=document.getElementById('checkins-list');
     if(!recs.items.length){el.innerHTML=`<div class="no-programs">No check-ins yet — <a href="checkin.html" style="color:var(--brand-accent)">submit your first one</a>.</div>`;return;}
     el.innerHTML=recs.items.map(c=>{const date=new Date(c.created).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});const avg=Math.round((c.energy+c.sleep+c.mindset+c.training+c.nutrition+c.incidental)/6);
-    return `<div class="checkin-card"><div class="checkin-date"><span>${date}</span><span class="checkin-avg">avg ${avg}/10</span></div><div class="checkin-grid"><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.energy}</div><div class="checkin-stat-label">Energy</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.sleep}</div><div class="checkin-stat-label">Sleep</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.mindset}</div><div class="checkin-stat-label">Mindset</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.training}</div><div class="checkin-stat-label">Training</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.nutrition}</div><div class="checkin-stat-label">Nutrition</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.incidental}</div><div class="checkin-stat-label">Activity</div></div></div>${c.WIN?`<div class="checkin-text"><strong style="color:#4ade80;">WIN</strong> ${c.WIN}</div>`:''}${c.WORK_ON?`<div class="checkin-text"><strong style="color:#fb923c;">WORK ON</strong> ${c.WORK_ON}</div>`:''}</div>`;}).join('');}
+    return `<div class="checkin-card"><div class="checkin-date"><span>${date}</span><span class="checkin-avg">avg ${avg}/10</span></div><div class="checkin-grid"><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.energy}</div><div class="checkin-stat-label">Energy</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.sleep}</div><div class="checkin-stat-label">Sleep</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.mindset}</div><div class="checkin-stat-label">Mindset</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.training}</div><div class="checkin-stat-label">Training</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.nutrition}</div><div class="checkin-stat-label">Nutrition</div></div><div class="checkin-stat"><div class="checkin-stat-icon"></div><div class="checkin-stat-val">${c.incidental}</div><div class="checkin-stat-label">Activity</div></div></div>${c.WIN?`<div class="checkin-text"><strong style="color:var(--brand-accent);">WIN</strong> ${c.WIN}</div>`:''}${c.WORK_ON?`<div class="checkin-text"><strong style="color:#fb923c;">WORK ON</strong> ${c.WORK_ON}</div>`:''}</div>`;}).join('');}
     catch(e){console.error(e);}
 }
 
@@ -1368,7 +1368,7 @@ function tToggleStopwatch(){const btn=document.getElementById('t-sw-btn');if(tSw
 function tResetStopwatch(){clearInterval(tSwInterval);tSwRunning=false;tSwElapsed=0;document.getElementById('t-sw-display').textContent='00:00.00';const btn=document.getElementById('t-sw-btn');btn.textContent='Start';btn.classList.remove('running');}
 let tIntRunning=false,tIntInterval=null,tIntPhase='idle',tIntCurrentSet=0,tIntTotalSets=0,tIntTime=0;
 function tUpdateIntDisplay(){const m=Math.floor(tIntTime/60),s=tIntTime%60;document.getElementById('t-int-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
-function tSetIntPhase(phase,set,total){tIntPhase=phase;const label=document.getElementById('t-int-phase'),disp=document.getElementById('t-int-display'),sets=document.getElementById('t-int-sets-label');if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';disp.style.color='#fb923c';sets.textContent='';}else if(phase==='work'){label.textContent='WORK';label.style.color='#4ade80';disp.style.color='#4ade80';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';disp.style.color='#f87171';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='done'){label.textContent='DONE ';label.style.color='var(--brand-accent)';disp.style.color='white';sets.textContent='';}}
+function tSetIntPhase(phase,set,total){tIntPhase=phase;const label=document.getElementById('t-int-phase'),disp=document.getElementById('t-int-display'),sets=document.getElementById('t-int-sets-label');if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';disp.style.color='#fb923c';sets.textContent='';}else if(phase==='work'){label.textContent='WORK';label.style.color='var(--brand-accent)';disp.style.color='var(--brand-accent)';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';disp.style.color='#f87171';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='done'){label.textContent='DONE ';label.style.color='var(--brand-accent)';disp.style.color='white';sets.textContent='';}}
 function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIntRunning){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntPhase='idle';document.getElementById('t-int-phase').textContent='READY';document.getElementById('t-int-phase').style.color='var(--brand-accent)';document.getElementById('t-int-display').style.color='white';document.getElementById('t-int-sets-label').textContent='';tIntTime=parseInt(document.getElementById('t-int-work').value)||30;tUpdateIntDisplay();return;}const warmup=parseInt(document.getElementById('t-int-warmup').value)||0,sets=parseInt(document.getElementById('t-int-sets').value)||5,work=parseInt(document.getElementById('t-int-work').value)||30,rest=parseInt(document.getElementById('t-int-rest').value)||15;tIntTotalSets=sets;tIntCurrentSet=1;tIntRunning=true;btn.textContent='Stop';btn.classList.add('running');if(warmup>0){tIntTime=warmup;tSetIntPhase('warmup',0,sets);}else{tIntTime=work;tSetIntPhase('work',1,sets);}tUpdateIntDisplay();tIntInterval=setInterval(()=>{tIntTime--;tUpdateIntDisplay();if(tIntTime>0)return;if(tIntPhase==='warmup'){tIntTime=work;tIntCurrentSet=1;tSetIntPhase('work',1,tIntTotalSets);}else if(tIntPhase==='work'){if(rest>0){tIntTime=rest;tSetIntPhase('rest',tIntCurrentSet,tIntTotalSets);}else{tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}}else if(tIntPhase==='rest'){tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}},1000);}
 </script>
 
