@@ -546,7 +546,7 @@ function generateExerciseHTML(list, type, isRepeat) {
             ${groupBadge}
             <div class="exercise-title" onclick="openExercisePreview('${ex.name.replace(/'/g,"\\'")}')">
                 <span>${cleanName}</span>
-                <i class="fas fa-play-circle" style="font-size:0.8em;opacity:0.4;"></i>
+                <i class="fas fa-play-circle" style="font-size:1.2em;opacity:0.4;"></i>
             </div>
             ${(ex.setsData||[]).map((s, si) => {
                 const baseId = `${prefix}-${i}-${si}`;
