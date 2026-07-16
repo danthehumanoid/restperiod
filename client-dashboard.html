@@ -642,11 +642,16 @@ function openSettings() {
     const subContent = document.getElementById('settings-sub-content');
     const status = model.subscription_status || 'free';
     if (status === 'active') {
+        const endsAt = model.subscription_ends_at ? new Date(model.subscription_ends_at).toLocaleDateString('en-NZ', {day:'numeric',month:'long',year:'numeric'}) : null;
+        const cancelAtEnd = model.cancel_at_period_end === 'true';
+        const subLabel = cancelAtEnd && endsAt
+            ? `<div class="settings-item-sub" style="color:#f87171;">Cancels ${endsAt}</div>`
+            : `<div class="settings-item-sub" style="color:var(--brand-accent);">Active — $19.99 NZD/month${endsAt ? ' · Renews '+endsAt : ''}</div>`;
         subContent.innerHTML = `
             <div class="settings-item">
                 <div>
                     <div class="settings-item-label">Rest Period Premium</div>
-                    <div class="settings-item-sub" style="color:var(--brand-accent);">Active — $19.99 NZD/month</div>
+                    ${subLabel}
                 </div>
                 <button class="settings-btn" onclick="window.open('https://billing.stripe.com/p/login/3cI4gB0Ry1c05z91Kzf7i00','_blank')">Manage</button>
             </div>`;
@@ -1504,7 +1509,7 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
         </div>
 
         <div class="settings-section">
-            <div class="settings-section-title">Other</div>
+            <div class="settings-section-title">Danger Zone</div>
             <div class="settings-item">
                 <div><div class="settings-item-label">Log out</div></div>
                 <button class="settings-btn danger" onclick="logout()">Logout</button>
