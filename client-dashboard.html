@@ -264,6 +264,18 @@
         .tooltip-close { width: 100%; margin-top: 14px; padding: 10px; background: var(--border); border: none; color: #888; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; }
         .help-icon { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--brand-accent); font-size: 0.55rem; cursor: pointer; margin-left: 3px; vertical-align: middle; }
 
+        /* ── CHANGE PASSWORD MODAL ── */
+        .cp-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:7000; align-items:center; justify-content:center; padding:20px; }
+        .cp-overlay.open { display:flex; }
+        .cp-box { background:var(--card-bg); border:1px solid var(--brand-accent); border-radius:12px; padding:24px; width:100%; max-width:400px; }
+        .cp-title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1rem; color:white; margin-bottom:20px; }
+        .cp-field { margin-bottom:14px; }
+        .cp-label { font-size:0.6rem; font-weight:800; color:#888; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px; font-family:'Montserrat',sans-serif; }
+        .cp-input { width:100%; background:var(--input-bg); border:1px solid var(--border); color:var(--text-main); border-radius:6px; padding:10px 12px; font-size:0.9rem; font-family:inherit; }
+        .cp-input:focus { outline:none; border-color:var(--brand-accent); }
+        .cp-error { color:var(--brand-danger); font-size:0.75rem; margin-top:8px; display:none; }
+        .cp-success { color:var(--brand-accent); font-size:0.75rem; margin-top:8px; display:none; }
+
         /* ── SETTINGS MODAL ── */
         .settings-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:6000; align-items:flex-end; justify-content:center; }
         .settings-overlay.open { display:flex; }
@@ -673,8 +685,66 @@ function closeSettings() {
 
 function openChangePassword() {
     closeSettings();
-    // TODO: implement change password modal
-    showToast('Change password coming soon');
+    document.getElementById('cp-current').value = '';
+    document.getElementById('cp-new').value = '';
+    document.getElementById('cp-confirm').value = '';
+    document.getElementById('cp-error').style.display = 'none';
+    document.getElementById('cp-success').style.display = 'none';
+    document.getElementById('cp-overlay').classList.add('open');
+}
+
+function closeChangePassword() {
+    document.getElementById('cp-overlay').classList.remove('open');
+}
+
+async function submitChangePassword() {
+    const current = document.getElementById('cp-current').value;
+    const newPass = document.getElementById('cp-new').value;
+    const confirm = document.getElementById('cp-confirm').value;
+    const errEl = document.getElementById('cp-error');
+    const sucEl = document.getElementById('cp-success');
+    const btn = document.getElementById('cp-btn');
+
+    errEl.style.display = 'none';
+    sucEl.style.display = 'none';
+
+    if (!current || !newPass || !confirm) {
+        errEl.textContent = 'Please fill in all fields.';
+        errEl.style.display = 'block';
+        return;
+    }
+    if (newPass.length < 8) {
+        errEl.textContent = 'New password must be at least 8 characters.';
+        errEl.style.display = 'block';
+        return;
+    }
+    if (newPass !== confirm) {
+        errEl.textContent = 'Passwords do not match.';
+        errEl.style.display = 'block';
+        return;
+    }
+
+    btn.textContent = 'Updating...';
+    btn.disabled = true;
+
+    try {
+        await pb.collection('users').update(pb.authStore.model.id, {
+            oldPassword: current,
+            password: newPass,
+            passwordConfirm: confirm
+        });
+        sucEl.textContent = 'Password updated! Please log in again.';
+        sucEl.style.display = 'block';
+        setTimeout(() => {
+            pb.authStore.clear();
+            window.location.href = 'index.html';
+        }, 2000);
+    } catch(e) {
+        errEl.textContent = e.message || 'Incorrect current password.';
+        errEl.style.display = 'block';
+        btn.textContent = 'Update Password';
+        btn.disabled = false;
+    }
 }
 
 function logout() { pb.authStore.clear(); window.location.href = 'index.html'; }
@@ -1475,6 +1545,31 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
     </div>
 </div>
 
+<!-- CHANGE PASSWORD MODAL -->
+<div class="cp-overlay" id="cp-overlay" onclick="if(event.target===this)closeChangePassword()">
+    <div class="cp-box">
+        <div class="cp-title">Change Password</div>
+        <div class="cp-field">
+            <label class="cp-label">Current Password</label>
+            <input type="password" class="cp-input" id="cp-current" placeholder="••••••••">
+        </div>
+        <div class="cp-field">
+            <label class="cp-label">New Password</label>
+            <input type="password" class="cp-input" id="cp-new" placeholder="••••••••">
+        </div>
+        <div class="cp-field">
+            <label class="cp-label">Confirm New Password</label>
+            <input type="password" class="cp-input" id="cp-confirm" placeholder="••••••••">
+        </div>
+        <div class="cp-error" id="cp-error"></div>
+        <div class="cp-success" id="cp-success"></div>
+        <div style="display:flex;gap:8px;margin-top:16px;">
+            <button class="settings-btn" style="flex:1;" onclick="closeChangePassword()">Cancel</button>
+            <button class="settings-btn primary" style="flex:1;" id="cp-btn" onclick="submitChangePassword()">Update Password</button>
+        </div>
+    </div>
+</div>
+
 <!-- SETTINGS MODAL -->
 <div class="settings-overlay" id="settings-overlay" onclick="if(event.target===this)closeSettings()">
     <div class="settings-box">
@@ -1509,7 +1604,7 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
         </div>
 
         <div class="settings-section">
-            <div class="settings-section-title">Danger Zone</div>
+            <div class="settings-section-title">EXIT</div>
             <div class="settings-item">
                 <div><div class="settings-item-label">Log out</div></div>
                 <button class="settings-btn danger" onclick="logout()">Logout</button>
