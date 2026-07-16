@@ -508,6 +508,8 @@ function buildProgCard(p) {
     const thumbHtml = p.cover_image
         ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;"></div>`
         : `<div class="prog-thumb-placeholder ${meta.thumbClass}"></div>`;
+    const isPremiumProg = p.is_premium;
+    const locked = isPremiumProg && !isPremium;
     return `<div class="prog-card" style="${locked?'opacity:0.5;':''}" onclick="${locked ? 'startUpgrade()' : `openProgModal('${p.id}')`}">
         ${thumbHtml}
         <div class="prog-card-body">
