@@ -47,8 +47,8 @@
         .help-icon { width: 13px; height: 13px; border-radius: 50%; border: 1px solid currentColor; display: inline-flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 800; cursor: pointer; opacity: 0.6; flex-shrink: 0; transition: 0.2s; }
         .help-icon:hover { opacity: 1; }
         .do-cell { padding: 9px 6px; text-align: center; border: 1px solid rgba(82,183,136,0.2); background: #00131c; font-size: 0.95rem; color: var(--brand-accent); font-weight: 700; border-radius: 4px; }
-        .did-cell { padding: 9px 6px; text-align: center; border: 1px solid #2E7D32; background: var(--card-bg); font-size: 0.95rem; color: #4ade80; font-weight: 700; border-radius: 4px; width: 100%; font-family: inherit; }
-        .did-cell:focus { outline: none; border-color: #4ade80; }
+        .did-cell { padding: 9px 6px; text-align: center; border: 1px solid var(--brand-secondary); background: var(--card-bg); font-size: 0.95rem; color: var(--brand-accent); font-weight: 700; border-radius: 4px; width: 100%; font-family: inherit; }
+        .did-cell:focus { outline: none; border-color: var(--brand-accent); }
         .tick-wrap { display: flex; justify-content: center; }
         .tick-box { appearance: none; -webkit-appearance: none; background-color: #111; border: 2px solid var(--brand-secondary); border-radius: 4px; width: 36px; height: 36px; cursor: pointer; position: relative; flex-shrink: 0; }
         .tick-box:checked { background-color: var(--brand-secondary); }
@@ -60,7 +60,7 @@
         .date-input { background: #000; border: 1px solid var(--border); color: white; padding: 8px 12px; border-radius: 4px; font-size: 0.9rem; font-family: inherit; }
         .date-scheduled { font-size: 0.75rem; color: #888; padding: 6px 12px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; }
         .date-scheduled span { color: var(--brand-accent); font-weight: 800; }
-        .date-completed { font-size: 0.75rem; color: #4ade80; padding: 6px 12px; background: #052e16; border: 1px solid #166534; border-radius: 6px; font-weight: 800; }
+        .date-completed { font-size: 0.75rem; color: var(--brand-accent); padding: 6px 12px; background: var(--input-bg); border: 1px solid var(--brand-secondary); border-radius: 6px; font-weight: 800; }
         .date-not-logged { font-size: 0.75rem; color: #555; }
 
         /* SESSION REFLECTION */
@@ -418,7 +418,7 @@ async function renderRepeatableMode() {
                     return `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;">
                         <div style="display:flex;justify-content:space-between;align-items:center;">
                             <span style="font-weight:700;font-size:0.88rem;">📅 ${dateStr}</span>
-                            <span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'#4ade80':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span>
+                            <span style="font-family:'Montserrat';font-weight:800;font-size:0.8rem;color:${pct===100?'var(--brand-accent)':pct>0?'var(--brand-accent)':'#555'};">${pct}% complete</span>
                         </div>
                         ${allEx.slice(0,3).map(ex=>{const best=(ex.setsData||[]).reduce((b,s)=>s.act_weight&&parseFloat(s.act_weight)>(parseFloat(b)||0)?s.act_weight:b,null);const cleanName=ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim()||ex.name;return best?`<div style="font-size:0.72rem;color:#888;margin-top:4px;">${cleanName} — top ${best}kg</div>`:''}).join('')}
                         ${log.reflection?`<div style="font-size:0.75rem;color:#888;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-style:italic;">💬 ${log.reflection}</div>`:''}
@@ -491,7 +491,7 @@ function renderTabs() {
     document.getElementById('week-tabs-container').innerHTML = currentProgram.schedule.map((s, i) => {
         const dateLabel = s.scheduledDate ? `<span class="tab-date">${new Date(s.scheduledDate+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'})}</span>` : '';
         const isCompleted = !!s.sessionDate;
-        return `<div class="tab ${i===currentWeekIndex?'active':''}" style="${isCompleted&&i!==currentWeekIndex?'border-color:#2E7D32;color:#4ade80;':''}" onclick="currentWeekIndex=${i}; renderTabs(); renderContent();">Sn ${s.sessionNum}${dateLabel}</div>`;
+        return `<div class="tab ${i===currentWeekIndex?'active':''}" style="${isCompleted&&i!==currentWeekIndex?'border-color:var(--brand-secondary);color:var(--brand-accent);':''}" onclick="currentWeekIndex=${i}; renderTabs(); renderContent();">Sn ${s.sessionNum}${dateLabel}</div>`;
     }).join('');
 }
 
@@ -546,7 +546,7 @@ function generateExerciseHTML(list, type, isRepeat) {
             ${groupBadge}
             <div class="exercise-title" onclick="openExercisePreview('${ex.name.replace(/'/g,"\\'")}')">
                 <span>${cleanName}</span>
-                <i class="fas fa-play-circle" style="font-size:1.2em;opacity:0.7;"></i>
+                <i class="fas fa-play-circle" style="font-size:1.4rem;opacity:0.7;color:var(--brand-accent);"></i>
             </div>
             ${(ex.setsData||[]).map((s, si) => {
                 const baseId = `${prefix}-${i}-${si}`;
@@ -569,13 +569,13 @@ function generateExerciseHTML(list, type, isRepeat) {
                         <div><div class="cell-header" style="color:var(--brand-accent)88;">TEMPO <span class="help-icon" style="color:var(--brand-accent)88;" onclick="document.getElementById('tempo-tooltip').classList.add('open');event.stopPropagation();">?</span></div><div class="do-cell">${s.tempo||'—'}</div></div>
                     </div>
                     <div class="set-grid" style="grid-template-columns:36px 1fr 1fr 1fr 1fr 1fr;">
-                        <div class="set-row-label" style="color:#4ade80;">DID</div>
+                        <div class="set-row-label" style="color:var(--brand-accent);">DID</div>
                         <div><input type="number" id="reps-${baseId}" class="did-cell" placeholder="0" value="${s.act_reps||''}" onchange="${onChangeFn.replace('FIELD','act_reps')}"></div>
                         <div><input type="number" id="weight-${baseId}" class="did-cell" placeholder="0" value="${s.act_weight||''}" onchange="${onChangeFn.replace('FIELD','act_weight')}"></div>
                         <div><input type="text" id="rest-${baseId}" class="did-cell" placeholder="—" value="${s.act_rest||''}" onchange="${onChangeFn.replace('FIELD','act_rest')}"></div>
                         <div><input type="number" step="0.5" id="rpe-${baseId}" class="did-cell" placeholder="—" value="${s.act_rpe||''}" onchange="${onChangeFn.replace('FIELD','act_rpe')}"></div>
                         <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-                            <span style="font-size:0.62rem;font-weight:800;font-family:'Montserrat';color:#4ade80;">DONE</span>
+                            <span style="font-size:0.62rem;font-weight:800;font-family:'Montserrat';color:var(--brand-accent);">DONE</span>
                             <input type="checkbox" class="tick-box" ${isChecked} onchange="${tickFn};setTimeout(updateProgressBar,0)">
                         </div>
                     </div>
@@ -733,7 +733,7 @@ function tToggleStopwatch(){const btn=document.getElementById('t-sw-btn');if(tSw
 function tResetStopwatch(){clearInterval(tSwInterval);tSwRunning=false;tSwElapsed=0;document.getElementById('t-sw-display').textContent='00:00.00';const btn=document.getElementById('t-sw-btn');btn.textContent='Start';btn.classList.remove('running');}
 let tIntRunning=false,tIntInterval=null,tIntPhase='idle',tIntCurrentSet=0,tIntTotalSets=0,tIntTime=0;
 function tUpdateIntDisplay(){const m=Math.floor(tIntTime/60),s=tIntTime%60;document.getElementById('t-int-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
-function tSetIntPhase(phase,set,total){tIntPhase=phase;const label=document.getElementById('t-int-phase'),disp=document.getElementById('t-int-display'),sets=document.getElementById('t-int-sets-label');if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';disp.style.color='#fb923c';sets.textContent='';}else if(phase==='work'){label.textContent='WORK';label.style.color='#4ade80';disp.style.color='#4ade80';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';disp.style.color='#f87171';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='done'){label.textContent='DONE 🔥';label.style.color='var(--brand-accent)';disp.style.color='white';sets.textContent='';}}
+function tSetIntPhase(phase,set,total){tIntPhase=phase;const label=document.getElementById('t-int-phase'),disp=document.getElementById('t-int-display'),sets=document.getElementById('t-int-sets-label');if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';disp.style.color='#fb923c';sets.textContent='';}else if(phase==='work'){label.textContent='WORK';label.style.color='var(--brand-accent)';disp.style.color='var(--brand-accent)';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';disp.style.color='#f87171';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='done'){label.textContent='DONE 🔥';label.style.color='var(--brand-accent)';disp.style.color='white';sets.textContent='';}}
 function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIntRunning){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntPhase='idle';document.getElementById('t-int-phase').textContent='READY';document.getElementById('t-int-phase').style.color='var(--brand-accent)';document.getElementById('t-int-display').style.color='white';document.getElementById('t-int-sets-label').textContent='';tIntTime=parseInt(document.getElementById('t-int-work').value)||30;tUpdateIntDisplay();return;}const warmup=parseInt(document.getElementById('t-int-warmup').value)||0,sets=parseInt(document.getElementById('t-int-sets').value)||5,work=parseInt(document.getElementById('t-int-work').value)||30,rest=parseInt(document.getElementById('t-int-rest').value)||15;tIntTotalSets=sets;tIntCurrentSet=1;tIntRunning=true;btn.textContent='Stop';btn.classList.add('running');if(warmup>0){tIntTime=warmup;tSetIntPhase('warmup',0,sets);}else{tIntTime=work;tSetIntPhase('work',1,sets);}tUpdateIntDisplay();tIntInterval=setInterval(()=>{tIntTime--;tUpdateIntDisplay();if(tIntTime>0)return;if(tIntPhase==='warmup'){tIntTime=work;tIntCurrentSet=1;tSetIntPhase('work',1,tIntTotalSets);}else if(tIntPhase==='work'){if(rest>0){tIntTime=rest;tSetIntPhase('rest',tIntCurrentSet,tIntTotalSets);}else{tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}}else if(tIntPhase==='rest'){tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}},1000);}
 </script>
 </body>
