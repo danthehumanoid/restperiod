@@ -28,6 +28,12 @@
         .prog-card-body { padding: 8px 10px 10px; }
         .prog-name { font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; color: white; margin-bottom: 3px; line-height: 1.3; }
         .prog-badge { font-size: 0.5rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 5px; background: var(--input-bg); color: var(--brand-accent); border: 1px solid rgba(82,183,136,0.2); }
+        .prog-card.locked { opacity: 0.55; }
+        .prog-card.premium-owned { border: 2px solid gold; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
+        .prog-card.premium-owned:hover { border-color: gold; box-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .prog-thumb-wrap { position: relative; }
+        .prog-lock { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.7); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+        .prog-star { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.7); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
 
         /* ── PHILOSOPHY TAB ── */
         .lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
@@ -309,6 +315,11 @@ window.onload = async () => {
     // Check for ?tab= param in URL
     const urlTab = new URLSearchParams(window.location.search).get('tab');
     if (urlTab) switchTab(urlTab);
+
+    // If returning from Stripe, poll for subscription activation
+    if (window.location.search.includes('subscribed=1') || document.referrer.includes('buy.stripe.com')) {
+        pollForSubscription();
+    }
 };
 
 // ── TABS ──────────────────────────────────────────
@@ -510,8 +521,14 @@ function buildProgCard(p) {
         : `<div class="prog-thumb-placeholder ${meta.thumbClass}"></div>`;
     const isPremiumProg = p.is_premium;
     const locked = isPremiumProg && !isPremium;
-    return `<div class="prog-card" style="${locked?'opacity:0.5;':''}" onclick="openProgModal('${p.id}')">
-        ${thumbHtml}
+    const premiumOwned = isPremiumProg && isPremium;
+    const cardClass = locked ? 'prog-card locked' : premiumOwned ? 'prog-card premium-owned' : 'prog-card';
+    return `<div class="${cardClass}" onclick="openProgModal('${p.id}')">
+        <div class="prog-thumb-wrap">
+            ${thumbHtml}
+            ${locked ? '<div class="prog-lock">🔒</div>' : ''}
+            ${premiumOwned ? '<div class="prog-star">⭐</div>' : ''}
+        </div>
         <div class="prog-card-body">
             <div class="prog-name">${p.name}</div>
             <div class="prog-badge">${p.is_repeatable?'Repeatable':sessionCount+' sessions'}</div>
@@ -586,6 +603,25 @@ function startUpgrade() {
     const email = pb.authStore.isValid ? pb.authStore.model.email : '';
     const url = 'https://buy.stripe.com/3cI4gB0Ry1c05z91Kzf7i00' + (email ? '?prefilled_email=' + encodeURIComponent(email) : '');
     window.location.href = url;
+}
+
+// ── SUBSCRIPTION POLL ────────────────────────────
+async function pollForSubscription(attempts = 0) {
+    if (attempts > 12) return; // stop after 1 minute
+    try {
+        const user = await pb.collection('users').getOne(pb.authStore.model.id, {requestKey: null});
+        if (user.subscription_status === 'active') {
+            isPremium = true;
+            renderPremiumBanner();
+            renderTrainShelves();
+            showToast('Premium unlocked!');
+            // Clean URL
+            window.history.replaceState({}, '', window.location.pathname);
+            return;
+        }
+    } catch(e) {}
+    // Try again in 5 seconds
+    setTimeout(() => pollForSubscription(attempts + 1), 5000);
 }
 
 // ── FAQ ──────────────────────────────────────────
