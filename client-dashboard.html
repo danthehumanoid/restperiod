@@ -264,6 +264,24 @@
         .tooltip-close { width: 100%; margin-top: 14px; padding: 10px; background: var(--border); border: none; color: #888; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; }
         .help-icon { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--brand-accent); font-size: 0.55rem; cursor: pointer; margin-left: 3px; vertical-align: middle; }
 
+        /* ── SETTINGS MODAL ── */
+        .settings-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:6000; align-items:flex-end; justify-content:center; }
+        .settings-overlay.open { display:flex; }
+        .settings-box { background:var(--card-bg); border-radius:16px 16px 0 0; border:1px solid var(--border); border-bottom:none; width:100%; max-width:600px; padding:24px; padding-bottom:40px; }
+        .settings-title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1rem; color:white; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; }
+        .settings-close { background:none; border:none; color:#555; font-size:1.4rem; cursor:pointer; }
+        .settings-section { margin-bottom:20px; }
+        .settings-section-title { font-family:'Montserrat',sans-serif; font-size:0.6rem; font-weight:800; color:var(--brand-accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+        .settings-item { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+        .settings-item:last-child { border-bottom:none; }
+        .settings-item-label { font-size:0.85rem; color:var(--text-main); }
+        .settings-item-sub { font-size:0.7rem; color:#555; margin-top:2px; }
+        .settings-btn { background:none; border:1px solid var(--border); color:#888; padding:6px 14px; border-radius:6px; font-family:'Montserrat',sans-serif; font-weight:800; font-size:0.65rem; cursor:pointer; transition:0.2s; white-space:nowrap; }
+        .settings-btn:hover { border-color:var(--brand-accent); color:var(--brand-accent); }
+        .settings-btn.danger { border-color:#4a1a1a; color:var(--brand-danger); }
+        .settings-btn.danger:hover { background:var(--brand-danger); color:white; }
+        .settings-btn.primary { background:var(--brand-accent); border-color:var(--brand-accent); color:#000; }
+
         #sync-toast { position: fixed; bottom: 20px; right: 20px; background: var(--brand-secondary); color: white; padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: bold; display: none; z-index: 9000; }
     </style>
 </head>
@@ -277,6 +295,7 @@
     <div style="display:flex;align-items:center;gap:10px;">
         <span class="nav-user" id="nav-user" style="font-size:0.72rem;color:#888;"></span>
         <button class="btn-nav client-only" onclick="window.location.href='checkin.html'" style="display:none;">Check-In</button>
+        <button class="btn-nav" onclick="openSettings()" style="background:none;border:1px solid #333;color:#888;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85rem;"><i class="fas fa-cog"></i></button>
         <button class="btn-nav" onclick="logout()" style="background:none;border:1px solid #333;color:#888;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:0.7rem;font-family:Montserrat,sans-serif;font-weight:700;">Logout</button>
     </div>
 </div>
@@ -612,6 +631,46 @@ window.onload = async () => {
     }
     document.getElementById('greeting-sub').textContent = `${myPrograms.length} program${myPrograms.length!==1?'s':''} · Keep it up!`;
 };
+
+function openSettings() {
+    document.getElementById('settings-overlay').classList.add('open');
+    // Populate account info
+    const model = pb.authStore.model;
+    document.getElementById('settings-name').textContent = model.name || 'No name set';
+    document.getElementById('settings-email').textContent = model.email;
+    // Populate subscription info
+    const subContent = document.getElementById('settings-sub-content');
+    const status = model.subscription_status || 'free';
+    if (status === 'active') {
+        subContent.innerHTML = `
+            <div class="settings-item">
+                <div>
+                    <div class="settings-item-label">Rest Period Premium</div>
+                    <div class="settings-item-sub" style="color:var(--brand-accent);">Active — $19.99 NZD/month</div>
+                </div>
+                <button class="settings-btn" onclick="window.open('https://billing.stripe.com/p/login/3cI4gB0Ry1c05z91Kzf7i00','_blank')">Manage</button>
+            </div>`;
+    } else {
+        subContent.innerHTML = `
+            <div class="settings-item">
+                <div>
+                    <div class="settings-item-label">Free Plan</div>
+                    <div class="settings-item-sub">Upgrade for full program access</div>
+                </div>
+                <button class="settings-btn primary" onclick="window.location.href='explore.html';closeSettings();">Upgrade</button>
+            </div>`;
+    }
+}
+
+function closeSettings() {
+    document.getElementById('settings-overlay').classList.remove('open');
+}
+
+function openChangePassword() {
+    closeSettings();
+    // TODO: implement change password modal
+    showToast('Change password coming soon');
+}
 
 function logout() { pb.authStore.clear(); window.location.href = 'index.html'; }
 
@@ -1408,6 +1467,49 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
         <div class="tooltip-row"><span class="tooltip-key">Example: 3-1-2-0</span><span class="tooltip-val">3s down, 1s pause, 2s up, no pause</span></div>
         <div class="tooltip-row"><span class="tooltip-key">X</span><span class="tooltip-val">Explosive / as fast as possible</span></div>
         <button class="tooltip-close" onclick="document.getElementById('tempo-tooltip').classList.remove('open')">Got it</button>
+    </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="settings-overlay" id="settings-overlay" onclick="if(event.target===this)closeSettings()">
+    <div class="settings-box">
+        <div class="settings-title">
+            Settings
+            <button class="settings-close" onclick="closeSettings()">✕</button>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">Subscription</div>
+            <div id="settings-sub-content">
+                <div class="settings-item">
+                    <div>
+                        <div class="settings-item-label">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">Account</div>
+            <div class="settings-item">
+                <div>
+                    <div class="settings-item-label" id="settings-name"></div>
+                    <div class="settings-item-sub" id="settings-email"></div>
+                </div>
+            </div>
+            <div class="settings-item">
+                <div><div class="settings-item-label">Password</div></div>
+                <button class="settings-btn" onclick="openChangePassword()">Change</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">Danger Zone</div>
+            <div class="settings-item">
+                <div><div class="settings-item-label">Log out</div></div>
+                <button class="settings-btn danger" onclick="logout()">Logout</button>
+            </div>
+        </div>
     </div>
 </div>
 
