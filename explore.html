@@ -510,7 +510,7 @@ function buildProgCard(p) {
         : `<div class="prog-thumb-placeholder ${meta.thumbClass}"></div>`;
     const isPremiumProg = p.is_premium;
     const locked = isPremiumProg && !isPremium;
-    return `<div class="prog-card" style="${locked?'opacity:0.5;':''}" onclick="${locked ? 'startUpgrade()' : `openProgModal('${p.id}')`}">
+    return `<div class="prog-card" style="${locked?'opacity:0.5;':''}" onclick="openProgModal('${p.id}')">
         ${thumbHtml}
         <div class="prog-card-body">
             <div class="prog-name">${p.name}</div>
@@ -538,7 +538,14 @@ function openProgModal(id) {
             <span>${meta.label}</span>
             <span>${p.is_repeatable?'Repeatable':sessionCount+' sessions'}</span>
         </div>
-        <button class="btn-start" onclick="startProgram('${p.id}')">▶ Start This Program</button>
+        ${p.is_premium && !isPremium
+            ? `<div style="background:linear-gradient(135deg,#0D211A,#1B4D3E);border:1px solid var(--brand-accent);border-radius:10px;padding:16px;margin-bottom:8px;text-align:center;">
+                <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;color:var(--brand-accent);margin-bottom:6px;">PREMIUM PROGRAM</div>
+                <div style="font-size:0.78rem;color:#888;margin-bottom:14px;">Unlock all premium programs for $19.99 NZD/month</div>
+                <button class="btn-start" id="upgrade-btn" onclick="startUpgrade()">Upgrade to Access</button>
+              </div>`
+            : `<button class="btn-start" onclick="startProgram('${p.id}')">▶ Start This Program</button>`
+        }
         <button class="btn-modal-close" onclick="closeProgModal()">Close</button>`;
     document.getElementById('prog-modal').classList.add('open');
 }
