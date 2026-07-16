@@ -569,15 +569,23 @@ async function startProgram(templateId) {
 // ── PREMIUM ──────────────────────────────────────
 let isPremium = false;
 
-function checkPremiumStatus() {
+async function checkPremiumStatus() {
     if (!pb.authStore.isValid) return;
-    const status = pb.authStore.model.subscription_status;
-    isPremium = status === 'active';
+    try {
+        // Fetch fresh user data to get latest subscription_status
+        const user = await pb.collection('users').getOne(pb.authStore.model.id, {requestKey: null});
+        isPremium = user.subscription_status === 'active';
+    } catch(e) {
+        isPremium = pb.authStore.model.subscription_status === 'active';
+    }
+    renderPremiumBanner();
     renderTrainShelves();
 }
 
 function startUpgrade() {
-    window.location.href = 'https://buy.stripe.com/3cI4gB0Ry1c05z91Kzf7i00';
+    const email = pb.authStore.isValid ? pb.authStore.model.email : '';
+    const url = 'https://buy.stripe.com/3cI4gB0Ry1c05z91Kzf7i00' + (email ? '?prefilled_email=' + encodeURIComponent(email) : '');
+    window.location.href = url;
 }
 
 // ── FAQ ──────────────────────────────────────────
