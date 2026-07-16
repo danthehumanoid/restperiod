@@ -576,30 +576,8 @@ function checkPremiumStatus() {
     renderTrainShelves();
 }
 
-async function startUpgrade() {
-    if (!pb.authStore.isValid) {
-        window.location.href = 'index.html';
-        return;
-    }
-    const btn = document.getElementById('upgrade-btn');
-    if (btn) { btn.textContent = 'Loading...'; btn.disabled = true; }
-    try {
-        const res = await fetch('/api/create-checkout-session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: pb.authStore.model.id })
-        });
-        const data = await res.json();
-        if (data.url) {
-            window.location.href = data.url;
-        } else {
-            showToast('Something went wrong. Try again.');
-            if (btn) { btn.textContent = 'Upgrade — $19.99 NZD/mo'; btn.disabled = false; }
-        }
-    } catch (err) {
-        showToast('Error connecting to payment system.');
-        if (btn) { btn.textContent = 'Upgrade — $19.99 NZD/mo'; btn.disabled = false; }
-    }
+function startUpgrade() {
+    window.location.href = 'https://buy.stripe.com/3cI4gB0Ry1c05z91Kzf7i00';
 }
 
 // ── FAQ ──────────────────────────────────────────
