@@ -169,7 +169,7 @@
 
 <div class="container">
     <div class="card">
-        <span class="selector-divider">Your Programs YOZA</span>
+        <span class="selector-divider">Your Programs</span>
         <select id="program-selector" onchange="loadSelectedProgram('own')"></select>
         <span class="selector-divider">Premade Programs</span>
         <select id="premade-selector" onchange="loadSelectedProgram('premade')">
@@ -441,7 +441,7 @@ async function renderRepeatableMode() {
 
 function startRepeatableSession() {
     const session = JSON.parse(JSON.stringify(currentProgram.schedule[0]));
-    session.sessionDate = new Date().toISOString().split('T')[0];
+    session.sessionDate = new Date().toLocaleDateString('en-CA');
     session._isNewRepeatSession = true;
     currentProgram._activeRepeatSession = session;
     renderRepeatableSession(session);
@@ -475,7 +475,7 @@ async function saveRepeatableSession() {
     try {
         await pb.collection('session_logs').create({
             program: currentProgram.id, client: pb.authStore.model.id,
-            date: session.sessionDate || new Date().toISOString().split('T')[0],
+            date: session.sessionDate || new Date().toLocaleDateString('en-CA'),
             workout_data: JSON.stringify({ warmup: session.warmup, exercises: session.exercises }),
             reflection
         });
@@ -635,7 +635,7 @@ async function fillSetData(type, exIdx, setIdx, targetReps, targetWeight, target
     }
     // Auto-set sessionDate to today if not already set
     if (!currentProgram.schedule[currentWeekIndex].sessionDate) {
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toLocaleDateString('en-CA');
         currentProgram.schedule[currentWeekIndex].sessionDate = today;
         const dateInput = document.querySelector('.date-input');
         if (dateInput) dateInput.value = today;

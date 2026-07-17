@@ -1014,9 +1014,19 @@ async function claimProgram(templateId) {
 }
 
 // ── OPEN / CLOSE SESSION ──────────────────────────
-function openMyProgram(id) {
-    const prog = myPrograms.find(p=>p.id===id);
+async function openMyProgram(id) {
+    // Always fetch fresh from PocketBase so saved progress is restored
+    let prog;
+    try {
+        prog = await pb.collection('programs').getOne(id, {requestKey: null});
+    } catch(e) {
+        prog = myPrograms.find(p=>p.id===id);
+    }
     if (!prog) return;
+    // Update cache
+    const idx = myPrograms.findIndex(p=>p.id===id);
+    if (idx >= 0) myPrograms[idx] = prog;
+
     let data = prog.workout_data;
     if (typeof data==='string') data=JSON.parse(data);
     const schedule = JSON.parse(JSON.stringify(data.schedule||data));
@@ -1125,7 +1135,7 @@ function renderCalendarShared(withPlanned) {
 
 function renderMonthView(withPlanned) {
     const year=calDate.getFullYear(),month=calDate.getMonth();
-    const today=new Date().toISOString().split('T')[0];
+    const today=new Date().toLocaleDateString('en-CA');
     document.getElementById('cal-period').textContent=calDate.toLocaleDateString([],{month:'long',year:'numeric'});
     const firstDay=new Date(year,month,1),lastDay=new Date(year,month+1,0);
     const startDow=(firstDay.getDay()+6)%7;
@@ -1161,7 +1171,7 @@ function renderMonthView(withPlanned) {
 }
 
 function renderWeekView(withPlanned) {
-    const today=new Date().toISOString().split('T')[0];
+    const today=new Date().toLocaleDateString('en-CA');
     const dow=(calDate.getDay()+6)%7;
     const monday=new Date(calDate); monday.setDate(calDate.getDate()-dow);
     const days=[];for(let i=0;i<7;i++){const d=new Date(monday);d.setDate(monday.getDate()+i);days.push(d);}
@@ -1200,7 +1210,7 @@ function renderWeekView(withPlanned) {
 
 function renderDayView(withPlanned) {
     const dateStr=calDate.toISOString().split('T')[0];
-    const today=new Date().toISOString().split('T')[0];
+    const today=new Date().toLocaleDateString('en-CA');
     const isToday=dateStr===today;
     document.getElementById('cal-period').textContent=calDate.toLocaleDateString([],{day:'numeric',month:'long',year:'numeric'});
     const sessions=sessionMap[dateStr]||[];
@@ -1261,7 +1271,7 @@ function getPlannedForDate(dateStr) {
 // ── PLAN MODAL ────────────────────────────────────
 function openPlanModal(dateStr,existingId) {
     document.getElementById('plan-id').value=existingId||'';
-    document.getElementById('plan-date').value=dateStr||new Date().toISOString().split('T')[0];
+    document.getElementById('plan-date').value=dateStr||new Date().toLocaleDateString('en-CA');
     document.getElementById('plan-modal-title').textContent=existingId?'Edit Planned Workout':'Add Planned Workout';
     document.getElementById('plan-delete-btn').style.display=existingId?'block':'none';
     if(existingId){const pw=plannedWorkouts.find(p=>p.id===existingId);if(pw){document.getElementById('plan-title').value=pw.title||'';document.getElementById('plan-time').value=pw.time||'';document.getElementById('plan-type').value=pw.type||'other';document.getElementById('plan-notes').value=pw.notes||'';document.getElementById('plan-repeat').value=pw.repeat||'none';document.getElementById('plan-repeat-until').value=pw.repeat_until?.substring(0,10)||'';if(pw.repeat==='custom'){const days=(pw.repeat_days||'').split(',');document.querySelectorAll('.repeat-day-cb').forEach(cb=>{cb.checked=days.includes(cb.value);});}}}
@@ -1401,7 +1411,7 @@ async function quickFill(type,exIdx,setIdx,targetReps,targetWeight,targetRpe,isC
 async function saveSessionDate(val){currentProgram.schedule[currentWeekIndex].sessionDate=val;await syncProgram('Date saved ✓');renderWorkout();}
 
 async function finishSession(){
-    currentProgram.schedule[currentWeekIndex].sessionDate=currentProgram.schedule[currentWeekIndex].sessionDate||new Date().toISOString().split('T')[0];
+    currentProgram.schedule[currentWeekIndex].sessionDate=currentProgram.schedule[currentWeekIndex].sessionDate||new Date().toLocaleDateString('en-CA');
     await syncProgram('Session Complete');renderWorkout();
     const idx=myPrograms.findIndex(p=>p.id===currentProgram.id);
     if(idx>-1)myPrograms[idx]={...myPrograms[idx],workout_data:JSON.stringify({schedule:currentProgram.schedule})};
@@ -1441,7 +1451,7 @@ async function loadRepeatHistory(){
 
 function startRepeatableSession(){
     const session=JSON.parse(JSON.stringify(currentProgram.schedule[0]));
-    session.sessionDate=new Date().toISOString().split('T')[0];
+    session.sessionDate=new Date().toLocaleDateString('en-CA');
     ['warmup','exercises'].forEach(type=>{(session[type]||[]).forEach(ex=>{(ex.setsData||[]).forEach(s=>{delete s.act_reps;delete s.act_weight;delete s.act_rpe;delete s.act_rest;delete s.act_note;});});});
     currentProgram._activeRepeat=session;renderRepeatSession(session);
 }
@@ -1457,7 +1467,7 @@ function renderRepeatSession(session){
 
 async function saveRepeatSession(){
     const session=currentProgram._activeRepeat;if(!session)return;showToast('Saving...');
-    try{await pb.collection('session_logs').create({program:currentProgram.id,client:pb.authStore.model.id,date:session.sessionDate||new Date().toISOString().split('T')[0],workout_data:JSON.stringify({warmup:session.warmup,exercises:session.exercises})});currentProgram._activeRepeat=null;document.getElementById('repeat-active').style.display='none';showToast('Session saved');await loadRepeatHistory();buildSessionMap();await buildRepeatSessionMap();isFree?renderCalendarFree():renderCalendar();}
+    try{await pb.collection('session_logs').create({program:currentProgram.id,client:pb.authStore.model.id,date:session.sessionDate||new Date().toLocaleDateString('en-CA'),workout_data:JSON.stringify({warmup:session.warmup,exercises:session.exercises})});currentProgram._activeRepeat=null;document.getElementById('repeat-active').style.display='none';showToast('Session saved');await loadRepeatHistory();buildSessionMap();await buildRepeatSessionMap();isFree?renderCalendarFree():renderCalendar();}
     catch(e){alert('Save failed: '+e.message);}
 }
 
@@ -1604,7 +1614,7 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
         </div>
 
         <div class="settings-section">
-            <div class="settings-section-title">EXIT</div>
+            <div class="settings-section-title">Danger Zone</div>
             <div class="settings-item">
                 <div><div class="settings-item-label">Log out</div></div>
                 <button class="settings-btn danger" onclick="logout()">Logout</button>
