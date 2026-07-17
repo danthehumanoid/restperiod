@@ -1395,7 +1395,13 @@ function generateExerciseHTML(list,type) {
 }
 
 // ── SESSION SYNC ──────────────────────────────────
-async function autoSave(type,exIdx,setIdx,field,val){currentProgram.schedule[currentWeekIndex][type][exIdx].setsData[setIdx][field]=val;await syncProgram();updateProgressBar();}
+let autoSaveTimer = null;
+function autoSave(type,exIdx,setIdx,field,val){
+    currentProgram.schedule[currentWeekIndex][type][exIdx].setsData[setIdx][field]=val;
+    updateProgressBar();
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => syncProgram(), 800);
+}
 
 async function quickFill(type,exIdx,setIdx,targetReps,targetWeight,targetRpe,isChecked){
     if(!isChecked)return;
@@ -1408,7 +1414,12 @@ async function quickFill(type,exIdx,setIdx,targetReps,targetWeight,targetRpe,isC
     await syncProgram('Logged ✓');updateProgressBar();
 }
 
-async function saveSessionDate(val){currentProgram.schedule[currentWeekIndex].sessionDate=val;await syncProgram('Date saved ✓');renderWorkout();}
+let dateSaveTimer = null;
+function saveSessionDate(val){
+    currentProgram.schedule[currentWeekIndex].sessionDate=val;
+    clearTimeout(dateSaveTimer);
+    dateSaveTimer = setTimeout(async () => { await syncProgram('Date saved'); renderWorkout(); }, 1000);
+}
 
 async function finishSession(){
     currentProgram.schedule[currentWeekIndex].sessionDate=currentProgram.schedule[currentWeekIndex].sessionDate||new Date().toLocaleDateString('en-CA');
