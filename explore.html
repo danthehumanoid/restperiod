@@ -275,18 +275,12 @@ const CHAPTERS = [
 
 // ── THEORY PLACEHOLDERS ───────────────────────────
 const THEORY_ITEMS = [
-    { tag:'Strength', title:'Progressive Overload Explained' },
-    { tag:'Recovery', title:'Why Sleep is Your Secret Weapon' },
-    { tag:'Running', title:'The Aerobic Base — What It Actually Means' },
-    { tag:'Power', title:'Fast vs Slow Twitch Muscle Fibres' },
-    { tag:'Mobility', title:'Flexibility vs Mobility — The Difference' },
-    { tag:'Cardio', title:'Heart Rate Zones Demystified' },
-    { tag:'Programming', title:'Periodisation for Everyday Athletes' },
-    { tag:'Nutrition', title:'Protein Timing and Muscle Repair' },
-    { tag:'Mindset', title:'The Stress-Recovery Cycle' },
-    { tag:'Anatomy', title:'Understanding the Posterior Chain' },
-    { tag:'Warm Up', title:'Why Warm Ups Actually Work' },
-    { tag:'Data', title:'Reading Your Body\'s Signals' },
+    { tag:'Principles', title:'Principles of Recovery',     file:'principlesofrecovery.html' },
+    { tag:'Principles', title:'Principle of Overload',      file:'principleofoverload.html' },
+    { tag:'Principles', title:'Principle of Progression',   file:'principleofprogression.html' },
+    { tag:'Principles', title:'Principle of Reversibility', file:'principleofreversibility.html' },
+    { tag:'Principles', title:'Principle of Specificity',   file:'principleofspecificity.html' },
+    { tag:'Principles', title:'Principle of Individuality', file:'principleofindividuality.html' },
 ];
 
 // ── STATE ─────────────────────────────────────────
@@ -304,8 +298,10 @@ const CATEGORY_META = {
     CARDIO:   { label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
     'WARM UP':{ label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
     OTHER:    { label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
+    PRIMER:    { label:'Primer',    thumbClass:'thumb-primer',    color:'#884' },
+
 };
-const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
+const CATEGORY_ORDER = ['WARM UP','PRIMER','STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','OTHER'];
 
 // ── INIT ──────────────────────────────────────────
 window.onload = async () => {
@@ -372,15 +368,23 @@ function renderLessons() {
 // ── RENDER THEORY ─────────────────────────────────
 function renderTheory() {
     const grid = document.getElementById('theory-grid');
-    const colours = ['#1a0a3a','#001a0a','#1a0a00','var(--input-bg)','#1a0a2a','#0a001a'];
+    const colours = [
+        'linear-gradient(135deg,#0D211A,#1B4D3E)',
+        'linear-gradient(135deg,#0A1C24,#1B3E4D)',
+        'linear-gradient(135deg,#1C0D21,#2E1B4D)',
+        'linear-gradient(135deg,#241A08,#4D3308)',
+        'linear-gradient(135deg,#2D0B10,#4D1B1E)',
+        'linear-gradient(135deg,#08210D,#1E4D2B)',
+    ];
+    const labels = ['Recovery','Overload','Progression','Reversibility','Specificity','Individuality'];
     grid.innerHTML = THEORY_ITEMS.map((t,i) => {
         const hasFile = !!t.file;
         const onclick = hasFile ? `openTheoryLesson('${t.file}','${t.title}')` : `showToast('Coming soon!')`;
-        const comingSoon = hasFile ? '' : `<span class="theory-coming">Coming soon</span>`;
-        const cardStyle = hasFile ? '' : 'opacity:0.6;';
+        const comingSoon = hasFile ? `<span class="theory-coming" style="background:rgba(82,183,136,0.15);color:var(--brand-accent);">Read</span>` : `<span class="theory-coming">Coming soon</span>`;
+        const cardStyle = hasFile ? 'opacity:1;' : 'opacity:0.5;';
         return `<div class="theory-card" style="${cardStyle}" onclick="${onclick}">
             ${comingSoon}
-            <div class="theory-thumb" style="background:${colours[i%colours.length]};"></div>
+            <div class="theory-thumb" style="background:${colours[i%colours.length]};font-size:1.6rem;font-family:'Montserrat',sans-serif;font-weight:800;color:rgba(255,255,255,0.15);letter-spacing:-1px;">${labels[i]||''}</div>
             <div class="theory-body">
                 <div class="theory-tag">${t.tag}</div>
                 <div class="theory-title">${t.title}</div>
