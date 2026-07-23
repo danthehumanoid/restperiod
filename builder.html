@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Builder | RestPeriod</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
     <script src="exercises.js"></script>
@@ -96,7 +97,6 @@
         .flag-label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.7rem; color: #888; font-family: 'Montserrat'; font-weight: 700; }
         .flag-label input[type=checkbox] { width: auto; margin: 0; }
     </style>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -599,17 +599,20 @@ async function loadProgram(id) {
         let data = typeof p.workout_data==='string' ? JSON.parse(p.workout_data) : p.workout_data;
         programData = data.schedule || data;
         programData = programData.map((s,i) => ({...s, sessionNum: s.sessionNum||s.weekNum||i+1}));
-        programData.forEach(w => {
+        // Save client act_ data separately so we don't lose it on save
+        const clientActData = {};
+        programData.forEach((w, wi) => {
             if(!w.warmup) w.warmup=[];
             if(!w.exercises) w.exercises=[];
-            // Strip all client completion data — builder only works with program structure
-            [...w.warmup, ...w.exercises].forEach(ex => {
-                (ex.setsData||[]).forEach(s => {
-                    delete s.act_reps; delete s.act_weight; delete s.act_rpe;
-                    delete s.act_rest; delete s.act_note; delete s.act_done;
-                });
+            clientActData[wi] = {};
+            [...w.warmup, ...w.exercises].forEach((ex, ei) => {
+                clientActData[wi][ei] = (ex.setsData||[]).map(s => ({
+                    act_reps: s.act_reps, act_weight: s.act_weight, act_rpe: s.act_rpe,
+                    act_rest: s.act_rest, act_note: s.act_note, act_done: s.act_done
+                }));
             });
         });
+        window._clientActData = clientActData;
         showUI(); renderTabs(); renderLists(); saveHistory();
     } catch(e) { alert(e.message); }
 }
@@ -733,6 +736,24 @@ function triggerAutoSave() {
 }
 
 async function saveProgramToDB(silent=false) {
+    // Merge client act_ data back in before saving so we don't overwrite client progress
+    if (window._clientActData) {
+        programData.forEach((w, wi) => {
+            const weekAct = window._clientActData[wi] || {};
+            [...w.warmup, ...w.exercises].forEach((ex, ei) => {
+                const actSets = weekAct[ei] || [];
+                (ex.setsData||[]).forEach((s, si) => {
+                    const act = actSets[si] || {};
+                    if (act.act_reps !== undefined) s.act_reps = act.act_reps;
+                    if (act.act_weight !== undefined) s.act_weight = act.act_weight;
+                    if (act.act_rpe !== undefined) s.act_rpe = act.act_rpe;
+                    if (act.act_rest !== undefined) s.act_rest = act.act_rest;
+                    if (act.act_note !== undefined) s.act_note = act.act_note;
+                    if (act.act_done !== undefined) s.act_done = act.act_done;
+                });
+            });
+        });
+    }
     const cid = document.getElementById('client-select').value;
     if (!cid) { if (!silent) alert('Please select a client first.'); return; }
     const payload = {
