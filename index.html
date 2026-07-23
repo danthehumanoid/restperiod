@@ -152,6 +152,84 @@
             <div class="msg msg-success" id="signup-success"></div>
         </div>
     </div>
+            <div class="hs-sub">Use Rest Period like a native app — no App Store needed.</div>
+            <div class="hs-tabs">
+                <button class="hs-tab active" id="hs-tab-ios" onclick="switchHsTab('ios')">iPhone / iPad</button>
+                <button class="hs-tab" id="hs-tab-android" onclick="switchHsTab('android')">Android</button>
+            </div>
+            <div id="hs-ios">
+                <div class="hs-step">
+                    <div class="hs-step-num">1</div>
+                    <div class="hs-step-text">Open <strong>restperiod.org</strong> in <strong>Safari</strong> (must be Safari, not Chrome)</div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">2</div>
+                    <div class="hs-step-text">Tap the <strong>Share button</strong> at the bottom of the screen (the box with an arrow pointing up)</div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">3</div>
+                    <div class="hs-step-text">Scroll down and tap <strong>"Add to Home Screen"</strong></div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">4</div>
+                    <div class="hs-step-text">Tap <strong>"Add"</strong> in the top right corner</div>
+                </div>
+                <img src="rphomescreen.jpg" alt="Add to Home Screen" class="hs-img" onerror="this.style.display='none'">
+            </div>
+            <div id="hs-android" style="display:none;">
+                <div class="hs-step">
+                    <div class="hs-step-num">1</div>
+                    <div class="hs-step-text">Open <strong>restperiod.org</strong> in <strong>Chrome</strong></div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">2</div>
+                    <div class="hs-step-text">Tap the <strong>three dots menu</strong> in the top right corner</div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">3</div>
+                    <div class="hs-step-text">Tap <strong>"Add to Home screen"</strong></div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">4</div>
+                    <div class="hs-step-text">Tap <strong>"Add"</strong> to confirm</div>
+                </div>
+                <img src="rphomescreen.jpg" alt="Add to Home Screen" class="hs-img" onerror="this.style.display='none'">
+            </div>
+            <button class="hs-close" onclick="closeHomescreenModal()">Got it</button>
+        </div>
+    </div>
+
+    <!-- ADD TO HOME SCREEN BUTTON -->
+    <button class="homescreen-btn" onclick="openHomescreenModal()" style="margin-bottom:16px;">
+        <i class="fas fa-plus-square"></i> Add Rest Period to Your Home Screen
+    </button>
+
+    <!-- HOMESCREEN MODAL -->
+    <div class="hs-overlay" id="hs-overlay" onclick="if(event.target===this)closeHomescreenModal()">
+        <div class="hs-box">
+            <div class="hs-title">Add to Home Screen</div>
+            <div class="hs-sub">Use Rest Period like a native app — no App Store needed.</div>
+            <div class="hs-tabs">
+                <button class="hs-tab active" id="hs-tab-ios" onclick="switchHsTab('ios')">iPhone / iPad</button>
+                <button class="hs-tab" id="hs-tab-android" onclick="switchHsTab('android')">Android</button>
+            </div>
+            <div id="hs-ios">
+                <div class="hs-step"><div class="hs-step-num">1</div><div class="hs-step-text">Open <strong>restperiod.org</strong> in <strong>Safari</strong> (must be Safari, not Chrome)</div></div>
+                <div class="hs-step"><div class="hs-step-num">2</div><div class="hs-step-text">Tap the <strong>Share button</strong> at the bottom of the screen (box with arrow pointing up)</div></div>
+                <div class="hs-step"><div class="hs-step-num">3</div><div class="hs-step-text">Scroll down and tap <strong>"Add to Home Screen"</strong></div></div>
+                <div class="hs-step"><div class="hs-step-num">4</div><div class="hs-step-text">Tap <strong>"Add"</strong> in the top right corner</div></div>
+                <img src="rphomescreen.jpg" alt="Add to Home Screen" class="hs-img" onerror="this.style.display='none'">
+            </div>
+            <div id="hs-android" style="display:none;">
+                <div class="hs-step"><div class="hs-step-num">1</div><div class="hs-step-text">Open <strong>restperiod.org</strong> in <strong>Chrome</strong></div></div>
+                <div class="hs-step"><div class="hs-step-num">2</div><div class="hs-step-text">Tap the <strong>three dots menu</strong> in the top right corner</div></div>
+                <div class="hs-step"><div class="hs-step-num">3</div><div class="hs-step-text">Tap <strong>"Add to Home screen"</strong></div></div>
+                <div class="hs-step"><div class="hs-step-num">4</div><div class="hs-step-text">Tap <strong>"Add"</strong> to confirm</div></div>
+                <img src="rphomescreen.jpg" alt="Add to Home Screen" class="hs-img" onerror="this.style.display='none'">
+            </div>
+            <button class="hs-close" onclick="closeHomescreenModal()">Got it</button>
+        </div>
+    </div>
 
     <div class="tools-grid section-gap">
         <div class="tool-card">
@@ -167,8 +245,52 @@
             <button class="tool-btn" id="metro-btn" onclick="toggleMetronome()">Start</button>
         </div>
     </div>
-
-   
+            <div class="hs-sub">Use Rest Period like a native app — no App Store needed.</div>
+            <div class="hs-tabs">
+                <button class="hs-tab active" id="hs-tab-ios" onclick="switchHsTab('ios')">iPhone / iPad</button>
+                <button class="hs-tab" id="hs-tab-android" onclick="switchHsTab('android')">Android</button>
+            </div>
+            <div id="hs-ios">
+                <div class="hs-step">
+                    <div class="hs-step-num">1</div>
+                    <div class="hs-step-text">Open <strong>restperiod.org</strong> in <strong>Safari</strong> (must be Safari, not Chrome)</div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">2</div>
+                    <div class="hs-step-text">Tap the <strong>Share button</strong> at the bottom of the screen (the box with an arrow pointing up)</div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">3</div>
+                    <div class="hs-step-text">Scroll down and tap <strong>"Add to Home Screen"</strong></div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">4</div>
+                    <div class="hs-step-text">Tap <strong>"Add"</strong> in the top right corner</div>
+                </div>
+                <img src="rphomescreen.jpg" alt="Add to Home Screen" class="hs-img" onerror="this.style.display='none'">
+            </div>
+            <div id="hs-android" style="display:none;">
+                <div class="hs-step">
+                    <div class="hs-step-num">1</div>
+                    <div class="hs-step-text">Open <strong>restperiod.org</strong> in <strong>Chrome</strong></div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">2</div>
+                    <div class="hs-step-text">Tap the <strong>three dots menu</strong> in the top right corner</div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">3</div>
+                    <div class="hs-step-text">Tap <strong>"Add to Home screen"</strong></div>
+                </div>
+                <div class="hs-step">
+                    <div class="hs-step-num">4</div>
+                    <div class="hs-step-text">Tap <strong>"Add"</strong> to confirm</div>
+                </div>
+                <img src="rphomescreen.jpg" alt="Add to Home Screen" class="hs-img" onerror="this.style.display='none'">
+            </div>
+            <button class="hs-close" onclick="closeHomescreenModal()">Got it</button>
+        </div>
+    </div>
 
     <div class="tools-grid section-gap">
         <div class="tool-card">
@@ -201,16 +323,6 @@
             </div>
         </div>
     </div>
-
-    <!-- ADD TO HOME SCREEN BUTTON -->
-    <button class="homescreen-btn section-gap" onclick="openHomescreenModal()">
-        <i class="fas fa-plus-square"></i> Add Rest Period to Your Home Screen
-    </button>
-
-    <!-- HOMESCREEN MODAL -->
-    <div class="hs-overlay" id="hs-overlay" onclick="if(event.target===this)closeHomescreenModal()">
-        <div class="hs-box">
-            <div class="hs-title">Add to Home Screen</div>
             <div class="hs-sub">Use Rest Period like a native app — no App Store needed.</div>
             <div class="hs-tabs">
                 <button class="hs-tab active" id="hs-tab-ios" onclick="switchHsTab('ios')">iPhone / iPad</button>
