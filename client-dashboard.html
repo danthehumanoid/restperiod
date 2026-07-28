@@ -264,6 +264,21 @@
         .tooltip-close { width: 100%; margin-top: 14px; padding: 10px; background: var(--border); border: none; color: #888; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; }
         .help-icon { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--brand-accent); font-size: 0.55rem; cursor: pointer; margin-left: 3px; vertical-align: middle; }
 
+        /* ── CONTACT MODAL ── */
+        .contact-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:7500; align-items:flex-end; justify-content:center; }
+        .contact-overlay.open { display:flex; }
+        .contact-box { background:var(--card-bg); border-radius:16px 16px 0 0; border:1px solid var(--border); border-bottom:none; width:100%; max-width:600px; padding:24px; padding-bottom:40px; }
+        .contact-title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1rem; color:white; margin-bottom:6px; }
+        .contact-sub { font-size:0.8rem; color:#555; margin-bottom:20px; }
+        .contact-field { margin-bottom:12px; }
+        .contact-label { font-size:0.6rem; font-weight:800; color:#888; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px; font-family:'Montserrat',sans-serif; }
+        .contact-input { width:100%; background:var(--input-bg); border:1px solid var(--border); color:var(--text-main); border-radius:6px; padding:10px 12px; font-size:0.9rem; font-family:inherit; }
+        .contact-input:focus { outline:none; border-color:var(--brand-accent); }
+        textarea.contact-input { min-height:100px; resize:vertical; }
+        .contact-msg { font-size:0.75rem; margin-top:8px; display:none; }
+        .contact-msg.error { color:var(--brand-danger); }
+        .contact-msg.success { color:var(--brand-accent); }
+
         /* ── HOMESCREEN MODAL ── */
         .hs-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:7500; align-items:flex-end; justify-content:center; }
         .hs-overlay.open { display:flex; }
@@ -323,6 +338,7 @@
     <div style="display:flex;align-items:center;gap:10px;">
         <span class="nav-user" id="nav-user" style="font-size:0.72rem;color:#888;"></span>
         <button class="btn-nav client-only" onclick="window.location.href='checkin.html'" style="display:none;">Check-In</button>
+        <button class="btn-nav" onclick="openContactModal()" style="background:none;border:1px solid #333;color:#888;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.65rem;font-family:Montserrat,sans-serif;font-weight:700;">?</button>
         <button class="btn-nav" onclick="openSettings()" style="background:none;border:1px solid #333;color:#888;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85rem;"><i class="fas fa-cog"></i></button>
         <button class="btn-nav" onclick="logout()" style="background:none;border:1px solid #333;color:#888;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:0.7rem;font-family:Montserrat,sans-serif;font-weight:700;">Logout</button>
     </div>
@@ -692,6 +708,52 @@ function openSettings() {
                 </div>
                 <button class="settings-btn primary" onclick="window.location.href='explore.html';closeSettings();">Upgrade</button>
             </div>`;
+    }
+}
+
+function openContactModal() {
+    document.getElementById('contact-overlay').classList.add('open');
+    document.getElementById('contact-subject').value = '';
+    document.getElementById('contact-message').value = '';
+    document.getElementById('contact-msg').style.display = 'none';
+}
+function closeContactModal() {
+    document.getElementById('contact-overlay').classList.remove('open');
+}
+async function submitContact() {
+    const subject = document.getElementById('contact-subject').value.trim();
+    const message = document.getElementById('contact-message').value.trim();
+    const msgEl = document.getElementById('contact-msg');
+    const btn = document.getElementById('contact-btn');
+    msgEl.style.display = 'none';
+    if (!subject || !message) {
+        msgEl.textContent = 'Please fill in all fields.';
+        msgEl.className = 'contact-msg error';
+        msgEl.style.display = 'block';
+        return;
+    }
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    try {
+        const model = pb.authStore.model;
+        await pb.collection('contact_messages').create({
+            from_name: model.name || model.email,
+            from_email: model.email,
+            subject: subject,
+            message: message
+        });
+        msgEl.textContent = 'Message sent! Thanks.';
+        msgEl.className = 'contact-msg success';
+        msgEl.style.display = 'block';
+        btn.textContent = 'Send Message';
+        btn.disabled = false;
+        setTimeout(() => closeContactModal(), 2000);
+    } catch(e) {
+        msgEl.textContent = 'Failed to send. Email admin@restperiod.org directly.';
+        msgEl.className = 'contact-msg error';
+        msgEl.style.display = 'block';
+        btn.textContent = 'Send Message';
+        btn.disabled = false;
     }
 }
 
@@ -1594,6 +1656,27 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
         <div class="tooltip-row"><span class="tooltip-key">Example: 3-1-2-0</span><span class="tooltip-val">3s down, 1s pause, 2s up, no pause</span></div>
         <div class="tooltip-row"><span class="tooltip-key">X</span><span class="tooltip-val">Explosive / as fast as possible</span></div>
         <button class="tooltip-close" onclick="document.getElementById('tempo-tooltip').classList.remove('open')">Got it</button>
+    </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="contact-overlay" id="contact-overlay" onclick="if(event.target===this)closeContactModal()">
+    <div class="contact-box">
+        <div class="contact-title">Questions / Feedback</div>
+        <div class="contact-sub">We read every message.</div>
+        <div class="contact-field">
+            <label class="contact-label">Subject</label>
+            <input type="text" class="contact-input" id="contact-subject" placeholder="e.g. Question about my program">
+        </div>
+        <div class="contact-field">
+            <label class="contact-label">Message</label>
+            <textarea class="contact-input" id="contact-message" placeholder="Your message..."></textarea>
+        </div>
+        <div class="contact-msg" id="contact-msg"></div>
+        <div style="display:flex;gap:8px;margin-top:16px;">
+            <button class="settings-btn" style="flex:1;" onclick="closeContactModal()">Cancel</button>
+            <button class="settings-btn primary" style="flex:2;" id="contact-btn" onclick="submitContact()">Send Message</button>
+        </div>
     </div>
 </div>
 
