@@ -79,6 +79,20 @@
         .hs-step-text { font-size: 0.85rem; color: #aaa; line-height: 1.6; }
         .hs-step-text strong { color: white; }
         .hs-img { width: 100%; border-radius: 10px; margin: 16px 0; border: 1px solid var(--border); display: block; }
+        /* CONTACT MODAL */
+        .contact-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9000; align-items:flex-end; justify-content:center; }
+        .contact-overlay.open { display:flex; }
+        .contact-box { background:var(--card-bg); border-radius:16px 16px 0 0; border:1px solid var(--border); border-bottom:none; width:100%; max-width:600px; padding:24px; padding-bottom:40px; }
+        .contact-title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1rem; color:white; margin-bottom:6px; }
+        .contact-sub { font-size:0.8rem; color:#555; margin-bottom:20px; }
+        .contact-field { margin-bottom:12px; }
+        .contact-label { font-size:0.6rem; font-weight:800; color:#888; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px; font-family:'Montserrat',sans-serif; }
+        .contact-input { width:100%; background:var(--input-bg); border:1px solid var(--border); color:var(--text-main); border-radius:6px; padding:10px 12px; font-size:0.9rem; font-family:inherit; }
+        .contact-input:focus { outline:none; border-color:var(--brand-accent); }
+        textarea.contact-input { min-height:100px; resize:vertical; }
+        .contact-error { color:var(--brand-danger); font-size:0.75rem; margin-top:8px; display:none; }
+        .contact-success { color:var(--brand-accent); font-size:0.75rem; margin-top:8px; display:none; }
+
         .hs-close { width: 100%; padding: 13px; border: none; border-radius: 8px; background: var(--border); color: #888; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; cursor: pointer; margin-top: 8px; }
 
         /* TOOLS */
@@ -154,7 +168,10 @@
     </button>
 
     <!-- TRAINING TOOLS -->
-    <h2 style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.1rem;color:var(--brand-accent);text-transform:uppercase;letter-spacing:2px;margin:0 0 12px;">Training Tools</h2>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:0 0 12px;">
+        <h2 style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.1rem;color:var(--brand-accent);text-transform:uppercase;letter-spacing:2px;margin:0;">Training Tools</h2>
+        <a href="#" onclick="openContactModal();return false;" style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.65rem;color:#555;border:1px solid var(--border);padding:6px 12px;border-radius:6px;text-decoration:none;white-space:nowrap;transition:0.2s;" onmouseover="this.style.color='var(--brand-accent)';this.style.borderColor='var(--brand-accent)';" onmouseout="this.style.color='#555';this.style.borderColor='var(--border)';">Questions / Feedback?</a>
+    </div>
 
     <div class="tools-grid">
         <div class="tool-card">
@@ -253,6 +270,36 @@
         </div>
     </div>
 
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="contact-overlay" id="contact-overlay" onclick="if(event.target===this)closeContactModal()">
+    <div class="contact-box">
+        <div class="contact-title">Questions / Feedback</div>
+        <div class="contact-sub">We read every message.</div>
+        <div class="contact-field">
+            <label class="contact-label">Your Name</label>
+            <input type="text" class="contact-input" id="contact-name" placeholder="Your name">
+        </div>
+        <div class="contact-field">
+            <label class="contact-label">Your Email</label>
+            <input type="email" class="contact-input" id="contact-email" placeholder="you@example.com">
+        </div>
+        <div class="contact-field">
+            <label class="contact-label">Subject</label>
+            <input type="text" class="contact-input" id="contact-subject" placeholder="e.g. Question about programs">
+        </div>
+        <div class="contact-field">
+            <label class="contact-label">Message</label>
+            <textarea class="contact-input" id="contact-message" placeholder="Your message..."></textarea>
+        </div>
+        <div class="contact-error" id="contact-error"></div>
+        <div class="contact-success" id="contact-success"></div>
+        <div style="display:flex;gap:8px;margin-top:16px;">
+            <button class="hs-close" style="flex:1;" onclick="closeContactModal()">Cancel</button>
+            <button class="submit-btn" style="flex:2;" id="contact-btn" onclick="submitContact()">Send Message</button>
+        </div>
+    </div>
 </div>
 
 <!-- VIDEO OVERLAY -->
@@ -486,6 +533,57 @@ function switchTab(tab){document.getElementById('tab-login').classList.toggle('a
 async function login(){const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value,errEl=document.getElementById('login-error'),btn=document.getElementById('login-btn');errEl.style.display='none';btn.disabled=true;btn.textContent='Signing in...';try{const auth=await pb.collection('users').authWithPassword(email,password);redirect(auth.record.role);}catch(e){errEl.textContent='Invalid email or password.';errEl.style.display='block';btn.disabled=false;btn.textContent='Sign In';}}
 
 async function signup(){const name=document.getElementById('signup-name').value.trim(),email=document.getElementById('signup-email').value.trim(),password=document.getElementById('signup-password').value,confirm=document.getElementById('signup-confirm').value,errEl=document.getElementById('signup-error'),btn=document.getElementById('signup-btn');errEl.style.display='none';if(!name||!email||!password){errEl.textContent='Please fill in all fields.';errEl.style.display='block';return;}if(password.length<8){errEl.textContent='Password must be at least 8 characters.';errEl.style.display='block';return;}if(password!==confirm){errEl.textContent='Passwords do not match.';errEl.style.display='block';return;}btn.disabled=true;btn.textContent='Creating account...';try{await pb.collection('users').create({name,email,password,passwordConfirm:confirm,role:'free',emailVisibility:true});const auth=await pb.collection('users').authWithPassword(email,password);redirect(auth.record.role);}catch(e){const msg=e?.response?.data?.email?.message||e.message||'Signup failed.';errEl.textContent=msg;errEl.style.display='block';btn.disabled=false;btn.textContent='Create Free Account';}}
+
+function openContactModal() {
+    const overlay = document.getElementById('contact-overlay');
+    overlay.classList.add('open');
+    // Pre-fill if logged in
+    if (pb.authStore.isValid) {
+        document.getElementById('contact-name').value = pb.authStore.model.name || '';
+        document.getElementById('contact-email').value = pb.authStore.model.email || '';
+    }
+}
+function closeContactModal() {
+    document.getElementById('contact-overlay').classList.remove('open');
+}
+async function submitContact() {
+    const name = document.getElementById('contact-name').value.trim();
+    const email = document.getElementById('contact-email').value.trim();
+    const subject = document.getElementById('contact-subject').value.trim();
+    const message = document.getElementById('contact-message').value.trim();
+    const errEl = document.getElementById('contact-error');
+    const sucEl = document.getElementById('contact-success');
+    const btn = document.getElementById('contact-btn');
+    errEl.style.display = 'none';
+    sucEl.style.display = 'none';
+    if (!name || !email || !subject || !message) {
+        errEl.textContent = 'Please fill in all fields.';
+        errEl.style.display = 'block';
+        return;
+    }
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    try {
+        await pb.collection('contact_messages').create({
+            from_name: name,
+            from_email: email,
+            subject: subject,
+            message: message
+        });
+        sucEl.textContent = 'Message sent! We'll get back to you soon.';
+        sucEl.style.display = 'block';
+        document.getElementById('contact-subject').value = '';
+        document.getElementById('contact-message').value = '';
+        btn.textContent = 'Send Message';
+        btn.disabled = false;
+        setTimeout(() => closeContactModal(), 2000);
+    } catch(e) {
+        errEl.textContent = 'Failed to send. Try emailing admin@restperiod.org directly.';
+        errEl.style.display = 'block';
+        btn.textContent = 'Send Message';
+        btn.disabled = false;
+    }
+}
 
 document.addEventListener('keydown',(e)=>{if(e.key==='Enter'){const loginVisible=document.getElementById('login-form').style.display!=='none';if(loginVisible)login();else signup();}});
 </script>
