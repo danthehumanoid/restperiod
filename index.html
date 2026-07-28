@@ -112,20 +112,16 @@
 <div class="header">
     <img src="restperiodmega.png" alt="Rest Period" />
     <h1>REST <span>PERIOD</span></h1>
+    <p style="font-size:0.85rem;color:#555;margin-top:6px;letter-spacing:1px;">Exercise and education for Humans</p>
 </div>
 
 <div class="container">
 
-    <!-- SEARCH -->
+    <!-- LIBRARY BUTTON -->
     <div style="margin-bottom:16px;">
-        <div class="search-row">
-            <input type="text" class="search-input" id="search-input" placeholder="Search for an exercise..." oninput="runSearch()" />
-            <button class="filter-toggle" id="filter-toggle-btn" onclick="toggleFilters()">FILTERS ▾</button>
-            <a href="library.html" class="filter-toggle" style="padding:0 14px;">VIEW LIBRARY</a>
-        </div>
-        <div class="filter-panel" id="filter-panel"></div>
-        <div class="results-count" id="results-count"></div>
-        <div class="results-list" id="results-list"></div>
+        <a href="library.html" class="submit-btn" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;">
+            <i class="fas fa-dumbbell"></i> View Exercise Library
+        </a>
     </div>
 
     <!-- LOGIN -->
@@ -154,7 +150,7 @@
 
     <!-- ADD TO HOME SCREEN -->
     <button class="homescreen-btn" onclick="openHomescreenModal()">
-        <i class="fas fa-plus-square"></i> Add RP to Your Phone's Home Screen
+        <i class="fas fa-plus-square"></i> Add Rest Period to Your Home Screen
     </button>
 
     <!-- TRAINING TOOLS -->
