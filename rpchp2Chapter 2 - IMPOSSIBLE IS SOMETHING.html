@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REST PERIOD | PHILOSOPHY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rest Period</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,59 +33,42 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-         <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 2 - IMPOSSIBLE IS SOMETHING
-</i></p>     
-<p>
-Chapter 2 - IMPOSSIBLE IS SOMETHING
-<p>
-“You can be anything if you set your mind to it, but if you’re not taller than 6 feet you’ll never play in the NBA.”
-<p>
-I’ve felt compelled to  reset expectations ever since I realized that the fantasy of feeling like you could be the next Micheal Jordan or Tiger Woods was the very thing that held people back from trying harder. 
-<p>
-Some goals are just so unreachable that it doesn’t make sense to believe that “because they did it, why can’t i?”. Because not everyone is born into a sport with a body that is perfectly made for the type of movement that the sport intended. And all of their success? Nobody wants to say it, Hard work, yes, Talent, of course, gifted genetics, granted. But what of luck? What of being born in a country at a time in history where the sport you are absolutely built for is the same sport that the club down the road is looking for players to register. I sometimes try to wonder if there is a sport that exists (or doesn’t) that if I apply myself to, I could be the best in the world at. Could you imagine the thousands, if not millions’s of people who are just  merely  living in the wrong country to playy a sport they would be destined for greatness at?! Living in New Zealand I’ve seen the positive effects Rugby has had on Maori and Pacific Islanders. 
-<p>
-Sometimes It’s as if the game was created in England in order for it to be exported straight to the islands as fast as possible. A 120kg flying fijian running straight at you is one of the many reasons I’m a spectator of the sport these days. So can you give any sport a go, no-one is stopping you (I hope). But should you adopt the mindset that if all you do is set your mind to it, you can be the greatest in the world? Not in my experience. Realistic expectations can still be set very high and you could achieve incurable things. What’s more, any success is short-lived. Do you think Micheal Schumacher is still full of adrenaline being crowne one of the greatest F1 drivers of all time? There is a possibility in all of this though to adopt a more pragmatic approach towards success. That is to make your own competition with yourself. Cliche enough? To know that real fulfillment comes from effort, your own progress and what you’re doing to improve matters most, the reality is, no-one can compete with you at being you.
-<p>
-“Hard work beats talent, but talent that works hard beats everyone.”
-<p>
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 2</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: IMPOSSIBLE IS SOMETHING</h1>
+    </div>
 
+    <div class="chapter-body">
+        <blockquote>
+            “You can be anything if you set your mind to it, but if you’re not taller than 6 feet you’ll never play in the NBA.”
+        </blockquote>
 
-        
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
-        <div class="email-container">
-            <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
-            <div id="emailDisplay">
-                <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
-            </div>
-        </div>
-    </main>
-    <footer class="footer-notice">
-        *Website handmade in 2024AD with recycled nostalgic materials
-    </footer>
+        <p>
+            I’ve felt compelled to reset expectations ever since I realized that the fantasy of feeling like you could be the next Michael Jordan or Tiger Woods was the very thing that held people back from trying harder.
+        </p>
 
-    <script>
-        function revealEmail() {
-            const emailDiv = document.getElementById('emailDisplay');
-            const button = document.getElementById('revealButton');
-            if (emailDiv) {
-                // Toggle visibility
-                const isVisible = emailDiv.style.display === 'block';
-                emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
-            }
-        }
-    </script>
+        <p>
+            Some goals are just so unreachable that it doesn’t make sense to believe that “because they did it, why can’t I?”. Because not everyone is born into a sport with a body that is perfectly made for the type of movement that the sport intended. And all of their success? Nobody wants to say it—hard work, yes; talent, of course; gifted genetics, granted. But what of luck? What of being born in a country at a time in history where the sport you are absolutely built for is the same sport that the club down the road is looking for players to register? I sometimes try to wonder if there is a sport that exists (or doesn’t) that if I apply myself to, I could be the best in the world at. Could you imagine the thousands, if not millions of people who are merely living in the wrong country to play a sport they would be destined for greatness at?! Living in New Zealand I’ve seen the positive effects Rugby has had on Māori and Pacific Islanders.
+        </p>
+
+        <p>
+            Sometimes it’s as if the game was created in England in order for it to be exported straight to the islands as fast as possible. A 120kg flying Fijian running straight at you is one of the many reasons I’m a spectator of the sport these days. So can you give any sport a go? No one is stopping you (I hope). But should you adopt the mindset that if all you do is set your mind to it, you can be the greatest in the world? Not in my experience. Realistic expectations can still be set very high and you could achieve incredible things. What’s more, any success is short-lived. Do you think Michael Schumacher is still full of adrenaline being crowned one of the greatest F1 drivers of all time? There is a possibility in all of this though to adopt a more pragmatic approach towards success. That is to make your own competition with yourself. Cliché enough? To know that real fulfillment comes from effort, your own progress, and what you’re doing to improve matters most—the reality is, no one can compete with you at being you.
+        </p>
+
+        <blockquote>
+            “Hard work beats talent, but talent that works hard beats everyone.”
+        </blockquote>
+
+        <p class="signature">Daniel</p>
+    </div>
 
 </body>
 </html>

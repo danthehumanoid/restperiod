@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,52 +33,100 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+
+        /* Signature & Email Interaction Styles */
+        .signature-block { margin-top: 40px; text-align: right; font-weight: 600; }
+        .signature-block p { margin-bottom: 0.2em; }
+
+        .email-container { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); }
+        #revealButton {
+            background: transparent;
+            border: 1px solid var(--brand-accent);
+            color: var(--brand-accent);
+            padding: 10px 18px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #revealButton:hover {
+            background: var(--brand-accent);
+            color: #000;
+        }
+        #emailDisplay {
+            display: none;
+            margin-top: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+        #emailDisplay a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .footer-notice { margin-top: 48px; padding-top: 16px; border-top: 1px dashed var(--border); color: #666; font-size: 0.8rem; font-style: italic; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
-        <h1>EXERCISE, PHILOSPOHY</h1>
-        <p><i>Chapter 3 - LOW BUY IN</i></p>        
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-<p>
-When I was working at a Big Box gym, we had shared locker rooms with other staff and trainers. Over the course of 10 years everyone became quite familiar with everyone’s pre and post workout routines; change clothes, check emails, scroll, some sort of caffeinated liquid, custom playlist and so on. 
-<p>
-One day a trainer walked in frantically searching through their bag looking for something, as if they had lost the keys to their car. 
-<p>
-“I don’t have any pre-workout powder left and my headphones are flat. 
-<p>
-I can’t train today”.
-<p>
-Workout cancelled, progress paused.
-<p>
-Everybody has a workout routine. And sometimes it works against us.
-<p>
-For some it’s an elaborate process of getting everything aligned so as to make it the perfect session. 
-<p>
-And of course a lot of the time this matters. 
-<p>
-If you’re going for a run, you want your running shoes, not your squat shoes. 
-<p>
-If you’re going swimming, you’ll need your goggles. 
-<p>
-And if you’re just about to go mountain biking, you’ll need of course your bike. 
-<p>
-But there are some instances where the routine becomes the barrier. Needing everything to perfectly align just to start a training session can be a dealbreaker. The perfect workout gear, charged headphones and a caffeine hit. It risks becoming a crutch.
-<p>
-In my experience the less you need to organise, the better. If all you need is a good meal, some water and half decent workout clothing to train in, you’re chances of training remain higher than those that need a solar eclipse in order to do cardio.
-<p>    
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+    <header class="chapter-header">
+        <div class="chapter-num">Chapter 3</div>
+        <h1 class="chapter-title">EXERCISE PHILOSOPHY: LOW BUY IN</h1>
+    </header>
+
+    <main class="chapter-body">
+        <p>
+            When I was working at a Big Box gym, we had shared locker rooms with other staff and trainers. Over the course of 10 years everyone became quite familiar with everyone’s pre and post workout routines; change clothes, check emails, scroll, some sort of caffeinated liquid, custom playlist and so on.
+        </p>
+
+        <p>
+            One day a trainer walked in frantically searching through their bag looking for something, as if they had lost the keys to their car.
+        </p>
+
+        <blockquote>
+            “I don’t have any pre-workout powder left and my headphones are flat. I can’t train today.”
+        </blockquote>
+
+        <p>
+            Workout cancelled, progress paused.
+        </p>
+
+        <p>
+            Everybody has a workout routine. And sometimes it works against us. For some it’s an elaborate process of getting everything aligned so as to make it the perfect session.
+        </p>
+
+        <p>
+            And of course a lot of the time this matters. If you’re going for a run, you want your running shoes, not your squat shoes. If you’re going swimming, you’ll need your goggles. And if you’re just about to go mountain biking, you’ll need of course your bike.
+        </p>
+
+        <p>
+            But there are some instances where the routine becomes the barrier. Needing everything to perfectly align just to start a training session can be a dealbreaker. The perfect workout gear, charged headphones and a caffeine hit—it risks becoming a crutch.
+        </p>
+
+        <p>
+            In my experience the less you need to organize, the better. If all you need is a good meal, some water and half decent workout clothing to train in, your chances of training remain higher than those that need a solar eclipse in order to do cardio.
+        </p>
+
+        <div class="signature-block">
+            <p>🤙</p>
+            <p>Human Love,</p>
+            <p>Dan / Daniel / Splash</p>
+        </div>
+
         <div class="email-container">
-            <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
+            <button id="revealButton" onclick="revealEmail()">Send me an email / say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
     </main>
+
     <footer class="footer-notice">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
@@ -85,11 +136,9 @@ In my experience the less you need to organise, the better. If all you need is a
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email / say HI' : 'Click to hide email';
             }
         }
     </script>
