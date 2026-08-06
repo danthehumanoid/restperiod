@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,57 +33,86 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-         <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 18 - FLIP THE RATIO</i></p>     
-When I started playing music again, I also started sharing that I was playing music again. 
-<p>
-For the first few months, I had a routine of setting up my laptop, phone, tripod, connecting everything to my instruments until finally I played! … For around 15 minutes until I decided I needed to rearrange the tripod, things got tangled, I pulled out cables, lost my focus and ultimately called it an evening. Almost. I spent around 90 minutes editing footage. 
-<p>
-One of my favourite creative projects, bogged down by my wanting to get perfect content. 
-<p>
-So I gave up. Not playing music, but recording.
-I shared nothing but tiny snippets with close friends when I had breakthroughs.
-<p>
-I got better, and I enjoyed it and eventually I found easier ways to record and edit.
-<p>
-Recording the content was never the issue. It was the ratio of playing/producing.
-I was spending 15 minutes of my time “playing”/practicing and over 2 hours trying to get the perfect video.  
-<p>
-Who was I doing this for?
-<p>
-Many people want to share their progress for a variety of reasons; accountability, connecting and of course fame. And maybe it helps. And maybe it also distracts you from the real task at hand. Perhaps you need content for a sponsor, job application or project. 
-<p>
-But does the ratio workout for you?
-Simply, how much time are you spending training, exercising and enjoying your practice just for you?
-<p>
-Go to the gym without your phone sometim.
-<p>
-Take a run without your watch for once.
-<p>
-And never, EVER take a video of a fireworks show ever again.
-<p>
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 18</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: FLIP THE RATIO</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            When I started playing music again, I also started sharing that I was playing music again.
+        </p>
 
+        <p>
+            For the first few months, I had a routine of setting up my laptop, phone, tripod, connecting everything to my instruments until finally I played! … For around 15 minutes until I decided I needed to rearrange the tripod, things got tangled, I pulled out cables, lost my focus and ultimately called it an evening. Almost. I spent around 90 minutes editing footage.
+        </p>
 
+        <p>
+            One of my favourite creative projects, bogged down by my wanting to get perfect content.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            So I gave up. Not playing music, but recording.
+            I shared nothing but tiny snippets with close friends when I had breakthroughs.
+        </p>
+
+        <p>
+            I got better, and I enjoyed it and eventually I found easier ways to record and edit.
+        </p>
+
+        <p>
+            Recording the content was never the issue. It was the ratio of playing/producing.
+            I was spending 15 minutes of my time “playing”/practicing and over 2 hours trying to get the perfect video.
+        </p>
+
+        <p>
+            Who was I doing this for?
+        </p>
+
+        <p>
+            Many people want to share their progress for a variety of reasons; accountability, connecting and of course fame. And maybe it helps. And maybe it also distracts you from the real task at hand. Perhaps you need content for a sponsor, job application or project.
+        </p>
+
+        <p>
+            But does the ratio workout for you?
+            Simply, how much time are you spending training, exercising and enjoying your practice just for you?
+        </p>
+
+        <p>
+            Go to the gym without your phone sometime.
+        </p>
+
+        <p>
+            Take a run without your watch for once.
+        </p>
+
+        <p>
+            And never, EVER take a video of a fireworks show ever again.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -89,11 +121,9 @@ And never, EVER take a video of a fireworks show ever again.
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

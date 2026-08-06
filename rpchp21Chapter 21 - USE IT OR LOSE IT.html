@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,44 +33,67 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 21 - USE IT OR LOSE IT</i></p>     
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 21</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: USE IT OR LOSE IT</h1>
+    </div>
 
-"spread like butter!” The coach yelled at us on Saturday morning during our rugby games. We knew what he said, and very few of us actually listened.
-When I was a kid playing rugby, my coach and father made up a game based on a very common phenomena with team ball sports as a kid,
-If you done use it, you’ll lose it.
-<p>
-It was a sporadic game of 2v2 or 3v3 in a small square. You had to run with the ball or pass it. No stoppages, no kicking the ball and no hesitation. A pressure cooker of a training drill. And we loved it. At any moment things could change. If a kid was struggling, change it up. If one of the best players was hogging the ball, take it off them and throw it somewhere else.
-Controlled chaos, problem solving and learning to make the most of it. Because the game was usually an end to a training session, and it was usually our favourite game to play.
-<p>
-Maintaining our fitness, strength and every other skill we’ve picked up can seem like a mad scramble. When was the last time you drew something, write a poem, spoke in public, threw a ball or changed a car tyre? Cursive writing, Morse code, telephoned or remembering phones number aren’t exactly life skills anymore. Mainting a healthy muscle mass, bone density and the ability to dress ourselves almost certainly defiantly are. 
-We don’t lose it all, at the same speed.
-<p>
-A physio practice I worked alongside for many years had a cinstant string of weekend warriors coming in with muscle tears after getting back into social sport. From Zero to hamstring tear. Years of high energy, regular explosive acitigity at college to a lt least a deacde of eiether a sednrty life or a different exercise routine. The body forgot how to run, the muscles wernt their to hold shit together, but the mind was still a 20 year old wanting to go full noise. And some learned this lessons (me included more than once), take time to condition ourselves, curb our enthusiasm and progress slowly until we are ready to drop the hammer and say sprint, jump or throw something with full force. 
-<p>
-And then it’s simply a matter of making sure that we don’t lose it again.
-So, what have you NOT got to lose? 
+    <div class="chapter-body">
+        <blockquote>
+            “Spread like butter!”
+        </blockquote>
 
+        <p>
+            The coach yelled at us on Saturday morning during our rugby games. We knew what he said, and very few of us actually listened.
+        </p>
 
+        <p>
+            When I was a kid playing rugby, my coach and father made up a game based on a very common phenomena with team ball sports as a kid: if you don't use it, you’ll lose it.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            It was a sporadic game of 2v2 or 3v3 in a small square. You had to run with the ball or pass it. No stoppages, no kicking the ball and no hesitation. A pressure cooker of a training drill. And we loved it. At any moment things could change. If a kid was struggling, change it up. If one of the best players was hogging the ball, take it off them and throw it somewhere else. Controlled chaos, problem solving and learning to make the most of it. Because the game was usually an end to a training session, and it was usually our favourite game to play.
+        </p>
+
+        <p>
+            Maintaining our fitness, strength and every other skill we’ve picked up can seem like a mad scramble. When was the last time you drew something, wrote a poem, spoke in public, threw a ball or changed a car tyre? Cursive writing, Morse code, telephoned or remembering phone numbers aren’t exactly life skills anymore. Maintaining a healthy muscle mass, bone density and the ability to dress ourselves almost certainly definitely are. We don’t lose it all, at the same speed.
+        </p>
+
+        <p>
+            A physio practice I worked alongside for many years had a constant string of weekend warriors coming in with muscle tears after getting back into social sport. From Zero to hamstring tear. Years of high energy, regular explosive activity at college to at least a decade of either a sedentary life or a different exercise routine. The body forgot how to run, the muscles weren't there to hold shit together, but the mind was still a 20 year old wanting to go full noise. And some learned these lessons (me included more than once): take time to condition ourselves, curb our enthusiasm and progress slowly until we are ready to drop the hammer and say sprint, jump or throw something with full force.
+        </p>
+
+        <p>
+            And then it’s simply a matter of making sure that we don’t lose it again.
+        </p>
+
+        <p>
+            So, what have you NOT got to lose?
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -76,11 +102,9 @@ So, what have you NOT got to lose?
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,50 +33,67 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
-         <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 33 - 12 HOURS LATER</i></p>     
-I could feel my legs, they felt heavy, slightly depleted but still good enough.
-<p>
-The day had gotten away and I was at the dinner table contemplating whether to run or not.
-<p>
-“It’s 7:30pm now. Get dressed, warm up and do that 40 minute run. Fuel, recover, shower, in bed by 10pm”.
-<p>
-Best case scenario this is how it usually works out. But my body was asking me the question - “Do you run now or 12 hours later?”
-What would another 12 hours of recovery do?  A solid 8-10 hour sleep could be the difference between a sluggish nighttime effort and an early morning jaunt. 
-<p>
-You might have another training session tomorrow, so your brain says “do it now!”. You might have a recovery day planned. Your brain might be spinning and a run is the best thing for you that evening. 
-The answer is almost always, maybe.
-<p>
-The pressure we put on ourselves to complete training sessions is warranted if we want results. And the more we learn to listen to our body in the moments, the better we’ll end up training. 
-<p>
-So, do you “need” to run now, or will tomorrow be a better time? It’s not lazy, it’s not making excuses, you want to run of course. This is not a case of “do it tomorrow” or “diet starts Monday”. 
-<p>
-It is simply, is it best to do your training session now, or 12 hours later?
-<p>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 33</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: 12 HOURS LATER</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            I could feel my legs, they felt heavy, slightly depleted but still good enough.
+        </p>
 
+        <p>
+            The day had gotten away and I was at the dinner table contemplating whether to run or not.
+        </p>
 
+        <p>
+            “It’s 7:30pm now. Get dressed, warm up and do that 40 minute run. Fuel, recover, shower, in bed by 10pm”.
+        </p>
 
+        <p>
+            Best case scenario this is how it usually works out. But my body was asking me the question - “Do you run now or 12 hours later?” What would another 12 hours of recovery do? A solid 8-10 hour sleep could be the difference between a sluggish nighttime effort and an early morning jaunt.
+        </p>
 
+        <p>
+            You might have another training session tomorrow, so your brain says “do it now!”. You might have a recovery day planned. Your brain might be spinning and a run is the best thing for you that evening. The answer is almost always, maybe.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            The pressure we put on ourselves to complete training sessions is warranted if we want results. And the more we learn to listen to our body in the moments, the better we’ll end up training.
+        </p>
+
+        <p>
+            So, do you “need” to run now, or will tomorrow be a better time? It’s not lazy, it’s not making excuses, you want to run of course. This is not a case of “do it tomorrow” or “diet starts Monday”.
+        </p>
+
+        <p>
+            It is simply, is it best to do your training session now, or 12 hours later?
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -82,11 +102,9 @@ It is simply, is it best to do your training session now, or 12 hours later?
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

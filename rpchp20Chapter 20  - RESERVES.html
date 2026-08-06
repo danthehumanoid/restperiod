@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,46 +33,87 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 20  - RESERVES</i></p>     
-One of my oldest clients, I had worked with for over 7 years. They were the definition of gifted genetics. An 80 year old with forearm definition like a 30 year old mechanic. 
-Hands like mitts and at one point in his 80’s,  could jump into a 60cm box.
-Age and dementia caught up with him and his body changed. 
-One day he had a fall at home.
-Your life looks different when a fall becomes a family event.
-He was away from training for two weeks recovering after leaving the hospital.
-At 87, after two weeks of little to no exercise, the amount of muscle he had lost was astounding. 
-<p>
-However he celebrated that he didn’t have to use the walker to leave the hospital. A very common occurrence for Seniors.
-We lose muscle at an incredible rate when we stop moving. And faster as we get older.
-<p>
-Fortunately, because my client had been training regularly, he had muscle. And plenty of it for his age. He had lost a bunch of strength but not everything. 
-<p>
-The more you have, the more you have to lose, and in this case it was fortuitously alot.
-<p>
-You may not be interested in being the next weekend warrior or socially competitive runner. But when we fall ill, or get injured the comeback to normal life is very much defined by what we have been doing leading up to that moment. The fitter or stronger we are, the more we have in reserve, because the body will start to waste away almost the moment we stop moving. 
-My client's mantra always was “Keep moving, Keep moving”.
-<p>
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 20</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: RESERVES</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            One of my oldest clients, I had worked with for over 7 years. They were the definition of gifted genetics. An 80 year old with forearm definition like a 30 year old mechanic.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            Hands like mitts and at one point in his 80’s, could jump into a 60cm box.
+        </p>
+
+        <p>
+            Age and dementia caught up with him and his body changed.
+        </p>
+
+        <p>
+            One day he had a fall at home.
+        </p>
+
+        <p>
+            Your life looks different when a fall becomes a family event.
+        </p>
+
+        <p>
+            He was away from training for two weeks recovering after leaving the hospital.
+        </p>
+
+        <p>
+            At 87, after two weeks of little to no exercise, the amount of muscle he had lost was astounding.
+        </p>
+
+        <p>
+            However he celebrated that he didn’t have to use the walker to leave the hospital. A very common occurrence for Seniors.
+        </p>
+
+        <p>
+            We lose muscle at an incredible rate when we stop moving. And faster as we get older.
+        </p>
+
+        <p>
+            Fortunately, because my client had been training regularly, he had muscle. And plenty of it for his age. He had lost a bunch of strength but not everything.
+        </p>
+
+        <p>
+            The more you have, the more you have to lose, and in this case it was fortuitously a lot.
+        </p>
+
+        <p>
+            You may not be interested in being the next weekend warrior or socially competitive runner. But when we fall ill, or get injured the comeback to normal life is very much defined by what we have been doing leading up to that moment. The fitter or stronger we are, the more we have in reserve, because the body will start to waste away almost the moment we stop moving.
+        </p>
+
+        <p>
+            My client's mantra always was “Keep moving, Keep moving”.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -78,11 +122,9 @@ My client's mantra always was “Keep moving, Keep moving”.
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

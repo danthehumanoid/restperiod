@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,61 +33,95 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 4 - NO MATTER WHAT</i></p>     
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 4</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: NO MATTER WHAT</h1>
+    </div>
 
-It was a Monday night. I had just finished dinner and was cleaning up the kitchen. I began rehearsing my run in my head, the distance, the location and the speed.
+    <div class="chapter-body">
+        <p>
+            It was a Monday night. I had just finished dinner and was cleaning up the kitchen. I began rehearsing my run in my head, the distance, the location and the speed.
+        </p>
 
-Then my phone rang “She’s going downhill, I think you should come now”.
+        <blockquote>
+            “She’s going downhill, I think you should come now”.
+        </blockquote>
 
-My auntie was dying.
+        <p>
+            My auntie was dying.
+        </p>
 
-She had days to live. Her house was just down the road. 
-I could be there in 15 minutes, or 45 minutes if I ran first. 
+        <p>
+            She had days to live. Her house was just down the road. I could be there in 15 minutes, or 45 minutes if I ran first.
+        </p>
 
-I went straight away.  
+        <p>
+            I went straight away.
+        </p>
 
-I was both impressed and embarrassed I even had the thought.
+        <p>
+            I was both impressed and embarrassed I even had the thought.
+        </p>
 
-My non negotiable exercise brain had such a high bar for excuses not to train I almost made a decision that I would’ve later regretted. 
+        <p>
+            My non negotiable exercise brain had such a high bar for excuses not to train I almost made a decision that I would’ve later regretted.
+        </p>
 
-Not being there for my auntie and my family members who needed my presence. 
+        <p>
+            Not being there for my auntie and my family members who needed my presence.
+        </p>
 
-The next day things settled and 12 hours later I completed my run. 
+        <p>
+            The next day things settled and 12 hours later I completed my run.
+        </p>
 
-The run was everything I hoped for. 
+        <p>
+            The run was everything I hoped for.
+        </p>
 
-Sometimes training doesn’t happen when we plan it. 
-And sometimes there are things which are far more important.
+        <p>
+            Sometimes training doesn’t happen when we plan it. And sometimes there are things which are far more important.
+        </p>
 
-I often ask clients “What would need to happen in your life in order for you not to train?”. People might give answers such as “called into a meeting” or “woke up feeling tired”. 
+        <p>
+            I often ask clients “What would need to happen in your life in order for you not to train?”. People might give answers such as “called into a meeting” or “woke up feeling tired”.
+        </p>
 
-I never criticise a person's answer, I simply share the amount of things that could happen that are similar to what they said and let them make up their mind as to whether it’s reasonable for them.
+        <p>
+            I never criticise a person's answer, I simply share the amount of things that could happen that are similar to what they said and let them make up their mind as to whether it’s reasonable for them.
+        </p>
 
-There’s no right answer. Only an answer you’re content with owning.
+        <p>
+            There’s no right answer. Only an answer you’re content with owning.
+        </p>
 
-You might find that you need to be a little looser with your training structure (like visiting a dying family member) or that you may need to make a few reasons not to move. 
-Only you can decide whether the situation you’ve been presented with will either be the reason not to exercise at that very moment or the reason you chose exercise over taking a call to discuss car insurance. 
+        <p>
+            You might find that you need to be a little looser with your training structure (like visiting a dying family member) or that you may need to make a few reasons not to move. Only you can decide whether the situation you’ve been presented with will either be the reason not to exercise at that very moment or the reason you chose exercise over taking a call to discuss car insurance.
+        </p>
 
-        
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -93,11 +130,9 @@ Only you can decide whether the situation you’ve been presented with will eith
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

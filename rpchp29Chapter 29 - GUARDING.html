@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,56 +33,95 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
-         <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 29 - GUARDING (when/where)</i></p>     
-Lean back toes up, lean forward heels down. There’s something backward about the snow. 
-<p>
-In about my third season of snowboarding, I managed to capture a few bluebird days on a row on a volcano. For New Zealand, this was standard practice versus extreme sports. Mt Ruapehu is a large dormant volcano (yes it could, and has erupted whilst on the mountain) with two large ski fields on either side. When there’s snow, and the Papatuanuku is repaxed, the views and slopes are incredible. 
-<p>I was halfway through my day of snowboarding and caught an edge, as is the case with weekend boarding, you’re often caught situations where another person from another angle is about to collide with you unless you do something, like stop or go faster than them. 
-<p>
-If they are going faster than you, there’s a chance they are better than you and will zoom right past you. If not, you better hope that you can protect yourself.
-<p>
-On my second day of snowboarding down the volcano, I caught an edge and came to an abrupt hault. I was still a beginner boarder and before I had time to look cool and verve the snow, I was flattened into the snow. My phone was position most conveniently  in a front pocket right against my ribs. Landing on hard snow, my phone pushed so hard into my ribs that I’d damaged some cartilage. 
-<p>
-The adrenaline of the day got my through the next four hours and I barely felt damage. The next day was different. Swelling had arrived and the stiffness was incredible. I couldn’t sneeze, cough, breathe deeply, sleep on my back or even get dressed well enough. 
-<p>
-It was agony, for those who have damaged their ribs before, you’ll know what I mean!
-<p>
-During the 6 weeks it took to heal, I adopted a hunched posture on my left side. I was guarding the injury. My body had begun defaulting into a new position in order to protect itself. After the swelling and pain had reduced I had to teach myself how to stand tall again. Simple posture exercises, the basics.
-<p>
-Guarding from an injury is normal, and most of the time it makes sense. Sometimes we’ll guard a body part because of a current injury due to pain or to prevent a re-injury. Sometimes we’ll guard an injury because it never fully healed or it’s chronic. Sometimes we’ll guard an injury because it’s no longer injured but that’s our default pattern. 
-<p>
-And sometimes we’ll guard ourselves from doing a certain movement all together. Maybe because it’s injured us in the past or the payoff just isn’t worth it.  
-<p>
-It took 6 weeks for my ribs to settle down, nothing but time was going to heal the damage. I regained full function with zero lasting damage. But my body held on to the guarding position for longer. I had to learn how to re-activate some of my muscles, breathe deeply and trust myself to lie on my back again too. 
-<p>
-Guardian is a normal response. The investigation to how long we should guard something has many different answers. 
-<p>
-Should I guard this until the pain goes away? Should I guard this until it’s fully healed? Should I stop guarding this sooner than recommended? Should I guard this forever?
-<p>
-For most bone breaks, it makes sense to put it in a cast and stabilize it until the bones have healed. For many back injuries, guarding the area might mean doing one movement but not another. For people who have worn down the knees and ankles to the bone where it’s bone on bone, it might make sense to “guard” and not take up marathon running. Personally I’m not likely to ever play another game of rugby. 
-<p>
-If the effects of concussions wern’t so serious and long-term, I’d consider a crack at a social league. But guarding my brain from avoidable head knocks for the rest of my life makes sense. Staying in a hunched position after a ribs injury and never snowboarding again makes less sense
-<p>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 29</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: GUARDING (WHEN/WHERE)</h1>
+    </div>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+    <div class="chapter-body">
+        <p>
+            Lean back toes up, lean forward heels down. There’s something backward about the snow.
+        </p>
+
+        <p>
+            In about my third season of snowboarding, I managed to capture a few bluebird days in a row on a volcano. For New Zealand, this was standard practice versus extreme sports. Mt Ruapehu is a large dormant volcano (yes it could, and has erupted whilst on the mountain) with two large ski fields on either side. When there’s snow, and Papatūānuku is relaxed, the views and slopes are incredible.
+        </p>
+
+        <p>
+            I was halfway through my day of snowboarding and caught an edge. As is the case with weekend boarding, you’re often caught in situations where another person from another angle is about to collide with you unless you do something, like stop or go faster than them.
+        </p>
+
+        <p>
+            If they are going faster than you, there’s a chance they are better than you and will zoom right past you. If not, you better hope that you can protect yourself.
+        </p>
+
+        <p>
+            On my second day of snowboarding down the volcano, I caught an edge and came to an abrupt halt. I was still a beginner boarder and before I had time to look cool and swerve the snow, I was flattened into the snow. My phone was positioned most conveniently in a front pocket right against my ribs. Landing on hard snow, my phone pushed so hard into my ribs that I’d damaged some cartilage.
+        </p>
+
+        <p>
+            The adrenaline of the day got me through the next four hours and I barely felt damage. The next day was different. Swelling had arrived and the stiffness was incredible. I couldn’t sneeze, cough, breathe deeply, sleep on my back or even get dressed well enough.
+        </p>
+
+        <p>
+            It was agony—for those who have damaged their ribs before, you’ll know what I mean!
+        </p>
+
+        <p>
+            During the 6 weeks it took to heal, I adopted a hunched posture on my left side. I was guarding the injury. My body had begun defaulting into a new position in order to protect itself. After the swelling and pain had reduced I had to teach myself how to stand tall again. Simple posture exercises, the basics.
+        </p>
+
+        <p>
+            Guarding from an injury is normal, and most of the time it makes sense. Sometimes we’ll guard a body part because of a current injury due to pain or to prevent a re-injury. Sometimes we’ll guard an injury because it never fully healed or it’s chronic. Sometimes we’ll guard an injury because it’s no longer injured but that’s our default pattern.
+        </p>
+
+        <p>
+            And sometimes we’ll guard ourselves from doing a certain movement altogether. Maybe because it’s injured us in the past or the payoff just isn’t worth it.
+        </p>
+
+        <p>
+            It took 6 weeks for my ribs to settle down, nothing but time was going to heal the damage. I regained full function with zero lasting damage. But my body held on to the guarding position for longer. I had to learn how to re-activate some of my muscles, breathe deeply and trust myself to lie on my back again too.
+        </p>
+
+        <p>
+            Guarding is a normal response. The investigation to how long we should guard something has many different answers.
+        </p>
+
+        <p>
+            Should I guard this until the pain goes away? Should I guard this until it’s fully healed? Should I stop guarding this sooner than recommended? Should I guard this forever?
+        </p>
+
+        <p>
+            For most bone breaks, it makes sense to put it in a cast and stabilize it until the bones have healed. For many back injuries, guarding the area might mean doing one movement but not another. For people who have worn down the knees and ankles to the bone where it’s bone on bone, it might make sense to “guard” and not take up marathon running. Personally I’m not likely to ever play another game of rugby.
+        </p>
+
+        <p>
+            If the effects of concussions weren't so serious and long-term, I’d consider a crack at a social league. But guarding my brain from avoidable head knocks for the rest of my life makes sense. Staying in a hunched position after a rib injury and never snowboarding again makes less sense.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -88,11 +130,9 @@ If the effects of concussions wern’t so serious and long-term, I’d consider 
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,48 +33,75 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 23 - RANDOM ANSWERS</i></p>     
-Strength training is the process of asking your body to fight back against something more than gravity. This results in more muscle, more strength, higher bone density and more ability to resist force in the future.
-<p>
-Running is a form of exercise, transport, self defence, hobby and sport.
-<p>
-The best strength training is training that applies the right amount of force, in the right places, at the right time to produce the highest result. Anything more is überflüssig/for fun/practicing sadism.
-<p>
-Sleep is the most powerful performance enhancing drug.
-<p>
-In the first few weeks and months of regular exercising, the results you gain are likely to be the most significant % increase you’ll ever experience. This applies to learning new skills too.
-<p>
-Using a metronome to slow your repetitions when your training to build muscle, strength or both is helpful and humbling.
-<p>
-A cold muscle is like a dry sponge.
-<p>
-Training hard whilst leaving 1-2 repetitions in the tank will mean you can train more often and ultimately harder.
-<p>
-Symptoms of pain are often not the cause of pain. And the amount of pain does not always equal the amount of damage. 
-<p>Think of that next time you stub your toe and feel like the world is ending.
-<p>
-Movement can come natural when you embrace the the environment you live in. Ocean - surfing, snow - skiing, mountains - hiking, trails - running. If you’re not quite there, there will surely be a gym around the corner.
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 23</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: RANDOM ANSWERS</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            Strength training is the process of asking your body to fight back against something more than gravity. This results in more muscle, more strength, higher bone density and more ability to resist force in the future.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            Running is a form of exercise, transport, self defence, hobby and sport.
+        </p>
+
+        <p>
+            The best strength training is training that applies the right amount of force, in the right places, at the right time to produce the highest result. Anything more is überflüssig/for fun/practicing sadism.
+        </p>
+
+        <p>
+            Sleep is the most powerful performance enhancing drug.
+        </p>
+
+        <p>
+            In the first few weeks and months of regular exercising, the results you gain are likely to be the most significant % increase you’ll ever experience. This applies to learning new skills too.
+        </p>
+
+        <p>
+            Using a metronome to slow your repetitions when your training to build muscle, strength or both is helpful and humbling.
+        </p>
+
+        <p>
+            A cold muscle is like a dry sponge.
+        </p>
+
+        <p>
+            Training hard whilst leaving 1-2 repetitions in the tank will mean you can train more often and ultimately harder.
+        </p>
+
+        <p>
+            Symptoms of pain are often not the cause of pain. And the amount of pain does not always equal the amount of damage. Think of that next time you stub your toe and feel like the world is ending.
+        </p>
+
+        <p>
+            Movement can come natural when you embrace the environment you live in. Ocean - surfing, snow - skiing, mountains - hiking, trails - running. If you’re not quite there, there will surely be a gym around the corner.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -80,11 +110,9 @@ Movement can come natural when you embrace the the environment you live in. Ocea
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

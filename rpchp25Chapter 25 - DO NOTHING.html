@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,50 +33,87 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 25 - DO NOTHING</i></p>     
-For four days he sits. He doesn’t lift a single weight. He sloths, sleeps, play videos games and watches tv. I don’t know exactly what he does, but his coach told him to do nothing. 
-<p>
-And when he returns, he’s stronger and more powerful than ever.
-This man is strong, deceptlt strong. He trains as if he’s going to war. 
-<p>
-Barbell squats plates on plates, does handstands and aggressively jumps with every single repetition.
-His programs are brutal, its high load, sometimes 3 hour sessions.
-And when it comes time to deload and rest between programs, his instructions are clear.
-<p>
-“Do nothing”.
-<p>
-I’m not even sure if he even puts clothes on during this period. I might in fact be exaggerating his effort of nothing tinder to recover. But knowing this person well enough, I know he also loves to be at home and do quote in quote “nothing”. And it’s the most productive nothing.
-<p>
-Everyone who’s training in high performance realms needs rest, recovery, tapers and deloads. And everyone responds differently. And depending on the type of sport, training block and individual, these will always vary. 
-<p>
-I was most fascinated by this althete as I had, along with a few other clients had the experience of coming back feeling stronger after a small sickness. 
-<p>
-Say a cold that last 2-3 days, forcing you to back off movement and take it slower. Maybe it even wipes you for 48 hours. Then you come back in your training and surprise yourself with a heavy lift, more explosive jump or a feeling of freshness. 
-<p>
-Yes, a sweet sweet replenished nervous system. This, is was it feels like to be fully recovered
-Begs the question, could you benefit from not just  some lighter training session to recover, but to do absolutely nothing?
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 25</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: DO NOTHING</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            For four days he sits. He doesn’t lift a single weight. He sloths, sleeps, play video games and watches TV. I don’t know exactly what he does, but his coach told him to do nothing.
+        </p>
 
+        <p>
+            And when he returns, he’s stronger and more powerful than ever.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            This man is strong, deceptively strong. He trains as if he’s going to war.
+        </p>
+
+        <p>
+            Barbell squats, plates on plates, does handstands and aggressively jumps with every single repetition.
+        </p>
+
+        <p>
+            His programs are brutal; it's high load, sometimes 3-hour sessions.
+        </p>
+
+        <p>
+            And when it comes time to deload and rest between programs, his instructions are clear:
+        </p>
+
+        <blockquote>
+            “Do nothing”.
+        </blockquote>
+
+        <p>
+            I’m not even sure if he even puts clothes on during this period. I might in fact be exaggerating his effort of nothing in order to recover. But knowing this person well enough, I know he also loves to be at home and do quote-unquote “nothing”. And it’s the most productive nothing.
+        </p>
+
+        <p>
+            Everyone who’s training in high-performance realms needs rest, recovery, tapers, and deloads. And everyone responds differently. Depending on the type of sport, training block, and individual, these will always vary.
+        </p>
+
+        <p>
+            I was most fascinated by this athlete as I had, along with a few other clients, the experience of coming back feeling stronger after a small sickness.
+        </p>
+
+        <p>
+            Say a cold that lasts 2-3 days, forcing you to back off movement and take it slower. Maybe it even wipes you for 48 hours. Then you come back in your training and surprise yourself with a heavy lift, more explosive jump, or a feeling of freshness.
+        </p>
+
+        <p>
+            Yes, a sweet, sweet replenished nervous system. This is what it feels like to be fully recovered.
+        </p>
+
+        <p>
+            Begs the question: could you benefit from not just some lighter training sessions to recover, but to do absolutely nothing?
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -82,11 +122,9 @@ Begs the question, could you benefit from not just  some lighter training sessio
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

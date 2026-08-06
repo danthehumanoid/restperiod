@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,59 +33,95 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 37 - TRUST THE PROCESS… IF YOU KNOW IT</i></p>     
-<p>
-Many of these chapters are written purely by an observation of  a single phrase, object or experiences. This chapter is exactly that. I was training a client out of one of the gyms I worked at and saw a physio's client with a t-shirt that said “Trust the process”. 
-<p>
-Classic hype merch.
-<p>
-On the back was a graph with the standard linear line of “expectation” and the zig zag ups and down line of “reality” ultimately sitting higher than “expectation”. I love this graph and draw it often for people  I work with to explain the nature of training; you’re in a worse off state when you’ve finished your training session, look at the long term, recover well, work hard, train smart and so forth. 
-<p>
-The question I started pondering was “can we trust a process if we don’t understand it?”. Or maybe more generally, “what process?”. The t-shirt didn’t elaborate past the saying or the graph.
-<p>
-Many people throughout their fitness journey will trust a process either because it’s worked in the past, it’s from someone they trust or they’ve seen other people do it. And it might work. Or it might be so far off from working that it’s making things worse. Name a fad and I guarantee that it’s worked for a small percentage of people, somewhere somehow. This process might be the one they’ve been searching for all along. 
-<p>
-“Crossfit helped me fall in love with exercise”,
-<p>
-“Yoga made me more flexible”,  
-<p>
-“Olympic lifting made me faster”, 
-<p>
-“Ultra marathon running cured my depression”. 
-<p>
-You won the lottery on exercise prescription. 
-<p>
-“Crossfit injured my shoulder and back”,
-<p>
-“Yoga made me fat”,  
-<p>
-“Olympic lifting made me slow”, 
-<p>
-“Ultra marathon gave me chronic inflammation in my knees”. 
-<p>
-For many others, it’s an endless search by yourself, unless you enlist a professional to help you a) Find what you’re good at, ultimately increasing  the chances of you enjoying the activity and b) Give you the work required to achieve your goals, and maybe as one of my clients put it “hide the vegetables in the potatoes).
-<p>
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 37</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: TRUST THE PROCESS… IF YOU KNOW IT</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            Many of these chapters are written purely by an observation of a single phrase, object or experience. This chapter is exactly that. I was training a client out of one of the gyms I worked at and saw a physio's client with a t-shirt that said “Trust the process”.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            Classic hype merch.
+        </p>
+
+        <p>
+            On the back was a graph with the standard linear line of “expectation” and the zig-zag ups and downs line of “reality” ultimately sitting higher than “expectation”. I love this graph and draw it often for people I work with to explain the nature of training; you’re in a worse off state when you’ve finished your training session, look at the long term, recover well, work hard, train smart and so forth.
+        </p>
+
+        <p>
+            The question I started pondering was “can we trust a process if we don’t understand it?”. Or maybe more generally, “what process?”. The t-shirt didn’t elaborate past the saying or the graph.
+        </p>
+
+        <p>
+            Many people throughout their fitness journey will trust a process either because it’s worked in the past, it’s from someone they trust or they’ve seen other people do it. And it might work. Or it might be so far off from working that it’s making things worse. Name a fad and I guarantee that it’s worked for a small percentage of people, somewhere somehow. This process might be the one they’ve been searching for all along.
+        </p>
+
+        <p>
+            “CrossFit helped me fall in love with exercise”,
+        </p>
+
+        <p>
+            “Yoga made me more flexible”,
+        </p>
+
+        <p>
+            “Olympic lifting made me faster”,
+        </p>
+
+        <p>
+            “Ultra marathon running cured my depression”.
+        </p>
+
+        <p>
+            You won the lottery on exercise prescription.
+        </p>
+
+        <p>
+            “CrossFit injured my shoulder and back”,
+        </p>
+
+        <p>
+            “Yoga made me fat”,
+        </p>
+
+        <p>
+            “Olympic lifting made me slow”,
+        </p>
+
+        <p>
+            “Ultra marathon gave me chronic inflammation in my knees”.
+        </p>
+
+        <p>
+            For many others, it’s an endless search by yourself, unless you enlist a professional to help you a) Find what you’re good at, ultimately increasing the chances of you enjoying the activity and b) Give you the work required to achieve your goals, and maybe as one of my clients put it “hide the vegetables in the potatoes”.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -91,11 +130,9 @@ For many others, it’s an endless search by yourself, unless you enlist a profe
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

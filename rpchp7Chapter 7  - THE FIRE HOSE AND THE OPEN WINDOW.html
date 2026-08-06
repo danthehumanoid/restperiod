@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,41 +33,43 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
-        <h1>EXERICSE - PHILOSOPHY</h1>
-              <p><i>Chapter 4 - NO MATTER WHAT</i></p>     
- Chapter 7  - THE FIRE HOSE AND THE OPEN WINDOW
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-The pressure of a fire hose at full force is enough to knock a person over. When a room is stuffy, humid and uncomfortable we open a window to balance things out. Knowing when to open a window and when to breathe like a fire hose is important. A yogi who gets under a barbelll and starts box breathing is likely to collapse under the load. And a power lifter who is trying to exhale so forcefully as if to disrupt the class through a meditation session is likely going to miss something crucial. This is often how I describe breathing to people I’m training; we all breathe, and we all need to understand when, where and how to use the right type of breathing.
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 7</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: THE FIRE HOSE AND THE OPEN WINDOW</h1>
+    </div>
 
- Who would’ve thought that we’d get to a point where you can now attend breathe work shops? What’s next? “Learning how to complete a proper bowel movement” weekend retreat?! To put it simply, changing our breathing patterns is the quickest way to work ourselves up, and clam ourselves down. There’s of course a million an one techniques inbetween, some are helpful, many are performative. If you are about to lift a heavy weight, you’ll want to brace and create enormous amounts of tension in your body to do so.  If you’re looking to decompress and relax after a session, your best tool is slow deep breathes. Breathing is not something worth brushing over, and it’s all not something that we need to spend days at a time practicing in isolation before applying it. Think about breathing, know when to use the right breathe, and after reading this sentence, you very likely thinking about breathing, inhaling through your nose and exhaling through your 10 charkras. 
+    <div class="chapter-body">
+        <p>
+            The pressure of a fire hose at full force is enough to knock a person over. When a room is stuffy, humid and uncomfortable we open a window to balance things out. Knowing when to open a window and when to breathe like a fire hose is important. A yogi who gets under a barbelll and starts box breathing is likely to collapse under the load. And a power lifter who is trying to exhale so forcefully as if to disrupt the class through a meditation session is likely going to miss something crucial. This is often how I describe breathing to people I’m training; we all breathe, and we all need to understand when, where and how to use the right type of breathing.
+        </p>
 
+        <p>
+            Who would’ve thought that we’d get to a point where you can now attend breathe work shops? What’s next? “Learning how to complete a proper bowel movement” weekend retreat?! To put it simply, changing our breathing patterns is the quickest way to work ourselves up, and clam ourselves down. There’s of course a million an one techniques inbetween, some are helpful, many are performative. If you are about to lift a heavy weight, you’ll want to brace and create enormous amounts of tension in your body to do so. If you’re looking to decompress and relax after a session, your best tool is slow deep breathes. Breathing is not something worth brushing over, and it’s all not something that we need to spend days at a time practicing in isolation before applying it. Think about breathing, know when to use the right breathe, and after reading this sentence, you very likely thinking about breathing, inhaling through your nose and exhaling through your 10 charkras.
+        </p>
 
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
 
-
-
-
-
-
-
-
-        
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -73,11 +78,9 @@ The pressure of a fire hose at full force is enough to knock a person over. When
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

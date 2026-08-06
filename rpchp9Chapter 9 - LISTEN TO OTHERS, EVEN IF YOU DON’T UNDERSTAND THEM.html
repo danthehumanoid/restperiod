@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,58 +33,93 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERCISE - PHILOSOPHY</h1>     
-        <p class="chapter-subtitle"><i>Chapter 9 - LISTEN TO OTHERS, EVEN IF YOU DON’T UNDERSTAND THEM</i></p>     
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 9</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: LISTEN TO OTHERS, EVEN IF YOU DON’T UNDERSTAND THEM</h1>
+    </div>
 
-        <p>Whilst on a holiday in Bali, I opted to do my traditional “tourist run”. This consisted of half mapping out a 8-10km run picking a direction and run somewhere I’d never seen before, always leaving space to stop if I found something interesting. And I always did.</p>
+    <div class="chapter-body">
+        <p>
+            Whilst on a holiday in Bali, I opted to do my traditional “tourist run”. This consisted of half mapping out a 8-10km run picking a direction and run somewhere I’d never seen before, always leaving space to stop if I found something interesting. And I always did.
+        </p>
 
-        <p>During my Bali run, literally around the halfway point I saw a giant mound of dirt blocking one of the main roads. By this point I had seen kids on mopeds with no helmets and people selling goods to you whilst your car was still moving in bumper to bumper traffic. So I wasn’t surprised to see four older women with wheelbarrows moving this dirt scoop by scoop, wheel barrow by wheel barrow down a narrow alleyway.</p>
+        <p>
+            During my Bali run, literally around the halfway point I saw a giant mound of dirt blocking one of the main roads. By this point I had seen kids on mopeds with no helmets and people selling goods to you whilst your car was still moving in bumper to bumper traffic. So I wasn’t surprised to see four older women with wheelbarrows moving this dirt scoop by scoop, wheel barrow by wheel barrow down a narrow alleyway.
+        </p>
 
-        <p>I offered to help. After a brief broken conversation and clear confused looks, they let me.</p>
+        <p>
+            I offered to help. After a brief broken conversation and clear confused looks, they let me.
+        </p>
 
-        <p>And “let me” was perhaps the right phrase.</p>
+        <p>
+            And “let me” was perhaps the right phrase.
+        </p>
 
-        <p>As young and fit as I felt, they clearly knew something I didn’t.</p>
+        <p>
+            As young and fit as I felt, they clearly knew something I didn’t.
+        </p>
 
-        <p>I ripped into shovelling and running up and down the path putting the dirt wherever they asked. They were smiling, laughing, pointing and enjoying the enthusiasm.</p>
+        <p>
+            I ripped into shovelling and running up and down the path putting the dirt wherever they asked. They were smiling, laughing, pointing and enjoying the enthusiasm.
+        </p>
 
-        <p>After about 45 minutes I was strictly ordered to “sit” and rest.</p>
+        <p>
+            After about 45 minutes I was strictly ordered to “sit” and rest.
+        </p>
 
-        <p>Assuring them I was fine I tried to carry on. They insisted I rested in the shade for another 10 minutes. And after that I was allowed to continue. Sure enough we cleared the pile. They gave me some water and I was on my way back to my stay. As I set back off the sun felt twice as hot. I struggled, my phone overheated, I had no directions and no cash for water. Luckily I found a my stay, rehydrated and recovered soon after.</p>
+        <p>
+            Assuring them I was fine I tried to carry on. They insisted I rested in the shade for another 10 minutes. And after that I was allowed to continue. Sure enough we cleared the pile. They gave me some water and I was on my way back to my stay. As I set back off the sun felt twice as hot. I struggled, my phone overheated, I had no directions and no cash for water. Luckily I found a my stay, rehydrated and recovered soon after.
+        </p>
 
-        <p>I clearly had no idea how much the sun could obliterate oneself in this place of the world.</p>
+        <p>
+            I clearly had no idea how much the sun could obliterate oneself in this place of the world.
+        </p>
 
-        <p>No matter how fit or eager.</p>
+        <p>
+            No matter how fit or eager.
+        </p>
 
-        <p>These women were also right to assume that I was a typical tourist coming for the heat, and also coming unprepared.</p>
+        <p>
+            These women were also right to assume that I was a typical tourist coming for the heat, and also coming unprepared.
+        </p>
 
-        <p>I mean, I was wearing a cap rather than a hat that protected me from all sides!</p>
+        <p>
+            I mean, I was wearing a cap rather than a hat that protected me from all sides!
+        </p>
 
-        <p>I was doomed from the beginning.</p>
+        <p>
+            I was doomed from the beginning.
+        </p>
 
-        <p>Something in their kindness and actions reminded me that there is almost always something someone else can see that you can’t. And it doesn’t need to take 10 years of exercise study to be able to tell someone when they need to take a break, nor should it take you years to figure out that you might be doing too much and it’s ok to rest.</p>
+        <p>
+            Something in their kindness and actions reminded me that there is almost always something someone else can see that you can’t. And it doesn’t need to take 10 years of exercise study to be able to tell someone when they need to take a break, nor should it take you years to figure out that you might be doing too much and it’s ok to rest.
+        </p>
 
         <p><strong>Listen to people, even if you don’t understand them.</strong></p>
-        
-        <p class="signature signature-lead">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
+    </div>
 
-    <footer class="footer-notice">
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 

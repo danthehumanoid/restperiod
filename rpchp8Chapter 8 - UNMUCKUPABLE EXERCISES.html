@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,57 +33,93 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 8 - UNMUCKUPABLE EXERCISES</i></p>     
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 8</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: UNMUCKUPABLE EXERCISES</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            Hang from there, stand on one leg, now do a front foot elevated band resisted Bulgarian barbell front squat.
+        </p>
 
+        <p>
+            Throughout the years of training many different humans, it’s clear that not just does everyone have different learning styles, but that there is a clear spectrum of coordination abilities amongst us. And it varies greatly depending on the task. Anyone exposed to gymnastics or dancing at a young age is completely familiar with cues, creating muscle tensions and organising their limbs. Just as any person who grew up with ball sports, particularly involving the hands and legs are going to find it easier to adapt to reactive environments and potentially things such as time pressure or things coming at them, FAST.
+        </p>
 
-Hang from there, stand on one leg, now do a front foot elevated band resisted Bulgarian barbell front squat.
-Throughout the years of training many different humans, it’s clear that not just does everyone have different learning styles, but that there is a clear spectrum of coordination abilities amongst us. And it varies greatly depending on the task. Anyone exposed to gymnastics or dancing at a young age is completely familiar with cues, creating muscle tensions and organising their limbs. Just as any person who grew up with ball sports, particularly involving the hands and legs are going to find it easier to adapt to reactive environments and potentially things such as time pressure or things coming at them, FAST.
+        <p>
+            As like many coaches, we try to come up with exercises that are easy to teach and easy to understand. And then sometimes we come across someone who just doesn’t get it. No matter what cue we give them. And I personally can relate to this phenomenon via my terrible sense of direction. It is so awful that I’m still reminded by my family that I once drove up the wrong side of the island in my country only to call them and discover that I was further away from where they were on holiday than when I began. Don’t worry, I hold this lack of skill very lightly and don’t berate myself. Fortunately there is GPS these days good enough for even the most geographically challenged… Most of the time.
+        </p>
 
-As like many coaches, we try to come up with exercises that are easy to teach and easy to understand. And then sometimes we come across someone who just doesn’t get it. No matter what cue we give them. And I personally can relate to this phenomenon via my terrible sense of direction. It is so awful that I’m still reminded by my family that I once drove up the wrong side of the island in my country only to call them and discover that I was further away from where they were on holiday than when I began. Don’t worry, I hold this lack of skill very lightly and don’t berate myself. Fortunately there is GPS these days good enough for even the most geographically challenged… Most of the time.
+        <p>
+            So then what do we do with others, or ourselves when we are presented with a very low level of coordination. One of the most effective ways I’ve found with people who are in bodies that don’t seem to move in a way they want is to base their training around what I have termed m, at least for now “Unmuckupable” Exercies. This is a helpful approach for beginners too, but some beginners to the gym are often not beginners to movment.
+        </p>
 
-So then what do we do with others, or ourselves when we are presented with a very low level of coordination. One of the most effective ways I’ve found with people who are in bodies that don’t seem to move in a way they want is to base their training around what I have termed m, at least for now “Unmuckupable” Exercies. This is a helpful approach for beginners too, but some beginners to the gym are often not beginners to movment. 
-The list of Unmuckupable exercies consists of things that as long as you do the exercie. More simply put; if you do the thing you’re going to work that thing you want to work. For example, if you hang from a bar, you’re gong to work your grip strength. If you stand on one leg, you’re going to work your balance, if you cycle on a bike you’re going to work your legs. You are almost gaurubteed to get it right. Bow of course there are some ways you could over do it or under do it. And also, the the risk of injury  is usually lower.  
-Now there are exercises which are certainly helpful but require a little bit more practice and are certainly easy to “muck up”. I would include deadlifts, pull ups or any sort of jumping exercises (if you’re an adult) here. It pays to learn these properly and take your time to develop them.
+        <p>
+            The list of Unmuckupable exercies consists of things that as long as you do the exercie. More simply put; if you do the thing you’re going to work that thing you want to work. For example, if you hang from a bar, you’re gong to work your grip strength. If you stand on one leg, you’re going to work your balance, if you cycle on a bike you’re going to work your legs. You are almost gaurubteed to get it right. Bow of course there are some ways you could over do it or under do it. And also, the the risk of injury is usually lower.
+        </p>
 
-For the sake of exaggeration, here are some exercises which I would consider the opposite of “Unmuckupable”. And additionally all of these exercises, whilst they might have some merit m, somewhere, and if done properly could improve your strength or balance, I just simply wouldn’t program them as the risk to reward ration is far too high. Currently these includes things such as Standing on a Swissball to work your balance, handstand walking for general upper body strength or overhead snatches under any sort of time limit. You may be a daredevil and love a challenge, don’t let me stop you! But if you’re in the category of “if I caught a ballon that was thrown to me, it would be a miracle” don’t start by being adventurous just because it might look cool.
+        <p>
+            Now there are exercises which are certainly helpful but require a little bit more practice and are certainly easy to “muck up”. I would include deadlifts, pull ups or any sort of jumping exercises (if you’re an adult) here. It pays to learn these properly and take your time to develop them.
+        </p>
 
-A more broader view Unmuckupable exercises could be to look at sports which for this same category, after all we want to keep moving for the rest of our lives right?! Hiking, cycling, tai chi even rock climbing come to mind. That might sound boring to some and believe me I’d be crawling in my skin if I didn’t run, jump, throw or lift regularly! 
-And as much as I dearly love watching the sport of rugby, at this stage in my life and given the potential downsides. I’d say it fits firmly in the “Standing on. Swissball” category for me personally.
+        <p>
+            For the sake of exaggeration, here are some exercises which I would consider the opposite of “Unmuckupable”. And additionally all of these exercises, whilst they might have some merit m, somewhere, and if done properly could improve your strength or balance, I just simply wouldn’t program them as the risk to reward ration is far too high. Currently these includes things such as Standing on a Swissball to work your balance, handstand walking for general upper body strength or overhead snatches under any sort of time limit. You may be a daredevil and love a challenge, don’t let me stop you! But if you’re in the category of “if I caught a ballon that was thrown to me, it would be a miracle” don’t start by being adventurous just because it might look cool.
+        </p>
 
-You don’t need a barbell
+        <p>
+            A more broader view Unmuckupable exercises could be to look at sports which for this same category, after all we want to keep moving for the rest of our lives right?! Hiking, cycling, tai chi even rock climbing come to mind. That might sound boring to some and believe me I’d be crawling in my skin if I didn’t run, jump, throw or lift regularly!
+        </p>
 
-I have a barbell, my gym has barbell. One of my closest friends competes in a sports using solely barbells, they are an incredible invention and one of the most effective tools for building strength. But you don’t need one, almost no one needs one.
+        <p>
+            And as much as I dearly love watching the sport of rugby, at this stage in my life and given the potential downsides. I’d say it fits firmly in the “Standing on. Swissball” category for me personally.
+        </p>
 
-Yet they are everywhere.
+        <p><strong>You don’t need a barbell</strong></p>
 
-A long metal bar has become the default for everything strength related. But you could become intently strong without one. You could even never touch a dumbbell too and be a monster.
+        <p>
+            I have a barbell, my gym has barbell. One of my closest friends competes in a sports using solely barbells, they are an incredible invention and one of the most effective tools for building strength. But you don’t need one, almost no one needs one.
+        </p>
 
-This is because the body doesn’t know what a barbell is. Or a 20kg plate or a kettlebell. All our bodies do is adapt to the stressors it’s given. You might throw rocks, carry logs  and climb trees and your body just doesn’t care, it will adapt.
+        <p>
+            Yet they are everywhere.
+        </p>
 
-Barbells exist because they are convenient, measurable and versatile. So should you use one, maybe. Do you NEED one to get strong. NO! Bu it could it help you get stronger? Probably. But could it also slow down your speed work? Potentially.
-Some pieces of equipment are ineffective we often believe that everyone needs to use them. Barbells are one of these tools. But  you might not need one to improve what you’re doing, it’s not a one stop shop, there’s often something more effective. But it might be a fun thing to learn how to front squat, Olympic lift or bench press. In that case, you definitely need a barbell!
+        <p>
+            A long metal bar has become the default for everything strength related. But you could become intently strong without one. You could even never touch a dumbbell too and be a monster.
+        </p>
 
-        
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            This is because the body doesn’t know what a barbell is. Or a 20kg plate or a kettlebell. All our bodies do is adapt to the stressors it’s given. You might throw rocks, carry logs and climb trees and your body just doesn’t care, it will adapt.
+        </p>
+
+        <p>
+            Barbells exist because they are convenient, measurable and versatile. So should you use one, maybe. Do you NEED one to get strong. NO! Bu it could it help you get stronger? Probably. But could it also slow down your speed work? Potentially. Some pieces of equipment are ineffective we often believe that everyone needs to use them. Barbells are one of these tools. But you might not need one to improve what you’re doing, it’s not a one stop shop, there’s often something more effective. But it might be a fun thing to learn how to front squat, Olympic lift or bench press. In that case, you definitely need a barbell!
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -89,11 +128,9 @@ Some pieces of equipment are ineffective we often believe that everyone needs to
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

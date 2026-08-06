@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,36 +33,47 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-         <h1>EXERICSE - PHILOSOPHY</h1>
-             <p><i>Chapter 4 - NO MATTER WHAT</i></p>     
-Chapter 6 - ABOVE AVERAGE
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 6</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: ABOVE AVERAGE</h1>
+    </div>
 
-More than 10 pull ups, 10 kilometers in under 40 minutes or more than 10 clauses if you’re over 80 years old is great!
+    <div class="chapter-body">
+        <p>
+            More than 10 pull ups, 10 kilometers in under 40 minutes or more than 10 clauses if you’re over 80 years old is great!
+        </p>
 
-Does any of this matter? 
-Some exercise are great to reference for general health purposes. And some are just fun to try and beat. What’s more I my own training, being above average, if even ever so slightly has a strange compounding effect. I’m never the fastest runner at a park run. I’m not the strongest in the gym, and if I’m rock climbing medium grades whilst bouldering, thats a win for me. Not beauties I’m going to turn any heads for being a long mobbed rock climber or a trail runner that more often than not feels at least 10 kgs heavier than most others, but because I reached a level of both achievement and enjoyment that is surprisingly satisfying. I can run fast enough to feel what it’s like to be around other serious competitors, at least for a a period of time, I can engage in conversations around hand positioning for a new rock climber wall or talk one replaces with power lifters. I’ve love being able to have atleast half a foot in these worlds because it gives me so much pleasure to feel a little like what it might be if I were to be above “above average” like even “good”. And I know the sacrifice it take me to commit oneself to a singular sport or hobby, but that’s just not me, it hasn’t been for years. And striving to be above average in many things leads to a different type of accomplishment. The generalist specialist as someone once told me I was. Good enough to be average, average enough not not be amazing. And that pursuit in itself seems worthy because yes life is short, but my arms are  not, therefore In unlikely to break any bench press world records, my legs are long enough to run well, but I’d rather keep my muscle mass and stay a little heavier tha. Turn myself into a set of lungs on stilts in order to run a marathon under and hour.
+        <p>
+            Does any of this matter?
+        </p>
 
+        <p>
+            Some exercise are great to reference for general health purposes. And some are just fun to try and beat. What’s more I my own training, being above average, if even ever so slightly has a strange compounding effect. I’m never the fastest runner at a park run. I’m not the strongest in the gym, and if I’m rock climbing medium grades whilst bouldering, thats a win for me. Not beauties I’m going to turn any heads for being a long mobbed rock climber or a trail runner that more often than not feels at least 10 kgs heavier than most others, but because I reached a level of both achievement and enjoyment that is surprisingly satisfying. I can run fast enough to feel what it’s like to be around other serious competitors, at least for a a period of time, I can engage in conversations around hand positioning for a new rock climber wall or talk one replaces with power lifters. I’ve love being able to have atleast half a foot in these worlds because it gives me so much pleasure to feel a little like what it might be if I were to be above “above average” like even “good”. And I know the sacrifice it take me to commit oneself to a singular sport or hobby, but that’s just not me, it hasn’t been for years. And striving to be above average in many things leads to a different type of accomplishment. The generalist specialist as someone once told me I was. Good enough to be average, average enough not not be amazing. And that pursuit in itself seems worthy because yes life is short, but my arms are not, therefore In unlikely to break any bench press world records, my legs are long enough to run well, but I’d rather keep my muscle mass and stay a little heavier tha. Turn myself into a set of lungs on stilts in order to run a marathon under and hour.
+        </p>
 
-<p>
-        
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -68,11 +82,9 @@ Some exercise are great to reference for general health purposes. And some are j
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

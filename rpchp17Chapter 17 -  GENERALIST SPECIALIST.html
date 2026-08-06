@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,53 +33,79 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 17 -  GENERALIST SPECIALIST 
-</i></p>     
-I’ll stand in the middle of a room knowing the least and being the worst at something.
-<p>
-There’s no race, or an infinite amount of races. 
-<p>
-A country isn’t hanging on my next jump.
-<p>
-And because I never was gifted in any specific physical area, I fell into this.
-<p>
-Perhaps there is a sport that doesn’t exist, used to exist or I haven't tried that if I did, I’d be the world's best.
-<p>
-Seems interesting, but we all adjust to success at some point.
-I’d rather pursue the never ending.
-<p>
-I wonder if I can do that gymnastic move, beat that 5k time, balance on one leg, skim that rock and lift that weight, all in the same week. Perhaps I’ll try to mix my training in a way that makes illogical sense as an experiment.
-Drinking from many containers, staying at many homes but not living in one. Seeing movement as more than just a tool for health.
-<p>
-Movement as a form of self expression, more than just a box to tick.
-I imagine a crowd. A crowd of past and future selves deciding on whether I’m doing this for me or someone else.
-<p>
-“Hey there you are 10 years later…. You’ve changed man”
-I hope to always find better ways to train so I can fit more in. Managing fatigue, fighting age, unlocking skills, peaking when required all whilst living in a pain free body. A simple, not easy ask.
-The sport of the Generalist Specialist - jack of many trades, master of none. Never crossing a finish line.
-<p>
-The desire to be a student more than a teacher and to celebrate failure as much as success. Failures are a learning opportunity and success has a short used by date
-<p>
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 17</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: GENERALIST SPECIALIST</h1>
+    </div>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+    <div class="chapter-body">
+        <p>
+            I’ll stand in the middle of a room knowing the least and being the worst at something.
+        </p>
+
+        <p>
+            There’s no race, or an infinite amount of races.
+        </p>
+
+        <p>
+            A country isn’t hanging on my next jump.
+        </p>
+
+        <p>
+            And because I never was gifted in any specific physical area, I fell into this.
+        </p>
+
+        <p>
+            Perhaps there is a sport that doesn’t exist, used to exist or I haven't tried that if I did, I’d be the world's best.
+        </p>
+
+        <p>
+            Seems interesting, but we all adjust to success at some point. I’d rather pursue the never ending.
+        </p>
+
+        <p>
+            I wonder if I can do that gymnastic move, beat that 5k time, balance on one leg, skim that rock and lift that weight, all in the same week. Perhaps I’ll try to mix my training in a way that makes illogical sense as an experiment. Drinking from many containers, staying at many homes but not living in one. Seeing movement as more than just a tool for health.
+        </p>
+
+        <p>
+            Movement as a form of self expression, more than just a box to tick. I imagine a crowd. A crowd of past and future selves deciding on whether I’m doing this for me or someone else.
+        </p>
+
+        <p>
+            “Hey there you are 10 years later…. You’ve changed man”
+        </p>
+
+        <p>
+            I hope to always find better ways to train so I can fit more in. Managing fatigue, fighting age, unlocking skills, peaking when required all whilst living in a pain free body. A simple, not easy ask. The sport of the Generalist Specialist - jack of many trades, master of none. Never crossing a finish line.
+        </p>
+
+        <p>
+            The desire to be a student more than a teacher and to celebrate failure as much as success. Failures are a learning opportunity and success has a short used by date.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -85,11 +114,9 @@ The desire to be a student more than a teacher and to celebrate failure as much 
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

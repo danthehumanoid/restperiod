@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,48 +33,71 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-        <h2><i>Chapter 10 - OWN YOUR LOCAL AREA</i></h2>
-<p>
-While writing this, I lived on the flat, in an area surrounded by hills and a long flat river trail extending 10s of kilometres in each direction. I’m also 30 minutes away from the ocean, 50 minutes away from surf worthy waves, 4 hours from skiable snow and roughly 2 days worth of flights from a frozen lake.
-<p>
-Whenever I’m designing a training program for an everyday person, I like to get an idea of where they live and how they live. Not just, “do you enjoy exercise in the morning” or do “you like running”? 
-<p>
-More so, could you see yourself doing stair jumps up your hill, cycling around your block, even if it’s 4 degrees or do you mind hanging from a pull up bar at your local park? 
-<p>
-I would love to wake up in a place where I could open my front door, clip on a snowboard and carve down a mountain to get my morning coffee. 
-<p>
-Perhaps I will one day. 
-<p>
-For now, I take advantage of the local skatepark to fill my cup of cruising around on a skateboard and rather than driving 45 minutes out to the “local” athletics track, I make do with grass or artificial turf. If a rock climbing gym opened down the road, I’d get a membership right away.
-<p>
- For now rock climbing is a sometimes activity and snowboarding is an overly optimistic once a year trip. Finding joy in using what your local area provides both via nature and sports clubs is a really easy way to make it easy to keep moving. If you need to drive a long time to do what you really enjoy, you could move closer of course, but for many it’s not that simple. 
-<p>
-To me there’s an element of surrender. Perhaps because it doesn’t matter what steps I run up to get faster, or as long as I get on a kayak the water at least twice a year, I’m satisfied. If the majority of our ways of exercising are close by and not reliant on external factors (weather, team sports where no one shows up or traffic) we’re more likely to stick at them. 
-<p>
-You may live in a place where surfing, snowboarding or a great game of indoor tennis is always guaranteed and nothing is left to chance. You may need to accept your geography and see it not as a hindrance but an opportunity to get creative. If in doubt, you can always dance in your living room. As long as the dishes are done, the curtains are closed and no one is watching right?!
-<p>
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 10</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: OWN YOUR LOCAL AREA</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            While writing this, I lived on the flat, in an area surrounded by hills and a long flat river trail extending 10s of kilometres in each direction. I’m also 30 minutes away from the ocean, 50 minutes away from surf worthy waves, 4 hours from skiable snow and roughly 2 days worth of flights from a frozen lake.
+        </p>
 
+        <p>
+            Whenever I’m designing a training program for an everyday person, I like to get an idea of where they live and how they live. Not just, “do you enjoy exercise in the morning” or do “you like running”?
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            More so, could you see yourself doing stair jumps up your hill, cycling around your block, even if it’s 4 degrees or do you mind hanging from a pull up bar at your local park?
+        </p>
+
+        <p>
+            I would love to wake up in a place where I could open my front door, clip on a snowboard and carve down a mountain to get my morning coffee.
+        </p>
+
+        <p>
+            Perhaps I will one day.
+        </p>
+
+        <p>
+            For now, I take advantage of the local skatepark to fill my cup of cruising around on a skateboard and rather than driving 45 minutes out to the “local” athletics track, I make do with grass or artificial turf. If a rock climbing gym opened down the road, I’d get a membership right away.
+        </p>
+
+        <p>
+            For now rock climbing is a sometimes activity and snowboarding is an overly optimistic once a year trip. Finding joy in using what your local area provides both via nature and sports clubs is a really easy way to make it easy to keep moving. If you need to drive a long time to do what you really enjoy, you could move closer of course, but for many it’s not that simple.
+        </p>
+
+        <p>
+            To me there’s an element of surrender. Perhaps because it doesn’t matter what steps I run up to get faster, or as long as I get on a kayak the water at least twice a year, I’m satisfied. If the majority of our ways of exercising are close by and not reliant on external factors (weather, team sports where no one shows up or traffic) we’re more likely to stick at them.
+        </p>
+
+        <p>
+            You may live in a place where surfing, snowboarding or a great game of indoor tennis is always guaranteed and nothing is left to chance. You may need to accept your geography and see it not as a hindrance but an opportunity to get creative. If in doubt, you can always dance in your living room. As long as the dishes are done, the curtains are closed and no one is watching right?!
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -80,11 +106,9 @@ You may live in a place where surfing, snowboarding or a great game of indoor te
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,45 +33,67 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
-         <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 14 - START AGAIN</i></p>     
-The great spoiler alert with exercise is that no matter what you do, how hard you train or how consistent you are, you are always starting again. Some of the greatest gains you make in training could be undone in a matter of days if you're a speed athlete. 
-<p>
-Every time you start training, whether it’s part of your training program or you’ve taken 3 months off, you are starting again.
-<p>
-It’s a clean slate, we’re all in the same boat. 
-<p>
-Whatever you’ve done the past week or haven’t done doesn’t matter any more. 
-<p>
-What matters is what you’re about to do. It doesn’t matter how many times you’ve run a sub 20 minute 5k in the past or ho w many weeks you’ve paid for a gym membership that you haven't used. 
-<p>
-We all slip up at some point, and that doesn’t mean we should ban ourselves from ever starting again. 
-<p>
-You might fall off the wagon the same time every year and pick up the same program from the previous year to get back on track. That’s a start and perhaps one day you’ll find a more harmonious cadence. 
-<p>
-For now, starting again in familiar territory is at least attempting to give exercise another go. There’s no limit to how many times you’re allowed to start again, every single training session is an opportunity to reset, revisit and lean into the process. 
-<p>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 14</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: START AGAIN</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            The great spoiler alert with exercise is that no matter what you do, how hard you train or how consistent you are, you are always starting again. Some of the greatest gains you make in training could be undone in a matter of days if you're a speed athlete.
+        </p>
 
+        <p>
+            Every time you start training, whether it’s part of your training program or you’ve taken 3 months off, you are starting again.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            It’s a clean slate, we’re all in the same boat.
+        </p>
+
+        <p>
+            Whatever you’ve done the past week or haven’t done doesn’t matter any more.
+        </p>
+
+        <p>
+            What matters is what you’re about to do. It doesn’t matter how many times you’ve run a sub 20 minute 5k in the past or how many weeks you’ve paid for a gym membership that you haven't used.
+        </p>
+
+        <p>
+            We all slip up at some point, and that doesn’t mean we should ban ourselves from ever starting again.
+        </p>
+
+        <p>
+            You might fall off the wagon the same time every year and pick up the same program from the previous year to get back on track. That’s a start and perhaps one day you’ll find a more harmonious cadence.
+        </p>
+
+        <p>
+            For now, starting again in familiar territory is at least attempting to give exercise another go. There’s no limit to how many times you’re allowed to start again, every single training session is an opportunity to reset, revisit and lean into the process.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -77,11 +102,9 @@ For now, starting again in familiar territory is at least attempting to give exe
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,38 +33,57 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-         <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 22 - BALLERINAS TALKING TO BOXERS</i></p>     
-Snap your punches fast!
-<p>
-Light on your feet!
-<p>
-Keep your hands up!
-<p>
-Two summers as a kid, I took up boxing. Classic strategic self defence move and yet another way to work on my aerobic fitness with friends. The boxing gym was right next to a Judo hall. And every night I’d walk in to the boxing studio, eyes down and ignore the judo kids as they did the same. 
-<p>When I played rugby, we always looked at a distance towards the Soccer fields and saw them as “others”, almost making a point never to cross the imaginary line soereting the rugby fields from the soccer pitches. I would go to my sister dancing recitals and watch as two boys amongst 30 girls danced and entertained an entire crowd of adults who were mostly just waiting for their kid to come on stage. 
-<p>I remember going to a Saturday morning tennis club open day and found myself a little lost playing one on one with just one other person, not a group of people. 
-<p>
-After leaving the world of rugby, I tried so many different things. American football, AFL, Table Tennis, Rock Climbing, Obstacle course racing and eventually gym sports such as group fitness and Cross Fit. I
-<p>
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 22</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: BALLERINAS TALKING TO BOXERS</h1>
+    </div>
+
+    <div class="chapter-body">
+        <blockquote>
+            “Snap your punches fast!”<br>
+            “Light on your feet!”<br>
+            “Keep your hands up!”
+        </blockquote>
+
+        <p>
+            Two summers as a kid, I took up boxing. Classic strategic self defence move and yet another way to work on my aerobic fitness with friends. The boxing gym was right next to a Judo hall. And every night I’d walk into the boxing studio, eyes down and ignore the judo kids as they did the same.
+        </p>
+
+        <p>
+            When I played rugby, we always looked at a distance towards the soccer fields and saw them as “others”, almost making a point never to cross the imaginary line separating the rugby fields from the soccer pitches. I would go to my sister's dancing recitals and watch as two boys amongst 30 girls danced and entertained an entire crowd of adults who were mostly just waiting for their kid to come on stage.
+        </p>
+
+        <p>
+            I remember going to a Saturday morning tennis club open day and found myself a little lost playing one on one with just one other person, not a group of people.
+        </p>
+
+        <p>
+            After leaving the world of rugby, I tried so many different things. American football, AFL, Table Tennis, Rock Climbing, Obstacle course racing and eventually gym sports such as group fitness and CrossFit.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -70,11 +92,9 @@ After leaving the world of rugby, I tried so many different things. American foo
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

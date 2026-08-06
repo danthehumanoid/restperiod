@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,55 +33,87 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 32 - DON’T WIN, COMPETE</i></p>     
-Hamish Blake, a body building legend. 
-<p>
-Hamish Blake, an australian comedian once entered a New York Body Building Championship. Unprepared, not conditioning for the sport, somewhat spray tanned and with no training he won the heavyweight devision. Crowned a champion he said his success came down to the reality that “Sometimes you just turn up and automatically win, because no-one else showed up”. He came first in the heavyweight division in a class where there was noone else competing but himself. 
-<p>
-TTC, a 2022 goal. I had ticked off enough strength markers and started running again. Now it was time to test myself. Who could I beat? What did being the best mean? Where could I go? I also wasn’t anywhere near strong enough to be considered the best or strongest at anything, in any weight grade or division?
-<p>
-I could enter a local lifting competition and probably podium. But that’s because there would likely be 3-4 people in my category. 
-<p>
-I could enter that trail run race and get in the top 10 for my age group. But what if noone shows up and I win? What if every competitive 30 year old runner shows up and I get smoked?
-<p>
-Hanging successes on winning is an attitude that has been built into many os us from an early age. It mattered for my rugby team as soon as the first child in our team learned to count. 
-<p>
-“Did we win Coach?”
-<p>
-“It was a draw kids”
-<p>
-“No! We scored 5 more tries than them! The score was 45-20!”
-<p>
-“I guess you’re right, ok I’m counting the score from now on.”
-<p>
-Winning has become an attitude of many in sports, business and life. To win means beating other people. And we all have a person in our lives who lives and dies by that mantra. Many of us love to play to win. Some of us don’t know where the line is. 
-<p>
-“Fastest dishwasher load of the year, beat you all family! Where’s my trophy, my framed certificate, my congratulations and recognition 10 years later?!”
-<p>
-As Robbie Williams sand is his song “Losers” - “There will always be someone better than you, so lets stop the competition now.
-<p>
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 32</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: DON’T WIN, COMPETE</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            Hamish Blake, a bodybuilding legend.
+        </p>
 
+        <p>
+            Hamish Blake, an Australian comedian, once entered a New York Bodybuilding Championship. Unprepared, not conditioned for the sport, somewhat spray tanned and with no training, he won the heavyweight division. Crowned a champion, he said his success came down to the reality that “Sometimes you just turn up and automatically win, because no one else showed up”. He came first in the heavyweight division in a class where there was no one else competing but himself.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            TTC, a 2022 goal. I had ticked off enough strength markers and started running again. Now it was time to test myself. Who could I beat? What did being the best mean? Where could I go? I also wasn’t anywhere near strong enough to be considered the best or strongest at anything, in any weight grade or division.
+        </p>
+
+        <p>
+            I could enter a local lifting competition and probably podium. But that’s because there would likely be 3-4 people in my category.
+        </p>
+
+        <p>
+            I could enter that trail run race and get in the top 10 for my age group. But what if no one shows up and I win? What if every competitive 30-year-old runner shows up and I get smoked?
+        </p>
+
+        <p>
+            Hanging successes on winning is an attitude that has been built into many of us from an early age. It mattered for my rugby team as soon as the first child in our team learned to count.
+        </p>
+
+        <p>
+            “Did we win Coach?”
+        </p>
+
+        <p>
+            “It was a draw kids”
+        </p>
+
+        <p>
+            “No! We scored 5 more tries than them! The score was 45-20!”
+        </p>
+
+        <p>
+            “I guess you’re right, ok I’m counting the score from now on.”
+        </p>
+
+        <p>
+            Winning has become an attitude of many in sports, business and life. To win means beating other people. And we all have a person in our lives who lives and dies by that mantra. Many of us love to play to win. Some of us don’t know where the line is.
+        </p>
+
+        <p>
+            “Fastest dishwasher load of the year, beat you all family! Where’s my trophy, my framed certificate, my congratulations and recognition 10 years later?!”
+        </p>
+
+        <p>
+            As Robbie Williams sang in his song “Losers” - “There will always be someone better than you, so let's stop the competition now.”
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -87,11 +122,9 @@ As Robbie Williams sand is his song “Losers” - “There will always be someo
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

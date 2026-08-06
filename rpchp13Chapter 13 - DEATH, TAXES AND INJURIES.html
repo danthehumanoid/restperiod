@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,51 +33,79 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 13 - DEATH, TAXES AND INJURIES</i></p>     
-Something would almost always happen when I started training someone who was either new to the gym or hadn’t trained in a while. I would always ask if they had any injuries or niggles in their body. 
-<p>
-Every single person  who ever said “No” was always wrong. 
-<p>
-And it wasn’t their fault. 
-<p>
-And it wasn’t because I injured them (although for a while I thought that was the case!). our bodies might hold injuries that for years we’ve not experienced any pain, purely because we’ve not used our body in that way. It could be a calf muscle, wrist niggle or shoulder impingement. Just not using it in a certain way is how many people deal with the pain. As my dad would say to us “If it hurts doing that, then stop doing that”. Problem solved. For now. Until you want to use that body part in that way. Then old injuries arise, and they often arise in the early stages of exercise. And sometimes unexpectedly. 
-<p>
-It’s almost a guarantee that if you’ve not exercised in a long time, you’ll have wounds from the past that might arise. This is normal and doesn’t necessarily mean you’re doing anything wrong, one can hope you’ve not taken up Clean and Jerks as your first movement after 10 years of nothing. If you’ve got a great coach and are patient, you can address these injuries and move through them. It may take time, but hey, how long have you done nothing about them?
-<p>
-Personally it took 3 years of consistent training before I felt like I had a strong enough back to support me during running, jumping and lifting. 
-<p>
-It’s still not perfect, it reminds me some days that I am mortal. And that I played 15 years of rugby with very questionable training quality. 
-What’s more, injuries are sometimes a part of the process, although not mandatory they can and do happen. They can happen whilst you’re training or whilst you’re stepping out of the shower.
-<p>
-We might call these niggles. Whatever the name, it’s a thing we’d rather not have.
-<p>
-Either way there is always an opportunity for growth. “I’ll just avoid it and it should come right eventually” is a philosophy that is best left to bruises and scratches, not to muscle tears and chronic joint problems. Often injuries can often heal quicker with effort rather than just rest.  
-<p>
-Like paying your taxes, it’s better to do it on time rather than leaving it until later.
-<p>
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 13</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: DEATH, TAXES AND INJURIES</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            Something would almost always happen when I started training someone who was either new to the gym or hadn’t trained in a while. I would always ask if they had any injuries or niggles in their body.
+        </p>
 
+        <p>
+            Every single person who ever said “No” was always wrong.
+        </p>
 
+        <p>
+            And it wasn’t their fault.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            And it wasn’t because I injured them (although for a while I thought that was the case!). Our bodies might hold injuries that for years we’ve not experienced any pain, purely because we’ve not used our body in that way. It could be a calf muscle, wrist niggle or shoulder impingement. Just not using it in a certain way is how many people deal with the pain. As my dad would say to us “If it hurts doing that, then stop doing that”. Problem solved. For now. Until you want to use that body part in that way. Then old injuries arise, and they often arise in the early stages of exercise. And sometimes unexpectedly.
+        </p>
+
+        <p>
+            It’s almost a guarantee that if you’ve not exercised in a long time, you’ll have wounds from the past that might arise. This is normal and doesn’t necessarily mean you’re doing anything wrong, one can hope you’ve not taken up Clean and Jerks as your first movement after 10 years of nothing. If you’ve got a great coach and are patient, you can address these injuries and move through them. It may take time, but hey, how long have you done nothing about them?
+        </p>
+
+        <p>
+            Personally it took 3 years of consistent training before I felt like I had a strong enough back to support me during running, jumping and lifting.
+        </p>
+
+        <p>
+            It’s still not perfect, it reminds me some days that I am mortal. And that I played 15 years of rugby with very questionable training quality.
+        </p>
+
+        <p>
+            What’s more, injuries are sometimes a part of the process, although not mandatory they can and do happen. They can happen whilst you’re training or whilst you’re stepping out of the shower.
+        </p>
+
+        <p>
+            We might call these niggles. Whatever the name, it’s a thing we’d rather not have.
+        </p>
+
+        <p>
+            Either way there is always an opportunity for growth. “I’ll just avoid it and it should come right eventually” is a philosophy that is best left to bruises and scratches, not to muscle tears and chronic joint problems. Often injuries can heal quicker with effort rather than just rest.
+        </p>
+
+        <p>
+            Like paying your taxes, it’s better to do it on time rather than leaving it until later.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -83,11 +114,9 @@ Like paying your taxes, it’s better to do it on time rather than leaving it un
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </title>title>REST PERIOD | PHILOSOPHY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,51 +33,83 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERICSE - PHILOSOPHY</h1>
-        <p><i>Chapter 11 - FIND AN OUTLET, THEN ANOTHER<p><i> 
-<p>
-How many drug addicts have become ultra marathon runners? 
-<p>
-Have you ever had that feeling of being pleasantly exhausted after a training session, being faced with what might usually be a stressful encounter and for lack of a better term, just not caring like you used to? 
-<p>
-So is it any surprise that so many people who have struggled with addiction, anxiety or depression  attribute their exercise regime as a big part of their healing? 
-<p>
-Are we surprised? 
-<p>
-And sometimes, are we a little concerned and impressed?
-<p>
-Some people deal with their troubles by unpacking them and starting exercise, others push their problems away and use exercise to mask them. 
-<p>
-Both are coping mechanisms. One is far more effective and healthy.
-<p>
-If you’re going to use exercise as an outlet, find more than one type. 
-<p>
-Your legs might need at least one day's rest from running and you might want to spend some days on land if you’ve taken up open water swimming as a way to deal with your existentialism. 
-<p>
-If movement is a healthy outlet for your internal struggles, don’t let anyone stop you. 
-<p>
-But if your movement consists of one single activity that can’t always be readily available, you may risk shooting yourself in the foot. If the only time you feel at peace is when you’re running a 100 kilometer trail run , you may have missed the point with movement as therapy.
-<p>
-Find an outlet, find another, then find another until your life is filled with options to deal with the fact that one day, you, me and everyone else are going to die.
-<p>
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 11</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: FIND AN OUTLET, THEN ANOTHER</h1>
+    </div>
+
+    <div class="chapter-body">
+        <p>
+            How many drug addicts have become ultra marathon runners?
+        </p>
+
+        <p>
+            Have you ever had that feeling of being pleasantly exhausted after a training session, being faced with what might usually be a stressful encounter and for lack of a better term, just not caring like you used to?
+        </p>
+
+        <p>
+            So is it any surprise that so many people who have struggled with addiction, anxiety or depression attribute their exercise regime as a big part of their healing?
+        </p>
+
+        <p>
+            Are we surprised?
+        </p>
+
+        <p>
+            And sometimes, are we a little concerned and impressed?
+        </p>
+
+        <p>
+            Some people deal with their troubles by unpacking them and starting exercise, others push their problems away and use exercise to mask them.
+        </p>
+
+        <p>
+            Both are coping mechanisms. One is far more effective and healthy.
+        </p>
+
+        <p>
+            If you’re going to use exercise as an outlet, find more than one type.
+        </p>
+
+        <p>
+            Your legs might need at least one day's rest from running and you might want to spend some days on land if you’ve taken up open water swimming as a way to deal with your existentialism.
+        </p>
+
+        <p>
+            If movement is a healthy outlet for your internal struggles, don’t let anyone stop you.
+        </p>
+
+        <p>
+            But if your movement consists of one single activity that can’t always be readily available, you may risk shooting yourself in the foot. If the only time you feel at peace is when you’re running a 100 kilometer trail run , you may have missed the point with movement as therapy.
+        </p>
+
+        <p>
+            Find an outlet, find another, then find another until your life is filled with options to deal with the fact that one day, you, me and everyone else are going to die.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -83,11 +118,9 @@ Find an outlet, find another, then find another until your life is filled with o
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

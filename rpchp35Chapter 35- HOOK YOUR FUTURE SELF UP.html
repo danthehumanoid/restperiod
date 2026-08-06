@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,58 +33,91 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 35- HOOK YOUR FUTURE SELF UP</i></p>     
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-I woke up this morning, thankfully my previous self put me to bed when it did.
-<p>
-I’m now in control.
-<p>
-But now I’m thinking about what my tomorrow self might think of me.
-<p>
-Will they be pleased at what I’m doing right now? 
-<p>
-Are they screaming “Noooooooo, c’mon not nightshades again? We’ve had this conversation before!”. 
-<p>
-I’m dealing with my past self’s decisions, helpful or unhelpful. I’m faced with an infinite amount of future people who will be embodying this body at some point. 
-<p>
-Before I even get a chance to hand over the keys, I’m the future self looking at the next future self. So I’ll try focus on my tomorrow self’s well-being whilst also making sure I’m looking after my current self. 24 hours in the future I’ll be a different person. I want to impress them, but I also want to enjoy my life right now. 
-<p>
-What’s the best thing to do? 
-<p>
-Will they like me? Would they want to be my friend if I ever met them? I’ll never know. 
-Although they share similar interests, and they know my patterns. They have no control over what I’m about to do next. The power is in my hands. And so is the responsibility. I’ll do the basics, drink water eat well and get an early nights rest. But I’ll also sometimes forget to eat and stay up late wiring this paragraph about my predicament. 
-<p>
-I know most of what I need to do to make my tomorrow self happy. If I’m not sure, my current self can make a plan to figure it out. 
-<p>
-Hopefully my future self will follow it! If not, maybe the future self after that will figure it out.
-<p>
-And if my future self changes its mind, hopefully it’s because it’s listened to its previous self. 
-<p>
-Note to future self: I’m trying to hook you up with a better future right now.
-And, don’t take yourself too seriously.
-<p>
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 35</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: HOOK YOUR FUTURE SELF UP</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            I woke up this morning, thankfully my previous self put me to bed when it did.
+        </p>
 
+        <p>
+            I’m now in control.
+        </p>
 
+        <p>
+            But now I’m thinking about what my tomorrow self might think of me.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            Will they be pleased at what I’m doing right now?
+        </p>
+
+        <p>
+            Are they screaming “Noooooooo, c’mon not nightshades again? We’ve had this conversation before!”?
+        </p>
+
+        <p>
+            I’m dealing with my past self’s decisions, helpful or unhelpful. I’m faced with an infinite amount of future people who will be embodying this body at some point.
+        </p>
+
+        <p>
+            Before I even get a chance to hand over the keys, I’m the future self looking at the next future self. So I’ll try to focus on my tomorrow self’s well-being whilst also making sure I’m looking after my current self. 24 hours in the future I’ll be a different person. I want to impress them, but I also want to enjoy my life right now.
+        </p>
+
+        <p>
+            What’s the best thing to do?
+        </p>
+
+        <p>
+            Will they like me? Would they want to be my friend if I ever met them? I’ll never know.
+        </p>
+
+        <p>
+            Although they share similar interests, and they know my patterns, they have no control over what I’m about to do next. The power is in my hands. And so is the responsibility. I’ll do the basics, drink water, eat well and get an early night's rest. But I’ll also sometimes forget to eat and stay up late writing this paragraph about my predicament.
+        </p>
+
+        <p>
+            I know most of what I need to do to make my tomorrow self happy. If I’m not sure, my current self can make a plan to figure it out.
+        </p>
+
+        <p>
+            Hopefully my future self will follow it! If not, maybe the future self after that will figure it out.
+        </p>
+
+        <p>
+            And if my future self changes its mind, hopefully it’s because it’s listened to its previous self.
+        </p>
+
+        <p>
+            Note to future self: I’m trying to hook you up with a better future right now. And, don’t take yourself too seriously.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -90,11 +126,9 @@ And, don’t take yourself too seriously.
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

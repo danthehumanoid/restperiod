@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,45 +33,59 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
-        <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 16 - HUMAN FIRST</i></p>     
-<p>
-We are human first, generalists second and specialists third.
-One must be able to do the dishes before setting a high jump world record.
-If you can’t dress yourself, you can’t lift yourself.
-The body doesn’t know if you’re about to fold washing or complete a personal best in your run. It merely adapts to the scenario. Maybe your setting a world record in 400 metre clothes folding. That’s a specialist approach.
-People may spend their entire lives specialising in one discipline, others in none.
-<p>
-To be the very best at something, it’s clear you must specialise. Does that matter to you? Does that mean that you won’t be better than many other people at many other things? A gold medalist 10,000 meter runner is likely to beat most at a Saturday morning park run. But their sacrifice is greater than the generalist.
-<p>
-A generalist drinks from many disciplines, spending time in multiple disciplines to pick up what is interesting, helpful or necessary. They have also made a commitment to a different type of excellence. Discarding the mindset of “being the best in the universe (until aliens land)”, “impossible is nothing if you set your mind to it”.
-<p>
-For every gold medalist, there are hundreds, even thousands of humans who go undiscovered, due to geography, time and reach.
-<p>
-The best athletes competing in professional leagues right now are the ones that were discovered. They are specialists, for a period of their life. And they should be grateful their sport exists at the same time they are alive.
-You might want to shift your energy to a specific sport for a while. You may also want to take up ballroom dancing at the same time. You’re not getting paid to do either, why not do both? If you’re aware that you might not be as good as you possibly could be, maybe by a percentage of 10-20% that might still satisfy you. And what's more, you may even get better. Carry overs in skill acquisition can have positive side-effects.
-<p>
-There are consequences for everything we do, and everything we don’t do. You could be well-rounded, or specialised, or sedentary… As long as you can still go to the toilet on your own.
-<p>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 16</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: HUMAN FIRST</h1>
+    </div>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+    <div class="chapter-body">
+        <p>
+            We are human first, generalists second and specialists third. One must be able to do the dishes before setting a high jump world record. If you can’t dress yourself, you can’t lift yourself. The body doesn’t know if you’re about to fold washing or complete a personal best in your run. It merely adapts to the scenario. Maybe your setting a world record in 400 metre clothes folding. That’s a specialist approach. People may spend their entire lives specialising in one discipline, others in none.
+        </p>
+
+        <p>
+            To be the very best at something, it’s clear you must specialise. Does that matter to you? Does that mean that you won’t be better than many other people at many other things? A gold medalist 10,000 meter runner is likely to beat most at a Saturday morning park run. But their sacrifice is greater than the generalist.
+        </p>
+
+        <p>
+            A generalist drinks from many disciplines, spending time in multiple disciplines to pick up what is interesting, helpful or necessary. They have also made a commitment to a different type of excellence. Discarding the mindset of “being the best in the universe (until aliens land)”, “impossible is nothing if you set your mind to it”.
+        </p>
+
+        <p>
+            For every gold medalist, there are hundreds, even thousands of humans who go undiscovered, due to geography, time and reach.
+        </p>
+
+        <p>
+            The best athletes competing in professional leagues right now are the ones that were discovered. They are specialists, for a period of their life. And they should be grateful their sport exists at the same time they are alive. You might want to shift your energy to a specific sport for a while. You may also want to take up ballroom dancing at the same time. You’re not getting paid to do either, why not do both? If you’re aware that you might not be as good as you possibly could be, maybe by a percentage of 10-20% that might still satisfy you. And what's more, you may even get better. Carry overs in skill acquisition can have positive side-effects.
+        </p>
+
+        <p>
+            There are consequences for everything we do, and everything we don’t do. You could be well-rounded, or specialised, or sedentary… As long as you can still go to the toilet on your own.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -77,11 +94,9 @@ There are consequences for everything we do, and everything we don’t do. You c
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>

@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,53 +33,83 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
-         <h1>EXERICSE - PHILOSOPHY</h1>
-       <p><i>Chapter 27 - EVERYDAY INSPIRATIONS</i></p>     
-I met a man who quit a law firm to start his own business. 
-<p>
-Four kids under the age of 12, no client base and during a recession. “Too much certainty” he said. His name was already on the building (metaphorically) and he saw his next 20 years being what the previous persons life was.
-<p>
-Flip the script, try the same thing in a different way.
-<p>
-I used to do yoga at a studio in the bush with a lady who barely charged for her classes. Eftpos machine didn’t work? Free class for everyone! Need to borrow my award winning designed studio for the day, go ahead! No charge, just give me a hug next time I see you.
-<p>
-The business model still works.
-<p>
-I’ve food from a man who has owned a food truck for over a decade. He openly puts his prices up $1 a year. No one minds. He doesn’t hide it. Supports his family, always with a smile on his face.
-<p>
-He’s probably made almost a million wraps.
-<p>
-I met a man who had no “real job”. 
-<p>
-He lived off the land and paid for his accommodation using his hands. He built things, carved things, planted things, cooked things and provided wisdom about the local environment. He was one of the most skilled humans I ever met.
-<p>
-Happy too, always wanting to give his time.
-<p>
-I met a man who worked at a printing shop. I made an assumption he didn’t have children. He actually had two. And he held my child for a brief moment as I searched for my wallet. He suddenly had “father” written all over him. 
-<p>
-I changed my opinion about any man I would meet in the future.
-We hide our parenting abilities too well sometimes.
-<p>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
+    <div class="chapter-header">
+        <div class="chapter-num">Chapter 27</div>
+        <h1 class="chapter-title">EXERCISE - PHILOSOPHY: EVERYDAY INSPIRATIONS</h1>
+    </div>
 
+    <div class="chapter-body">
+        <p>
+            I met a man who quit a law firm to start his own business.
+        </p>
 
-        <p class="signature">🤙</p>
-        <p class="signature">Human Love,</p>
-        <p class="signature">Dan/Daniel/Splash</p>
-        
+        <p>
+            Four kids under the age of 12, no client base and during a recession. “Too much certainty” he said. His name was already on the building (metaphorically) and he saw his next 20 years being what the previous person's life was.
+        </p>
+
+        <p>
+            Flip the script, try the same thing in a different way.
+        </p>
+
+        <p>
+            I used to do yoga at a studio in the bush with a lady who barely charged for her classes. Eftpos machine didn’t work? Free class for everyone! Need to borrow my award winning designed studio for the day, go ahead! No charge, just give me a hug next time I see you.
+        </p>
+
+        <p>
+            The business model still works.
+        </p>
+
+        <p>
+            I’ve had food from a man who has owned a food truck for over a decade. He openly puts his prices up $1 a year. No one minds. He doesn’t hide it. Supports his family, always with a smile on his face.
+        </p>
+
+        <p>
+            He’s probably made almost a million wraps.
+        </p>
+
+        <p>
+            I met a man who had no “real job”.
+        </p>
+
+        <p>
+            He lived off the land and paid for his accommodation using his hands. He built things, carved things, planted things, cooked things and provided wisdom about the local environment. He was one of the most skilled humans I ever met.
+        </p>
+
+        <p>
+            Happy too, always wanting to give his time.
+        </p>
+
+        <p>
+            I met a man who worked at a printing shop. I made an assumption he didn’t have children. He actually had two. And he held my child for a brief moment as I searched for my wallet. He suddenly had “father” written all over him.
+        </p>
+
+        <p>
+            I changed my opinion about any man I would meet in the future. We hide our parenting abilities too well sometimes.
+        </p>
+
+        <p class="signature">
+            🤙<br>
+            Human Love,<br>
+            Dan/Daniel/Splash
+        </p>
+
         <div class="email-container">
             <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
             <div id="emailDisplay">
                 <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
             </div>
         </div>
-    </main>
-    <footer class="footer-notice">
+    </div>
+
+    <footer class="chapter-footer">
         *Website handmade in 2024AD with recycled nostalgic materials
     </footer>
 
@@ -85,11 +118,9 @@ We hide our parenting abilities too well sometimes.
             const emailDiv = document.getElementById('emailDisplay');
             const button = document.getElementById('revealButton');
             if (emailDiv) {
-                // Toggle visibility
                 const isVisible = emailDiv.style.display === 'block';
                 emailDiv.style.display = isVisible ? 'none' : 'block';
-                // Update button text to match the two states
-                button.textContent = isVisible ? 'Send my an email/say HI' : 'Click to hide email';
+                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
             }
         }
     </script>
