@@ -290,6 +290,7 @@ let currentLessonIndex = 0;
 let freeMasterPrograms = [];
 
 const CATEGORY_META = {
+    BODYWEIGTH: { label:'Bodyweight', thumbClass:'thumb-bodyweight', color:'#c184fc' },
     STRENGTH: { label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
     POWER:    { label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
     RUN:      { label:'Run',      thumbClass:'thumb-run',      color:'var(--brand-accent)' },
@@ -301,7 +302,7 @@ const CATEGORY_META = {
     PRIMER:    { label:'Primer',    thumbClass:'thumb-primer',    color:'#884' },
 
 };
-const CATEGORY_ORDER = ['WARM UP','PRIMER','STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','OTHER'];
+const CATEGORY_ORDER = ['BODYWEIGHT','WARM UP','PRIMER','STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','OTHER'];
 
 // ── INIT ──────────────────────────────────────────
 window.onload = async () => {
