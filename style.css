@@ -224,6 +224,7 @@ input[type=number] { -moz-appearance: textfield; }
     display: flex; align-items: center; justify-content: center; font-size: 2rem;
 }
 .thumb-strength { background: linear-gradient(135deg, #0D211A, #1B4D3E); }
+.thumb-bodyweight { background: linear-gradient(135deg, #220A2E, #401B4D); }
 .thumb-power    { background: linear-gradient(135deg, #241A08, #4D3308); }
 .thumb-run      { background: linear-gradient(135deg, #08210D, #1E4D2B); }
 .thumb-circuit  { background: linear-gradient(135deg, #0A1C24, #1B3E4D); }
