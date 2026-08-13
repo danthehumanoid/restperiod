@@ -675,8 +675,8 @@ function renderListMarkup(id, list, type) {
                     <strong class="exercise-name-title">${cleanExTitle(ex.name)}</strong>
                     ${(()=>{
                         const db = typeof exerciseDatabase !== 'undefined' ? exerciseDatabase : [];
-                        const found = db.find(e => e.title === ex.name);
-                        const url = found ? (found.video || found.src || '') : '';
+                        const found = db.find(e => e.title === ex.name) || db.find(e => ex.name && ex.name.includes(e.title)) || db.find(e => e.title && e.title.includes(ex.name));
+                        const url = found ? (found.video || found.src || ex.video || ex.src || '') : (ex.video || ex.src || '');
                         if (url) return `<button onclick="openExPreview('${ex.name.replace(/'/g,"\\'")}','${url.replace(/'/g,"\\'")}');event.stopPropagation();" style="background:none;border:none;color:var(--brand-accent);cursor:pointer;font-size:1rem;padding:0 6px;" title="Preview video">▶</button>`;
                         return '<span style="font-size:0.9rem;opacity:0.5;" title="No video">🚫</span>';
                     })()}
