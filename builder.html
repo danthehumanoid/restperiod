@@ -411,8 +411,16 @@ function runLibrarySearch() {
     resultsEl.innerHTML = res.slice(0, 80).map(e => {
         const cleanName = cleanExTitle(e.title);
         const safeName = e.title.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        const url = e.video || e.src || '';
+        const safeUrl = url.replace(/'/g,"\\'");
+        const videoIcon = url
+            ? `<button onclick="openExPreview('${safeName}','${safeUrl}');event.stopPropagation();" style="background:none;border:none;color:var(--brand-accent);cursor:pointer;font-size:1rem;padding:0 4px;" title="Preview video">▶</button>`
+            : `<span style="font-size:0.9rem;opacity:0.4;" title="No video">🚫</span>`;
         return `<div class="search-result">
-            <div class="res-title">${cleanName}</div>
+            <div style="display:flex;align-items:center;gap:6px;min-width:0;">
+                ${videoIcon}
+                <div class="res-title" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${cleanName}</div>
+            </div>
             <div style="display:flex;gap:4px;flex-shrink:0;">
                 <button class="add-small" onclick="addEx('${safeName}','warmup')">+ Warm</button>
                 <button class="add-small" onclick="addEx('${safeName}','exercises')">+ Main</button>
@@ -673,13 +681,6 @@ function renderListMarkup(id, list, type) {
                         <i class="fas fa-chevron-down move-arrow" onclick="moveElement(${i},'${type}',1)"></i>
                     </div>
                     <strong class="exercise-name-title">${cleanExTitle(ex.name)}</strong>
-                    ${(()=>{
-                        const db = typeof exerciseDatabase !== 'undefined' ? exerciseDatabase : [];
-                        const found = db.find(e => e.title === ex.name) || db.find(e => ex.name && ex.name.includes(e.title)) || db.find(e => e.title && e.title.includes(ex.name));
-                        const url = found ? (found.video || found.src || ex.video || ex.src || '') : (ex.video || ex.src || '');
-                        if (url) return `<button onclick="openExPreview('${ex.name.replace(/'/g,"\\'")}','${url.replace(/'/g,"\\'")}');event.stopPropagation();" style="background:none;border:none;color:var(--brand-accent);cursor:pointer;font-size:1rem;padding:0 6px;" title="Preview video">▶</button>`;
-                        return '<span style="font-size:0.9rem;opacity:0.5;" title="No video">🚫</span>';
-                    })()}
                 </div>
                 <i class="fas fa-trash-alt" style="color:#555;cursor:pointer;" onclick="programData[currentWeekIndex].${type}.splice(${i},1); saveHistory(); renderLists();"></i>
             </div>
