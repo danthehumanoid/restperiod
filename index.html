@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
-    <script src="exercises.js"></script>
     <style>
         body { padding-bottom: 40px; }
         .header { text-align: center; padding: 32px 20px 20px; }
@@ -30,7 +29,7 @@
         .msg { border-radius: 6px; padding: 9px 12px; font-size: 0.78rem; margin-top: 10px; display: none; }
         .msg-error { background: rgba(255,82,82,0.1); border: 1px solid #ff5252; color: #ff5252; }
         .msg-success { background: rgba(46,125,50,0.1); border: 1px solid var(--brand-secondary); color: var(--brand-accent); }
-        .homescreen-btn { width: 100%; padding: 13px; border: none; border-radius: 6px; background: var(--brand-accent); color: #000; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; }
+        .homescreen-btn { padding: 13px 24px; border: none; border-radius: 6px; background: var(--brand-accent); color: #000; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         .homescreen-btn:hover { opacity: 0.85; }
         .hs-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9000; align-items: flex-end; justify-content: center; }
         .hs-overlay.open { display: flex; }
@@ -46,53 +45,17 @@
         .hs-step-text strong { color: white; }
         .hs-img { width: 100%; border-radius: 10px; margin: 16px 0; border: 1px solid var(--border); display: block; }
         .hs-close { width: 100%; padding: 13px; border: none; border-radius: 8px; background: var(--border); color: #888; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; cursor: pointer; margin-top: 8px; }
-        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-        .tool-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
-        .tool-title { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-        .timer-display { font-size: 2.6rem; font-family: 'Courier New', monospace; font-weight: bold; text-align: center; margin: 8px 0; color: white; }
-        .tool-input { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: 6px; color: white; padding: 8px 10px; font-size: 0.9rem; margin-bottom: 8px; font-family: inherit; }
-        .tool-input:focus { outline: none; border-color: var(--brand-accent); }
-        input[type="range"] { width: 100%; cursor: pointer; margin-bottom: 8px; accent-color: var(--brand-accent); }
-        .tool-btn { width: 100%; padding: 10px; border: none; border-radius: 6px; background: var(--brand-primary); color: white; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: 0.2s; margin-top: 4px; }
-        .tool-btn:hover { opacity: 0.85; }
-        .tool-btn.running { background: #7f1d1d; color: #f87171; }
-        .tool-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-        .tool-row .tool-input { margin-bottom: 0; }
-        .bpm-display { font-size: 3rem; font-family: 'Montserrat', sans-serif; font-weight: 800; text-align: center; color: var(--brand-accent); margin: 4px 0 8px; }
-        .result-output { background: #000; border-left: 3px solid var(--brand-accent); padding: 10px; border-radius: 4px; font-size: 0.8rem; margin-top: 8px; display: none; line-height: 1.8; }
-        .phase-label { text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; letter-spacing: 1px; margin-bottom: 4px; }
-        .solve-field { display: flex; flex-direction: column; gap: 4px; }
-        .solve-label { font-size: 0.55rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'Montserrat', sans-serif; }
-        .rm-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 8px; }
-        .rm-table th { color: var(--brand-accent); font-weight: 800; padding: 4px 6px; text-align: center; border-bottom: 1px solid var(--border); }
-        .rm-table td { padding: 4px 6px; text-align: center; border-bottom: 1px solid var(--card-bg); color: #ccc; }
-        .rm-table tr.highlight td { color: var(--brand-accent); font-weight: 700; }
-        .unit-toggle { padding: 5px 10px; border: none; background: none; color: #555; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.65rem; cursor: pointer; transition: 0.2s; }
-        .unit-toggle.active { background: var(--brand-accent); color: #000; }
-        .video-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-        .video-overlay.open { display: flex; }
-        .video-box { background: #000; border-radius: 12px; width: 100%; max-width: 700px; position: relative; }
-        .video-close { position: absolute; top: -44px; right: 0; background: none; border: none; color: white; font-size: 2.2rem; cursor: pointer; }
-        .video-title { padding: 14px 16px; font-weight: 800; font-size: 0.95rem; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; }
-
-        /* ── TOP ACTION GRID ── */
-        .top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .top-pill { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 15px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); color: #bbb; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; text-decoration: none; text-align: center; transition: 0.2s; line-height: 1.3; }
-        .top-pill:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
-        .top-pill.primary { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
-        .top-pill.primary:hover { opacity: 0.85; color: #000; }
-
-        /* ── INSTALL APP BUTTON ── */
-        .install-btn { width: 100%; padding: 14px; margin-bottom: 16px; border: none; border-radius: 8px; background: var(--brand-accent); color: #000; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
-        .install-btn:hover { opacity: 0.85; }
-
-        /* ── THEORY / EXERCISE-OF-DAY READER ── */
-        .simple-reader { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9500; flex-direction: column; }
-        .simple-reader.open { display: flex; }
-        .simple-reader-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); background: #000; flex-shrink: 0; }
-        .simple-reader-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; color: var(--brand-accent); }
-        .simple-reader-close { background: none; border: none; color: #555; font-size: 1.3rem; cursor: pointer; padding: 4px; }
-        .simple-reader-frame { flex: 1; border: none; background: #000; width: 100%; }
+        /* SHOWCASE */
+        .showcase-section { margin-bottom: 24px; }
+        .showcase-label { font-family:'Montserrat',sans-serif; font-weight:800; font-size:0.65rem; color:var(--brand-accent); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; }
+        .showcase-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+        .showcase-card { background:var(--card-bg); border:1px solid var(--border); border-radius:10px; overflow:hidden; cursor:pointer; transition:0.2s; }
+        .showcase-card:hover { border-color:var(--brand-accent); transform:translateY(-2px); }
+        .showcase-thumb { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+        .showcase-thumb-ph { width:100%; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; }
+        .showcase-body { padding:8px 10px 10px; }
+        .showcase-name { font-family:'Montserrat',sans-serif; font-weight:800; font-size:0.75rem; color:white; margin-bottom:4px; line-height:1.3; }
+        .showcase-meta { font-size:0.6rem; color:#555; font-family:'Montserrat',sans-serif; font-weight:800; }
     </style>
 </head>
 <body>
@@ -105,16 +68,12 @@
 
 <div class="container">
 
-    <!-- TOP ACTION GRID -->
-    <div class="top-grid">
-        <a href="library.html" class="top-pill"></i> View Exercise Library</a>
-        <button class="top-pill" onclick="openTheoryModal()"></i> Exercise Theory</button>
-        <button class="top-pill" onclick="openExerciseOfDayModal()"></i> Exercise of the Day</button>
-        <button class="top-pill" onclick="openWhatIsModal()"></i> About REST PERIOD</button>
+    <!-- LIBRARY BUTTON -->
+    <div style="margin-bottom:16px;text-align:center;">
+        <a href="library.html" class="submit-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;width:auto;padding:13px 24px;">
+            <i class="fas fa-dumbbell"></i> View Exercise Library
+        </a>
     </div>
-
-    <!-- INSTALL APP -->
-    <button class="install-btn" onclick="openHomescreenModal()"><i class="fas fa-plus-square"></i>📱Install Rest Period App on iPhone/Android</button>
 
     <!-- LOGIN -->
     <div class="login-section" style="margin-bottom:16px;">
@@ -140,103 +99,22 @@
         </div>
     </div>
 
-    <!-- TRAINING TOOLS -->
-    <h2 style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.1rem;color:var(--brand-accent);text-transform:uppercase;letter-spacing:2px;margin:0 0 12px;">Training Tools</h2>
-
-    <div class="tools-grid">
-        <div class="tool-card">
-            <div class="tool-title">Countdown</div>
-            <input type="number" class="tool-input" id="cd-input" value="60" min="1" oninput="if(!cdRunning){cdTime=parseInt(this.value)||60;updateCDDisplay()}" />
-            <div class="timer-display" id="cd-display">01:00</div>
-            <button class="tool-btn" id="cd-btn" onclick="toggleCountdown()">Start</button>
-        </div>
-        <div class="tool-card">
-            <div class="tool-title">Metronome</div>
-            <div class="bpm-display" id="bpm-display">60</div>
-            <input type="range" id="bpm-slider" min="40" max="220" value="60" oninput="document.getElementById('bpm-display').textContent=this.value" />
-            <button class="tool-btn" id="metro-btn" onclick="toggleMetronome()">Start</button>
-        </div>
+    <!-- WHAT IS REST PERIOD -->
+    <div style="text-align:center;margin-bottom:8px;">
+        <button onclick="openWhatIsModal()" style="display:inline-block;padding:13px 24px;border:1px solid var(--border);border-radius:6px;background:none;color:#888;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:0.2s;" onmouseover="this.style.borderColor='var(--brand-accent)';this.style.color='var(--brand-accent)';" onmouseout="this.style.borderColor='var(--border)';this.style.color='#888';">What is Rest Period?</button>
     </div>
 
-    <div class="tools-grid">
-        <div class="tool-card">
-            <div class="tool-title">Stopwatch</div>
-            <div class="timer-display" id="sw-display">00:00.00</div>
-            <div class="tool-row">
-                <button class="tool-btn" id="sw-btn" onclick="toggleStopwatch()">Start</button>
-                <button class="tool-btn" onclick="resetStopwatch()">Reset</button>
-            </div>
-        </div>
-        <div class="tool-card">
-            <div class="tool-title">1RM Calculator</div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                <span style="font-size:0.65rem;color:#555;">Epley &amp; Brzycki</span>
-                <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
-                    <button id="rm-kg-btn" class="unit-toggle active" onclick="setRMUnit('kg')">KG</button>
-                    <button id="rm-lb-btn" class="unit-toggle" onclick="setRMUnit('lb')">LB</button>
-                </div>
-            </div>
-            <div class="tool-row">
-                <div class="solve-field"><span class="solve-label" id="rm-weight-label">Weight (kg)</span><input type="number" class="tool-input" id="rm-weight" placeholder="e.g. 100" /></div>
-                <div class="solve-field"><span class="solve-label">Reps done</span><input type="number" class="tool-input" id="rm-reps" placeholder="e.g. 5" min="1" max="30" /></div>
-            </div>
-            <div class="tool-row">
-                <button class="tool-btn" onclick="calc1RM()">Calculate</button>
-                <button class="tool-btn" onclick="clear1RM()">Clear</button>
-            </div>
-            <div id="rm-output" style="display:none;margin-top:10px;max-height:220px;overflow-y:auto;">
-                <table class="rm-table"><thead><tr><th>Reps</th><th>Epley</th><th>Brzycki</th></tr></thead><tbody id="rm-table-body"></tbody></table>
-            </div>
-        </div>
+    <!-- ADD TO HOME SCREEN -->
+    <div style="text-align:center;margin-bottom:16px;">
+        <button class="homescreen-btn" onclick="openHomescreenModal()">
+            <i class="fas fa-plus-square"></i> Add Rest Period to Your Home Screen
+        </button>
     </div>
 
-    <div class="tools-grid">
-        <div class="tool-card">
-            <div class="tool-title">Pace Solver</div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                <span style="font-size:0.65rem;color:#555;">Fill any 2 — solve the 3rd.</span>
-                <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
-                    <button id="pace-km-btn" class="unit-toggle active" onclick="setPaceUnit('km')">KM</button>
-                    <button id="pace-mi-btn" class="unit-toggle" onclick="setPaceUnit('mi')">MI</button>
-                </div>
-            </div>
-            <div class="solve-field" style="margin-bottom:8px;"><span class="solve-label" id="pace-dist-label">Distance (km)</span><input type="number" class="tool-input" id="pace-dist" placeholder="e.g. 10" step="0.01" /></div>
-            <div class="solve-field" style="margin-bottom:8px;"><span class="solve-label">Total Time</span>
-                <div class="tool-row" style="margin-bottom:0;">
-                    <div class="solve-field"><span class="solve-label">Min</span><input type="number" class="tool-input" id="pace-min" placeholder="0" min="0" /></div>
-                    <div class="solve-field"><span class="solve-label">Sec</span><input type="number" class="tool-input" id="pace-sec" placeholder="0" min="0" max="59" /></div>
-                </div>
-            </div>
-            <div style="display:flex;gap:6px;margin-bottom:8px;">
-                <div class="solve-field" style="flex:1;"><span class="solve-label" id="pace-pace-label">Pace /km</span>
-                    <div class="tool-row" style="margin-bottom:0;">
-                        <div class="solve-field"><span class="solve-label">Min</span><input type="number" class="tool-input" id="pace-pace-min" placeholder="0" /></div>
-                        <div class="solve-field"><span class="solve-label">Sec</span><input type="number" class="tool-input" id="pace-pace-sec" placeholder="0" /></div>
-                    </div>
-                </div>
-                <div class="solve-field" style="flex:1;"><span class="solve-label" id="pace-speed-label">Speed (km/h)</span><input type="number" class="tool-input" id="pace-speed" placeholder="e.g. 12" step="0.1" /></div>
-            </div>
-            <div class="tool-row">
-                <button class="tool-btn" onclick="solvePace()">Solve</button>
-                <button class="tool-btn" onclick="clearPace()">Clear</button>
-            </div>
-            <div class="result-output" id="pace-output"></div>
-        </div>
-        <div class="tool-card">
-            <div class="tool-title">Interval Timer</div>
-            <div class="tool-row">
-                <div class="solve-field"><span class="solve-label">Warm up (s)</span><input type="number" class="tool-input" id="int-warmup" value="0" min="0" /></div>
-                <div class="solve-field"><span class="solve-label">Sets</span><input type="number" class="tool-input" id="int-sets" value="5" min="1" /></div>
-            </div>
-            <div class="tool-row">
-                <div class="solve-field"><span class="solve-label">Work (s)</span><input type="number" class="tool-input" id="int-work" value="30" min="1" /></div>
-                <div class="solve-field"><span class="solve-label">Rest (s)</span><input type="number" class="tool-input" id="int-rest" value="15" min="0" /></div>
-            </div>
-            <div class="phase-label" id="int-phase-label" style="color:var(--brand-accent);">READY</div>
-            <div class="timer-display" id="int-display" style="font-size:2.2rem;">00:30</div>
-            <div style="font-size:0.65rem;color:#555;text-align:center;margin-bottom:6px;" id="int-sets-label"></div>
-            <button class="tool-btn" id="int-btn" onclick="toggleInterval()">Start</button>
-        </div>
+    <!-- SHOWCASE PROGRAMS -->
+    <div class="showcase-section" id="showcase-section" style="display:none;">
+        <div class="showcase-label">Programs</div>
+        <div class="showcase-grid" id="showcase-grid"></div>
     </div>
 
 </div>
@@ -246,21 +124,20 @@
     <div style="background:var(--card-bg);border-radius:16px 16px 0 0;border:1px solid var(--border);border-bottom:none;width:100%;max-width:600px;max-height:85vh;overflow-y:auto;padding:24px;padding-bottom:40px;">
         <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;color:white;margin-bottom:16px;">What is Rest Period?</div>
         <div style="font-size:0.88rem;color:#aaa;line-height:1.9;">
-            <p style="margin-bottom:14px;">Rest Period is an online exercise and educational resource built by <strong style="color:white;">Daniel Hardie</strong> — Strength and Conditioning Coach, Mover and Educator with 15 years in the fitness industry.</p>
+            <p style="margin-bottom:14px;">Rest Period is an online exercise and educational resource built by <strong style="color:white;">Daniel Hardie</strong> — Strength and Conditioning Coach, Exercise Scientist and Educator with 15 years in the fitness industry.</p>
             <p style="margin-bottom:14px;">The aim is simple: <strong style="color:var(--brand-accent);">more humans moving better, more of the time, safely and enjoyably.</strong></p>
             <p style="margin-bottom:14px;">Rest Period includes:</p>
             <ul style="padding-left:20px;margin-bottom:14px;line-height:2;">
-                <li>A full <strong style="color:white;">exercise library</strong> with over 1000 video demos</li>
+                <li>A full <strong style="color:white;">exercise library</strong> with video demos</li>
                 <li>Guided <strong style="color:white;">warm up, strength, run and mobility programs</strong></li>
                 <li>Session logging — track your weights, reps and progress</li>
                 <li>Science-backed <strong style="color:white;">educational resources</strong></li>
-                <li>A philosophy section drawn from real coaching conversations during you guessed it, rest periods</li>
-                <li>Training tools — pace solver, 1RM calculator, interval timer and more</li>
+                <li>A philosophy section drawn from real coaching conversations</li>
             </ul>
             <p style="margin-bottom:14px;">It's free to sign up and always will be. Premium programs are available for $19.99 NZD/month.</p>
             <p style="color:#555;font-size:0.78rem;">As always, consult a medical professional before starting any exercise program.</p>
         </div>
-        <button onclick="closeWhatIsModal()" style="width:100%;margin-top:20px;padding:13px;border:none;border-radius:8px;background:var(--border);color:#888;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;">Let's Move</button>
+        <button onclick="closeWhatIsModal()" style="width:100%;margin-top:20px;padding:13px;border:none;border-radius:8px;background:var(--border);color:#888;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;">Got it</button>
     </div>
 </div>
 
@@ -291,24 +168,6 @@
     </div>
 </div>
 
-<!-- VIDEO OVERLAY (used by Exercise of the Day) -->
-<div class="video-overlay" id="video-overlay" onclick="handleVideoOverlayClick(event)">
-    <div class="video-box" id="video-box">
-        <button class="video-close" onclick="closeVideo()">✕</button>
-        <div class="video-title" id="video-title"></div>
-        <div id="video-content"></div>
-    </div>
-</div>
-
-<!-- EXERCISE THEORY READER (reused for Exercise Theory pill) -->
-<div class="simple-reader" id="theory-reader-overlay" onclick="if(event.target===this)closeTheoryModal()">
-    <div class="simple-reader-header">
-        <span class="simple-reader-title" id="theory-reader-title">Exercise Theory</span>
-        <button class="simple-reader-close" onclick="closeTheoryModal()"><i class="fas fa-times"></i></button>
-    </div>
-    <iframe class="simple-reader-frame" id="theory-reader-frame" src="about:blank"></iframe>
-</div>
-
 <script>
 const pb = new PocketBase('https://restperiod.org');
 if (pb.authStore.isValid) {
@@ -320,11 +179,53 @@ function redirect(role) {
     else window.location.href = '/client-dashboard.html';
 }
 
-// ── AUTH ──────────────────────────────────────────
-function switchTab(tab){document.getElementById('tab-login').classList.toggle('active',tab==='login');document.getElementById('tab-signup').classList.toggle('active',tab==='signup');document.getElementById('login-form').style.display=tab==='login'?'block':'none';document.getElementById('signup-form').style.display=tab==='signup'?'block':'none';}
-async function login(){const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value,errEl=document.getElementById('login-error'),btn=document.getElementById('login-btn');errEl.style.display='none';btn.disabled=true;btn.textContent='Signing in...';try{const auth=await pb.collection('users').authWithPassword(email,password);redirect(auth.record.role);}catch(e){errEl.textContent='Invalid email or password.';errEl.style.display='block';btn.disabled=false;btn.textContent='Sign In';}}
-async function signup(){const name=document.getElementById('signup-name').value.trim(),email=document.getElementById('signup-email').value.trim(),password=document.getElementById('signup-password').value,confirm=document.getElementById('signup-confirm').value,errEl=document.getElementById('signup-error'),btn=document.getElementById('signup-btn');errEl.style.display='none';if(!name||!email||!password){errEl.textContent='Please fill in all fields.';errEl.style.display='block';return;}if(password.length<8){errEl.textContent='Password must be at least 8 characters.';errEl.style.display='block';return;}if(password!==confirm){errEl.textContent='Passwords do not match.';errEl.style.display='block';return;}btn.disabled=true;btn.textContent='Creating account...';try{await pb.collection('users').create({name,email,password,passwordConfirm:confirm,role:'free',emailVisibility:true});const auth=await pb.collection('users').authWithPassword(email,password);redirect(auth.record.role);}catch(e){const msg=e?.response?.data?.email?.message||e.message||'Signup failed.';errEl.textContent=msg;errEl.style.display='block';btn.disabled=false;btn.textContent='Create Free Account';}}
-document.addEventListener('keydown',(e)=>{if(e.key==='Enter'){const loginVisible=document.getElementById('login-form').style.display!=='none';if(loginVisible)login();else signup();}});
+// ── SHOWCASE PROGRAMS ────────────────────────────
+const CATEGORY_THUMBS = {
+    STRENGTH:'linear-gradient(135deg,#0D211A,#1B4D3E)',
+    POWER:'linear-gradient(135deg,#241A08,#4D3308)',
+    RUN:'linear-gradient(135deg,#08210D,#1E4D2B)',
+    CIRCUIT:'linear-gradient(135deg,#0A1C24,#1B3E4D)',
+    MOBILITY:'linear-gradient(135deg,#1C0D21,#401B4D)',
+    CARDIO:'linear-gradient(135deg,#2D0B10,#54141E)',
+    'WARM UP':'linear-gradient(135deg,#2B1D08,#543914)',
+    OTHER:'linear-gradient(135deg,#141A17,#2D3833)',
+};
+async function loadShowcasePrograms() {
+    try {
+        const progs = await pb.collection('programs').getFullList({
+            filter:'is_showcase=true && archived=false', sort:'name', requestKey:null
+        });
+        if (!progs.length) return;
+        document.getElementById('showcase-section').style.display = 'block';
+        document.getElementById('showcase-grid').innerHTML = progs.map(p => {
+            const cat = (p.category||'OTHER').toUpperCase();
+            const bg = CATEGORY_THUMBS[cat] || CATEGORY_THUMBS.OTHER;
+            let data = p.workout_data;
+            try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
+            const sessions = Array.isArray(data?.schedule||data) ? (data.schedule||data).length : 0;
+            const thumb = p.cover_image
+                ? `<img class="showcase-thumb" src="https://restperiod.org/api/files/programs/${p.id}/${p.cover_image}" loading="lazy">`
+                : `<div class="showcase-thumb-ph" style="background:${bg};"></div>`;
+            return `<div class="showcase-card" onclick="window.location.href='program.html?id=${p.id}&preview=1'">
+                ${thumb}
+                <div class="showcase-body">
+                    <div class="showcase-name">${p.name}</div>
+                    <div class="showcase-meta">${p.is_repeatable?'Repeatable':sessions+' sessions'}</div>
+                </div>
+            </div>`;
+        }).join('');
+    } catch(e) { console.error(e); }
+}
+loadShowcasePrograms();
+
+// Auto-open signup tab if returning from preview
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('signup')==='1') {
+    setTimeout(()=>{
+        switchTab('signup');
+        document.querySelector('.login-section')?.scrollIntoView({behavior:'smooth'});
+    },300);
+}
 
 // ── MODALS ────────────────────────────────────────
 function openWhatIsModal(){document.getElementById('whatis-overlay').style.display='flex';}
@@ -333,90 +234,11 @@ function openHomescreenModal(){document.getElementById('hs-overlay').classList.a
 function closeHomescreenModal(){document.getElementById('hs-overlay').classList.remove('open');}
 function switchHsTab(tab){document.getElementById('hs-tab-ios').classList.toggle('active',tab==='ios');document.getElementById('hs-tab-android').classList.toggle('active',tab==='android');document.getElementById('hs-ios').style.display=tab==='ios'?'block':'none';document.getElementById('hs-android').style.display=tab==='android'?'block':'none';}
 
-// ── DAILY ROTATION HELPER ──────────────────────────
-// Deterministic per-day index: same value for everyone, changes at UTC midnight (~24hrs).
-function seededDailyIndex(length, salt){
-    if(!length) return 0;
-    const dateStr = new Date().toISOString().slice(0,10); // YYYY-MM-DD
-    const str = dateStr + '|' + salt;
-    let hash = 0;
-    for(let i=0;i<str.length;i++){ hash = (hash*31 + str.charCodeAt(i)) >>> 0; }
-    return hash % length;
-}
-
-// ── EXERCISE OF THE DAY ────────────────────────────
-// Reuses the existing video overlay/openVideo() so mp4s from exercises.js play the same
-// way they do in the library.
-function openExerciseOfDayModal(){
-    if(typeof exerciseDatabase === 'undefined' || !exerciseDatabase.length){
-        alert('Exercise library is still loading — try again in a moment.');
-        return;
-    }
-    const idx = seededDailyIndex(exerciseDatabase.length, 'exercise-of-day');
-    const ex = exerciseDatabase[idx];
-    openVideo(ex.title, ex.src);
-}
-
-// ── EXERCISE THEORY ────────────────────────────────
-// Keep this list in sync with THEORY_ITEMS in explore.html.
-const THEORY_ITEMS = [
-    { tag:'Principles', title:'Principles of Recovery',     file:'principlesofrecovery.html' },
-    { tag:'Principles', title:'Principle of Overload',      file:'principleofoverload.html' },
-    { tag:'Principles', title:'Principle of Progression',   file:'principleofprogression.html' },
-    { tag:'Principles', title:'Principle of Reversibility', file:'principleofreversibility.html' },
-    { tag:'Principles', title:'Principle of Specificity',   file:'principleofspecificity.html' },
-    { tag:'Principles', title:'Principle of Individuality', file:'principleofindividuality.html' },
-];
-function openTheoryModal(){
-    const idx = seededDailyIndex(THEORY_ITEMS.length, 'exercise-theory');
-    const item = THEORY_ITEMS[idx];
-    document.getElementById('theory-reader-title').textContent = item.title;
-    document.getElementById('theory-reader-frame').src = item.file;
-    document.getElementById('theory-reader-overlay').classList.add('open');
-}
-function closeTheoryModal(){
-    document.getElementById('theory-reader-overlay').classList.remove('open');
-    document.getElementById('theory-reader-frame').src = 'about:blank';
-}
-
-// ── VIDEO ─────────────────────────────────────────
-function openVideo(name,url){const cleanName=name.replace(/^([A-Z0-9-]{2,}\s*)+/,'').trim();document.getElementById('video-title').textContent=cleanName;const content=document.getElementById('video-content');if(!url){content.innerHTML='<div style="padding:40px;text-align:center;color:#555;">No video available.</div>';}else if(url.includes('.mp4')||url.includes('.mov')||url.includes('pocketbase')){content.innerHTML=`<video controls autoplay loop playsinline style="width:100%;display:block;border-radius:0 0 12px 12px;max-height:70vh;"><source src="${url}" type="video/mp4"></video>`;}else{let videoId='';if(url.includes('v='))videoId=url.split('v=')[1].split('&')[0];else if(url.includes('youtu.be/'))videoId=url.split('youtu.be/')[1].split('?')[0];content.innerHTML=`<div style="position:relative;padding-bottom:56.25%;height:0;"><iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:0 0 12px 12px;" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe></div>`;}document.getElementById('video-overlay').classList.add('open');}
-function handleVideoOverlayClick(e){if(e.target===document.getElementById('video-overlay'))closeVideo();}
-function closeVideo(){document.getElementById('video-overlay').classList.remove('open');document.getElementById('video-content').innerHTML='';}
-
-// ── COUNTDOWN ─────────────────────────────────────
-let cdRunning=false,cdTime=60,cdInterval=null;
-function updateCDDisplay(){const m=Math.floor(cdTime/60),s=cdTime%60;document.getElementById('cd-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
-function toggleCountdown(){const btn=document.getElementById('cd-btn');if(cdRunning){clearInterval(cdInterval);cdRunning=false;btn.textContent='Start';btn.classList.remove('running');}else{cdTime=parseInt(document.getElementById('cd-input').value)||60;cdRunning=true;btn.textContent='Stop';btn.classList.add('running');cdInterval=setInterval(()=>{cdTime--;updateCDDisplay();if(cdTime<=0){clearInterval(cdInterval);cdRunning=false;btn.textContent='Start';btn.classList.remove('running');}},1000);}}
-
-// ── METRONOME ─────────────────────────────────────
-let audioCtx=null,metroPlaying=false,metroTimerID=null,nextTickTime=0;
-function scheduleClick(time){const osc=audioCtx.createOscillator(),env=audioCtx.createGain();osc.type='sine';osc.frequency.value=1000;env.gain.setValueAtTime(1,time);env.gain.exponentialRampToValueAtTime(0.001,time+0.025);osc.connect(env);env.connect(audioCtx.destination);osc.start(time);osc.stop(time+0.03);}
-function metroScheduler(){const bpm=parseFloat(document.getElementById('bpm-slider').value),spb=60/bpm;while(nextTickTime<audioCtx.currentTime+0.1){scheduleClick(nextTickTime);nextTickTime+=spb;}metroTimerID=setTimeout(metroScheduler,25);}
-function toggleMetronome(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const btn=document.getElementById('metro-btn');metroPlaying=!metroPlaying;if(metroPlaying){btn.textContent='Stop';btn.classList.add('running');nextTickTime=audioCtx.currentTime;metroScheduler();}else{btn.textContent='Start';btn.classList.remove('running');clearTimeout(metroTimerID);}}
-
-// ── STOPWATCH ─────────────────────────────────────
-let swRunning=false,swStart=0,swElapsed=0,swInterval=null;
-function toggleStopwatch(){const btn=document.getElementById('sw-btn');if(swRunning){clearInterval(swInterval);swElapsed+=Date.now()-swStart;swRunning=false;btn.textContent='Start';btn.classList.remove('running');}else{swStart=Date.now();swRunning=true;btn.textContent='Stop';btn.classList.add('running');swInterval=setInterval(()=>{const t=swElapsed+(Date.now()-swStart),m=Math.floor(t/60000),s=Math.floor((t%60000)/1000),ms=Math.floor((t%1000)/10);document.getElementById('sw-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms).padStart(2,'0')}`;},50);}}
-function resetStopwatch(){clearInterval(swInterval);swRunning=false;swElapsed=0;document.getElementById('sw-display').textContent='00:00.00';document.getElementById('sw-btn').textContent='Start';document.getElementById('sw-btn').classList.remove('running');}
-
-// ── 1RM ───────────────────────────────────────────
-let rmUnit='kg';
-function setRMUnit(u){rmUnit=u;document.getElementById('rm-kg-btn').classList.toggle('active',u==='kg');document.getElementById('rm-lb-btn').classList.toggle('active',u==='lb');document.getElementById('rm-weight-label').textContent=`Weight (${u})`;clear1RM();}
-function clear1RM(){document.getElementById('rm-weight').value='';document.getElementById('rm-reps').value='';document.getElementById('rm-output').style.display='none';document.getElementById('rm-table-body').innerHTML='';}
-function calc1RM(){let w=parseFloat(document.getElementById('rm-weight').value);const r=parseFloat(document.getElementById('rm-reps').value);if(!w||!r||r<1)return;if(rmUnit==='lb')w=w/2.2046;const tbody=document.getElementById('rm-table-body');tbody.innerHTML='';for(let reps=1;reps<=10;reps++){let e=w*(1+reps/30),b=reps<37?w*(36/(37-reps)):null;if(rmUnit==='lb'){e*=2.2046;if(b)b*=2.2046;}const fmt=v=>v?`${Math.round(v)}${rmUnit}`:'—';const row=document.createElement('tr');if(reps===Math.round(r))row.classList.add('highlight');row.innerHTML=`<td>${reps}</td><td>${fmt(e)}</td><td>${fmt(b)}</td>`;tbody.appendChild(row);}document.getElementById('rm-output').style.display='block';}
-
-// ── PACE ──────────────────────────────────────────
-let paceUnit='km';
-function setPaceUnit(u){paceUnit=u;document.getElementById('pace-km-btn').classList.toggle('active',u==='km');document.getElementById('pace-mi-btn').classList.toggle('active',u==='mi');document.getElementById('pace-dist-label').textContent=`Distance (${u})`;document.getElementById('pace-pace-label').textContent=`Pace /${u}`;document.getElementById('pace-speed-label').textContent=`Speed (${u}/h)`;clearPace();}
-function clearPace(){['pace-dist','pace-min','pace-sec','pace-pace-min','pace-pace-sec','pace-speed'].forEach(id=>document.getElementById(id).value='');const o=document.getElementById('pace-output');o.style.display='none';o.innerHTML='';}
-function solvePace(){const dist=document.getElementById('pace-dist').value,tMin=document.getElementById('pace-min').value,tSec=document.getElementById('pace-sec').value,pMin=document.getElementById('pace-pace-min').value,pSec=document.getElementById('pace-pace-sec').value,speed=document.getElementById('pace-speed').value,out=document.getElementById('pace-output'),u=paceUnit;const hasTime=tMin!==''||tSec!=='',hasPace=pMin!==''||pSec!=='',hasDist=dist!=='',hasSpeed=speed!=='';const tt=hasTime?(parseFloat(tMin)||0)*60+(parseFloat(tSec)||0):null,pp=hasPace?(parseFloat(pMin)||0)*60+(parseFloat(pSec)||0):null;let d=hasDist?parseFloat(dist):null,t=tt,p=pp,sp=hasSpeed?parseFloat(speed):null;if(d&&t&&!p)p=t/d;if(d&&t&&!sp)sp=d/(t/3600);if(d&&p&&!t)t=d*p;if(d&&p&&!sp)sp=3600/p;if(d&&sp&&!t)t=(d/sp)*3600;if(d&&sp&&!p)p=3600/sp;if(t&&p&&!d)d=t/p;if(t&&p&&!sp)sp=3600/p;if(t&&sp&&!d)d=sp*(t/3600);if(t&&sp&&!p)p=3600/sp;if(!d||!t||!p||!sp){out.innerHTML='Fill in any 2 fields to solve.';out.style.display='block';return;}const pM=Math.floor(p/60),pS=Math.round(p%60),tH=Math.floor(t/3600),tM=Math.floor((t%3600)/60),tSS=Math.round(t%60),ms=(d*1000)/t;out.innerHTML=`Distance: <b style="color:var(--brand-accent)">${d.toFixed(2)} ${u}</b><br>Time: <b style="color:var(--brand-accent)">${tH>0?tH+'h ':''} ${tM}m ${tSS}s</b><br>Pace: <b style="color:var(--brand-accent)">${pM}:${String(pS).padStart(2,'0')} /${u}</b><br>Speed: <b style="color:var(--brand-accent)">${sp.toFixed(2)} ${u}/h</b><br>Speed: <b style="color:var(--brand-accent)">${ms.toFixed(2)} m/s</b>`;out.style.display='block';}
-
-// ── INTERVAL ──────────────────────────────────────
-let intRunning=false,intInterval=null,intPhase='idle',intCurrentSet=0,intTotalSets=0,intTime=0;
-function updateIntDisplay(){const m=Math.floor(intTime/60),s=intTime%60;document.getElementById('int-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
-function setIntPhase(phase,set,total){intPhase=phase;const label=document.getElementById('int-phase-label'),display=document.getElementById('int-display'),setsLabel=document.getElementById('int-sets-label');if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';display.style.color='#fb923c';setsLabel.textContent='';}else if(phase==='work'){label.textContent='WORK';label.style.color='var(--brand-accent)';display.style.color='var(--brand-accent)';setsLabel.textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';display.style.color='#f87171';setsLabel.textContent=`Set ${set} of ${total}`;}else if(phase==='done'){label.textContent='DONE';label.style.color='var(--brand-accent)';display.style.color='white';setsLabel.textContent='';}}
-function toggleInterval(){const btn=document.getElementById('int-btn');if(intRunning){clearInterval(intInterval);intRunning=false;btn.textContent='Start';btn.classList.remove('running');intPhase='idle';document.getElementById('int-phase-label').textContent='READY';document.getElementById('int-phase-label').style.color='var(--brand-accent)';document.getElementById('int-display').style.color='white';document.getElementById('int-sets-label').textContent='';intTime=parseInt(document.getElementById('int-work').value)||30;updateIntDisplay();return;}const warmup=parseInt(document.getElementById('int-warmup').value)||0,sets=parseInt(document.getElementById('int-sets').value)||5,work=parseInt(document.getElementById('int-work').value)||30,rest=parseInt(document.getElementById('int-rest').value)||15;intTotalSets=sets;intCurrentSet=1;intRunning=true;btn.textContent='Stop';btn.classList.add('running');if(warmup>0){intTime=warmup;setIntPhase('warmup',0,sets);}else{intTime=work;setIntPhase('work',1,sets);}updateIntDisplay();intInterval=setInterval(()=>{intTime--;updateIntDisplay();if(intTime>0)return;if(intPhase==='warmup'){intTime=work;intCurrentSet=1;setIntPhase('work',intCurrentSet,intTotalSets);}else if(intPhase==='work'){if(rest>0){intTime=rest;setIntPhase('rest',intCurrentSet,intTotalSets);}else{intCurrentSet++;if(intCurrentSet>intTotalSets){clearInterval(intInterval);intRunning=false;btn.textContent='Start';btn.classList.remove('running');intTime=0;setIntPhase('done',0,0);updateIntDisplay();}else{intTime=work;setIntPhase('work',intCurrentSet,intTotalSets);}}}else if(intPhase==='rest'){intCurrentSet++;if(intCurrentSet>intTotalSets){clearInterval(intInterval);intRunning=false;btn.textContent='Start';btn.classList.remove('running');intTime=0;setIntPhase('done',0,0);updateIntDisplay();}else{intTime=work;setIntPhase('work',intCurrentSet,intTotalSets);}}},1000);}
+// ── AUTH ──────────────────────────────────────────
+function switchTab(tab){document.getElementById('tab-login').classList.toggle('active',tab==='login');document.getElementById('tab-signup').classList.toggle('active',tab==='signup');document.getElementById('login-form').style.display=tab==='login'?'block':'none';document.getElementById('signup-form').style.display=tab==='signup'?'block':'none';}
+async function login(){const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value,errEl=document.getElementById('login-error'),btn=document.getElementById('login-btn');errEl.style.display='none';btn.disabled=true;btn.textContent='Signing in...';try{const auth=await pb.collection('users').authWithPassword(email,password);redirect(auth.record.role);}catch(e){errEl.textContent='Invalid email or password.';errEl.style.display='block';btn.disabled=false;btn.textContent='Sign In';}}
+async function signup(){const name=document.getElementById('signup-name').value.trim(),email=document.getElementById('signup-email').value.trim(),password=document.getElementById('signup-password').value,confirm=document.getElementById('signup-confirm').value,errEl=document.getElementById('signup-error'),btn=document.getElementById('signup-btn');errEl.style.display='none';if(!name||!email||!password){errEl.textContent='Please fill in all fields.';errEl.style.display='block';return;}if(password.length<8){errEl.textContent='Password must be at least 8 characters.';errEl.style.display='block';return;}if(password!==confirm){errEl.textContent='Passwords do not match.';errEl.style.display='block';return;}btn.disabled=true;btn.textContent='Creating account...';try{await pb.collection('users').create({name,email,password,passwordConfirm:confirm,role:'free',emailVisibility:true});const auth=await pb.collection('users').authWithPassword(email,password);redirect(auth.record.role);}catch(e){const msg=e?.response?.data?.email?.message||e.message||'Signup failed.';errEl.textContent=msg;errEl.style.display='block';btn.disabled=false;btn.textContent='Create Free Account';}}
+document.addEventListener('keydown',(e)=>{if(e.key==='Enter'){const loginVisible=document.getElementById('login-form').style.display!=='none';if(loginVisible)login();else signup();}});
 </script>
 </body>
 </html>

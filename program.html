@@ -33,6 +33,15 @@
         .tab.active { background: var(--brand-accent); color: black; font-weight: 800; }
         .tab-date { font-size: 0.55rem; display: block; opacity: 0.7; margin-top: 2px; }
 
+        /* PREVIEW SIGNUP MODAL */
+        .signup-prompt-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9000; align-items:center; justify-content:center; padding:20px; }
+        .signup-prompt-overlay.open { display:flex; }
+        .signup-prompt-box { background:var(--card-bg); border:1px solid var(--brand-accent); border-radius:12px; padding:28px; width:100%; max-width:380px; text-align:center; }
+        .signup-prompt-box h3 { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1rem; color:white; margin-bottom:10px; }
+        .signup-prompt-box p { font-size:0.82rem; color:#888; margin-bottom:20px; line-height:1.6; }
+        .signup-prompt-box .btn-signup { display:block; width:100%; padding:13px; background:var(--brand-accent); color:#000; border:none; border-radius:8px; font-family:'Montserrat',sans-serif; font-weight:800; font-size:0.85rem; cursor:pointer; margin-bottom:10px; }
+        .signup-prompt-box .btn-login { display:block; width:100%; padding:11px; background:none; color:#888; border:1px solid var(--border); border-radius:8px; font-family:'Montserrat',sans-serif; font-weight:800; font-size:0.8rem; cursor:pointer; }
+
         .section-header { background: #000; color: white; padding: 12px 15px; border-radius: 4px; margin: 25px 0 10px 0; font-family: 'Montserrat'; font-weight: 800; border-left: 4px solid var(--brand-accent); font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
         .exercise-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
@@ -308,15 +317,66 @@
 })();
 
 const pb = new PocketBase('https://restperiod.org');
+let isPreviewMode = false;
+
+function showSignupPrompt() {
+    document.getElementById('signup-prompt').classList.add('open');
+}
 let allPrograms = [], premadePrograms = [], currentProgram = null, currentWeekIndex = 0, masterExerciseList = [];
 let tAudioCtx = null, tMetroPlaying = false, tMetroTimerID = null, tNextTick = 0;
 
+const IS_PREVIEW = new URLSearchParams(window.location.search).get('preview') === '1';
+const PREVIEW_ID = new URLSearchParams(window.location.search).get('id');
+
 window.onload = async () => {
+    // Preview mode — allow guests to view a specific program
+    if (IS_PREVIEW && PREVIEW_ID) {
+        await loadMasterLibrary();
+        await loadPreviewProgram(PREVIEW_ID);
+        return;
+    }
     if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
     runNavClock();
     await loadMasterLibrary();
     await fetchUserPrograms();
 };
+
+async function loadPreviewProgram(id) {
+    try {
+        const prog = await pb.collection('programs').getOne(id, {requestKey: null});
+        // Hide trainer nav, show back button
+        const nav = document.querySelector('.top-bar');
+        if (nav) nav.innerHTML = `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;">
+            <a href="index.html" style="color:var(--brand-accent);font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.75rem;text-decoration:none;">← Back</a>
+            <span style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.85rem;color:white;">${prog.name}</span>
+        </div>`;
+        
+        let data = prog.workout_data;
+        if (typeof data === 'string') data = JSON.parse(data);
+        const schedule = data.schedule || data || [];
+        
+        currentProgram = { ...prog, schedule };
+        currentWeekIndex = 0;
+        isPreviewMode = true;
+        
+        renderWeekTabs();
+        renderWorkout();
+        
+        // Show preview banner
+        const container = document.querySelector('.program-container') || document.body;
+        const banner = document.createElement('div');
+        banner.style.cssText = 'background:linear-gradient(135deg,#0D211A,#1B4D3E);border:1px solid var(--brand-accent);border-radius:10px;padding:16px;margin:12px 16px;text-align:center;';
+        banner.innerHTML = `<div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;color:var(--brand-accent);margin-bottom:6px;">FREE PREVIEW</div>
+            <div style="font-size:0.78rem;color:#888;margin-bottom:14px;">Create a free account to log your sessions and track progress</div>
+            <button onclick="window.location.href='index.html?signup=1'" style="background:var(--brand-accent);color:#000;border:none;padding:10px 24px;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;">Sign Up Free</button>`;
+        const firstCard = document.querySelector('.week-content');
+        if (firstCard) firstCard.insertBefore(banner, firstCard.firstChild);
+        else document.querySelector('.main-scroll')?.prepend(banner);
+    } catch(e) {
+        console.error(e);
+        window.location.href = 'index.html';
+    }
+}
 
 async function loadMasterLibrary() {
     if (typeof exerciseDatabase !== 'undefined') masterExerciseList = [...exerciseDatabase];
@@ -511,7 +571,7 @@ function renderContent() {
     ].join('');
 
     let html = descHtml + `<div class="date-row">
-        <div><span class="quad-title">Session Date</span><input type="date" class="date-input" value="${session.sessionDate||''}" onchange="saveSessionDate(this.value)" /></div>
+        <div><span class="quad-title">Session Date</span><input type="date" class="date-input" value="${session.sessionDate||''}" onchange="if(isPreviewMode){this.value='';showSignupPrompt();}else{saveSessionDate(this.value);}" /></div>
         <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
             ${scheduledStr ? `<div class="date-scheduled">📅 Scheduled <span>${scheduledStr}</span></div>` : ''}
             <div id="session-date-badge">${completedStr ? `<div class="date-completed">✓ COMPLETED ${completedStr}</div>` : `<div class="date-not-logged">Not logged yet</div>`}</div>
@@ -554,7 +614,7 @@ function generateExerciseHTML(list, type, isRepeat) {
                 const isChecked = (sessionStarted && s.act_done) ? 'checked' : '';
                 const onChangeFn = isRepeat
                     ? `updateRepeatSet('${type}',${i},${si},'FIELD',this.value)`
-                    : `autoSaveSet('${type}',${i},${si},'FIELD',this.value)`;
+                    : `if(isPreviewMode){this.value='';showSignupPrompt();}else{autoSaveSet('${type}',${i},${si},'FIELD',this.value);}`;
                 const tickFn = isRepeat
                     ? `fillRepeatSet('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe||''}',this.checked)`
                     : `fillSetData('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe||''}',this.checked)`;
@@ -736,5 +796,15 @@ function tUpdateIntDisplay(){const m=Math.floor(tIntTime/60),s=tIntTime%60;docum
 function tSetIntPhase(phase,set,total){tIntPhase=phase;const label=document.getElementById('t-int-phase'),disp=document.getElementById('t-int-display'),sets=document.getElementById('t-int-sets-label');if(phase==='warmup'){label.textContent='WARM UP';label.style.color='#fb923c';disp.style.color='#fb923c';sets.textContent='';}else if(phase==='work'){label.textContent='WORK';label.style.color='var(--brand-accent)';disp.style.color='var(--brand-accent)';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){label.textContent='REST';label.style.color='#f87171';disp.style.color='#f87171';sets.textContent=`Set ${set} of ${total}`;}else if(phase==='done'){label.textContent='DONE 🔥';label.style.color='var(--brand-accent)';disp.style.color='white';sets.textContent='';}}
 function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIntRunning){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntPhase='idle';document.getElementById('t-int-phase').textContent='READY';document.getElementById('t-int-phase').style.color='var(--brand-accent)';document.getElementById('t-int-display').style.color='white';document.getElementById('t-int-sets-label').textContent='';tIntTime=parseInt(document.getElementById('t-int-work').value)||30;tUpdateIntDisplay();return;}const warmup=parseInt(document.getElementById('t-int-warmup').value)||0,sets=parseInt(document.getElementById('t-int-sets').value)||5,work=parseInt(document.getElementById('t-int-work').value)||30,rest=parseInt(document.getElementById('t-int-rest').value)||15;tIntTotalSets=sets;tIntCurrentSet=1;tIntRunning=true;btn.textContent='Stop';btn.classList.add('running');if(warmup>0){tIntTime=warmup;tSetIntPhase('warmup',0,sets);}else{tIntTime=work;tSetIntPhase('work',1,sets);}tUpdateIntDisplay();tIntInterval=setInterval(()=>{tIntTime--;tUpdateIntDisplay();if(tIntTime>0)return;if(tIntPhase==='warmup'){tIntTime=work;tIntCurrentSet=1;tSetIntPhase('work',1,tIntTotalSets);}else if(tIntPhase==='work'){if(rest>0){tIntTime=rest;tSetIntPhase('rest',tIntCurrentSet,tIntTotalSets);}else{tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}}else if(tIntPhase==='rest'){tIntCurrentSet++;if(tIntCurrentSet>tIntTotalSets){clearInterval(tIntInterval);tIntRunning=false;btn.textContent='Start';btn.classList.remove('running');tIntTime=0;tSetIntPhase('done',0,0);tUpdateIntDisplay();}else{tIntTime=work;tSetIntPhase('work',tIntCurrentSet,tIntTotalSets);}}},1000);}
 </script>
+<!-- SIGNUP PROMPT MODAL -->
+<div class="signup-prompt-overlay" id="signup-prompt" onclick="if(event.target===this)document.getElementById('signup-prompt').classList.remove('open')">
+    <div class="signup-prompt-box">
+        <h3>Create a Free Account</h3>
+        <p>To log your sessions, track weights and dates, and save your progress — sign up free. Takes 30 seconds.</p>
+        <button class="btn-signup" onclick="window.location.href='index.html?signup=1'">Create Free Account</button>
+        <button class="btn-login" onclick="window.location.href='index.html'">Already have an account? Sign In</button>
+    </div>
+</div>
+
 </body>
 </html>
