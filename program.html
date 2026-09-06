@@ -344,38 +344,96 @@ window.onload = async () => {
 async function loadPreviewProgram(id) {
     try {
         const prog = await pb.collection('programs').getOne(id, {requestKey: null});
-        // Hide trainer nav, show back button
-        const nav = document.querySelector('.top-bar');
-        if (nav) nav.innerHTML = `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;">
-            <a href="index.html" style="color:var(--brand-accent);font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.75rem;text-decoration:none;">← Back</a>
-            <span style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.85rem;color:white;">${prog.name}</span>
-        </div>`;
-        
         let data = prog.workout_data;
         if (typeof data === 'string') data = JSON.parse(data);
         const schedule = data.schedule || data || [];
-        
-        currentProgram = { ...prog, schedule };
-        currentWeekIndex = 0;
-        isPreviewMode = true;
-        
-        renderWeekTabs();
-        renderWorkout();
-        
-        // Show preview banner
-        const container = document.querySelector('.program-container') || document.body;
-        const banner = document.createElement('div');
-        banner.style.cssText = 'background:linear-gradient(135deg,#0D211A,#1B4D3E);border:1px solid var(--brand-accent);border-radius:10px;padding:16px;margin:12px 16px;text-align:center;';
-        banner.innerHTML = `<div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;color:var(--brand-accent);margin-bottom:6px;">FREE PREVIEW</div>
-            <div style="font-size:0.78rem;color:#888;margin-bottom:14px;">Create a free account to log your sessions and track progress</div>
-            <button onclick="window.location.href='index.html?signup=1'" style="background:var(--brand-accent);color:#000;border:none;padding:10px 24px;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;">Sign Up Free</button>`;
-        const firstCard = document.querySelector('.week-content');
-        if (firstCard) firstCard.insertBefore(banner, firstCard.firstChild);
-        else document.querySelector('.main-scroll')?.prepend(banner);
+
+        // Replace entire page body with preview UI
+        document.body.innerHTML = `
+        <div style="max-width:700px;margin:0 auto;padding:0 0 80px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card-bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;">
+                <a href="index.html" style="color:var(--brand-accent);font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.75rem;text-decoration:none;">← Back</a>
+                <span style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.9rem;color:white;flex:1;">${prog.name}</span>
+            </div>
+
+            <div style="background:linear-gradient(135deg,#0D211A,#1B4D3E);border-bottom:1px solid var(--brand-accent);padding:16px;text-align:center;">
+                <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.75rem;color:var(--brand-accent);margin-bottom:6px;">FREE PREVIEW</div>
+                <div style="font-size:0.78rem;color:#888;margin-bottom:12px;">Sign up free to log sessions and track your progress</div>
+                <button onclick="window.location.href='index.html?signup=1'" style="background:var(--brand-accent);color:#000;border:none;padding:10px 24px;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;margin-right:8px;">Sign Up Free</button>
+                <button onclick="window.location.href='index.html'" style="background:none;color:#888;border:1px solid var(--border);padding:10px 16px;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer;">Sign In</button>
+            </div>
+
+            <div id="preview-sessions" style="padding:16px;"></div>
+        </div>`;
+
+        // Render sessions
+        const sessionsEl = document.getElementById('preview-sessions');
+        if (!schedule.length) {
+            sessionsEl.innerHTML = '<div style="color:#555;text-align:center;padding:40px;">No sessions found.</div>';
+            return;
+        }
+
+        sessionsEl.innerHTML = schedule.map((session, si) => {
+            const warmup = session.warmup || [];
+            const exercises = session.exercises || [];
+            const allEx = [...warmup, ...exercises];
+            const label = prog.is_repeatable ? `Session` : `Session ${si + 1}`;
+
+            const exHTML = allEx.map(ex => {
+                const cleanName = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim() || ex.name;
+                const sets = (ex.setsData || []).map(s => 
+                    `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px;">
+                        ${['reps','weight','rest','rpe'].map(f => `<div style="background:var(--input-bg);border-radius:6px;padding:8px;text-align:center;">
+                            <div style="font-size:0.5rem;color:#555;font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;margin-bottom:4px;">${f==='weight'?'KG':f.toUpperCase()}</div>
+                            <div style="font-size:0.9rem;color:var(--brand-accent);font-weight:700;">${s[f]||'—'}</div>
+                        </div>`).join('')}
+                    </div>`
+                ).join('');
+
+                return `<div style="margin-bottom:16px;">
+                    <div onclick="showSignupPrompt()" style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;color:var(--brand-accent);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:10px;cursor:pointer;">
+                        <i class="fas fa-play-circle" style="font-size:1.2rem;margin-right:8px;"></i>${cleanName}
+                    </div>
+                    ${sets}
+                </div>`;
+            }).join('');
+
+            return `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;">
+                <div style="padding:12px 16px;background:var(--input-bg);border-bottom:1px solid var(--border);">
+                    <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.75rem;color:white;">${label}</div>
+                    <div style="font-size:0.7rem;color:#555;margin-top:2px;">${allEx.length} exercise${allEx.length!==1?'s':''}</div>
+                </div>
+                <div style="padding:16px;">
+                    ${exHTML}
+                    <button onclick="showSignupPrompt()" style="width:100%;padding:12px;background:var(--brand-accent);color:#000;border:none;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;margin-top:8px;">
+                        Log This Session →
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+
+        // Add signup prompt modal
+        const modal = document.createElement('div');
+        modal.id = 'signup-prompt';
+        modal.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;align-items:center;justify-content:center;padding:20px;';
+        modal.onclick = e => { if(e.target===modal) modal.style.display='none'; };
+        modal.innerHTML = `<div style="background:var(--card-bg);border:1px solid var(--brand-accent);border-radius:12px;padding:28px;width:100%;max-width:380px;text-align:center;">
+            <h3 style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;color:white;margin-bottom:10px;">Create a Free Account</h3>
+            <p style="font-size:0.82rem;color:#888;margin-bottom:20px;line-height:1.6;">To log your sessions, track weights and save your progress — sign up free. Takes 30 seconds.</p>
+            <button onclick="window.location.href='index.html?signup=1'" style="display:block;width:100%;padding:13px;background:var(--brand-accent);color:#000;border:none;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.85rem;cursor:pointer;margin-bottom:10px;">Create Free Account</button>
+            <button onclick="window.location.href='index.html'" style="display:block;width:100%;padding:11px;background:none;color:#888;border:1px solid var(--border);border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;">Already have an account? Sign In</button>
+        </div>`;
+        document.body.appendChild(modal);
+
     } catch(e) {
-        console.error(e);
+        console.error('Preview error:', e);
         window.location.href = 'index.html';
     }
+}
+
+function showSignupPrompt() {
+    const m = document.getElementById('signup-prompt');
+    if (m) m.style.display = 'flex';
 }
 
 async function loadMasterLibrary() {
