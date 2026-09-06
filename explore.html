@@ -193,7 +193,7 @@
 
 <!-- PHILOSOPHY TAB -->
 <div class="tab-panel" id="tab-philosophy">
-    <div class="section-title">Rest Period Philosophy — A collection of thoughts, conversations around training and exercise.</div>
+    <div class="section-title">Rest Period — The Book</div>
     <div class="lesson-grid" id="lesson-grid"></div>
 </div>
 
@@ -270,7 +270,7 @@ const CHAPTERS = [
     { num: 34, title: 'EIGHT DAYS A WEEK',                    file: 'rpchp34Chapter 34 - EIGHT DAYS A WEEK.html' },
     { num: 35, title: 'HOOK YOUR FUTURE SELF UP',             file: 'rpchp35Chapter 35- HOOK YOUR FUTURE SELF UP.html' },
     { num: 36, title: 'TO BUY OR NOT BUY THE KAYAK',          file: 'rpchp36Chapter 36 - TO BUY OR NOT BUY THE KAYAK.html' },
-    { num: 37, title: 'TRUST THE PROCESS... IF YOU KNOW IT',  file: 'rpchp37Chapter 37 - TRUST THE PROCESS… IF YOU KNOW IT.html' },
+    { num: 37, title: 'TRUST THE PROCESS... IF YOU KNOW IT',  file: 'rpchp37Chapter 37 - TRUST THE PROCESS... IF YOU KNOW IT.html' },
 ];
 
 // ── THEORY PLACEHOLDERS ───────────────────────────
@@ -290,7 +290,6 @@ let currentLessonIndex = 0;
 let freeMasterPrograms = [];
 
 const CATEGORY_META = {
-    BODYWEIGHT: { label:'Bodyweight', thumbClass:'thumb-bodyweight', color:'#c184fc' },
     STRENGTH: { label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
     POWER:    { label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
     RUN:      { label:'Run',      thumbClass:'thumb-run',      color:'var(--brand-accent)' },
@@ -299,10 +298,8 @@ const CATEGORY_META = {
     CARDIO:   { label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
     'WARM UP':{ label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
     OTHER:    { label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
-    PRIMER:    { label:'Primer',    thumbClass:'thumb-primer',    color:'#884' },
-
 };
-const CATEGORY_ORDER = ['BODYWEIGHT','WARM UP','PRIMER','STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','OTHER'];
+const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
 
 // ── INIT ──────────────────────────────────────────
 window.onload = async () => {
@@ -482,6 +479,17 @@ async function loadTrainPrograms() {
         freeMasterPrograms = recs;
         renderTrainShelves();
     } catch(e) { console.error(e); }
+}
+
+function renderPremiumBanner() {
+    const wrap = document.getElementById('premium-banner-wrap');
+    if (!wrap) return;
+    if (isPremium || !pb.authStore.isValid) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = `<div class="premium-banner">
+        <h3>Unlock Premium Programs</h3>
+        <p>Get full access to all strength, power, run and circuit programs for <strong style="color:var(--brand-accent)">$19.99 NZD/month</strong>. Cancel anytime.</p>
+        <button class="btn-upgrade" id="upgrade-btn" onclick="startUpgrade()">Upgrade — $19.99 NZD/mo</button>
+    </div>`;
 }
 
 function renderTrainShelves() {
