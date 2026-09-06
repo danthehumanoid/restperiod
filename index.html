@@ -211,6 +211,7 @@ async function loadShowcasePrograms() {
                 <div class="showcase-body">
                     <div class="showcase-name">${p.name}</div>
                     <div class="showcase-meta">${p.is_repeatable?'Repeatable':sessions+' sessions'}</div>
+                    <button onclick="copyShareLink('${p.id}');event.stopPropagation();" style="margin-top:6px;width:100%;background:none;border:1px solid var(--brand-accent);color:var(--brand-accent);padding:4px;border-radius:4px;font-size:0.6rem;font-family:'Montserrat',sans-serif;font-weight:800;cursor:pointer;">SHARE</button>
                 </div>
             </div>`;
         }).join('');
@@ -225,6 +226,17 @@ if (urlParams.get('signup')==='1') {
         switchTab('signup');
         document.querySelector('.login-section')?.scrollIntoView({behavior:'smooth'});
     },300);
+}
+
+function copyShareLink(id) {
+    const url = `${window.location.origin}/program.html?id=${id}&preview=1`;
+    navigator.clipboard.writeText(url).then(() => {
+        const t = document.createElement('div');
+        t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--brand-accent);color:#000;padding:8px 20px;border-radius:50px;font-size:0.75rem;font-weight:800;z-index:9999;font-family:Montserrat,sans-serif;';
+        t.textContent = 'Link copied!';
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2000);
+    });
 }
 
 // ── MODALS ────────────────────────────────────────

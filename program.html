@@ -310,10 +310,10 @@
 
 <script>
 (function() {
+    const _params = new URLSearchParams(window.location.search);
+    if (_params.get('preview') === '1' && _params.get('id')) return; // allow preview
     const pb2 = new PocketBase('https://restperiod.org');
     if (!pb2.authStore.isValid) { window.location.href = '/index.html'; return; }
-    const role = pb2.authStore.model.role;
-    // free users can access program.html for their claimed programs
 })();
 
 const pb = new PocketBase('https://restperiod.org');
