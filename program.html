@@ -396,12 +396,22 @@ async function loadPreviewProgram(id) {
             <div style="background:linear-gradient(135deg,#0D211A,#1B4D3E);border-bottom:1px solid var(--brand-accent);padding:16px;text-align:center;">
                 <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.75rem;color:var(--brand-accent);margin-bottom:6px;">FREE PREVIEW</div>
                 <div style="font-size:0.78rem;color:#888;margin-bottom:12px;">Sign up free to log sessions and track your progress</div>
-                <button onclick="window.location.href='index.html?signup=1'" style="background:var(--brand-accent);color:#000;border:none;padding:10px 24px;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;margin-right:8px;">Sign Up Free</button>
+                <button onclick="window.location.href='index.html?signup=1&after_program='+PREVIEW_ID" style="background:var(--brand-accent);color:#000;border:none;padding:10px 24px;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;margin-right:8px;">Sign Up Free</button>
                 <button onclick="window.location.href='index.html'" style="background:none;color:#888;border:1px solid var(--border);padding:10px 16px;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer;">Sign In</button>
             </div>
 
+            <div id="preview-desc-banner" style="padding:16px 16px 0;"></div>
             <div id="preview-sessions" style="padding:16px;"></div>
         </div>`;
+
+        // Show description if available
+        const descBanner = document.getElementById('preview-desc-banner');
+        if (descBanner && prog.description) {
+            descBanner.innerHTML = `<div style="background:var(--input-bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:4px;">
+                <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.7rem;color:var(--brand-accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">About This Program</div>
+                <div style="font-size:0.85rem;color:#aaa;line-height:1.7;">${prog.description}</div>
+            </div>`;
+        }
 
         // Render sessions
         const sessionsEl = document.getElementById('preview-sessions');
@@ -434,11 +444,12 @@ async function loadPreviewProgram(id) {
                 const safeName = ex.name.replace(/'/g, "\\'");
                 const clickAction = videoUrl
                     ? `openPreviewVideo('${safeName}','${safeVideo}')`
-                    : `showSignupPrompt()`;
+                    : `''`;  // no video, no action
 
+                const hasVideo = !!videoUrl;
                 return `<div style="margin-bottom:16px;">
-                    <div onclick="${clickAction}" style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;color:var(--brand-accent);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:10px;cursor:pointer;">
-                        <i class="fas fa-play-circle" style="font-size:1.2rem;margin-right:8px;"></i>${cleanName}
+                    <div onclick="${clickAction}" style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;color:${hasVideo?'var(--brand-accent)':'#888'};padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:10px;cursor:${hasVideo?'pointer':'default'};">
+                        ${hasVideo ? '<i class="fas fa-play-circle" style="font-size:1.2rem;margin-right:8px;"></i>' : ''}${cleanName}
                     </div>
                     ${sets}
                 </div>`;
@@ -466,7 +477,7 @@ async function loadPreviewProgram(id) {
         modal.innerHTML = `<div style="background:var(--card-bg);border:1px solid var(--brand-accent);border-radius:12px;padding:28px;width:100%;max-width:380px;text-align:center;">
             <h3 style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;color:white;margin-bottom:10px;">Create a Free Account</h3>
             <p style="font-size:0.82rem;color:#888;margin-bottom:20px;line-height:1.6;">To log your sessions, track weights and save your progress — sign up free. Takes 30 seconds.</p>
-            <button onclick="window.location.href='index.html?signup=1'" style="display:block;width:100%;padding:13px;background:var(--brand-accent);color:#000;border:none;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.85rem;cursor:pointer;margin-bottom:10px;">Create Free Account</button>
+            <button onclick="window.location.href='index.html?signup=1&after_program='+PREVIEW_ID" style="display:block;width:100%;padding:13px;background:var(--brand-accent);color:#000;border:none;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.85rem;cursor:pointer;margin-bottom:10px;">Create Free Account</button>
             <button onclick="window.location.href='index.html'" style="display:block;width:100%;padding:11px;background:none;color:#888;border:1px solid var(--border);border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;cursor:pointer;">Already have an account? Sign In</button>
         </div>`;
         document.body.appendChild(modal);
@@ -938,7 +949,7 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
     <div class="signup-prompt-box">
         <h3>Create a Free Account</h3>
         <p>To log your sessions, track weights and dates, and save your progress — sign up free. Takes 30 seconds.</p>
-        <button class="btn-signup" onclick="window.location.href='index.html?signup=1'">Create Free Account</button>
+        <button class="btn-signup" onclick="window.location.href='index.html?signup=1&after_program='+PREVIEW_ID">Create Free Account</button>
         <button class="btn-login" onclick="window.location.href='index.html'">Already have an account? Sign In</button>
     </div>
 </div>

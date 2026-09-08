@@ -45,6 +45,20 @@
         .hs-step-text strong { color: white; }
         .hs-img { width: 100%; border-radius: 10px; margin: 16px 0; border: 1px solid var(--border); display: block; }
         .hs-close { width: 100%; padding: 13px; border: none; border-radius: 8px; background: var(--border); color: #888; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; cursor: pointer; margin-top: 8px; }
+        /* PROGRAM DETAIL MODAL */
+        .prog-detail-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9000; align-items:flex-end; justify-content:center; }
+        .prog-detail-overlay.open { display:flex; }
+        .prog-detail-box { background:var(--card-bg); border-radius:16px 16px 0 0; border:1px solid var(--border); border-bottom:none; width:100%; max-width:600px; max-height:85vh; overflow-y:auto; padding-bottom:40px; }
+        .prog-detail-thumb { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+        .prog-detail-thumb-ph { width:100%; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; }
+        .prog-detail-body { padding:20px; }
+        .prog-detail-title { font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.1rem; color:white; margin-bottom:8px; }
+        .prog-detail-desc { font-size:0.82rem; color:#888; line-height:1.6; margin-bottom:16px; }
+        .prog-detail-meta { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+        .prog-detail-meta span { font-size:0.65rem; color:#888; background:var(--input-bg); border:1px solid var(--border); padding:4px 10px; border-radius:20px; font-family:'Montserrat',sans-serif; font-weight:700; }
+        .btn-start-prog { background:var(--brand-accent); color:#000; border:none; padding:14px; width:100%; border-radius:8px; font-family:'Montserrat',sans-serif; font-weight:800; font-size:0.9rem; cursor:pointer; margin-bottom:8px; }
+        .btn-close-prog { background:none; border:1px solid var(--border); color:#555; padding:12px; width:100%; border-radius:8px; font-family:'Montserrat',sans-serif; font-weight:800; font-size:0.8rem; cursor:pointer; }
+
         /* SHOWCASE */
         .showcase-section { margin-bottom: 24px; }
         .showcase-label { font-family:'Montserrat',sans-serif; font-weight:800; font-size:0.65rem; color:var(--brand-accent); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; }
@@ -141,6 +155,20 @@
     </div>
 </div>
 
+<!-- PROGRAM DETAIL MODAL -->
+<div class="prog-detail-overlay" id="prog-detail-overlay" onclick="if(event.target===this)closeProgDetail()">
+    <div class="prog-detail-box">
+        <div id="prog-detail-media"></div>
+        <div class="prog-detail-body">
+            <div class="prog-detail-title" id="prog-detail-title"></div>
+            <div class="prog-detail-meta" id="prog-detail-meta"></div>
+            <div class="prog-detail-desc" id="prog-detail-desc"></div>
+            <button class="btn-start-prog" id="prog-detail-start">▶ Start This Program</button>
+            <button class="btn-close-prog" onclick="closeProgDetail()">Close</button>
+        </div>
+    </div>
+</div>
+
 <!-- HOMESCREEN MODAL -->
 <div class="hs-overlay" id="hs-overlay" onclick="if(event.target===this)closeHomescreenModal()">
     <div class="hs-box">
@@ -206,7 +234,12 @@ async function loadShowcasePrograms() {
             const thumb = p.cover_image
                 ? `<img class="showcase-thumb" src="https://restperiod.org/api/files/programs/${p.id}/${p.cover_image}" loading="lazy">`
                 : `<div class="showcase-thumb-ph" style="background:${bg};"></div>`;
-            return `<div class="showcase-card" onclick="window.location.href='program.html?id=${p.id}&preview=1'">
+            const desc = p.description || '';
+            const metaItems = [
+                (p.category||'').toUpperCase(),
+                p.is_repeatable ? 'Repeatable' : sessions+' sessions'
+            ].filter(Boolean).join('|');
+            return `<div class="showcase-card" onclick="openProgDetail('${p.id}','${p.name.replace(/'/g,"\\'")}','${desc.replace(/'/g,"\\'").replace(/\n/g,' ')}','${metaItems}','${p.cover_image ? 'https://restperiod.org/api/files/programs/'+p.id+'/'+p.cover_image : ''}','${cat}')">
                 ${thumb}
                 <div class="showcase-body">
                     <div class="showcase-name">${p.name}</div>
@@ -226,6 +259,36 @@ if (urlParams.get('signup')==='1') {
         switchTab('signup');
         document.querySelector('.login-section')?.scrollIntoView({behavior:'smooth'});
     },300);
+}
+// Show which program they'll get after signup
+const afterProgram = urlParams.get('after_program');
+if (afterProgram) {
+    pb.collection('programs').getOne(afterProgram, {requestKey:null}).then(prog => {
+        const badge = document.createElement('div');
+        badge.style.cssText = 'background:rgba(82,183,136,0.1);border:1px solid var(--brand-accent);border-radius:8px;padding:10px 14px;font-size:0.78rem;color:#aaa;margin-bottom:12px;text-align:center;';
+        badge.innerHTML = `After signing up, <strong style="color:white;">${prog.name}</strong> will be added to your programs.`;
+        const signupForm = document.getElementById('signup-form');
+        if (signupForm) signupForm.insertBefore(badge, signupForm.firstChild);
+    }).catch(()=>{});
+}
+
+function openProgDetail(id, name, desc, meta, imgUrl, cat) {
+    const bg = CATEGORY_THUMBS[cat] || CATEGORY_THUMBS.OTHER;
+    document.getElementById('prog-detail-title').textContent = name;
+    document.getElementById('prog-detail-desc').textContent = desc || 'No description available.';
+    const metaEl = document.getElementById('prog-detail-meta');
+    metaEl.innerHTML = meta.split('|').filter(Boolean).map(m => `<span>${m}</span>`).join('');
+    const mediaEl = document.getElementById('prog-detail-media');
+    mediaEl.innerHTML = imgUrl
+        ? `<img class="prog-detail-thumb" src="${imgUrl}">`
+        : `<div class="prog-detail-thumb-ph" style="background:${bg};"></div>`;
+    document.getElementById('prog-detail-start').onclick = () => {
+        window.location.href = `program.html?id=${id}&preview=1`;
+    };
+    document.getElementById('prog-detail-overlay').classList.add('open');
+}
+function closeProgDetail() {
+    document.getElementById('prog-detail-overlay').classList.remove('open');
 }
 
 function copyShareLink(id) {
@@ -248,8 +311,42 @@ function switchHsTab(tab){document.getElementById('hs-tab-ios').classList.toggle
 
 // ── AUTH ──────────────────────────────────────────
 function switchTab(tab){document.getElementById('tab-login').classList.toggle('active',tab==='login');document.getElementById('tab-signup').classList.toggle('active',tab==='signup');document.getElementById('login-form').style.display=tab==='login'?'block':'none';document.getElementById('signup-form').style.display=tab==='signup'?'block':'none';}
-async function login(){const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value,errEl=document.getElementById('login-error'),btn=document.getElementById('login-btn');errEl.style.display='none';btn.disabled=true;btn.textContent='Signing in...';try{const auth=await pb.collection('users').authWithPassword(email,password);redirect(auth.record.role);}catch(e){errEl.textContent='Invalid email or password.';errEl.style.display='block';btn.disabled=false;btn.textContent='Sign In';}}
-async function signup(){const name=document.getElementById('signup-name').value.trim(),email=document.getElementById('signup-email').value.trim(),password=document.getElementById('signup-password').value,confirm=document.getElementById('signup-confirm').value,errEl=document.getElementById('signup-error'),btn=document.getElementById('signup-btn');errEl.style.display='none';if(!name||!email||!password){errEl.textContent='Please fill in all fields.';errEl.style.display='block';return;}if(password.length<8){errEl.textContent='Password must be at least 8 characters.';errEl.style.display='block';return;}if(password!==confirm){errEl.textContent='Passwords do not match.';errEl.style.display='block';return;}btn.disabled=true;btn.textContent='Creating account...';try{await pb.collection('users').create({name,email,password,passwordConfirm:confirm,role:'free',emailVisibility:true});const auth=await pb.collection('users').authWithPassword(email,password);redirect(auth.record.role);}catch(e){const msg=e?.response?.data?.email?.message||e.message||'Signup failed.';errEl.textContent=msg;errEl.style.display='block';btn.disabled=false;btn.textContent='Create Free Account';}}
+async function login(){const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value,errEl=document.getElementById('login-error'),btn=document.getElementById('login-btn');errEl.style.display='none';btn.disabled=true;btn.textContent='Signing in...';try{const auth=await pb.collection('users').authWithPassword(email,password);
+        // If came from a program preview, claim that program first
+        const afterProgram = urlParams.get('after_program');
+        if (afterProgram) {
+            try {
+                const template = await pb.collection('programs').getOne(afterProgram, {requestKey:null});
+                await pb.collection('programs').create({
+                    name: template.name,
+                    client: auth.record.id,
+                    workout_data: template.workout_data,
+                    is_free: false,
+                    is_repeatable: template.is_repeatable || false,
+                    category: template.category || '',
+                    archived: false
+                });
+            } catch(e) { console.error('Could not claim program:', e); }
+        }
+        redirect(auth.record.role);}catch(e){errEl.textContent='Invalid email or password.';errEl.style.display='block';btn.disabled=false;btn.textContent='Sign In';}}
+async function signup(){const name=document.getElementById('signup-name').value.trim(),email=document.getElementById('signup-email').value.trim(),password=document.getElementById('signup-password').value,confirm=document.getElementById('signup-confirm').value,errEl=document.getElementById('signup-error'),btn=document.getElementById('signup-btn');errEl.style.display='none';if(!name||!email||!password){errEl.textContent='Please fill in all fields.';errEl.style.display='block';return;}if(password.length<8){errEl.textContent='Password must be at least 8 characters.';errEl.style.display='block';return;}if(password!==confirm){errEl.textContent='Passwords do not match.';errEl.style.display='block';return;}btn.disabled=true;btn.textContent='Creating account...';try{await pb.collection('users').create({name,email,password,passwordConfirm:confirm,role:'free',emailVisibility:true});const auth=await pb.collection('users').authWithPassword(email,password);
+        // If came from a program preview, claim that program first
+        const afterProgram = urlParams.get('after_program');
+        if (afterProgram) {
+            try {
+                const template = await pb.collection('programs').getOne(afterProgram, {requestKey:null});
+                await pb.collection('programs').create({
+                    name: template.name,
+                    client: auth.record.id,
+                    workout_data: template.workout_data,
+                    is_free: false,
+                    is_repeatable: template.is_repeatable || false,
+                    category: template.category || '',
+                    archived: false
+                });
+            } catch(e) { console.error('Could not claim program:', e); }
+        }
+        redirect(auth.record.role);}catch(e){const msg=e?.response?.data?.email?.message||e.message||'Signup failed.';errEl.textContent=msg;errEl.style.display='block';btn.disabled=false;btn.textContent='Create Free Account';}}
 document.addEventListener('keydown',(e)=>{if(e.key==='Enter'){const loginVisible=document.getElementById('login-form').style.display!=='none';if(loginVisible)login();else signup();}});
 </script>
 </body>
