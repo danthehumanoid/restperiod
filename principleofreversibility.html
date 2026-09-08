@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>REST PERIOD | PHILOSOPHY</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="exercises.js"></script>
     <style>
         body { padding: 0 20px 60px; max-width: 720px; margin: 0 auto; }
 
@@ -30,43 +33,32 @@
 
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; margin: 24px 0 0; }
         .back-link:hover { opacity: 0.8; }
+        
+        .signature { margin-top: 2em; font-weight: bold; text-align: right; }
     </style>
 </head>
 <body>
 
-<a class="back-link" href="javascript:history.back()">← Back</a>
+    <a class="back-link" href="javascript:history.back()">← Back</a>
 
-        <h1>EXERCISE SCIENCE</h1>     
-        <p class="chapter-subtitle"><i>Principe of Individuality</i></p>     
-        
-        <p>There are one of three things we are doing we training/exercising - Recovering, Maintaining or Aiming to improve. If we simply do no trainining i.e. don't apply any stimulis to our bodies, anything we have gained (muscle emass, strength, bone density, cardiovascualr health) starts to regress and decline. And this all happens at different rates. We loose our ability to produce power/speed very quickly (within days) an strength, muscle an aerobic fitness over a slightly longer period of time. Therefore if someone is training for mutliple skills/biomotor profiles, they need to ensure that they are consistnely dosing each profile frequenyl enough to either continue improbing or at least maintain</p>
-            </p>
-        <p>Whilst on a holiday in Bali, I opted to do my traditional “tourist run”. This consisted of half mapping out a 8-10km run picking a direction and run somewhere I’d never seen before, always leaving space to stop if I found something interesting. And I always did.</p>
+    <div class="chapter-header">
+        <div class="chapter-num">Principle 04</div>
+        <h1 class="chapter-title">PRINCIPLE OF REVERSIBILITY</h1>
+    </div>
+
+    <div class="chapter-body">
+        <p>
+            Physical adaptations are expensive for the human body to maintain. If training stops or drops significantly below the required maintenance threshold, your gains in cardiovascular efficiency and strength will gradually decay.
         </p>
 
+        <p>
+            Consistency is critical—it takes significantly less effort to maintain fitness than it does to rebuild it from scratch after extended breaks.
+        </p>
+    </div>
 
-        <div class="email-container">
-            <button id="revealButton" onclick="revealEmail()">Send me an email/say HI</button>
-            <div id="emailDisplay">
-                <a href="mailto:deeteehaych@gmail.com">deeteehaych@gmail.com</a>
-            </div>
-        </div>
-    </main>
-
-    <footer class="footer-notice">
-Content created by Daniel from Rest Period    </footer>
-
-    <script>
-        function revealEmail() {
-            const emailDiv = document.getElementById('emailDisplay');
-            const button = document.getElementById('revealButton');
-            if (emailDiv) {
-                const isVisible = emailDiv.style.display === 'block';
-                emailDiv.style.display = isVisible ? 'none' : 'block';
-                button.textContent = isVisible ? 'Send me an email/say HI' : 'Click to hide email';
-            }
-        }
-    </script>
+    <footer class="chapter-footer">
+        Content created by Daniel from Rest Period
+    </footer>
 
 </body>
 </html>

@@ -413,6 +413,15 @@ async function loadPreviewProgram(id) {
             </div>`;
         }
 
+        // Add date box above sessions
+        const dateBanner = document.createElement('div');
+        dateBanner.style.cssText = 'padding:0 16px 0;';
+        dateBanner.innerHTML = `<div style="background:var(--input-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.7rem;color:#555;text-transform:uppercase;letter-spacing:1px;">Session Date</div>
+            <input type="date" onclick="showSignupPrompt();this.blur();" readonly style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:#555;font-family:inherit;font-size:0.85rem;cursor:pointer;width:160px;" placeholder="Select date">
+        </div>`;
+        document.getElementById('preview-sessions').before(dateBanner);
+
         // Render sessions
         const sessionsEl = document.getElementById('preview-sessions');
         if (!schedule.length) {
@@ -444,7 +453,7 @@ async function loadPreviewProgram(id) {
                 const safeName = ex.name.replace(/'/g, "\\'");
                 const clickAction = videoUrl
                     ? `openPreviewVideo('${safeName}','${safeVideo}')`
-                    : `''`;  // no video, no action
+                    : ``;
 
                 const hasVideo = !!videoUrl;
                 return `<div style="margin-bottom:16px;">
