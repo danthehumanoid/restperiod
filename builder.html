@@ -431,7 +431,7 @@ function runLibrarySearch() {
 
 function addEx(name, type) {
     const clean = cleanExTitle(name);
-    programData[currentWeekIndex][type].push({ name: clean, grouping: '', setsData: [{reps:'10', weight:'0', rest:'', tempo:'//', rpe:'7'}], notes: '' });
+    programData[currentWeekIndex][type].push({ name: clean, grouping: '', columns: ['reps','weight','rest','rpe','tempo'], setsData: [{reps:'10', weight:'0', rest:'', tempo:'//', rpe:'7', pace:'', speed:'', time:''}], notes: '' });
     saveHistory(); renderLists();
 }
 
@@ -685,18 +685,54 @@ function renderListMarkup(id, list, type) {
                 <i class="fas fa-trash-alt" style="color:#555;cursor:pointer;" onclick="programData[currentWeekIndex].${type}.splice(${i},1); saveHistory(); renderLists();"></i>
             </div>
             <input type="text" value="${(ex.grouping||'').replace(/"/g,'&quot;')}" placeholder="Group (e.g. A1)" onchange="programData[currentWeekIndex].${type}[${i}].grouping=this.value; saveHistory();">
-            ${ex.setsData.map((s,si) => `
-                <div class="metrics-grid" style="grid-template-columns:0.6fr 1fr 1fr 1fr 1fr 1fr 0.4fr;">
+            <div style="margin-bottom:8px;">
+                ${(()=>{
+                    const cols = ex.columns || ['reps','weight','rest','rpe','tempo'];
+                    const ALL_COLS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME'};
+                    const optionalCols = ['pace','speed','time'];
+                    const activeCols = cols.filter(c => ALL_COLS[c]);
+                    const inactiveCols = optionalCols.filter(c => !cols.includes(c));
+                    const colButtons = activeCols.map(c =>
+                        `<button onclick="toggleExColumn('${type}',${i},'${c}',false);event.stopPropagation();" style="background:var(--input-bg);border:1px solid var(--border);color:var(--brand-accent);padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;" title="Remove column">✕ ${ALL_COLS[c]}</button>`
+                    ).join('');
+                    const addButtons = inactiveCols.map(c =>
+                        `<button onclick="toggleExColumn('${type}',${i},'${c}',true);event.stopPropagation();" style="background:none;border:1px dashed #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;" title="Add column">+ ${ALL_COLS[c]}</button>`
+                    ).join('');
+                    return `<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">${colButtons}${addButtons}</div>`;
+                })()}
+            </div>
+            ${(()=>{
+                const cols = ex.columns || ['reps','weight','rest','rpe','tempo'];
+                const ALL_COLS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME'};
+                const activeCols = cols.filter(c => ALL_COLS[c]);
+                const colCount = activeCols.length + 2; // +SET label +delete
+                const gridCols = `0.6fr ${activeCols.map(()=>'1fr').join(' ')} 0.4fr`;
+                return ex.setsData.map((s,si) => `
+                <div class="metrics-grid" style="grid-template-columns:${gridCols};">
                     <div class="metric-unit"><label>SET ${si+1}</label></div>
-                    <div class="metric-unit"><label>REPS</label><input type="text" value="${s.reps||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].reps=this.value; saveHistory();"></div>
-                    <div class="metric-unit"><label>KG</label><input type="text" value="${s.weight||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].weight=this.value; saveHistory();"></div>
-                    <div class="metric-unit"><label>REST</label><input type="text" value="${s.rest||''}" placeholder="90s" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rest=this.value; saveHistory();"></div>
-                    <div class="metric-unit"><label>RPE</label><input type="text" value="${s.rpe||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].rpe=this.value; saveHistory();"></div>
-                    <div class="metric-unit"><label>TEMPO</label><input type="text" value="${s.tempo||''}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}].tempo=this.value; saveHistory();"></div>
+                    ${activeCols.map(c => {
+                        const placeholder = c==='rest'?'90s':c==='tempo'?'//':'';
+                        return `<div class="metric-unit"><label>${ALL_COLS[c]}</label><input type="text" value="${s[c]||''}" placeholder="${placeholder}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}]['${c}']=this.value; saveHistory();"></div>`;
+                    }).join('')}
                     <i class="fas fa-minus-circle" style="color:#b71c1c;cursor:pointer;align-self:center;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.splice(${si},1); saveHistory(); renderLists();"></i>
-                </div>`).join('')}
+                </div>`).join('');
+            })()}
             <button class="btn btn-outline" style="padding:6px;font-size:0.6rem;width:auto;margin-top:12px;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.push({...programData[currentWeekIndex].${type}[${i}].setsData.slice(-1)[0]}); saveHistory(); renderLists();">+ SET</button>
         </div>`).join('');
+}
+
+function toggleExColumn(type, exIdx, col, add) {
+    const ex = programData[currentWeekIndex][type][exIdx];
+    if (!ex.columns) ex.columns = ['reps','weight','rest','rpe','tempo'];
+    if (add) {
+        if (!ex.columns.includes(col)) ex.columns.push(col);
+    } else {
+        ex.columns = ex.columns.filter(c => c !== col);
+    }
+    // Ensure all sets have the field
+    if (add) ex.setsData.forEach(s => { if (s[col]===undefined) s[col]=''; });
+    saveHistory();
+    renderLists();
 }
 
 function renderTabs() {

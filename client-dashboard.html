@@ -338,7 +338,7 @@
     <div style="display:flex;align-items:center;gap:10px;">
         <span class="nav-user" id="nav-user" style="font-size:0.72rem;color:#888;"></span>
         <button class="btn-nav client-only" onclick="window.location.href='checkin.html'" style="display:none;">Check-In</button>
-        <button class="btn-nav" onclick="openContactModal()" style="background:none;border:1px solid #333;color:#888;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.65rem;font-family:Montserrat,sans-serif;font-weight:700;">Help Me</button>
+        <button class="btn-nav" onclick="openContactModal()" style="background:none;border:1px solid #333;color:#888;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.65rem;font-family:Montserrat,sans-serif;font-weight:700;">HELP</button>
         <button class="btn-nav" onclick="openSettings()" style="background:none;border:1px solid #333;color:#888;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85rem;"><i class="fas fa-cog"></i></button>
         <button class="btn-nav" onclick="logout()" style="background:none;border:1px solid #333;color:#888;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:0.7rem;font-family:Montserrat,sans-serif;font-weight:700;">Logout</button>
     </div>
@@ -354,7 +354,7 @@
     <div class="header-tool" onclick="openTool('stopwatch-tool')" title="Stopwatch"><i class="fas fa-stopwatch"></i></div>
 </div>
 <div class="upgrade-banner free-only" style="display:none;">
-    <p>You're on the <strong>free plan</strong> upgrade to access premium programs</p>
+    <p>You're on the <strong>free plan</strong> — tools, exercise library and free programs.</p>
     <button class="btn-upgrade" onclick="alert('Upgrade coming soon!')">Upgrade</button>
 </div>
 
@@ -676,10 +676,13 @@ window.onload = async () => {
     document.getElementById('greeting-sub').textContent = `${myPrograms.length} program${myPrograms.length!==1?'s':''} · Keep it up!`;
 };
 
-function openSettings() {
+async function openSettings() {
     document.getElementById('settings-overlay').classList.add('open');
-    // Populate account info
-    const model = pb.authStore.model;
+    // Fetch fresh user data
+    let model = pb.authStore.model;
+    try {
+        model = await pb.collection('users').getOne(pb.authStore.model.id, {requestKey: null});
+    } catch(e) {}
     document.getElementById('settings-name').textContent = model.name || 'No name set';
     document.getElementById('settings-email').textContent = model.email;
     // Populate subscription info
@@ -1442,8 +1445,22 @@ function renderWorkout() {
     const dateVal=week.sessionDate||'';
     const descHtml=currentProgram.description?`<div style="background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">${currentProgram.description}</div>`:'';
     let html=descHtml+`<div class="date-bar"><div><span class="date-label">Session Date</span><input type="date" class="date-input" value="${dateVal}" onchange="saveSessionDate(this.value)"></div>${dateVal?`<div style="background:var(--input-bg);border:1px solid var(--brand-secondary);border-radius:6px;padding:5px 10px;font-size:0.72rem;color:var(--brand-accent);font-weight:800;">✓ LOGGED ${new Date(dateVal+'T12:00:00').toLocaleDateString([],{day:'numeric',month:'short'})}</div>`:`<div style="font-size:0.72rem;color:#555;">Not logged yet</div>`}</div>`;
-    if(week.warmup?.length) html+=`<div class="section-header">WARM UP</div>`+generateExerciseHTML(week.warmup,'warmup');
-    if(week.exercises?.length) html+=`<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>`+generateExerciseHTML(week.exercises,'exercises');
+    if(week.warmup?.length) html+=`<div class="section-header" style="cursor:pointer;" onclick="toggleSection('warmup-body')">
+        <span><i class="fas fa-fire" style="margin-right:8px;"></i>WARM UP</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="collapseAll('warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
+            <button onclick="expandAll('warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+            <i id="warmup-body-chevron" class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
+        </div>
+    </div><div id="warmup-body">`+generateExerciseHTML(week.warmup,'warmup')+'</div>';
+    if(week.exercises?.length) html+=`<div class="section-header" style="border-left-color:var(--brand-secondary);cursor:pointer;" onclick="toggleSection('exercises-body')">
+        <span><i class="fas fa-dumbbell" style="margin-right:8px;"></i>MAIN WORKOUT</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="collapseAll('exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
+            <button onclick="expandAll('exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+            <i id="exercises-body-chevron" class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
+        </div>
+    </div><div id="exercises-body">`+generateExerciseHTML(week.exercises,'exercises')+'</div>';
     html+=`<button class="btn-finish" onclick="finishSession()">${dateVal?'Session Complete':'Finish Session'}</button>`;
     document.getElementById('workout-content').innerHTML=html;
 }
@@ -1452,30 +1469,46 @@ function generateExerciseHTML(list,type) {
     return list.map((ex,i)=>{
         const cleanName=ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim()||ex.name;
         const groupBadge=ex.grouping?`<div style="display:inline-block;background:var(--brand-primary);color:var(--brand-accent);padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:800;margin-bottom:8px;border:1px solid var(--brand-accent);">${ex.grouping.toUpperCase()}</div>`:'';
-        return `<div class="exercise-card">${groupBadge}
-            <div class="exercise-title" onclick="previewExercise('${ex.name.replace(/'/g,"\\'")}')">
-                <i class="fas fa-play-circle" style="font-size:28px;opacity:0.8;color:var(--brand-accent);flex-shrink:0;"></i><span>${cleanName}</span>
+        const exCardId=`ex-card-${type}-${i}`;
+        const exBodyId=`ex-body-${type}-${i}`;
+        return `<div class="exercise-card" id="${exCardId}">${groupBadge}
+            <div class="exercise-title" style="justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;" onclick="previewExercise('${ex.name.replace(/'/g,"\\'")}')">
+                    <i class="fas fa-play-circle" style="font-size:28px;opacity:0.8;color:var(--brand-accent);flex-shrink:0;"></i>
+                    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${cleanName}</span>
+                </div>
+                <button onclick="toggleExercise('${exBodyId}','${exCardId}');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:4px 8px;border-radius:4px;font-size:0.65rem;font-family:'Montserrat';font-weight:800;cursor:pointer;flex-shrink:0;" id="toggle-${exBodyId}">▲</button>
             </div>
+            <div id="${exBodyId}">
             ${(ex.setsData||[]).map((s,si)=>{
                 const baseId=`${type}-${i}-${si}`;
                 const isChecked=(s.act_reps&&s.act_weight)?'checked':'';
+                const cols = ex.columns || ['reps','weight','rest','rpe','tempo'];
+                const COL_LABELS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME'};
+                const COL_TYPES = {reps:'number',weight:'number',rest:'text',rpe:'number',tempo:'text',pace:'text',speed:'number',time:'text'};
+                const COL_ACT = {reps:'act_reps',weight:'act_weight',rest:'act_rest',rpe:'act_rpe',tempo:'act_tempo',pace:'act_pace',speed:'act_speed',time:'act_time'};
+                const gridCols = `36px ${cols.map(()=>'1fr').join(' ')} 36px`;
+                const doRow = cols.map(c => {
+                    const tooltip = c==='rpe' ? `<span class="help-icon" onclick="document.getElementById('rpe-tooltip').classList.add('open');event.stopPropagation();">?</span>` 
+                                  : c==='tempo' ? `<span class="help-icon" onclick="document.getElementById('tempo-tooltip').classList.add('open');event.stopPropagation();">?</span>` : '';
+                    return `<div><div class="cell-header" style="color:var(--brand-accent)88;white-space:nowrap;">${COL_LABELS[c]||c.toUpperCase()} ${tooltip}</div><div class="do-cell">${s[c]||'—'}</div></div>`;
+                }).join('');
+                const didRow = cols.map(c => {
+                    const actField = COL_ACT[c] || ('act_'+c);
+                    const t = COL_TYPES[c]||'text';
+                    const step = c==='rpe'?'step="0.5"':'';
+                    return `<div><input type="${t}" ${step} id="${c}-${baseId}" class="did-cell" placeholder="—" value="${s[actField]||''}" onchange="autoSave('${type}',${i},${si},'${actField}',this.value)"></div>`;
+                }).join('');
                 return `<div class="set-container"><div class="set-label">SET ${si+1}</div>
-                    <div class="set-grid">
+                    <div class="set-grid" style="grid-template-columns:${gridCols};">
                         <div class="set-row-label" style="color:var(--brand-accent);">DO</div>
-                        <div><div class="cell-header" style="color:var(--brand-accent)88;">REPS</div><div class="do-cell">${s.reps||'—'}</div></div>
-                        <div><div class="cell-header" style="color:var(--brand-accent)88;">KG</div><div class="do-cell">${s.weight||'—'}</div></div>
-                        <div><div class="cell-header" style="color:var(--brand-accent)88;">REST</div><div class="do-cell">${s.rest||'—'}</div></div>
-                        <div><div class="cell-header" style="color:var(--brand-accent)88;white-space:nowrap;">RPE <span class="help-icon" onclick="document.getElementById('rpe-tooltip').classList.add('open');event.stopPropagation();">?</span></div><div class="do-cell">${s.rpe||'—'}</div></div>
-                        <div><div class="cell-header" style="color:var(--brand-accent)88;white-space:nowrap;">TEMPO <span class="help-icon" onclick="document.getElementById('tempo-tooltip').classList.add('open');event.stopPropagation();">?</span></div><div class="do-cell">${s.tempo||'—'}</div></div>
+                        ${doRow}
+                        <div></div>
                     </div>
-                    <div class="set-grid">
+                    <div class="set-grid" style="grid-template-columns:${gridCols};">
                         <div class="set-row-label" style="color:var(--brand-accent);">DID</div>
-                        <div><input type="number" id="reps-${baseId}" class="did-cell" placeholder="0" value="${s.act_reps||''}" onchange="autoSave('${type}',${i},${si},'act_reps',this.value)"></div>
-                        <div><input type="number" id="weight-${baseId}" class="did-cell" placeholder="0" value="${s.act_weight||''}" onchange="autoSave('${type}',${i},${si},'act_weight',this.value)"></div>
-                        <div><input type="text" id="rest-${baseId}" class="did-cell" placeholder="—" value="${s.act_rest||''}" onchange="autoSave('${type}',${i},${si},'act_rest',this.value)"></div>
-                        <div><input type="number" step="0.5" id="rpe-${baseId}" class="did-cell" placeholder="—" value="${s.act_rpe||''}" onchange="autoSave('${type}',${i},${si},'act_rpe',this.value)"></div>
-                        <div style="display:flex;align-items:center;justify-content:center;gap:4px;">
-                            <span style="font-size:0.55rem;font-weight:800;font-family:'Montserrat';color:var(--brand-accent);">DONE</span>
+                        ${didRow}
+                        <div style="display:flex;align-items:center;justify-content:center;">
                             <input type="checkbox" class="tick-box" ${isChecked} onclick="quickFill('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe||''}',this.checked)">
                         </div>
                     </div>
@@ -1483,8 +1516,44 @@ function generateExerciseHTML(list,type) {
                 </div>`;
             }).join('')}
             ${ex.notes?`<div style="font-size:0.8rem;color:#777;margin-top:5px;font-style:italic;">Coach Note: ${ex.notes}</div>`:''}
+            </div>
         </div>`;
     }).join('');
+}
+
+// ── EXERCISE COLLAPSE ────────────────────────────
+function toggleExercise(bodyId, cardId) {
+    const body = document.getElementById(bodyId);
+    const btn = document.getElementById('toggle-'+bodyId);
+    const collapsed = body.style.display === 'none';
+    body.style.display = collapsed ? 'block' : 'none';
+    if (btn) btn.textContent = collapsed ? '▲' : '▼';
+}
+function collapseAll(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    section.querySelectorAll('[id^="ex-body-"]').forEach(body => {
+        body.style.display = 'none';
+        const btn = document.getElementById('toggle-'+body.id);
+        if (btn) btn.textContent = '▼';
+    });
+}
+function expandAll(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    section.querySelectorAll('[id^="ex-body-"]').forEach(body => {
+        body.style.display = 'block';
+        const btn = document.getElementById('toggle-'+body.id);
+        if (btn) btn.textContent = '▲';
+    });
+}
+function toggleSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    const chevron = document.getElementById(sectionId+'-chevron');
+    if (!section) return;
+    const collapsed = section.style.display === 'none';
+    section.style.display = collapsed ? 'block' : 'none';
+    if (chevron) chevron.style.transform = collapsed ? 'rotate(0deg)' : 'rotate(-90deg)';
 }
 
 // ── SESSION SYNC ──────────────────────────────────
@@ -1563,8 +1632,20 @@ function startRepeatableSession(){
 function renderRepeatSession(session){
     const wrapper=document.getElementById('repeat-active');wrapper.style.display='block';wrapper.scrollIntoView({behavior:'smooth'});
     let html=`<div class="date-bar" style="margin-top:16px;"><div><span class="date-label">Session Date</span><input type="date" class="date-input" value="${session.sessionDate||''}" onchange="currentProgram._activeRepeat.sessionDate=this.value"></div><div style="background:var(--brand-primary);border:1px solid var(--brand-accent);border-radius:6px;padding:5px 10px;font-size:0.72rem;color:var(--brand-accent);font-weight:800;">New Session</div></div>`;
-    if(session.warmup?.length)html+=`<div class="section-header">WARM UP</div>`+generateExerciseHTML(session.warmup,'warmup');
-    if(session.exercises?.length)html+=`<div class="section-header" style="border-left-color:var(--brand-secondary);">MAIN WORKOUT</div>`+generateExerciseHTML(session.exercises,'exercises');
+    if(session.warmup?.length)html+=`<div class="section-header" style="cursor:pointer;" onclick="toggleSection('rep-warmup-body')">
+        <span><i class="fas fa-fire" style="margin-right:8px;"></i>WARM UP</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="collapseAll('rep-warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
+            <button onclick="expandAll('rep-warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+        </div>
+    </div><div id="rep-warmup-body">`+generateExerciseHTML(session.warmup,'warmup')+'</div>';
+    if(session.exercises?.length)html+=`<div class="section-header" style="border-left-color:var(--brand-secondary);cursor:pointer;" onclick="toggleSection('rep-exercises-body')">
+        <span><i class="fas fa-dumbbell" style="margin-right:8px;"></i>MAIN WORKOUT</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="collapseAll('rep-exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
+            <button onclick="expandAll('rep-exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+        </div>
+    </div><div id="rep-exercises-body">`+generateExerciseHTML(session.exercises,'exercises')+'</div>';
     html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;"><button onclick="saveRepeatSession()" class="btn-finish" style="margin:0;">Save Session</button><button onclick="document.getElementById('repeat-active').style.display='none'" style="background:transparent;border:1px solid #555;color:#888;padding:14px;border-radius:6px;font-family:'Montserrat';font-weight:800;font-size:0.85rem;cursor:pointer;width:100%;">✕ CANCEL</button></div>`;
     wrapper.innerHTML=html;
 }
@@ -1766,7 +1847,7 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
         </div>
 
         <div class="settings-section">
-            <div class="settings-section-title">Other</div>
+            <div class="settings-section-title">Danger Zone</div>
             <div class="settings-item">
                 <div><div class="settings-item-label">Log out</div></div>
                 <button class="settings-btn danger" onclick="logout()">Logout</button>
