@@ -673,8 +673,20 @@ function renderRepeatableSession(session) {
         <div><span class="quad-title">Session Date</span><input type="date" class="date-input" value="${session.sessionDate||''}" onchange="currentProgram._activeRepeatSession.sessionDate=this.value"></div>
         <div class="date-completed">🔁 New Session</div>
     </div>`;
-    if (session.warmup?.length) html += `<div class="section-header"><span><i class="fas fa-fire" style="margin-right:8px;"></i>WARM UP</span></div>` + generateExerciseHTML(session.warmup, 'warmup', true);
-    if (session.exercises?.length) html += `<div class="section-header" style="border-left-color:var(--brand-secondary);"><span><i class="fas fa-dumbbell" style="margin-right:8px;"></i>MAIN WORKOUT</span></div>` + generateExerciseHTML(session.exercises, 'exercises', true);
+    if (session.warmup?.length) html += `<div class="section-header" style="cursor:pointer;" onclick="toggleSection('rep-warmup-body')">
+        <span><i class="fas fa-fire" style="margin-right:8px;"></i>WARM UP</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="collapseAll('rep-warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
+            <button onclick="expandAll('rep-warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+        </div>
+    </div><div id="rep-warmup-body">` + generateExerciseHTML(session.warmup, 'warmup', true) + '</div>';
+    if (session.exercises?.length) html += `<div class="section-header" style="border-left-color:var(--brand-secondary);cursor:pointer;" onclick="toggleSection('rep-exercises-body')">
+        <span><i class="fas fa-dumbbell" style="margin-right:8px;"></i>MAIN WORKOUT</span>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="collapseAll('rep-exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
+            <button onclick="expandAll('rep-exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+        </div>
+    </div><div id="rep-exercises-body">` + generateExerciseHTML(session.exercises, 'exercises', true) + '</div>';
     html += `<div class="reflection-area">
         <label>💬 Session Reflection</label>
         <textarea id="repeat-reflection" placeholder="How did it feel? Any notes on what went well or what to improve..."></textarea>
@@ -738,11 +750,24 @@ function renderContent() {
     </div>`;
 
     if (session.warmup?.length) {
-        html += `<div class="section-header" onclick="toggleWarmup()"><span><i class="fas fa-fire" style="margin-right:8px;"></i>WARM UP</span><i id="warmup-chevron" class="fas fa-chevron-down"></i></div>
-        <div id="warmup-content-wrapper">${generateExerciseHTML(session.warmup, 'warmup', false)}</div>`;
+        html += `<div class="section-header" style="cursor:pointer;" onclick="toggleSection('warmup-body')">
+            <span><i class="fas fa-fire" style="margin-right:8px;"></i>WARM UP</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <button onclick="collapseAll('warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
+                <button onclick="expandAll('warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+                <i id="warmup-body-chevron" class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
+            </div>
+        </div><div id="warmup-body">${generateExerciseHTML(session.warmup, 'warmup', false)}</div>`;
     }
     if (session.exercises?.length) {
-        html += `<div class="section-header" style="border-left-color:var(--brand-secondary);"><span><i class="fas fa-dumbbell" style="margin-right:8px;"></i>MAIN WORKOUT</span></div>` + generateExerciseHTML(session.exercises, 'exercises', false);
+        html += `<div class="section-header" style="border-left-color:var(--brand-secondary);cursor:pointer;" onclick="toggleSection('exercises-body')">
+            <span><i class="fas fa-dumbbell" style="margin-right:8px;"></i>MAIN WORKOUT</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <button onclick="collapseAll('exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
+                <button onclick="expandAll('exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+                <i id="exercises-body-chevron" class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
+            </div>
+        </div><div id="exercises-body">` + generateExerciseHTML(session.exercises, 'exercises', false) + '</div>';
     }
 
     // Session reflection at bottom
@@ -761,12 +786,23 @@ function generateExerciseHTML(list, type, isRepeat) {
     return list.map((ex, i) => {
         const groupBadge = ex.grouping ? `<div style="display:inline-block;background:var(--brand-primary);color:var(--brand-accent);padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:800;margin-bottom:8px;border:1px solid var(--brand-accent);">${ex.grouping.toUpperCase()}</div>` : '';
         const cleanName = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || ex.name;
+        const exBodyId = `ex-body-${prefix}-${i}`;
+        const cols = ex.columns || ['reps','weight','rest','rpe','tempo'];
+        const COL_LABELS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME'};
+        const COL_TYPES = {reps:'number',weight:'number',rest:'text',rpe:'number',tempo:'text',pace:'text',speed:'number',time:'text'};
+        const COL_ACT = {reps:'act_reps',weight:'act_weight',rest:'act_rest',rpe:'act_rpe',tempo:'act_tempo',pace:'act_pace',speed:'act_speed',time:'act_time'};
+        const gridCols = `36px ${cols.map(()=>'1fr').join(' ')} 36px`;
+
         return `<div class="exercise-card">
             ${groupBadge}
-            <div class="exercise-title" onclick="openExercisePreview('${ex.name.replace(/'/g,"\\'")}')">
-                <i class="fas fa-play-circle" style="font-size:28px;opacity:0.8;color:var(--brand-accent);flex-shrink:0;"></i>
-                <span>${cleanName}</span>
+            <div class="exercise-title" style="justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;" onclick="openExercisePreview('${ex.name.replace(/'/g,"\\'")}')">
+                    <i class="fas fa-play-circle" style="font-size:28px;opacity:0.8;color:var(--brand-accent);flex-shrink:0;"></i>
+                    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${cleanName}</span>
+                </div>
+                <button onclick="toggleExercise('${exBodyId}');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:4px 8px;border-radius:4px;font-size:0.65rem;font-family:'Montserrat';font-weight:800;cursor:pointer;flex-shrink:0;" id="toggle-${exBodyId}">▲</button>
             </div>
+            <div id="${exBodyId}">
             ${(ex.setsData||[]).map((s, si) => {
                 const baseId = `${prefix}-${i}-${si}`;
                 const sessionStarted = !!currentProgram.schedule[currentWeekIndex].sessionDate;
@@ -777,31 +813,36 @@ function generateExerciseHTML(list, type, isRepeat) {
                 const tickFn = isRepeat
                     ? `fillRepeatSet('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe||''}',this.checked)`
                     : `fillSetData('${type}',${i},${si},'${s.reps}','${s.weight}','${s.rpe||''}',this.checked)`;
+                const doRow = cols.map(c => {
+                    const tooltip = c==='rpe' ? `<span class="help-icon" style="color:var(--brand-accent)88;" onclick="document.getElementById('rpe-tooltip').classList.add('open');event.stopPropagation();">?</span>`
+                                  : c==='tempo' ? `<span class="help-icon" style="color:var(--brand-accent)88;" onclick="document.getElementById('tempo-tooltip').classList.add('open');event.stopPropagation();">?</span>` : '';
+                    return `<div><div class="cell-header" style="color:var(--brand-accent)88;">${COL_LABELS[c]||c.toUpperCase()} ${tooltip}</div><div class="do-cell">${s[c]||'—'}</div></div>`;
+                }).join('');
+                const didRow = cols.map(c => {
+                    const actField = COL_ACT[c] || ('act_'+c);
+                    const t = COL_TYPES[c]||'text';
+                    const step = c==='rpe'?'step="0.5"':'';
+                    return `<div><input type="${t}" ${step} id="${c}-${baseId}" class="did-cell" placeholder="—" value="${s[actField]||''}" onchange="${onChangeFn.replace(/FIELD/g, actField)}"></div>`;
+                }).join('');
                 return `<div class="set-container">
                     <div class="set-label">SET ${si+1}</div>
-                    <div class="set-grid" style="grid-template-columns:36px 1fr 1fr 1fr 1fr 1fr;">
+                    <div class="set-grid" style="grid-template-columns:${gridCols};">
                         <div class="set-row-label" style="color:var(--brand-accent);">DO</div>
-                        <div><div class="cell-header" style="color:var(--brand-accent)88;">REPS</div><div class="do-cell">${s.reps||'—'}</div></div>
-                        <div><div class="cell-header" style="color:var(--brand-accent)88;">KG</div><div class="do-cell">${s.weight||'—'}</div></div>
-                        <div><div class="cell-header" style="color:var(--brand-accent)88;">REST</div><div class="do-cell">${s.rest||'—'}</div></div>
-                        <div><div class="cell-header" style="color:var(--brand-accent)88;">RPE <span class="help-icon" style="color:var(--brand-accent)88;" onclick="document.getElementById('rpe-tooltip').classList.add('open');event.stopPropagation();">?</span></div><div class="do-cell">${s.rpe||'—'}</div></div>
-                        <div><div class="cell-header" style="color:var(--brand-accent)88;">TEMPO <span class="help-icon" style="color:var(--brand-accent)88;" onclick="document.getElementById('tempo-tooltip').classList.add('open');event.stopPropagation();">?</span></div><div class="do-cell">${s.tempo||'—'}</div></div>
+                        ${doRow}
+                        <div></div>
                     </div>
-                    <div class="set-grid" style="grid-template-columns:36px 1fr 1fr 1fr 1fr 1fr;">
+                    <div class="set-grid" style="grid-template-columns:${gridCols};">
                         <div class="set-row-label" style="color:var(--brand-accent);">DID</div>
-                        <div><input type="number" id="reps-${baseId}" class="did-cell" placeholder="0" value="${s.act_reps||''}" onchange="${onChangeFn.replace('FIELD','act_reps')}"></div>
-                        <div><input type="number" id="weight-${baseId}" class="did-cell" placeholder="0" value="${s.act_weight||''}" onchange="${onChangeFn.replace('FIELD','act_weight')}"></div>
-                        <div><input type="text" id="rest-${baseId}" class="did-cell" placeholder="—" value="${s.act_rest||''}" onchange="${onChangeFn.replace('FIELD','act_rest')}"></div>
-                        <div><input type="number" step="0.5" id="rpe-${baseId}" class="did-cell" placeholder="—" value="${s.act_rpe||''}" onchange="${onChangeFn.replace('FIELD','act_rpe')}"></div>
-                        <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-                            <span style="font-size:0.62rem;font-weight:800;font-family:'Montserrat';color:var(--brand-accent);">DONE</span>
+                        ${didRow}
+                        <div style="display:flex;align-items:center;justify-content:center;gap:4px;">
                             <input type="checkbox" class="tick-box" ${isChecked} onchange="${tickFn};setTimeout(updateProgressBar,0)">
                         </div>
                     </div>
-                    <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="80" value="${(s.act_note||'').replace(/"/g,'&quot;')}" onchange="${onChangeFn.replace('FIELD','act_note')}">
+                    <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="80" value="${(s.act_note||'').replace(/"/g,'&quot;')}" onchange="${onChangeFn.replace(/FIELD/g,'act_note')}">
                 </div>`;
             }).join('')}
             ${ex.notes ? `<div style="font-size:0.8rem;color:#777;margin-top:5px;font-style:italic;">Coach Note: ${ex.notes}</div>` : ''}
+            </div>
         </div>`;
     }).join('');
 }
@@ -820,6 +861,42 @@ function fillRepeatSet(type, exIdx, setIdx, targetReps, targetWeight, targetRpe,
     if (!repsEl.value||repsEl.value==0){repsEl.value=targetReps;set.act_reps=targetReps;}
     if (!weightEl.value||weightEl.value==0){weightEl.value=targetWeight;set.act_weight=targetWeight;}
     if (!rpeEl.value||rpeEl.value==0){rpeEl.value=parseFloat(targetRpe)?targetRpe:'';set.act_rpe=rpeEl.value;}
+}
+
+// ── EXERCISE COLLAPSE ────────────────────────────
+function toggleExercise(bodyId) {
+    const body = document.getElementById(bodyId);
+    const btn = document.getElementById('toggle-'+bodyId);
+    if (!body) return;
+    const collapsed = body.style.display === 'none';
+    body.style.display = collapsed ? 'block' : 'none';
+    if (btn) btn.textContent = collapsed ? '▲' : '▼';
+}
+function collapseAll(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    section.querySelectorAll('[id^="ex-body-"]').forEach(body => {
+        body.style.display = 'none';
+        const btn = document.getElementById('toggle-'+body.id);
+        if (btn) btn.textContent = '▼';
+    });
+}
+function expandAll(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    section.querySelectorAll('[id^="ex-body-"]').forEach(body => {
+        body.style.display = 'block';
+        const btn = document.getElementById('toggle-'+body.id);
+        if (btn) btn.textContent = '▲';
+    });
+}
+function toggleSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    const chevron = document.getElementById(sectionId+'-chevron');
+    if (!section) return;
+    const collapsed = section.style.display === 'none';
+    section.style.display = collapsed ? 'block' : 'none';
+    if (chevron) chevron.style.transform = collapsed ? 'rotate(0deg)' : 'rotate(-90deg)';
 }
 
 // ── SYNC ──────────────────────────────────────────
@@ -926,7 +1003,7 @@ function convertToEmbed(url) {
 }
 
 function closeVideoModal() { document.getElementById('videoModal').style.display='none'; document.getElementById('video-player-content').innerHTML=''; }
-function toggleWarmup() { const w=document.getElementById('warmup-content-wrapper'),c=document.getElementById('warmup-chevron'),h=w.style.display==='none';w.style.display=h?'block':'none';c.style.transform=h?'rotate(0deg)':'rotate(-90deg)'; }
+
 function openNav() { document.getElementById('mySidebar').style.width='300px'; }
 function closeNav() { document.getElementById('mySidebar').style.width='0'; }
 
