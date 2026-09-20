@@ -372,51 +372,51 @@ async function loadShowcasePrograms() {
         document.getElementById('showcase-section').style.display = 'block';
 
         const grouped = {};
-        progs.forEach(p => {
+        progs.forEach(function(p) {
             const cat = (p.category||'OTHER').toUpperCase();
             if (!grouped[cat]) grouped[cat] = [];
             grouped[cat].push(p);
         });
-        const sortedCats = Object.keys(grouped).sort((a,b) => {
+        const sortedCats = Object.keys(grouped).sort(function(a,b) {
             const ai=CATEGORY_ORDER.indexOf(a), bi=CATEGORY_ORDER.indexOf(b);
             return (ai===-1?99:ai)-(bi===-1?99:bi);
         });
 
-        document.getElementById('showcase-grid').innerHTML = sortedCats.map(cat => {
+        let html = '';
+        sortedCats.forEach(function(cat) {
             const meta = CATEGORY_META[cat] || CATEGORY_META.OTHER;
             const bg = CATEGORY_THUMBS[cat] || CATEGORY_THUMBS.OTHER;
             const catProgs = grouped[cat];
-            return `<div style="margin-bottom:24px;">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-                    <span style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;color:${meta.color};">${meta.label}</span>
-                    <div style="flex:1;height:1px;background:var(--border);"></div>
-                    <span style="font-size:0.6rem;color:#555;font-family:'Montserrat',sans-serif;font-weight:800;">${catProgs.length}</span>
-                </div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;">
-                    ${catProgs.map(p => {
-                        let data = p.workout_data;
-                        try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
-                        const sessions = Array.isArray(data?.schedule||data) ? (data.schedule||data).length : 0;
-                        const thumb = p.cover_image
-                            ? \`<img class="showcase-thumb" src="https://restperiod.org/api/files/programs/\${p.id}/\${p.cover_image}" loading="lazy">\`
-                            : \`<div class="showcase-thumb-ph" style="background:\${bg};"></div>\`;
-                        const safeDesc = (p.description||'').replace(/'/g,"\'").replace(/
+            html += '<div style="margin-bottom:24px;">';
+            html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">';
+            html += '<span style="font-family:Montserrat,sans-serif;font-weight:800;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;color:' + meta.color + ';">' + meta.label + '</span>';
+            html += '<div style="flex:1;height:1px;background:var(--border);"></div>';
+            html += '<span style="font-size:0.6rem;color:#555;font-family:Montserrat,sans-serif;font-weight:800;">' + catProgs.length + '</span>';
+            html += '</div>';
+            html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;">';
+            catProgs.forEach(function(p) {
+                let data = p.workout_data;
+                try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
+                const sessions = Array.isArray(data && data.schedule || data) ? (data.schedule||data).length : 0;
+                const imgUrl = p.cover_image ? 'https://restperiod.org/api/files/programs/'+p.id+'/'+p.cover_image : '';
+                const thumb = imgUrl
+                    ? '<img class="showcase-thumb" src="' + imgUrl + '" loading="lazy">'
+                    : '<div class="showcase-thumb-ph" style="background:' + bg + ';"></div>';
+                const safeName = p.name.replace(/'/g,"\'");
+                const safeDesc = (p.description||'').replace(/'/g,"\'").replace(/
 /g,' ');
-                        const safeName = p.name.replace(/'/g,"\'");
-                        const metaStr = \`\${cat}|\${p.is_repeatable?'Repeatable':sessions+' sessions'}\`;
-                        const imgUrl = p.cover_image ? \`https://restperiod.org/api/files/programs/\${p.id}/\${p.cover_image}\` : '';
-                        return \`<div class="showcase-card" onclick="openProgDetail('\${p.id}','\${safeName}','\${safeDesc}','\${metaStr}','\${imgUrl}','\${cat}')">
-                            \${thumb}
-                            <div class="showcase-body">
-                                <div class="showcase-name">\${p.name}</div>
-                                <div class="showcase-meta">\${p.is_repeatable?'Repeatable':sessions+' sessions'}</div>
-                                <button onclick="copyShareLink('\${p.id}');event.stopPropagation();" style="margin-top:6px;width:100%;background:none;border:1px solid var(--brand-accent);color:var(--brand-accent);padding:4px;border-radius:4px;font-size:0.6rem;font-family:'Montserrat',sans-serif;font-weight:800;cursor:pointer;">SHARE</button>
-                            </div>
-                        </div>\`;
-                    }).join('')}
-                </div>
-            </div>`;
-        }).join('');
+                const metaStr = cat + '|' + (p.is_repeatable?'Repeatable':sessions+' sessions');
+                html += '<div class="showcase-card" onclick="openProgDetail('' + p.id + '','' + safeName + '','' + safeDesc + '','' + metaStr + '','' + imgUrl + '','' + cat + '')">';
+                html += thumb;
+                html += '<div class="showcase-body">';
+                html += '<div class="showcase-name">' + p.name + '</div>';
+                html += '<div class="showcase-meta">' + (p.is_repeatable?'Repeatable':sessions+' sessions') + '</div>';
+                html += '<button onclick="copyShareLink('' + p.id + '');event.stopPropagation();" style="margin-top:6px;width:100%;background:none;border:1px solid var(--brand-accent);color:var(--brand-accent);padding:4px;border-radius:4px;font-size:0.6rem;font-family:Montserrat,sans-serif;font-weight:800;cursor:pointer;">SHARE</button>';
+                html += '</div></div>';
+            });
+            html += '</div></div>';
+        });
+        document.getElementById('showcase-grid').innerHTML = html;
     } catch(e) { console.error(e); }
 }
 loadShowcasePrograms();
