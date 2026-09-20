@@ -251,11 +251,13 @@
                 <button class="tool-action-btn" onclick="tClear1RM()">Clear</button>
             </div>
             <div id="t-rm-output" style="display:none;margin-top:10px;max-height:220px;overflow-y:auto;">
+                <div id="t-rm-est" style="display:none;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.85rem;color:var(--brand-accent);text-align:center;margin-bottom:8px;padding:8px;background:#000;border-radius:6px;border:1px solid var(--brand-accent);"></div>
                 <table style="width:100%;border-collapse:collapse;font-size:0.78rem;">
                     <thead><tr>
                         <th style="color:var(--brand-accent);padding:5px;border-bottom:1px solid var(--border);text-align:center;">Reps</th>
                         <th style="color:var(--brand-accent);padding:5px;border-bottom:1px solid var(--border);text-align:center;">Epley</th>
                         <th style="color:var(--brand-accent);padding:5px;border-bottom:1px solid var(--border);text-align:center;">Brzycki</th>
+                        <th style="color:#888;padding:5px;border-bottom:1px solid var(--border);text-align:center;">% 1RM</th>
                     </tr></thead>
                     <tbody id="t-rm-table-body"></tbody>
                 </table>
@@ -555,7 +557,49 @@ function tSolvePace(){var dist=document.getElementById('t-pace-dist').value,tMin
 
 function tSetRMUnit(u){tRmUnit=u;document.getElementById('t-rm-kg-btn').classList.toggle('active',u==='kg');document.getElementById('t-rm-lb-btn').classList.toggle('active',u==='lb');document.getElementById('t-rm-weight-label').textContent='Weight ('+u+')';tClear1RM();}
 function tClear1RM(){document.getElementById('t-rm-weight').value='';document.getElementById('t-rm-reps').value='';document.getElementById('t-rm-output').style.display='none';document.getElementById('t-rm-table-body').innerHTML='';}
-function tCalc1RM(){var w=parseFloat(document.getElementById('t-rm-weight').value),r=parseFloat(document.getElementById('t-rm-reps').value);if(!w||!r||r<1)return;if(tRmUnit==='lb')w=w/2.2046;var tbody=document.getElementById('t-rm-table-body');tbody.innerHTML='';for(var reps=1;reps<=10;reps++){var e=w*(1+reps/30),b=reps<37?w*(36/(37-reps)):null;if(tRmUnit==='lb'){e*=2.2046;if(b)b*=2.2046;}var fmt=function(v){return v?Math.round(v)+tRmUnit:'—';};var row=document.createElement('tr');if(reps===Math.round(r)){row.style.color='var(--brand-accent)';row.style.fontWeight='800';}row.innerHTML='<td style="padding:4px 6px;text-align:center;">'+reps+'</td><td style="padding:4px 6px;text-align:center;">'+fmt(e)+'</td><td style="padding:4px 6px;text-align:center;">'+fmt(b)+'</td>';tbody.appendChild(row);}document.getElementById('t-rm-output').style.display='block';}
+function tCalc1RM(){
+    var w=parseFloat(document.getElementById('t-rm-weight').value),r=parseFloat(document.getElementById('t-rm-reps').value);
+    if(!w||!r||r<1)return;
+    var wKg=tRmUnit==='lb'?w/2.2046:w;
+
+    // Step 1: estimate 1RM from input weight and reps
+    var orm_epley=wKg*(1+r/30);
+    var orm_brz=r<37?wKg*(36/(37-r)):orm_epley;
+    var orm1=(orm_epley+orm_brz)/2;
+
+    // Show estimated 1RM
+    var display1RM=tRmUnit==='lb'?Math.round(orm1*2.2046)+'lb':Math.round(orm1)+'kg';
+    document.getElementById('t-rm-est').textContent='Est. 1RM: '+display1RM;
+    document.getElementById('t-rm-est').style.display='block';
+
+    // Step 2: for each rep count 1-10, calculate what weight they can lift
+    // Epley: weight = 1RM / (1 + reps/30)
+    // Brzycki: weight = 1RM * (37-reps)/36
+    // % of 1RM: standard Prilepin-derived table
+    var pctTable=[100,95,93,90,87,85,83,80,77,75];
+
+    var tbody=document.getElementById('t-rm-table-body');
+    tbody.innerHTML='';
+    for(var reps=1;reps<=10;reps++){
+        var eKg=orm1/(1+reps/30);
+        var bKg=reps<37?orm1*((37-reps)/36):null;
+        var pct=pctTable[reps-1];
+
+        if(tRmUnit==='lb'){eKg*=2.2046;if(bKg)bKg*=2.2046;}
+        var unit=tRmUnit==='lb'?'lb':'kg';
+        var eStr=Math.round(eKg)+unit;
+        var bStr=bKg?Math.round(bKg)+unit:'—';
+
+        var row=document.createElement('tr');
+        if(reps===Math.round(r)){row.style.color='var(--brand-accent)';row.style.fontWeight='800';}
+        row.innerHTML='<td style="padding:4px 6px;text-align:center;">'+reps+'</td>'
+            +'<td style="padding:4px 6px;text-align:center;">'+eStr+'</td>'
+            +'<td style="padding:4px 6px;text-align:center;">'+bStr+'</td>'
+            +'<td style="padding:4px 6px;text-align:center;color:#888;">'+pct+'%</td>';
+        tbody.appendChild(row);
+    }
+    document.getElementById('t-rm-output').style.display='block';
+}
 
 function tMetroScheduler(){var bpm=parseFloat(document.getElementById('t-m-slider').value),spb=60/bpm;while(tNextTick<tAudioCtx.currentTime+0.1){var osc=tAudioCtx.createOscillator(),env=tAudioCtx.createGain();osc.frequency.value=1000;env.gain.setValueAtTime(1,tNextTick);env.gain.exponentialRampToValueAtTime(0.001,tNextTick+0.025);osc.connect(env);env.connect(tAudioCtx.destination);osc.start(tNextTick);osc.stop(tNextTick+0.03);tNextTick+=spb;}tMetroTimerID=setTimeout(tMetroScheduler,25);}
 function tToggleMetronome(){if(!tAudioCtx)tAudioCtx=new(window.AudioContext||window.webkitAudioContext)();if(tAudioCtx.state==='suspended')tAudioCtx.resume();var btn=document.getElementById('t-metro-btn');tMetroPlaying=!tMetroPlaying;if(tMetroPlaying){btn.textContent='Stop';tNextTick=tAudioCtx.currentTime;tMetroScheduler();}else{btn.textContent='Start';clearTimeout(tMetroTimerID);}}
