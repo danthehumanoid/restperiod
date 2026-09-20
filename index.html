@@ -29,6 +29,26 @@
         .msg { border-radius: 6px; padding: 9px 12px; font-size: 0.78rem; margin-top: 10px; display: none; }
         .msg-error { background: rgba(255,82,82,0.1); border: 1px solid #ff5252; color: #ff5252; }
         .msg-success { background: rgba(46,125,50,0.1); border: 1px solid var(--brand-secondary); color: var(--brand-accent); }
+        /* TOOL TILES */
+        .tool-tiles { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px; }
+        .tool-tile { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; flex: 1; min-width: 64px; max-width: 80px; }
+        .tool-tile:hover { border-color: var(--brand-accent); background: var(--input-bg); }
+        .tool-tile i { color: var(--brand-accent); font-size: 1.1rem; }
+        .tool-tile span { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.5rem; color: #555; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+        /* TOOL MODAL */
+        .tool-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9000; align-items: center; justify-content: center; padding: 20px; }
+        .tool-overlay.open { display: flex; }
+        .tool-box { background: var(--card-bg); border: 1px solid var(--brand-accent); border-radius: 12px; padding: 24px; width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; }
+        .tool-box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .tool-box-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1rem; color: var(--brand-accent); }
+        .tool-box-close { background: none; border: none; color: #888; font-size: 1.4rem; cursor: pointer; }
+        .t-inp { width: 100%; background: #000; border: 1px solid #1a2c3a; border-radius: 4px; color: white; padding: 9px 10px; font-size: 0.9rem; font-family: inherit; margin-bottom: 10px; }
+        .t-inp:focus { outline: none; border-color: var(--brand-accent); }
+        .t-lbl { font-size: 0.6rem; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px; font-family: 'Montserrat', sans-serif; }
+        .t-btn { padding: 10px; border: none; border-radius: 6px; background: var(--brand-primary); color: white; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; }
+        .t-unit { padding: 5px 10px; border: none; background: none; color: #555; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.65rem; cursor: pointer; }
+        .t-unit.active { background: var(--brand-accent); color: #000; }
+
         .homescreen-btn { padding: 13px 24px; border: none; border-radius: 6px; background: var(--brand-accent); color: #000; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         .homescreen-btn:hover { opacity: 0.85; }
         .hs-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9000; align-items: flex-end; justify-content: center; }
@@ -87,6 +107,16 @@
         <a href="library.html" class="submit-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;width:auto;padding:13px 24px;">
             <i class="fas fa-dumbbell"></i> View Exercise Library
         </a>
+    </div>
+
+    <!-- TOOL TILES -->
+    <div class="tool-tiles">
+        <div class="tool-tile" onclick="openToolModal('pace')"><i class="fas fa-running"></i><span>Pace</span></div>
+        <div class="tool-tile" onclick="openToolModal('onerm')"><i class="fas fa-weight-hanging"></i><span>1RM</span></div>
+        <div class="tool-tile" onclick="openToolModal('interval')"><i class="fas fa-redo"></i><span>Interval</span></div>
+        <div class="tool-tile" onclick="openToolModal('countdown')"><i class="fas fa-hourglass-half"></i><span>Timer</span></div>
+        <div class="tool-tile" onclick="openToolModal('stopwatch')"><i class="fas fa-stopwatch"></i><span>Watch</span></div>
+        <div class="tool-tile" onclick="openToolModal('metronome')"><i class="fas fa-drum"></i><span>Metro</span></div>
     </div>
 
     <!-- LOGIN -->
@@ -169,6 +199,109 @@
     </div>
 </div>
 
+<!-- TOOL MODAL -->
+<div class="tool-overlay" id="tool-overlay" onclick="if(event.target===this)closeToolModal()">
+    <div class="tool-box">
+        <div class="tool-box-header">
+            <span class="tool-box-title" id="tool-modal-title"></span>
+            <button class="tool-box-close" onclick="closeToolModal()">✕</button>
+        </div>
+
+        <!-- PACE -->
+        <div class="tool-panel" id="tool-panel-pace" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span style="font-size:0.7rem;color:#555;">Fill any 2 — solve the 3rd</span>
+                <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                    <button id="_t-pace-km" class="t-unit active" onclick="_tSetPaceUnit('km')">KM</button>
+                    <button id="_t-pace-mi" class="t-unit" onclick="_tSetPaceUnit('mi')">MI</button>
+                </div>
+            </div>
+            <span class="t-lbl">Distance</span><input type="number" class="t-inp" id="_t-dist" placeholder="e.g. 10" step="0.01">
+            <span class="t-lbl">Total Time</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+                <div><span class="t-lbl">Min</span><input type="number" class="t-inp" id="_t-tmin" placeholder="0"></div>
+                <div><span class="t-lbl">Sec</span><input type="number" class="t-inp" id="_t-tsec" placeholder="0"></div>
+            </div>
+            <span class="t-lbl">Pace (min:sec)</span>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
+                <div><span class="t-lbl">Min</span><input type="number" class="t-inp" id="_t-pmin" placeholder="0"></div>
+                <div><span class="t-lbl">Sec</span><input type="number" class="t-inp" id="_t-psec" placeholder="0"></div>
+                <div><span class="t-lbl">Speed (km/h)</span><input type="number" class="t-inp" id="_t-speed" placeholder="12" step="0.1"></div>
+            </div>
+            <button class="t-btn" onclick="_tSolvePace()" style="width:100%;margin-bottom:8px;">Solve</button>
+            <div id="_t-pace-out" style="font-size:0.82rem;color:#aaa;line-height:1.8;"></div>
+        </div>
+
+        <!-- 1RM -->
+        <div class="tool-panel" id="tool-panel-onerm" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span style="font-size:0.7rem;color:#555;">Epley &amp; Brzycki</span>
+                <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                    <button id="_t-rm-kg" class="t-unit active" onclick="_tSetRmUnit('kg')">KG</button>
+                    <button id="_t-rm-lb" class="t-unit" onclick="_tSetRmUnit('lb')">LB</button>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+                <div><span class="t-lbl">Weight</span><input type="number" class="t-inp" id="_t-rm-w" placeholder="e.g. 100"></div>
+                <div><span class="t-lbl">Reps done</span><input type="number" class="t-inp" id="_t-rm-r" placeholder="e.g. 5"></div>
+            </div>
+            <button class="t-btn" onclick="_tCalc1RM()" style="width:100%;margin-bottom:10px;">Calculate</button>
+            <div id="_t-rm-out" style="display:none;max-height:200px;overflow-y:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:0.78rem;">
+                    <thead><tr>
+                        <th style="color:var(--brand-accent);padding:4px;border-bottom:1px solid var(--border);text-align:center;">Reps</th>
+                        <th style="color:var(--brand-accent);padding:4px;border-bottom:1px solid var(--border);text-align:center;">Epley</th>
+                        <th style="color:var(--brand-accent);padding:4px;border-bottom:1px solid var(--border);text-align:center;">Brzycki</th>
+                    </tr></thead>
+                    <tbody id="_t-rm-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INTERVAL -->
+        <div class="tool-panel" id="tool-panel-interval" style="display:none;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                <div><span class="t-lbl">Warm up (s)</span><input type="number" class="t-inp" id="_t-int-warmup" value="0" min="0"></div>
+                <div><span class="t-lbl">Sets</span><input type="number" class="t-inp" id="_t-int-sets" value="5" min="1"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+                <div><span class="t-lbl">Work (s)</span><input type="number" class="t-inp" id="_t-int-work" value="30" min="1"></div>
+                <div><span class="t-lbl">Rest (s)</span><input type="number" class="t-inp" id="_t-int-rest" value="15" min="0"></div>
+            </div>
+            <div id="_t-int-phase" style="text-align:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.75rem;letter-spacing:1px;color:var(--brand-accent);margin-bottom:4px;">READY</div>
+            <div id="_t-int-disp" style="font-size:3.5rem;font-family:'Courier New',monospace;font-weight:bold;text-align:center;color:white;margin:6px 0;">00:30</div>
+            <div id="_t-int-sets-lbl" style="text-align:center;font-size:0.65rem;color:#555;margin-bottom:8px;"></div>
+            <button class="t-btn" id="_t-int-btn" onclick="_tToggleInterval()" style="width:100%;">Start</button>
+        </div>
+
+        <!-- COUNTDOWN -->
+        <div class="tool-panel" id="tool-panel-countdown" style="display:none;">
+            <span class="t-lbl">Seconds</span>
+            <input type="number" class="t-inp" id="_t-cd-secs" value="60" min="1" oninput="if(!_tCdRunning){_tCdTime=parseInt(this.value)||60;_tUpdateCD()}">
+            <div id="_t-cd-disp" style="font-size:4rem;font-family:'Courier New',monospace;font-weight:bold;text-align:center;color:white;margin:12px 0;">01:00</div>
+            <button class="t-btn" id="_t-cd-btn" onclick="_tToggleCd()" style="width:100%;">Start</button>
+        </div>
+
+        <!-- STOPWATCH -->
+        <div class="tool-panel" id="tool-panel-stopwatch" style="display:none;">
+            <div id="_t-sw-disp" style="font-size:4rem;font-family:'Courier New',monospace;font-weight:bold;text-align:center;color:white;margin:12px 0;">00:00.00</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="t-btn" id="_t-sw-btn" onclick="_tToggleSw()">Start</button>
+                <button class="t-btn" onclick="_tResetSw()">Reset</button>
+            </div>
+        </div>
+
+        <!-- METRONOME -->
+        <div class="tool-panel" id="tool-panel-metronome" style="display:none;text-align:center;">
+            <p style="font-size:0.7rem;color:#555;margin-bottom:12px;">Ensure Silent Mode is OFF</p>
+            <div id="_t-bpm-val" style="font-size:4rem;color:var(--brand-accent);font-weight:800;font-family:'Montserrat',sans-serif;">60</div>
+            <span class="t-lbl">BPM</span>
+            <input type="range" id="_t-bpm-slider" min="40" max="220" value="60" style="width:100%;margin:10px 0;accent-color:var(--brand-accent);" oninput="document.getElementById('_t-bpm-val').textContent=this.value">
+            <button class="t-btn" id="_t-metro-btn" onclick="_tToggleMetronome()" style="width:100%;">Start</button>
+        </div>
+    </div>
+</div>
+
 <!-- HOMESCREEN MODAL -->
 <div class="hs-overlay" id="hs-overlay" onclick="if(event.target===this)closeHomescreenModal()">
     <div class="hs-box">
@@ -218,6 +351,18 @@ const CATEGORY_THUMBS = {
     'WARM UP':'linear-gradient(135deg,#2B1D08,#543914)',
     OTHER:'linear-gradient(135deg,#141A17,#2D3833)',
 };
+const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
+const CATEGORY_META = {
+    STRENGTH: { label:'Strength', color:'#c084fc' },
+    POWER:    { label:'Power',    color:'#fb923c' },
+    RUN:      { label:'Run',      color:'var(--brand-accent)' },
+    CIRCUIT:  { label:'Circuit',  color:'var(--brand-accent)' },
+    MOBILITY: { label:'Mobility', color:'#a78bfa' },
+    CARDIO:   { label:'Cardio',   color:'#f87171' },
+    'WARM UP':{ label:'Warm Up',  color:'#fb923c' },
+    OTHER:    { label:'Other',    color:'#888' },
+};
+
 async function loadShowcasePrograms() {
     try {
         const progs = await pb.collection('programs').getFullList({
@@ -225,26 +370,50 @@ async function loadShowcasePrograms() {
         });
         if (!progs.length) return;
         document.getElementById('showcase-section').style.display = 'block';
-        document.getElementById('showcase-grid').innerHTML = progs.map(p => {
+
+        const grouped = {};
+        progs.forEach(p => {
             const cat = (p.category||'OTHER').toUpperCase();
+            if (!grouped[cat]) grouped[cat] = [];
+            grouped[cat].push(p);
+        });
+        const sortedCats = Object.keys(grouped).sort((a,b) => {
+            const ai=CATEGORY_ORDER.indexOf(a), bi=CATEGORY_ORDER.indexOf(b);
+            return (ai===-1?99:ai)-(bi===-1?99:bi);
+        });
+
+        document.getElementById('showcase-grid').innerHTML = sortedCats.map(cat => {
+            const meta = CATEGORY_META[cat] || CATEGORY_META.OTHER;
             const bg = CATEGORY_THUMBS[cat] || CATEGORY_THUMBS.OTHER;
-            let data = p.workout_data;
-            try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
-            const sessions = Array.isArray(data?.schedule||data) ? (data.schedule||data).length : 0;
-            const thumb = p.cover_image
-                ? `<img class="showcase-thumb" src="https://restperiod.org/api/files/programs/${p.id}/${p.cover_image}" loading="lazy">`
-                : `<div class="showcase-thumb-ph" style="background:${bg};"></div>`;
-            const desc = p.description || '';
-            const metaItems = [
-                (p.category||'').toUpperCase(),
-                p.is_repeatable ? 'Repeatable' : sessions+' sessions'
-            ].filter(Boolean).join('|');
-            return `<div class="showcase-card" onclick="openProgDetail('${p.id}','${p.name.replace(/'/g,"\\'")}','${desc.replace(/'/g,"\\'").replace(/\n/g,' ')}','${metaItems}','${p.cover_image ? 'https://restperiod.org/api/files/programs/'+p.id+'/'+p.cover_image : ''}','${cat}')">
-                ${thumb}
-                <div class="showcase-body">
-                    <div class="showcase-name">${p.name}</div>
-                    <div class="showcase-meta">${p.is_repeatable?'Repeatable':sessions+' sessions'}</div>
-                    <button onclick="copyShareLink('${p.id}');event.stopPropagation();" style="margin-top:6px;width:100%;background:none;border:1px solid var(--brand-accent);color:var(--brand-accent);padding:4px;border-radius:4px;font-size:0.6rem;font-family:'Montserrat',sans-serif;font-weight:800;cursor:pointer;">SHARE</button>
+            const catProgs = grouped[cat];
+            return `<div style="margin-bottom:24px;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                    <span style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;color:${meta.color};">${meta.label}</span>
+                    <div style="flex:1;height:1px;background:var(--border);"></div>
+                    <span style="font-size:0.6rem;color:#555;font-family:'Montserrat',sans-serif;font-weight:800;">${catProgs.length}</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;">
+                    ${catProgs.map(p => {
+                        let data = p.workout_data;
+                        try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
+                        const sessions = Array.isArray(data?.schedule||data) ? (data.schedule||data).length : 0;
+                        const thumb = p.cover_image
+                            ? \`<img class="showcase-thumb" src="https://restperiod.org/api/files/programs/\${p.id}/\${p.cover_image}" loading="lazy">\`
+                            : \`<div class="showcase-thumb-ph" style="background:\${bg};"></div>\`;
+                        const safeDesc = (p.description||'').replace(/'/g,"\'").replace(/
+/g,' ');
+                        const safeName = p.name.replace(/'/g,"\'");
+                        const metaStr = \`\${cat}|\${p.is_repeatable?'Repeatable':sessions+' sessions'}\`;
+                        const imgUrl = p.cover_image ? \`https://restperiod.org/api/files/programs/\${p.id}/\${p.cover_image}\` : '';
+                        return \`<div class="showcase-card" onclick="openProgDetail('\${p.id}','\${safeName}','\${safeDesc}','\${metaStr}','\${imgUrl}','\${cat}')">
+                            \${thumb}
+                            <div class="showcase-body">
+                                <div class="showcase-name">\${p.name}</div>
+                                <div class="showcase-meta">\${p.is_repeatable?'Repeatable':sessions+' sessions'}</div>
+                                <button onclick="copyShareLink('\${p.id}');event.stopPropagation();" style="margin-top:6px;width:100%;background:none;border:1px solid var(--brand-accent);color:var(--brand-accent);padding:4px;border-radius:4px;font-size:0.6rem;font-family:'Montserrat',sans-serif;font-weight:800;cursor:pointer;">SHARE</button>
+                            </div>
+                        </div>\`;
+                    }).join('')}
                 </div>
             </div>`;
         }).join('');
@@ -347,6 +516,52 @@ async function signup(){const name=document.getElementById('signup-name').value.
             } catch(e) { console.error('Could not claim program:', e); }
         }
         redirect(auth.record.role);}catch(e){const msg=e?.response?.data?.email?.message||e.message||'Signup failed.';errEl.textContent=msg;errEl.style.display='block';btn.disabled=false;btn.textContent='Create Free Account';}}
+// ── TOOL MODAL ───────────────────────────────────
+let _tAudioCtx=null,_tMetroPlaying=false,_tMetroTimerID=null,_tNextTick=0;
+let _tCdRunning=false,_tCdTime=60,_tCdInterval=null;
+let _tSwRunning=false,_tSwStart=0,_tSwElapsed=0,_tSwInterval=null;
+let _tIntRunning=false,_tIntInterval=null,_tIntPhase='idle',_tIntSet=0,_tIntTotal=0,_tIntTime=0;
+let _tPaceUnit='km', _tRmUnit='kg';
+
+function openToolModal(tool) {
+    const titles = {pace:'Pace Solver',onerm:'1RM Calculator',interval:'Interval Timer',countdown:'Countdown',stopwatch:'Stopwatch',metronome:'Metronome'};
+    document.getElementById('tool-modal-title').textContent = titles[tool]||tool;
+    document.querySelectorAll('.tool-panel').forEach(el => el.style.display='none');
+    document.getElementById('tool-panel-'+tool).style.display = 'block';
+    document.getElementById('tool-overlay').classList.add('open');
+}
+function closeToolModal() {
+    document.getElementById('tool-overlay').classList.remove('open');
+    if(_tMetroPlaying)_tToggleMetronome();
+    if(_tIntRunning)_tToggleInterval();
+    if(_tCdRunning){clearInterval(_tCdInterval);_tCdRunning=false;}
+}
+
+// Pace
+function _tSetPaceUnit(u){_tPaceUnit=u;document.getElementById('_t-pace-km').classList.toggle('active',u==='km');document.getElementById('_t-pace-mi').classList.toggle('active',u==='mi');}
+function _tSolvePace(){const dist=parseFloat(document.getElementById('_t-dist').value),tMin=parseFloat(document.getElementById('_t-tmin').value)||0,tSec=parseFloat(document.getElementById('_t-tsec').value)||0,pMin=parseFloat(document.getElementById('_t-pmin').value)||0,pSec=parseFloat(document.getElementById('_t-psec').value)||0,speed=parseFloat(document.getElementById('_t-speed').value);const hasDist=!isNaN(dist),hasTime=tMin||tSec,hasPace=pMin||pSec,hasSpeed=!isNaN(speed)&&speed>0;let d=hasDist?dist:null,t=hasTime?(tMin*60+tSec):null,p=hasPace?(pMin*60+pSec):null,sp=hasSpeed?speed:null;if(d&&t&&!p)p=t/d;if(d&&t&&!sp)sp=d/(t/3600);if(d&&p&&!t)t=d*p;if(d&&p&&!sp)sp=3600/p;if(d&&sp&&!t)t=(d/sp)*3600;if(d&&sp&&!p)p=3600/sp;if(t&&p&&!d)d=t/p;if(!d||!t||!p||!sp){document.getElementById('_t-pace-out').innerHTML='Fill in any 2 fields.';return;}const pM=Math.floor(p/60),pS=Math.round(p%60),tH=Math.floor(t/3600),tM=Math.floor((t%3600)/60),tSS=Math.round(t%60);document.getElementById('_t-pace-out').innerHTML=`Dist: <b style="color:var(--brand-accent)">${d.toFixed(2)} ${_tPaceUnit}</b> · Time: <b style="color:var(--brand-accent)">${tH>0?tH+'h ':''} ${tM}m ${tSS}s</b><br>Pace: <b style="color:var(--brand-accent)">${pM}:${String(pS).padStart(2,'0')} /${_tPaceUnit}</b> · Speed: <b style="color:var(--brand-accent)">${sp.toFixed(2)} ${_tPaceUnit}/h</b>`;}
+
+// 1RM
+function _tSetRmUnit(u){_tRmUnit=u;document.getElementById('_t-rm-kg').classList.toggle('active',u==='kg');document.getElementById('_t-rm-lb').classList.toggle('active',u==='lb');}
+function _tCalc1RM(){let w=parseFloat(document.getElementById('_t-rm-w').value);const r=parseFloat(document.getElementById('_t-rm-r').value);if(!w||!r)return;if(_tRmUnit==='lb')w/=2.2046;const tbody=document.getElementById('_t-rm-body');tbody.innerHTML='';for(let reps=1;reps<=10;reps++){let e=w*(1+reps/30),b=reps<37?w*(36/(37-reps)):null;if(_tRmUnit==='lb'){e*=2.2046;if(b)b*=2.2046;}const fmt=v=>v?`${Math.round(v)}${_tRmUnit}`:'—';const row=document.createElement('tr');if(reps===Math.round(r)){row.style.cssText='color:var(--brand-accent);font-weight:800;';}row.innerHTML=`<td style="padding:4px 8px;text-align:center;">${reps}</td><td style="padding:4px 8px;text-align:center;">${fmt(e)}</td><td style="padding:4px 8px;text-align:center;">${fmt(b)}</td>`;tbody.appendChild(row);}document.getElementById('_t-rm-out').style.display='block';}
+
+// Countdown
+function _tUpdateCD(){const m=Math.floor(_tCdTime/60),s=_tCdTime%60;document.getElementById('_t-cd-disp').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+function _tToggleCd(){const btn=document.getElementById('_t-cd-btn');if(_tCdRunning){clearInterval(_tCdInterval);_tCdRunning=false;btn.textContent='Start';}else{_tCdTime=parseInt(document.getElementById('_t-cd-secs').value)||60;_tCdRunning=true;btn.textContent='Stop';_tCdInterval=setInterval(()=>{_tCdTime--;_tUpdateCD();if(_tCdTime<=0){clearInterval(_tCdInterval);_tCdRunning=false;btn.textContent='Start';}},1000);}}
+
+// Stopwatch
+function _tToggleSw(){const btn=document.getElementById('_t-sw-btn');if(_tSwRunning){clearInterval(_tSwInterval);_tSwElapsed+=Date.now()-_tSwStart;_tSwRunning=false;btn.textContent='Start';}else{_tSwStart=Date.now();_tSwRunning=true;btn.textContent='Stop';_tSwInterval=setInterval(()=>{const t=_tSwElapsed+(Date.now()-_tSwStart),m=Math.floor(t/60000),s=Math.floor((t%60000)/1000),ms=Math.floor((t%1000)/10);document.getElementById('_t-sw-disp').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms).padStart(2,'0')}`;},50);}}
+function _tResetSw(){clearInterval(_tSwInterval);_tSwRunning=false;_tSwElapsed=0;document.getElementById('_t-sw-disp').textContent='00:00.00';document.getElementById('_t-sw-btn').textContent='Start';}
+
+// Metronome
+function _tMetroScheduler(){const bpm=parseFloat(document.getElementById('_t-bpm-slider').value),spb=60/bpm;while(_tNextTick<_tAudioCtx.currentTime+0.1){const osc=_tAudioCtx.createOscillator(),env=_tAudioCtx.createGain();osc.frequency.value=1000;env.gain.setValueAtTime(1,_tNextTick);env.gain.exponentialRampToValueAtTime(0.001,_tNextTick+0.025);osc.connect(env);env.connect(_tAudioCtx.destination);osc.start(_tNextTick);osc.stop(_tNextTick+0.03);_tNextTick+=spb;}_tMetroTimerID=setTimeout(_tMetroScheduler,25);}
+function _tToggleMetronome(){if(!_tAudioCtx)_tAudioCtx=new(window.AudioContext||window.webkitAudioContext)();if(_tAudioCtx.state==='suspended')_tAudioCtx.resume();const btn=document.getElementById('_t-metro-btn');_tMetroPlaying=!_tMetroPlaying;if(_tMetroPlaying){btn.textContent='Stop';_tNextTick=_tAudioCtx.currentTime;_tMetroScheduler();}else{btn.textContent='Start';clearTimeout(_tMetroTimerID);}}
+
+// Interval
+function _tUpdateInt(){const m=Math.floor(_tIntTime/60),s=_tIntTime%60;document.getElementById('_t-int-disp').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+function _tSetIntPhase(phase,set,total){_tIntPhase=phase;const lbl=document.getElementById('_t-int-phase');if(phase==='warmup'){lbl.textContent='WARM UP';lbl.style.color='#fb923c';}else if(phase==='work'){lbl.textContent='WORK';lbl.style.color='var(--brand-accent)';document.getElementById('_t-int-sets-lbl').textContent=`Set ${set} of ${total}`;}else if(phase==='rest'){lbl.textContent='REST';lbl.style.color='#f87171';document.getElementById('_t-int-sets-lbl').textContent=`Set ${set} of ${total}`;}else{lbl.textContent='DONE';lbl.style.color='var(--brand-accent)';document.getElementById('_t-int-sets-lbl').textContent='';}}
+function _tToggleInterval(){const btn=document.getElementById('_t-int-btn');if(_tIntRunning){clearInterval(_tIntInterval);_tIntRunning=false;btn.textContent='Start';_tIntPhase='idle';document.getElementById('_t-int-phase').textContent='READY';document.getElementById('_t-int-sets-lbl').textContent='';_tIntTime=parseInt(document.getElementById('_t-int-work').value)||30;_tUpdateInt();return;}const warmup=parseInt(document.getElementById('_t-int-warmup').value)||0,sets=parseInt(document.getElementById('_t-int-sets').value)||5,work=parseInt(document.getElementById('_t-int-work').value)||30,rest=parseInt(document.getElementById('_t-int-rest').value)||15;_tIntTotal=sets;_tIntSet=1;_tIntRunning=true;btn.textContent='Stop';if(warmup>0){_tIntTime=warmup;_tSetIntPhase('warmup',0,sets);}else{_tIntTime=work;_tSetIntPhase('work',1,sets);}_tUpdateInt();_tIntInterval=setInterval(()=>{_tIntTime--;_tUpdateInt();if(_tIntTime>0)return;if(_tIntPhase==='warmup'){_tIntTime=work;_tIntSet=1;_tSetIntPhase('work',1,_tIntTotal);}else if(_tIntPhase==='work'){if(rest>0){_tIntTime=rest;_tSetIntPhase('rest',_tIntSet,_tIntTotal);}else{_tIntSet++;if(_tIntSet>_tIntTotal){clearInterval(_tIntInterval);_tIntRunning=false;btn.textContent='Start';_tIntTime=0;_tSetIntPhase('done',0,0);_tUpdateInt();}else{_tIntTime=work;_tSetIntPhase('work',_tIntSet,_tIntTotal);}}}else if(_tIntPhase==='rest'){_tIntSet++;if(_tIntSet>_tIntTotal){clearInterval(_tIntInterval);_tIntRunning=false;btn.textContent='Start';_tIntTime=0;_tSetIntPhase('done',0,0);_tUpdateInt();}else{_tIntTime=work;_tSetIntPhase('work',_tIntSet,_tIntTotal);}}},1000);}
+
 document.addEventListener('keydown',(e)=>{if(e.key==='Enter'){const loginVisible=document.getElementById('login-form').style.display!=='none';if(loginVisible)login();else signup();}});
 </script>
 </body>
