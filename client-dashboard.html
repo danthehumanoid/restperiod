@@ -660,7 +660,7 @@ window.onload = async () => {
 
     await initUnitPref();
 
-    await initUnitPref();
+    try { await initUnitPref(); } catch(e) { console.warn('Unit pref init failed:', e); }
 
     if (isFree) {
         document.getElementById('my-programs-section').style.display = 'block';
