@@ -692,8 +692,14 @@ function renderListMarkup(id, list, type) {
                     const ALL_COL_KEYS = Object.keys(ALL_COLS);
                     const activeCols = cols.filter(c => ALL_COLS[c]);
                     const inactiveCols = ALL_COL_KEYS.filter(c => !cols.includes(c));
-                    const colButtons = activeCols.map(c =>
-                        `<button onclick="toggleExColumn('${type}',${i},'${c}',false);event.stopPropagation();" style="background:var(--input-bg);border:1px solid var(--brand-accent);color:var(--brand-accent);padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;" title="Remove column">✕ ${ALL_COLS[c]}</button>`
+                    const colButtons = activeCols.map((c, ci) =>
+                        `<button draggable="true"
+                            ondragstart="colDragStart(event,'${type}',${i},${ci})"
+                            ondragover="colDragOver(event)"
+                            ondrop="colDrop(event,'${type}',${i},${ci})"
+                            ondragend="colDragEnd(event)"
+                            onclick="toggleExColumn('${type}',${i},'${c}',false);event.stopPropagation();"
+                            style="background:var(--input-bg);border:1px solid var(--brand-accent);color:var(--brand-accent);padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:grab;" title="Drag to reorder · Click ✕ to remove">⠿ ${ALL_COLS[c]} ✕</button>`
                     ).join('');
                     const addButtons = inactiveCols.map(c =>
                         `<button onclick="toggleExColumn('${type}',${i},'${c}',true);event.stopPropagation();" style="background:none;border:1px dashed #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;" title="Add column">+ ${ALL_COLS[c]}</button>`
@@ -721,16 +727,56 @@ function renderListMarkup(id, list, type) {
         </div>`).join('');
 }
 
+const CANONICAL_COL_ORDER = ['reps','weight','rest','rpe','tempo','pace','speed','time','distance'];
+
+let _colDragSrc = null; // {type, exIdx, colIdx}
+
+function colDragStart(e, type, exIdx, colIdx) {
+    _colDragSrc = {type, exIdx, colIdx};
+    e.dataTransfer.effectAllowed = 'move';
+    e.target.style.opacity = '0.4';
+}
+function colDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+}
+function colDragEnd(e) {
+    e.target.style.opacity = '1';
+    _colDragSrc = null;
+}
+function colDrop(e, type, exIdx, targetColIdx) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!_colDragSrc) return;
+    if (_colDragSrc.type !== type || _colDragSrc.exIdx !== exIdx) return;
+    const srcIdx = _colDragSrc.colIdx;
+    if (srcIdx === targetColIdx) return;
+    const ex = programData[currentWeekIndex][type][exIdx];
+    const cols = ex.columns;
+    const [moved] = cols.splice(srcIdx, 1);
+    cols.splice(targetColIdx, 0, moved);
+    saveHistory();
+    renderLists();
+}
+
 function toggleExColumn(type, exIdx, col, add) {
     const ex = programData[currentWeekIndex][type][exIdx];
     if (!ex.columns) ex.columns = ['reps','weight','rest','rpe','tempo'];
     if (add) {
-        if (!ex.columns.includes(col)) ex.columns.push(col);
+        if (!ex.columns.includes(col)) {
+            // Insert at canonical position, not at end
+            const canonIdx = CANONICAL_COL_ORDER.indexOf(col);
+            let insertAt = ex.columns.length;
+            for (let i = 0; i < ex.columns.length; i++) {
+                const existingIdx = CANONICAL_COL_ORDER.indexOf(ex.columns[i]);
+                if (existingIdx > canonIdx) { insertAt = i; break; }
+            }
+            ex.columns.splice(insertAt, 0, col);
+        }
+        ex.setsData.forEach(s => { if (s[col] === undefined) s[col] = ''; });
     } else {
         ex.columns = ex.columns.filter(c => c !== col);
     }
-    // Ensure all sets have the field
-    if (add) ex.setsData.forEach(s => { if (s[col]===undefined) s[col]=''; });
     saveHistory();
     renderLists();
 }
