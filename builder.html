@@ -431,7 +431,7 @@ function runLibrarySearch() {
 
 function addEx(name, type) {
     const clean = cleanExTitle(name);
-    programData[currentWeekIndex][type].push({ name: clean, grouping: '', columns: ['reps','weight','rest','rpe','tempo'], setsData: [{reps:'10', weight:'0', rest:'', tempo:'//', rpe:'7', pace:'', speed:'', time:''}], notes: '' });
+    programData[currentWeekIndex][type].push({ name: clean, grouping: '', columns: ['reps','weight','rest','rpe','tempo'], setsData: [{reps:'10', weight:'0', rest:'', tempo:'//', rpe:'7', pace:'', speed:'', time:'', distance:''}], notes: '' });
     saveHistory(); renderLists();
 }
 
@@ -688,12 +688,12 @@ function renderListMarkup(id, list, type) {
             <div style="margin-bottom:8px;">
                 ${(()=>{
                     const cols = ex.columns || ['reps','weight','rest','rpe','tempo'];
-                    const ALL_COLS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME'};
-                    const optionalCols = ['pace','speed','time'];
+                    const ALL_COLS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',distance:'DIST'};
+                    const ALL_COL_KEYS = Object.keys(ALL_COLS);
                     const activeCols = cols.filter(c => ALL_COLS[c]);
-                    const inactiveCols = optionalCols.filter(c => !cols.includes(c));
+                    const inactiveCols = ALL_COL_KEYS.filter(c => !cols.includes(c));
                     const colButtons = activeCols.map(c =>
-                        `<button onclick="toggleExColumn('${type}',${i},'${c}',false);event.stopPropagation();" style="background:var(--input-bg);border:1px solid var(--border);color:var(--brand-accent);padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;" title="Remove column">✕ ${ALL_COLS[c]}</button>`
+                        `<button onclick="toggleExColumn('${type}',${i},'${c}',false);event.stopPropagation();" style="background:var(--input-bg);border:1px solid var(--brand-accent);color:var(--brand-accent);padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;" title="Remove column">✕ ${ALL_COLS[c]}</button>`
                     ).join('');
                     const addButtons = inactiveCols.map(c =>
                         `<button onclick="toggleExColumn('${type}',${i},'${c}',true);event.stopPropagation();" style="background:none;border:1px dashed #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;" title="Add column">+ ${ALL_COLS[c]}</button>`
@@ -703,7 +703,7 @@ function renderListMarkup(id, list, type) {
             </div>
             ${(()=>{
                 const cols = ex.columns || ['reps','weight','rest','rpe','tempo'];
-                const ALL_COLS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME'};
+                const ALL_COLS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',distance:'DIST'};
                 const activeCols = cols.filter(c => ALL_COLS[c]);
                 const colCount = activeCols.length + 2; // +SET label +delete
                 const gridCols = `0.6fr ${activeCols.map(()=>'1fr').join(' ')} 0.4fr`;
