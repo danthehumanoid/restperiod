@@ -783,65 +783,6 @@ function getColLabel(col) {
     return unit ? label + ' (' + unit + ')' : label;
 }
 
-// ── UNIT PREFERENCE ──────────────────────────────
-let userUnitPref = 'metric';
-
-async function initUnitPref() {
-    try {
-        const model = await pb.collection('users').getOne(pb.authStore.model.id, {requestKey:null});
-        userUnitPref = model.unit_preference || 'metric';
-    } catch(e) {}
-}
-
-async function setUnitPref(pref) {
-    userUnitPref = pref;
-    try {
-        await pb.collection('users').update(pb.authStore.model.id, {unit_preference: pref});
-    } catch(e) { console.error(e); }
-    document.getElementById('settings-unit-sub').textContent = pref === 'imperial' ? 'Imperial (lbs, yards, mph)' : 'Metric (kg, metres, km/h)';
-    document.getElementById('unit-metric-btn').style.background = pref === 'metric' ? 'var(--brand-accent)' : '';
-    document.getElementById('unit-metric-btn').style.color = pref === 'metric' ? '#000' : '';
-    document.getElementById('unit-imperial-btn').style.background = pref === 'imperial' ? 'var(--brand-accent)' : '';
-    document.getElementById('unit-imperial-btn').style.color = pref === 'imperial' ? '#000' : '';
-    showToast('Units updated');
-    if (currentProgram) renderWorkout();
-}
-
-function convertDoValue(val, col) {
-    if (userUnitPref !== 'imperial' || !val || val === '—') return val;
-    const n = parseFloat(val);
-    if (isNaN(n)) return val;
-    if (col === 'weight') return Math.round(n * 2.2046) + ' lbs';
-    if (col === 'distance') return (n * 1.09361).toFixed(1) + ' yds';
-    if (col === 'speed') return (n * 0.621371).toFixed(1) + ' mph';
-    if (col === 'pace') {
-        const secPerMile = (n * 60) / 0.621371;
-        const m = Math.floor(secPerMile / 60), s = Math.round(secPerMile % 60);
-        return m + ':' + String(s).padStart(2,'0') + '/mi';
-    }
-    return val;
-}
-
-function getDidPlaceholder(col) {
-    if (userUnitPref !== 'imperial') {
-        const u = {weight:'kg', distance:'m', speed:'km/h', pace:'min/km'};
-        return u[col] || '—';
-    }
-    const u = {weight:'lbs', distance:'yds', speed:'mph', pace:'min/mi'};
-    return u[col] || '—';
-}
-
-function getColLabel(col) {
-    const base = {reps:'REPS', weight:'WEIGHT', rest:'REST', rpe:'RPE', tempo:'TEMPO', pace:'PACE', speed:'SPEED', time:'TIME', distance:'DIST'};
-    const unitSuffix = {
-        weight: userUnitPref === 'imperial' ? ' (lbs)' : ' (kg)',
-        distance: userUnitPref === 'imperial' ? ' (yds)' : ' (m)',
-        speed: userUnitPref === 'imperial' ? ' (mph)' : ' (km/h)',
-        pace: userUnitPref === 'imperial' ? ' (/mi)' : ' (/km)',
-    };
-    return (base[col] || col.toUpperCase()) + (unitSuffix[col] || '');
-}
-
 function openContactModal() {
     document.getElementById('contact-overlay').classList.add('open');
     document.getElementById('contact-subject').value = '';
