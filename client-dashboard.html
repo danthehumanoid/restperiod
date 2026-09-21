@@ -658,6 +658,10 @@ window.onload = async () => {
     document.querySelectorAll('.free-only').forEach(el => el.style.display = isFree ? (el.tagName==='DIV'||el.tagName==='A'?'flex':'') : 'none');
     document.querySelectorAll('.client-only').forEach(el => el.style.display = isFree ? 'none' : (el.tagName==='BUTTON'?'inline-flex':'block'));
 
+    await initUnitPref();
+
+    await initUnitPref();
+
     if (isFree) {
         document.getElementById('my-programs-section').style.display = 'block';
         await Promise.all([loadMyProgramsFree(), loadFreePrograms()]);
@@ -685,6 +689,13 @@ async function openSettings() {
     } catch(e) {}
     document.getElementById('settings-name').textContent = model.name || 'No name set';
     document.getElementById('settings-email').textContent = model.email;
+    // Unit preference
+    const unitPref = model.unit_preference || 'metric';
+    document.getElementById('settings-unit-sub').textContent = unitPref === 'imperial' ? 'Imperial (lbs, yards, mph)' : 'Metric (kg, metres, km/h)';
+    document.getElementById('unit-metric-btn').style.background = unitPref === 'metric' ? 'var(--brand-accent)' : '';
+    document.getElementById('unit-metric-btn').style.color = unitPref === 'metric' ? '#000' : '';
+    document.getElementById('unit-imperial-btn').style.background = unitPref === 'imperial' ? 'var(--brand-accent)' : '';
+    document.getElementById('unit-imperial-btn').style.color = unitPref === 'imperial' ? '#000' : '';
     // Populate subscription info
     const subContent = document.getElementById('settings-sub-content');
     const status = model.subscription_status || 'free';
@@ -712,6 +723,123 @@ async function openSettings() {
                 <button class="settings-btn primary" onclick="window.location.href='explore.html';closeSettings();">Upgrade</button>
             </div>`;
     }
+}
+
+// ── UNIT PREFERENCE ──────────────────────────────
+let userUnitPref = 'metric';
+
+async function initUnitPref() {
+    try {
+        const model = await pb.collection('users').getOne(pb.authStore.model.id, {requestKey:null});
+        userUnitPref = model.unit_preference || 'metric';
+    } catch(e) {}
+}
+
+async function setUnitPref(pref) {
+    userUnitPref = pref;
+    try {
+        await pb.collection('users').update(pb.authStore.model.id, {unit_preference: pref});
+    } catch(e) { console.error(e); }
+    document.getElementById('settings-unit-sub').textContent = pref === 'imperial' ? 'Imperial (lbs, yards, mph)' : 'Metric (kg, metres, km/h)';
+    document.getElementById('unit-metric-btn').style.background = pref === 'metric' ? 'var(--brand-accent)' : '';
+    document.getElementById('unit-metric-btn').style.color = pref === 'metric' ? '#000' : '';
+    document.getElementById('unit-imperial-btn').style.background = pref === 'imperial' ? 'var(--brand-accent)' : '';
+    document.getElementById('unit-imperial-btn').style.color = pref === 'imperial' ? '#000' : '';
+    showToast('Units updated');
+    // Re-render current workout if open
+    if (currentProgram) renderWorkout();
+}
+
+function convertDoValue(val, col) {
+    if (userUnitPref !== 'imperial' || !val || val === '—') return val;
+    const n = parseFloat(val);
+    if (isNaN(n)) return val;
+    if (col === 'weight') return Math.round(n * 2.2046) + ' lbs';
+    if (col === 'distance') return (n * 1.09361).toFixed(1) + ' yds';
+    if (col === 'speed') return (n * 0.621371).toFixed(1) + ' mph';
+    if (col === 'pace') {
+        // pace is in min/km, convert to min/mile
+        const secPerKm = n * 60;
+        const secPerMile = secPerKm / 0.621371;
+        const m = Math.floor(secPerMile / 60), s = Math.round(secPerMile % 60);
+        return m + ':' + String(s).padStart(2,'0') + '/mi';
+    }
+    return val;
+}
+
+function getDidUnit(col) {
+    if (userUnitPref !== 'imperial') {
+        const units = {weight:'kg', distance:'m', speed:'km/h', pace:'min/km'};
+        return units[col] || '';
+    }
+    const units = {weight:'lbs', distance:'yds', speed:'mph', pace:'min/mi'};
+    return units[col] || '';
+}
+
+function getColLabel(col) {
+    const labels = {reps:'REPS', weight:'WEIGHT', rest:'REST', rpe:'RPE', tempo:'TEMPO', pace:'PACE', speed:'SPEED', time:'TIME', distance:'DIST'};
+    const label = labels[col] || col.toUpperCase();
+    const unit = getDidUnit(col);
+    return unit ? label + ' (' + unit + ')' : label;
+}
+
+// ── UNIT PREFERENCE ──────────────────────────────
+let userUnitPref = 'metric';
+
+async function initUnitPref() {
+    try {
+        const model = await pb.collection('users').getOne(pb.authStore.model.id, {requestKey:null});
+        userUnitPref = model.unit_preference || 'metric';
+    } catch(e) {}
+}
+
+async function setUnitPref(pref) {
+    userUnitPref = pref;
+    try {
+        await pb.collection('users').update(pb.authStore.model.id, {unit_preference: pref});
+    } catch(e) { console.error(e); }
+    document.getElementById('settings-unit-sub').textContent = pref === 'imperial' ? 'Imperial (lbs, yards, mph)' : 'Metric (kg, metres, km/h)';
+    document.getElementById('unit-metric-btn').style.background = pref === 'metric' ? 'var(--brand-accent)' : '';
+    document.getElementById('unit-metric-btn').style.color = pref === 'metric' ? '#000' : '';
+    document.getElementById('unit-imperial-btn').style.background = pref === 'imperial' ? 'var(--brand-accent)' : '';
+    document.getElementById('unit-imperial-btn').style.color = pref === 'imperial' ? '#000' : '';
+    showToast('Units updated');
+    if (currentProgram) renderWorkout();
+}
+
+function convertDoValue(val, col) {
+    if (userUnitPref !== 'imperial' || !val || val === '—') return val;
+    const n = parseFloat(val);
+    if (isNaN(n)) return val;
+    if (col === 'weight') return Math.round(n * 2.2046) + ' lbs';
+    if (col === 'distance') return (n * 1.09361).toFixed(1) + ' yds';
+    if (col === 'speed') return (n * 0.621371).toFixed(1) + ' mph';
+    if (col === 'pace') {
+        const secPerMile = (n * 60) / 0.621371;
+        const m = Math.floor(secPerMile / 60), s = Math.round(secPerMile % 60);
+        return m + ':' + String(s).padStart(2,'0') + '/mi';
+    }
+    return val;
+}
+
+function getDidPlaceholder(col) {
+    if (userUnitPref !== 'imperial') {
+        const u = {weight:'kg', distance:'m', speed:'km/h', pace:'min/km'};
+        return u[col] || '—';
+    }
+    const u = {weight:'lbs', distance:'yds', speed:'mph', pace:'min/mi'};
+    return u[col] || '—';
+}
+
+function getColLabel(col) {
+    const base = {reps:'REPS', weight:'WEIGHT', rest:'REST', rpe:'RPE', tempo:'TEMPO', pace:'PACE', speed:'SPEED', time:'TIME', distance:'DIST'};
+    const unitSuffix = {
+        weight: userUnitPref === 'imperial' ? ' (lbs)' : ' (kg)',
+        distance: userUnitPref === 'imperial' ? ' (yds)' : ' (m)',
+        speed: userUnitPref === 'imperial' ? ' (mph)' : ' (km/h)',
+        pace: userUnitPref === 'imperial' ? ' (/mi)' : ' (/km)',
+    };
+    return (base[col] || col.toUpperCase()) + (unitSuffix[col] || '');
 }
 
 function openContactModal() {
@@ -1491,13 +1619,16 @@ function generateExerciseHTML(list,type) {
                 const doRow = cols.map(c => {
                     const tooltip = c==='rpe' ? `<span class="help-icon" onclick="document.getElementById('rpe-tooltip').classList.add('open');event.stopPropagation();">?</span>` 
                                   : c==='tempo' ? `<span class="help-icon" onclick="document.getElementById('tempo-tooltip').classList.add('open');event.stopPropagation();">?</span>` : '';
-                    return `<div><div class="cell-header" style="color:var(--brand-accent)88;white-space:nowrap;">${COL_LABELS[c]||c.toUpperCase()} ${tooltip}</div><div class="do-cell">${s[c]||'—'}</div></div>`;
+                    const displayVal = convertDoValue(s[c]||'—', c);
+                    const colLabel = getColLabel(c);
+                    return `<div><div class="cell-header" style="color:var(--brand-accent)88;white-space:nowrap;font-size:0.6rem;">${colLabel} ${tooltip}</div><div class="do-cell">${displayVal}</div></div>`;
                 }).join('');
                 const didRow = cols.map(c => {
                     const actField = COL_ACT[c] || ('act_'+c);
                     const t = COL_TYPES[c]||'text';
                     const step = c==='rpe'?'step="0.5"':'';
-                    return `<div><input type="${t}" ${step} id="${c}-${baseId}" class="did-cell" placeholder="—" value="${s[actField]||''}" onchange="autoSave('${type}',${i},${si},'${actField}',this.value)"></div>`;
+                    const ph = getDidUnit(c) || '—';
+                    return `<div><input type="${t}" ${step} id="${c}-${baseId}" class="did-cell" placeholder="${ph}" value="${s[actField]||''}" onchange="autoSave('${type}',${i},${si},'${actField}',this.value)"></div>`;
                 }).join('');
                 return `<div class="set-container"><div class="set-label">SET ${si+1}</div>
                     <div class="set-grid" style="grid-template-columns:${gridCols};">
@@ -1861,6 +1992,34 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
         </div>
 
         <div class="settings-section">
+            <div class="settings-section-title">Units</div>
+            <div class="settings-item">
+                <div>
+                    <div class="settings-item-label">Measurement Units</div>
+                    <div class="settings-item-sub" id="settings-unit-sub">Loading...</div>
+                </div>
+                <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                    <button id="unit-metric-btn" class="settings-btn" onclick="setUnitPref('metric')" style="border:none;border-radius:0;padding:6px 12px;">Metric</button>
+                    <button id="unit-imperial-btn" class="settings-btn" onclick="setUnitPref('imperial')" style="border:none;border-radius:0;padding:6px 12px;">Imperial</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-section-title">Units</div>
+            <div class="settings-item">
+                <div>
+                    <div class="settings-item-label">Measurement Units</div>
+                    <div class="settings-item-sub" id="settings-unit-sub">Loading...</div>
+                </div>
+                <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+                    <button id="unit-metric-btn" class="settings-btn" onclick="setUnitPref('metric')" style="border:none;border-radius:0;padding:6px 12px;">Metric</button>
+                    <button id="unit-imperial-btn" class="settings-btn" onclick="setUnitPref('imperial')" style="border:none;border-radius:0;padding:6px 12px;">Imperial</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
             <div class="settings-section-title">Account</div>
             <div class="settings-item">
                 <div>
@@ -1872,10 +2031,6 @@ function tToggleInterval(){const btn=document.getElementById('t-int-btn');if(tIn
                 <div><div class="settings-item-label">Password</div></div>
                 <button class="settings-btn" onclick="openChangePassword()">Change</button>
             </div>
-        </div>
-
-        <div class="settings-section">
-            <div class="settings-section-title">Danger Zone</div>
             <div class="settings-item">
                 <div><div class="settings-item-label">Log out</div></div>
                 <button class="settings-btn danger" onclick="logout()">Logout</button>
