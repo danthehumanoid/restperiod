@@ -50,6 +50,7 @@
         .lesson-card.read .check-icon { display: block; }
 
         /* ── THEORY TAB ── */
+        .theory-group { margin-bottom: 28px; }
         .theory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; }
         .theory-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 0.6; position: relative; }
         .theory-card:hover { border-color: var(--brand-accent); opacity: 0.8; }
@@ -200,7 +201,7 @@
 <!-- THEORY TAB -->
 <div class="tab-panel" id="tab-theory">
     <div class="section-title">Exercise Science</div>
-    <div class="theory-grid" id="theory-grid"></div>
+    <div id="theory-groups"></div>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -231,6 +232,16 @@
 
 const pb = new PocketBase('https://restperiod.org');
 const PB_URL = 'https://restperiod.org';
+
+// ── EVENT TRACKING (feeds megauser.html) ──────────
+// Fire-and-forget. Never blocks the UI; silently no-ops if `events` doesn't exist.
+function track(type, meta = {}) {
+    if (!pb.authStore.isValid) return;
+    pb.collection('events').create(
+        { user: pb.authStore.model.id, type, meta },
+        { requestKey: null }
+    ).catch(() => {});
+}
 
 // ── CHAPTERS ──────────────────────────────────────
 const CHAPTERS = [
@@ -273,48 +284,68 @@ const CHAPTERS = [
     { num: 37, title: 'TRUST THE PROCESS... IF YOU KNOW IT',  file: 'rpchp37Chapter 37 - TRUST THE PROCESS... IF YOU KNOW IT.html' },
 ];
 
-// ── THEORY PLACEHOLDERS ───────────────────────────
-const THEORY_ITEMS = [
-    { tag:'Principles', title:'Principles of Recovery',     file:'principlesofrecovery.html' },
-    { tag:'Principles', title:'Principle of Overload',      file:'principleofoverload.html' },
-    { tag:'Principles', title:'Principle of Progression',   file:'principleofprogression.html' },
-    { tag:'Principles', title:'Principle of Reversibility', file:'principleofreversibility.html' },
-    { tag:'Principles', title:'Principle of Specificity',   file:'principleofspecificity.html' },
-    { tag:'Principles', title:'Principle of Individuality', file:'principleofindividuality.html' },
+// ── THEORY ────────────────────────────────────────
+const THEORY_GROUPS = [
+    {
+        title: 'Principles of Training',
+        items: [
+            { tag:'Principles', title:'Principles of Recovery',     label:'Recovery',      file:'principlesofrecovery.html' },
+            { tag:'Principles', title:'Principle of Overload',      label:'Overload',      file:'principleofoverload.html' },
+            { tag:'Principles', title:'Principle of Progression',   label:'Progression',   file:'principleofprogression.html' },
+            { tag:'Principles', title:'Principle of Reversibility', label:'Reversibility', file:'principleofreversibility.html' },
+            { tag:'Principles', title:'Principle of Specificity',   label:'Specificity',   file:'principleofspecificity.html' },
+            { tag:'Principles', title:'Principle of Individuality', label:'Individuality', file:'principleofindividuality.html' },
+        ]
+    },
+    {
+        title: 'Types of Training Blocks',
+        items: [
+            { tag:'Training Blocks', title:'Accumulation',    label:'Accumulation',    file:'trainingblockaccumulation.html' },
+            { tag:'Training Blocks', title:'Intensification', label:'Intensification', file:'trainingblockintensification.html' },
+            { tag:'Training Blocks', title:'Realisation',     label:'Realisation',     file:'trainingblockrealisation.html' },
+            { tag:'Training Blocks', title:'Conjugate',       label:'Conjugate',       file:'trainingblockconjugate.html' },
+        ]
+    }
 ];
+const THEORY_ITEMS = THEORY_GROUPS.flatMap(g => g.items);
 
 // ── STATE ─────────────────────────────────────────
 let readLessons = new Set();
 let savedLessons = new Set();
 let currentLessonIndex = 0;
 let freeMasterPrograms = [];
+let isPremium = false;
 
 const CATEGORY_META = {
-    STRENGTH: { label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
-    POWER:    { label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
-    RUN:      { label:'Run',      thumbClass:'thumb-run',      color:'var(--brand-accent)' },
-    CIRCUIT:  { label:'Circuit',  thumbClass:'thumb-circuit',  color:'var(--brand-accent)' },
-    MOBILITY: { label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
-    CARDIO:   { label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
-    'WARM UP':{ label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
-    OTHER:    { label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
+    STRENGTH:   { label:'Strength',   thumbClass:'thumb-strength',   color:'#c084fc' },
+    POWER:      { label:'Power',      thumbClass:'thumb-power',      color:'#fb923c' },
+    RUN:        { label:'Run',        thumbClass:'thumb-run',        color:'var(--brand-accent)' },
+    CIRCUIT:    { label:'Circuit',    thumbClass:'thumb-circuit',    color:'var(--brand-accent)' },
+    BODYWEIGHT: { label:'Bodyweight', thumbClass:'thumb-bodyweight', color:'#e879f9' },
+    MOBILITY:   { label:'Mobility',   thumbClass:'thumb-mobility',   color:'#a78bfa' },
+    CARDIO:     { label:'Cardio',     thumbClass:'thumb-cardio',     color:'#f87171' },
+    'WARM UP':  { label:'Warm Up',    thumbClass:'thumb-warmup',     color:'#fb923c' },
+    OTHER:      { label:'Other',      thumbClass:'thumb-other',      color:'#888'    },
 };
-const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
+const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','BODYWEIGHT','MOBILITY','CARDIO','WARM UP','OTHER'];
 
 // ── INIT ──────────────────────────────────────────
 window.onload = async () => {
     if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
+    // Refresh token → fires last_seen hook for returning users
+    pb.collection('users').authRefresh({ requestKey: null }).catch(() => {});
+
     loadUserProgress();
     renderLessons();
     renderTheory();
     renderFAQ();
     checkPremiumStatus();
     await loadTrainPrograms();
-    // Check for ?tab= param in URL
+
     const urlTab = new URLSearchParams(window.location.search).get('tab');
     if (urlTab) switchTab(urlTab);
 
-    // If returning from Stripe, poll for subscription activation
+    // Returning from Stripe → poll for activation
     if (window.location.search.includes('subscribed=1') || document.referrer.includes('buy.stripe.com')) {
         pollForSubscription();
     }
@@ -322,10 +353,11 @@ window.onload = async () => {
 
 // ── TABS ──────────────────────────────────────────
 function switchTab(tab) {
-    document.querySelectorAll('.pill').forEach((p,i) => p.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     const tabs = ['train','philosophy','theory','start'];
     const idx = tabs.indexOf(tab);
+    if (idx === -1) return;
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.pill')[idx].classList.add('active');
     document.getElementById(`tab-${tab}`).classList.add('active');
 }
@@ -333,16 +365,20 @@ function switchTab(tab) {
 // ── USER PROGRESS (localStorage) ─────────────────
 function loadUserProgress() {
     const uid = pb.authStore.model.id;
-    const r = localStorage.getItem(`rp_read_${uid}`);
-    const s = localStorage.getItem(`rp_saved_${uid}`);
-    readLessons = r ? new Set(JSON.parse(r)) : new Set();
-    savedLessons = s ? new Set(JSON.parse(s)) : new Set();
+    try {
+        const r = localStorage.getItem(`rp_read_${uid}`);
+        const s = localStorage.getItem(`rp_saved_${uid}`);
+        readLessons = r ? new Set(JSON.parse(r)) : new Set();
+        savedLessons = s ? new Set(JSON.parse(s)) : new Set();
+    } catch (e) { readLessons = new Set(); savedLessons = new Set(); }
 }
 
 function saveUserProgress() {
     const uid = pb.authStore.model.id;
-    localStorage.setItem(`rp_read_${uid}`, JSON.stringify([...readLessons]));
-    localStorage.setItem(`rp_saved_${uid}`, JSON.stringify([...savedLessons]));
+    try {
+        localStorage.setItem(`rp_read_${uid}`, JSON.stringify([...readLessons]));
+        localStorage.setItem(`rp_saved_${uid}`, JSON.stringify([...savedLessons]));
+    } catch (e) {}
 }
 
 // ── RENDER LESSONS ────────────────────────────────
@@ -365,7 +401,6 @@ function renderLessons() {
 
 // ── RENDER THEORY ─────────────────────────────────
 function renderTheory() {
-    const grid = document.getElementById('theory-grid');
     const colours = [
         'linear-gradient(135deg,#0D211A,#1B4D3E)',
         'linear-gradient(135deg,#0A1C24,#1B3E4D)',
@@ -374,52 +409,59 @@ function renderTheory() {
         'linear-gradient(135deg,#2D0B10,#4D1B1E)',
         'linear-gradient(135deg,#08210D,#1E4D2B)',
     ];
-    const labels = ['Recovery','Overload','Progression','Reversibility','Specificity','Individuality'];
-    grid.innerHTML = THEORY_ITEMS.map((t,i) => {
-        const hasFile = !!t.file;
-        const onclick = hasFile ? `openTheoryLesson('${t.file}','${t.title}')` : `showToast('Coming soon!')`;
-        const comingSoon = hasFile ? `<span class="theory-coming" style="background:rgba(82,183,136,0.15);color:var(--brand-accent);">Read</span>` : `<span class="theory-coming">Coming soon</span>`;
-        const cardStyle = hasFile ? 'opacity:1;' : 'opacity:0.5;';
-        return `<div class="theory-card" style="${cardStyle}" onclick="${onclick}">
-            ${comingSoon}
-            <div class="theory-thumb" style="background:${colours[i%colours.length]};font-size:1.6rem;font-family:'Montserrat',sans-serif;font-weight:800;color:rgba(255,255,255,0.15);letter-spacing:-1px;">${labels[i]||''}</div>
-            <div class="theory-body">
-                <div class="theory-tag">${t.tag}</div>
-                <div class="theory-title">${t.title}</div>
+    let idx = 0;
+    document.getElementById('theory-groups').innerHTML = THEORY_GROUPS.map(g => `
+        <div class="theory-group">
+            <div class="shelf-header">
+                <span class="shelf-title" style="color:var(--brand-accent);">${g.title}</span>
+                <div class="shelf-line"></div>
+                <span class="shelf-count">${g.items.length}</span>
             </div>
-        </div>`;
-    }).join('');
+            <div class="theory-grid">
+                ${g.items.map(t => {
+                    const i = idx++;
+                    const hasFile = !!t.file;
+                    const onclick = hasFile ? `openTheoryLesson(${i})` : `showToast('Coming soon!')`;
+                    const badge = hasFile
+                        ? `<span class="theory-coming" style="background:rgba(82,183,136,0.15);color:var(--brand-accent);">Read</span>`
+                        : `<span class="theory-coming">Coming soon</span>`;
+                    return `<div class="theory-card" style="opacity:${hasFile ? 1 : 0.5};" onclick="${onclick}">
+                        ${badge}
+                        <div class="theory-thumb" style="background:${colours[i % colours.length]};font-size:1.3rem;font-family:'Montserrat',sans-serif;font-weight:800;color:rgba(255,255,255,0.15);letter-spacing:-1px;">${t.label}</div>
+                        <div class="theory-body">
+                            <div class="theory-tag">${t.tag}</div>
+                            <div class="theory-title">${t.title}</div>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>`).join('');
 }
 
-function openTheoryLesson(file, title) {
-    const filename = file.endsWith('.html') ? file : file + '.html';
-    document.getElementById('reader-lesson-num').textContent = title;
+function openTheoryLesson(i) {
+    const t = THEORY_ITEMS[i]; if (!t) return;
+    const filename = t.file.endsWith('.html') ? t.file : t.file + '.html';
+    document.getElementById('reader-lesson-num').textContent = t.title;
     document.getElementById('reader-frame').src = filename;
-    document.getElementById('reader-save-btn').style.display = 'none';
-    document.getElementById('reader-prev').style.display = 'none';
-    document.getElementById('reader-next').style.display = 'none';
-    document.getElementById('reader-mark-btn').style.display = 'none';
+    ['reader-save-btn','reader-prev','reader-next','reader-mark-btn'].forEach(id => document.getElementById(id).style.display = 'none');
     document.getElementById('reader-modal').classList.add('open');
+    track('theory_open', { title: t.title });
 }
 
 // ── LESSON READER ─────────────────────────────────
 function openLesson(index) {
     currentLessonIndex = index;
     const ch = CHAPTERS[index];
-    document.getElementById('reader-lesson-num').textContent = `Lesson ${ch.num}`;
     document.getElementById('reader-frame').src = ch.file;
     updateReaderUI();
     document.getElementById('reader-modal').classList.add('open');
+    track('lesson_open', { lesson: ch.num });
 }
 
 function closeReader() {
     document.getElementById('reader-modal').classList.remove('open');
     document.getElementById('reader-frame').src = 'about:blank';
-    // Restore buttons for philosophy reader
-    document.getElementById('reader-save-btn').style.display = '';
-    document.getElementById('reader-prev').style.display = '';
-    document.getElementById('reader-next').style.display = '';
-    document.getElementById('reader-mark-btn').style.display = '';
+    ['reader-save-btn','reader-prev','reader-next','reader-mark-btn'].forEach(id => document.getElementById(id).style.display = '');
     renderLessons();
 }
 
@@ -430,10 +472,8 @@ function updateReaderUI() {
     const markBtn = document.getElementById('reader-mark-btn');
     markBtn.textContent = isRead ? '✓ Marked as Read' : 'Mark as Read';
     markBtn.className = `btn-mark-read ${isRead ? 'read' : 'unread'}`;
-    const saveBtn = document.getElementById('reader-save-btn');
-    const saveLabel = document.getElementById('reader-save-label');
-    saveLabel.textContent = isSaved ? 'Saved' : 'Save';
-    saveBtn.className = `reader-save-btn ${isSaved ? 'saved' : ''}`;
+    document.getElementById('reader-save-label').textContent = isSaved ? 'Saved' : 'Save';
+    document.getElementById('reader-save-btn').className = `reader-save-btn ${isSaved ? 'saved' : ''}`;
     document.getElementById('reader-prev').disabled = currentLessonIndex === 0;
     document.getElementById('reader-next').disabled = currentLessonIndex === CHAPTERS.length - 1;
     document.getElementById('reader-lesson-num').textContent = `Lesson ${ch.num} of ${CHAPTERS.length}`;
@@ -465,18 +505,16 @@ function navigateLesson(dir) {
     const next = currentLessonIndex + dir;
     if (next < 0 || next >= CHAPTERS.length) return;
     currentLessonIndex = next;
-    const ch = CHAPTERS[currentLessonIndex];
-    document.getElementById('reader-frame').src = ch.file;
+    document.getElementById('reader-frame').src = CHAPTERS[currentLessonIndex].file;
     updateReaderUI();
 }
 
 // ── TRAIN — FREE PROGRAMS ─────────────────────────
 async function loadTrainPrograms() {
     try {
-        const recs = await pb.collection('programs').getFullList({
+        freeMasterPrograms = await pb.collection('programs').getFullList({
             filter: 'is_free=true && archived=false', sort: 'name', requestKey: null
         });
-        freeMasterPrograms = recs;
         renderTrainShelves();
     } catch(e) { console.error(e); }
 }
@@ -488,8 +526,15 @@ function renderPremiumBanner() {
     wrap.innerHTML = `<div class="premium-banner">
         <h3>Unlock Premium Programs</h3>
         <p>Get full access to all strength, power, run and circuit programs for <strong style="color:var(--brand-accent)">$19.99 NZD/month</strong>. Cancel anytime.</p>
-        <button class="btn-upgrade" id="upgrade-btn" onclick="startUpgrade()">Upgrade — $19.99 NZD/mo</button>
+        <button class="btn-upgrade" onclick="startUpgrade('banner')">Upgrade — $19.99 NZD/mo</button>
     </div>`;
+}
+
+function parseSchedule(p) {
+    let data = p.workout_data;
+    try { if (typeof data === 'string') data = JSON.parse(data); } catch(e) { data = null; }
+    const schedule = data?.schedule || data || [];
+    return Array.isArray(schedule) ? schedule : [];
 }
 
 function renderTrainShelves() {
@@ -501,15 +546,14 @@ function renderTrainShelves() {
     const grouped = {};
     freeMasterPrograms.forEach(p => {
         const cat = (p.category||'OTHER').toUpperCase();
-        if (!grouped[cat]) grouped[cat] = [];
-        grouped[cat].push(p);
+        (grouped[cat] ||= []).push(p);
     });
     const sortedCats = Object.keys(grouped).sort((a,b) => {
-        const ai=CATEGORY_ORDER.indexOf(a), bi=CATEGORY_ORDER.indexOf(b);
-        return (ai===-1?99:ai)-(bi===-1?99:bi);
+        const ai = CATEGORY_ORDER.indexOf(a), bi = CATEGORY_ORDER.indexOf(b);
+        return (ai===-1?99:ai) - (bi===-1?99:bi);
     });
     container.innerHTML = sortedCats.map(cat => {
-        const meta = CATEGORY_META[cat]||CATEGORY_META.OTHER;
+        const meta = CATEGORY_META[cat] || CATEGORY_META.OTHER;
         const progs = grouped[cat];
         return `<div class="shelf-section">
             <div class="shelf-header">
@@ -528,17 +572,13 @@ function renderTrainShelves() {
 
 function buildProgCard(p) {
     const cat = (p.category||'OTHER').toUpperCase();
-    const meta = CATEGORY_META[cat]||CATEGORY_META.OTHER;
-    let data = p.workout_data;
-    try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
-    const schedule = data?.schedule||data||[];
-    const sessionCount = Array.isArray(schedule)?schedule.length:0;
+    const meta = CATEGORY_META[cat] || CATEGORY_META.OTHER;
+    const sessionCount = parseSchedule(p).length;
     const thumbHtml = p.cover_image
         ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;"></div>`
         : `<div class="prog-thumb-placeholder ${meta.thumbClass}"></div>`;
-    const isPremiumProg = p.is_premium;
-    const locked = isPremiumProg && !isPremium;
-    const premiumOwned = isPremiumProg && isPremium;
+    const locked = p.is_premium && !isPremium;
+    const premiumOwned = p.is_premium && isPremium;
     const cardClass = locked ? 'prog-card locked' : premiumOwned ? 'prog-card premium-owned' : 'prog-card';
     return `<div class="${cardClass}" onclick="openProgModal('${p.id}')">
         <div class="prog-thumb-wrap">
@@ -548,35 +588,37 @@ function buildProgCard(p) {
         </div>
         <div class="prog-card-body">
             <div class="prog-name">${p.name}</div>
-            <div class="prog-badge">${p.is_repeatable?'Repeatable':sessionCount+' sessions'}</div>
+            <div class="prog-badge">${p.is_repeatable ? 'Repeatable' : sessionCount + ' sessions'}</div>
         </div>
     </div>`;
 }
 
 function openProgModal(id) {
-    const p = freeMasterPrograms.find(x=>x.id===id); if (!p) return;
+    const p = freeMasterPrograms.find(x => x.id === id); if (!p) return;
     const cat = (p.category||'OTHER').toUpperCase();
-    const meta = CATEGORY_META[cat]||CATEGORY_META.OTHER;
-    let data = p.workout_data;
-    try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
-    const schedule = data?.schedule||data||[];
-    const sessionCount = Array.isArray(schedule)?schedule.length:0;
+    const meta = CATEGORY_META[cat] || CATEGORY_META.OTHER;
+    const sessionCount = parseSchedule(p).length;
+    const locked = p.is_premium && !isPremium;
+
+    if (locked) track('padlock_click', { program: p.name, program_id: p.id });
+    else track('program_view', { program: p.name, program_id: p.id });
+
     const thumbHtml = p.cover_image
         ? `<img class="prog-modal-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" onerror="this.style.display='none'">`
         : `<div class="prog-modal-thumb ${meta.thumbClass}" style="display:flex;align-items:center;justify-content:center;font-size:3rem;border-radius:8px;"></div>`;
     document.getElementById('prog-modal-content').innerHTML = `
         ${thumbHtml}
         <div class="prog-modal-title">${p.name}</div>
-        <div class="prog-modal-desc">${p.description||'No description available.'}</div>
+        <div class="prog-modal-desc">${p.description || 'No description available.'}</div>
         <div class="prog-modal-meta">
             <span>${meta.label}</span>
-            <span>${p.is_repeatable?'Repeatable':sessionCount+' sessions'}</span>
+            <span>${p.is_repeatable ? 'Repeatable' : sessionCount + ' sessions'}</span>
         </div>
-        ${p.is_premium && !isPremium
+        ${locked
             ? `<div style="background:linear-gradient(135deg,#0D211A,#1B4D3E);border:1px solid var(--brand-accent);border-radius:10px;padding:16px;margin-bottom:8px;text-align:center;">
                 <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;color:var(--brand-accent);margin-bottom:6px;">PREMIUM PROGRAM</div>
                 <div style="font-size:0.78rem;color:#888;margin-bottom:14px;">Unlock all premium programs for $19.99 NZD/month</div>
-                <button class="btn-start" id="upgrade-btn" onclick="startUpgrade()">Upgrade to Access</button>
+                <button class="btn-start" onclick="startUpgrade('program', '${p.id}')">Upgrade to Access</button>
               </div>`
             : `<button class="btn-start" onclick="startProgram('${p.id}')">▶ Start This Program</button>`
         }
@@ -587,27 +629,25 @@ function openProgModal(id) {
 function closeProgModal() { document.getElementById('prog-modal').classList.remove('open'); }
 
 async function startProgram(templateId) {
-    const template = freeMasterPrograms.find(p=>p.id===templateId); if (!template) return;
+    const template = freeMasterPrograms.find(p => p.id === templateId); if (!template) return;
     try {
         const newProg = await pb.collection('programs').create({
             name: template.name, client: pb.authStore.model.id,
             workout_data: template.workout_data, is_free: false,
-            is_repeatable: template.is_repeatable||false, category: template.category||'', archived: false
+            is_repeatable: template.is_repeatable || false, category: template.category || '', archived: false
         });
+        track('program_start', { program: template.name, program_id: template.id });
         closeProgModal();
         showToast('Program started');
         setTimeout(() => { window.location.href = `program.html?id=${newProg.id}`; }, 1000);
-    } catch(e) { alert('Failed: '+e.message); }
+    } catch(e) { alert('Failed: ' + e.message); }
 }
 
 // ── PREMIUM ──────────────────────────────────────
-let isPremium = false;
-
 async function checkPremiumStatus() {
     if (!pb.authStore.isValid) return;
     try {
-        // Fetch fresh user data to get latest subscription_status
-        const user = await pb.collection('users').getOne(pb.authStore.model.id, {requestKey: null});
+        const user = await pb.collection('users').getOne(pb.authStore.model.id, { requestKey: null });
         isPremium = user.subscription_status === 'active';
     } catch(e) {
         isPremium = pb.authStore.model.subscription_status === 'active';
@@ -616,28 +656,30 @@ async function checkPremiumStatus() {
     renderTrainShelves();
 }
 
-function startUpgrade() {
+function startUpgrade(source = 'unknown', programId = '') {
+    const prog = programId ? freeMasterPrograms.find(p => p.id === programId) : null;
+    track('upgrade_click', { source, program: prog?.name || '' });
     const email = pb.authStore.isValid ? pb.authStore.model.email : '';
     const url = 'https://buy.stripe.com/3cI4gB0Ry1c05z91Kzf7i00' + (email ? '?prefilled_email=' + encodeURIComponent(email) : '');
-    window.location.href = url;
+    // Small delay so the event has a chance to send before navigating away
+    setTimeout(() => { window.location.href = url; }, 150);
 }
 
 // ── SUBSCRIPTION POLL ────────────────────────────
 async function pollForSubscription(attempts = 0) {
-    if (attempts > 12) return; // stop after 1 minute
+    if (attempts > 12) return; // ~1 minute
     try {
-        const user = await pb.collection('users').getOne(pb.authStore.model.id, {requestKey: null});
+        const user = await pb.collection('users').getOne(pb.authStore.model.id, { requestKey: null });
         if (user.subscription_status === 'active') {
             isPremium = true;
             renderPremiumBanner();
             renderTrainShelves();
             showToast('Premium unlocked!');
-            // Clean URL
+            track('subscribed', {});
             window.history.replaceState({}, '', window.location.pathname);
             return;
         }
     } catch(e) {}
-    // Try again in 5 seconds
     setTimeout(() => pollForSubscription(attempts + 1), 5000);
 }
 
@@ -683,10 +725,8 @@ function renderFAQ() {
 }
 
 function toggleFAQ(i) {
-    const q = document.getElementById(`faq-q-${i}`);
-    const a = document.getElementById(`faq-a-${i}`);
-    q.classList.toggle('open');
-    a.classList.toggle('open');
+    document.getElementById(`faq-q-${i}`).classList.toggle('open');
+    document.getElementById(`faq-a-${i}`).classList.toggle('open');
 }
 
 // ── TOAST ─────────────────────────────────────────
@@ -695,7 +735,7 @@ function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.style.display = 'block';
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.style.display='none', 2000);
+    toastTimer = setTimeout(() => t.style.display = 'none', 2000);
 }
 </script>
 </body>
