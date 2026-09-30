@@ -443,8 +443,8 @@ async function loadPreviewProgram(id) {
             const exHTML = allEx.map(ex => {
                 const cleanName = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim() || ex.name;
                 const sets = (ex.setsData || []).map(s => 
-                    `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px;">
-                        ${['reps','weight','rest','rpe'].map(f => `<div style="background:var(--input-bg);border-radius:6px;padding:8px;text-align:center;">
+                    `<div style="display:grid;grid-template-columns:repeat(${(ex.columns||['reps','weight','rest','rpe','tempo']).length},1fr);gap:6px;margin-bottom:6px;">
+                        ${(ex.columns||['reps','weight','rest','rpe','tempo']).map(f => `<div style="background:var(--input-bg);border-radius:6px;padding:8px;text-align:center;">
                             <div style="font-size:0.5rem;color:#555;font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;margin-bottom:4px;">${f==='weight'?'KG':f.toUpperCase()}</div>
                             <div style="font-size:0.9rem;color:var(--brand-accent);font-weight:700;">${s[f]||'—'}</div>
                         </div>`).join('')}
