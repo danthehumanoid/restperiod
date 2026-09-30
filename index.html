@@ -268,6 +268,14 @@
             <div id="t-bpm-val" style="font-size:4rem;color:var(--brand-accent);font-weight:800;font-family:'Montserrat';transition:all 0.05s;">60</div>
             <label class="quad-title">Beats Per Minute</label>
             <input type="range" id="t-m-slider" min="40" max="220" value="60" style="width:100%;margin:10px 0;accent-color:var(--brand-accent);" oninput="document.getElementById('t-bpm-val').textContent=this.value">
+            <label class="quad-title" style="margin-top:4px;">Sound</label>
+            <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:6px 0 14px;">
+                <button class="t-unit-btn metro-sound-btn" data-sound="wood" style="flex:1;" onclick="tSetMetroSound('wood')">WOOD</button>
+                <button class="t-unit-btn metro-sound-btn" data-sound="click" style="flex:1;" onclick="tSetMetroSound('click')">CLICK</button>
+                <button class="t-unit-btn metro-sound-btn" data-sound="rim" style="flex:1;" onclick="tSetMetroSound('rim')">RIM</button>
+                <button class="t-unit-btn metro-sound-btn" data-sound="cowbell" style="flex:1;" onclick="tSetMetroSound('cowbell')">BELL</button>
+                <button class="t-unit-btn metro-sound-btn" data-sound="beep" style="flex:1;" onclick="tSetMetroSound('beep')">BEEP</button>
+            </div>
             <button class="tool-action-btn" id="t-metro-btn" onclick="tToggleMetronome()" style="width:100%;">Start</button>
         </div>
         <div id="interval-tool" class="tool-content" style="display:none;">
@@ -601,8 +609,43 @@ function tCalc1RM(){
     document.getElementById('t-rm-output').style.display='block';
 }
 
-function tMetroScheduler(){var bpm=parseFloat(document.getElementById('t-m-slider').value),spb=60/bpm;while(tNextTick<tAudioCtx.currentTime+0.1){var osc=tAudioCtx.createOscillator(),env=tAudioCtx.createGain();osc.frequency.value=1000;env.gain.setValueAtTime(1,tNextTick);env.gain.exponentialRampToValueAtTime(0.001,tNextTick+0.025);osc.connect(env);env.connect(tAudioCtx.destination);osc.start(tNextTick);osc.stop(tNextTick+0.03);tNextTick+=spb;}tMetroTimerID=setTimeout(tMetroScheduler,25);}
-function tToggleMetronome(){if(!tAudioCtx)tAudioCtx=new(window.AudioContext||window.webkitAudioContext)();if(tAudioCtx.state==='suspended')tAudioCtx.resume();var btn=document.getElementById('t-metro-btn');tMetroPlaying=!tMetroPlaying;if(tMetroPlaying){btn.textContent='Stop';tNextTick=tAudioCtx.currentTime;tMetroScheduler();}else{btn.textContent='Start';clearTimeout(tMetroTimerID);}}
+// ── METRONOME SOUNDS ──────────────────────────────
+var T_METRO_SOUNDS=['wood','click','rim','cowbell','beep'];
+var tMetroSound=(function(){try{var s=localStorage.getItem('rp_metro_sound');return T_METRO_SOUNDS.indexOf(s)>-1?s:'wood';}catch(e){return 'wood';}})();
+var tNoiseBuf=null;
+function tEnsureAudio(){if(!tAudioCtx)tAudioCtx=new(window.AudioContext||window.webkitAudioContext)();if(tAudioCtx.state==='suspended')tAudioCtx.resume();}
+function tGetNoise(){if(tNoiseBuf)return tNoiseBuf;var len=Math.floor(tAudioCtx.sampleRate*0.1);tNoiseBuf=tAudioCtx.createBuffer(1,len,tAudioCtx.sampleRate);var d=tNoiseBuf.getChannelData(0);for(var i=0;i<len;i++)d[i]=Math.random()*2-1;return tNoiseBuf;}
+function tEnv(t,peak,decay){var g=tAudioCtx.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+0.002);g.gain.exponentialRampToValueAtTime(0.0001,t+decay);g.connect(tAudioCtx.destination);return g;}
+function tPlayClick(t){
+    var ctx=tAudioCtx,o,o2,n,f,g;
+    if(tMetroSound==='wood'){ // warm woodblock
+        o=ctx.createOscillator();o.type='sine';o.frequency.setValueAtTime(1400,t);o.frequency.exponentialRampToValueAtTime(700,t+0.03);
+        g=tEnv(t,0.9,0.08);o.connect(g);o.start(t);o.stop(t+0.09);
+    }else if(tMetroSound==='click'){ // crisp mechanical tick
+        n=ctx.createBufferSource();n.buffer=tGetNoise();f=ctx.createBiquadFilter();f.type='highpass';f.frequency.value=3000;
+        g=tEnv(t,0.9,0.02);n.connect(f);f.connect(g);n.start(t);n.stop(t+0.03);
+    }else if(tMetroSound==='rim'){ // rimshot
+        n=ctx.createBufferSource();n.buffer=tGetNoise();f=ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=2200;f.Q.value=1.5;
+        g=tEnv(t,0.8,0.05);n.connect(f);f.connect(g);n.start(t);n.stop(t+0.06);
+        o=ctx.createOscillator();o.type='triangle';o.frequency.value=450;var g2=tEnv(t,0.5,0.04);o.connect(g2);o.start(t);o.stop(t+0.05);
+    }else if(tMetroSound==='cowbell'){
+        o=ctx.createOscillator();o2=ctx.createOscillator();o.type=o2.type='square';o.frequency.value=540;o2.frequency.value=800;
+        f=ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=800;f.Q.value=2;
+        g=tEnv(t,0.35,0.25);o.connect(f);o2.connect(f);f.connect(g);o.start(t);o2.start(t);o.stop(t+0.26);o2.stop(t+0.26);
+    }else{ // beep (original)
+        o=ctx.createOscillator();o.frequency.value=1000;g=tEnv(t,1,0.025);o.connect(g);o.start(t);o.stop(t+0.03);
+    }
+}
+function tSetMetroSound(s){
+    tMetroSound=s;try{localStorage.setItem('rp_metro_sound',s);}catch(e){}
+    document.querySelectorAll('.metro-sound-btn').forEach(function(b){b.classList.toggle('active',b.dataset.sound===s);});
+    if(!tMetroPlaying){tEnsureAudio();tPlayClick(tAudioCtx.currentTime+0.02);} // preview
+}
+function tInitMetroSoundUI(){document.querySelectorAll('.metro-sound-btn').forEach(function(b){b.classList.toggle('active',b.dataset.sound===tMetroSound);});}
+document.addEventListener('DOMContentLoaded',tInitMetroSoundUI);
+
+function tMetroScheduler(){var bpm=parseFloat(document.getElementById('t-m-slider').value),spb=60/bpm;while(tNextTick<tAudioCtx.currentTime+0.1){tPlayClick(tNextTick);tNextTick+=spb;}tMetroTimerID=setTimeout(tMetroScheduler,25);}
+function tToggleMetronome(){tEnsureAudio();var btn=document.getElementById('t-metro-btn');tMetroPlaying=!tMetroPlaying;if(tMetroPlaying){btn.textContent='Stop';tNextTick=tAudioCtx.currentTime;tMetroScheduler();}else{btn.textContent='Start';clearTimeout(tMetroTimerID);}}
 
 function tUpdateCDDisplay(){var m=Math.floor(tCdTime/60),s=tCdTime%60;document.getElementById('t-cd-display').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
 function tToggleCountdown(){var btn=document.getElementById('t-cd-btn');if(tCdRunning){clearInterval(tCdInterval);tCdRunning=false;btn.textContent='Start';btn.classList.remove('running');}else{tCdTime=parseInt(document.getElementById('t-cd-input').value)||60;tCdRunning=true;btn.textContent='Stop';btn.classList.add('running');tCdInterval=setInterval(function(){tCdTime--;tUpdateCDDisplay();if(tCdTime<=0){clearInterval(tCdInterval);tCdRunning=false;btn.textContent='Start';btn.classList.remove('running');tCdTime=parseInt(document.getElementById('t-cd-input').value)||60;tUpdateCDDisplay();}},1000);}}
