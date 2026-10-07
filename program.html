@@ -685,15 +685,15 @@ function renderRepeatableSession(session) {
     if (session.warmup?.length) html += `<div class="section-header" style="cursor:pointer;" onclick="toggleSection('rep-warmup-body')">
         <span><i class="fas fa-fire" style="margin-right:8px;"></i>WARM UP</span>
         <div style="display:flex;gap:8px;align-items:center;">
-            <button onclick="collapseAll('rep-warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
-            <button onclick="expandAll('rep-warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+            <button onclick="collapseAll('rep-warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">COLLAPSE ALL ▲</button>
+            <button onclick="expandAll('rep-warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">EXPAND ALL ▼</button>
         </div>
     </div><div id="rep-warmup-body">` + generateExerciseHTML(session.warmup, 'warmup', true) + '</div>';
     if (session.exercises?.length) html += `<div class="section-header" style="border-left-color:var(--brand-secondary);cursor:pointer;" onclick="toggleSection('rep-exercises-body')">
         <span><i class="fas fa-dumbbell" style="margin-right:8px;"></i>MAIN WORKOUT</span>
         <div style="display:flex;gap:8px;align-items:center;">
-            <button onclick="collapseAll('rep-exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
-            <button onclick="expandAll('rep-exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+            <button onclick="collapseAll('rep-exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">COLLAPSE ALL ▲</button>
+            <button onclick="expandAll('rep-exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">EXPAND ALL ▼</button>
         </div>
     </div><div id="rep-exercises-body">` + generateExerciseHTML(session.exercises, 'exercises', true) + '</div>';
     html += `<div class="reflection-area">
@@ -762,8 +762,8 @@ function renderContent() {
         html += `<div class="section-header" style="cursor:pointer;" onclick="toggleSection('warmup-body')">
             <span><i class="fas fa-fire" style="margin-right:8px;"></i>WARM UP</span>
             <div style="display:flex;gap:8px;align-items:center;">
-                <button onclick="collapseAll('warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
-                <button onclick="expandAll('warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+                <button onclick="collapseAll('warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">COLLAPSE ALL ▲</button>
+                <button onclick="expandAll('warmup-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">EXPAND ALL ▼</button>
                 <i id="warmup-body-chevron" class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
             </div>
         </div><div id="warmup-body">${generateExerciseHTML(session.warmup, 'warmup', false)}</div>`;
@@ -772,8 +772,8 @@ function renderContent() {
         html += `<div class="section-header" style="border-left-color:var(--brand-secondary);cursor:pointer;" onclick="toggleSection('exercises-body')">
             <span><i class="fas fa-dumbbell" style="margin-right:8px;"></i>MAIN WORKOUT</span>
             <div style="display:flex;gap:8px;align-items:center;">
-                <button onclick="collapseAll('exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▲</button>
-                <button onclick="expandAll('exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">ALL ▼</button>
+                <button onclick="collapseAll('exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">COLLAPSE ALL ▲</button>
+                <button onclick="expandAll('exercises-body');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:2px 8px;border-radius:4px;font-size:0.55rem;font-family:'Montserrat';font-weight:800;cursor:pointer;">EXPAND ALL ▼</button>
                 <i id="exercises-body-chevron" class="fas fa-chevron-down" style="font-size:0.75rem;"></i>
             </div>
         </div><div id="exercises-body">` + generateExerciseHTML(session.exercises, 'exercises', false) + '</div>';
@@ -879,7 +879,7 @@ function toggleExercise(bodyId) {
     if (!body) return;
     const collapsed = body.style.display === 'none';
     body.style.display = collapsed ? 'block' : 'none';
-    if (btn) btn.textContent = collapsed ? 'COLLAPSE ▲' : 'EXPAND ▼';
+    if (btn) btn.textContent = collapsed ? '▲' : '▼';
 }
 function collapseAll(sectionId) {
     const section = document.getElementById(sectionId);
@@ -887,7 +887,7 @@ function collapseAll(sectionId) {
     section.querySelectorAll('[id^="ex-body-"]').forEach(body => {
         body.style.display = 'none';
         const btn = document.getElementById('toggle-'+body.id);
-        if (btn) btn.textContent = 'EXPAND ▼';
+        if (btn) btn.textContent = '▼';
     });
 }
 function expandAll(sectionId) {
@@ -896,7 +896,7 @@ function expandAll(sectionId) {
     section.querySelectorAll('[id^="ex-body-"]').forEach(body => {
         body.style.display = 'block';
         const btn = document.getElementById('toggle-'+body.id);
-        if (btn) btn.textContent = 'COLLAPSE ▲';
+        if (btn) btn.textContent = '▲';
     });
 }
 function toggleSection(sectionId) {
