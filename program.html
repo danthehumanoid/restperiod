@@ -879,7 +879,7 @@ function toggleExercise(bodyId) {
     if (!body) return;
     const collapsed = body.style.display === 'none';
     body.style.display = collapsed ? 'block' : 'none';
-    if (btn) btn.textContent = collapsed ? '▲' : '▼';
+    if (btn) btn.textContent = collapsed ? 'COLLAPSE ▲' : 'EXPAND ▼';
 }
 function collapseAll(sectionId) {
     const section = document.getElementById(sectionId);
@@ -887,7 +887,7 @@ function collapseAll(sectionId) {
     section.querySelectorAll('[id^="ex-body-"]').forEach(body => {
         body.style.display = 'none';
         const btn = document.getElementById('toggle-'+body.id);
-        if (btn) btn.textContent = '▼';
+        if (btn) btn.textContent = 'EXPAND ▼';
     });
 }
 function expandAll(sectionId) {
@@ -896,7 +896,7 @@ function expandAll(sectionId) {
     section.querySelectorAll('[id^="ex-body-"]').forEach(body => {
         body.style.display = 'block';
         const btn = document.getElementById('toggle-'+body.id);
-        if (btn) btn.textContent = '▲';
+        if (btn) btn.textContent = 'COLLAPSE ▲';
     });
 }
 function toggleSection(sectionId) {
