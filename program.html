@@ -105,7 +105,10 @@
         .tool-action-btn { padding: 11px; border: none; border-radius: 6px; background: var(--brand-primary); color: white; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
         .tool-action-btn:hover { background: var(--border); }
         .tool-action-btn.running { background: #7f1d1d; color: #f87171; }
-    </style>
+            .ex-cues { display:flex; gap:8px; align-items:flex-start; background:rgba(38,198,218,0.06); border-left:3px solid var(--brand-accent); border-radius:4px; padding:8px 10px; margin:0 0 10px; font-size:0.8rem; color:#bbb; line-height:1.5; white-space:pre-line; }
+        .ex-cues i { color:var(--brand-accent); font-size:0.8rem; margin-top:3px; flex-shrink:0; }
+        .do-cell.do-notes { font-size:0.68rem; font-weight:400; color:#ccc; white-space:normal; word-break:break-word; line-height:1.3; text-align:left; }
+</style>
 </head>
 <body>
 
@@ -277,13 +280,31 @@
             <div id="t-bpm-val" style="font-size:4rem; color:var(--brand-accent); font-weight:800; font-family:'Montserrat'; transition:all 0.05s;">60</div>
             <label class="quad-title">Beats Per Minute</label>
             <input type="range" id="t-m-slider" min="40" max="220" value="60" style="width:100%; margin:10px 0; accent-color:var(--brand-accent);" oninput="document.getElementById('t-bpm-val').textContent=this.value" />
-            <label class="quad-title" style="margin-top:4px;">Sound</label>
+            <style>
+                .mb-step{display:flex;align-items:center;justify-content:center;gap:16px;margin:6px 0 10px;}
+                .mb-step button{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--brand-accent);font-size:1.2rem;font-weight:800;cursor:pointer;}
+                .mb-step span{font-family:'Montserrat';font-weight:800;font-size:1.4rem;min-width:36px;color:white;}
+                .mb-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:6px;}
+                .mb-beat{display:flex;flex-direction:column;align-items:center;gap:4px;width:36px;}
+                .mb-bar{width:30px;height:60px;border:1px solid var(--border);border-radius:6px;position:relative;overflow:hidden;cursor:pointer;background:#000;transition:transform .06s,box-shadow .06s;}
+                .mb-fill{position:absolute;left:0;right:0;bottom:0;background:var(--brand-accent);opacity:.55;transition:height .12s;}
+                .mb-num{position:absolute;top:3px;left:0;right:0;text-align:center;font-family:'Montserrat';font-weight:800;font-size:.6rem;color:#fff;}
+                .mb-beat.on .mb-bar{transform:scale(1.12);box-shadow:0 0 10px var(--brand-accent);}
+                .mb-beat.on .mb-fill{opacity:1;}
+                .mb-beat.muted .mb-num{color:#444;}
+                .mb-snd{font-size:.45rem;font-family:'Montserrat';font-weight:800;color:#888;cursor:pointer;background:none;border:1px solid var(--border);border-radius:4px;padding:3px 0;width:100%;}
+            </style>
+            <label class="quad-title">Beats per Bar</label>
+            <div class="mb-step"><button onclick="tSetBeatCount(-1)">−</button><span id="mb-count">4</span><button onclick="tSetBeatCount(1)">+</button></div>
+            <div class="mb-row" id="mb-row"></div>
+            <p style="font-size:.6rem;color:#555;margin:4px 0 12px;">Tap a bar to change volume (accent → normal → soft → mute) · tap the label to change its sound</p>
+            <label class="quad-title">Set All Beats</label>
             <div style="display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:6px 0 14px;">
-                <button class="t-unit-btn metro-sound-btn" data-sound="wood" style="flex:1;" onclick="tSetMetroSound('wood')">WOOD</button>
-                <button class="t-unit-btn metro-sound-btn" data-sound="click" style="flex:1;" onclick="tSetMetroSound('click')">CLICK</button>
-                <button class="t-unit-btn metro-sound-btn" data-sound="rim" style="flex:1;" onclick="tSetMetroSound('rim')">RIM</button>
-                <button class="t-unit-btn metro-sound-btn" data-sound="cowbell" style="flex:1;" onclick="tSetMetroSound('cowbell')">BELL</button>
-                <button class="t-unit-btn metro-sound-btn" data-sound="beep" style="flex:1;" onclick="tSetMetroSound('beep')">BEEP</button>
+                <button class="t-unit-btn" data-sound="wood" style="flex:1;" onclick=\"tSetAllSound('wood')\">WOOD</button>
+                <button class="t-unit-btn" data-sound="click" style="flex:1;" onclick=\"tSetAllSound('click')\">CLICK</button>
+                <button class="t-unit-btn" data-sound="rim" style="flex:1;" onclick=\"tSetAllSound('rim')\">RIM</button>
+                <button class="t-unit-btn" data-sound="cowbell" style="flex:1;" onclick=\"tSetAllSound('cowbell')\">BELL</button>
+                <button class="t-unit-btn" data-sound="beep" style="flex:1;" onclick=\"tSetAllSound('beep')\">BEEP</button>
             </div>
             <button class="tool-action-btn" id="t-metro-btn" onclick="tToggleMetronome()" style="width:100%;">Start</button>
         </div>
@@ -438,15 +459,16 @@ async function loadPreviewProgram(id) {
             const warmup = session.warmup || [];
             const exercises = session.exercises || [];
             const allEx = [...warmup, ...exercises];
+            const PREV_COL_LABELS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',notes:'NOTES'};
             const label = prog.is_repeatable ? `Session` : `Session ${si + 1}`;
 
-            const exHTML = allEx.map(ex => {
+            const renderPrevEx = ex => {
                 const cleanName = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/,'').trim() || ex.name;
                 const sets = (ex.setsData || []).map(s => 
-                    `<div style="display:grid;grid-template-columns:repeat(${(ex.columns||['reps','weight','rest','rpe','tempo']).length},1fr);gap:6px;margin-bottom:6px;">
+                    `<div style="display:grid;grid-template-columns:${(ex.columns||['reps','weight','rest','rpe','tempo']).map(c=>c==='notes'?'2fr':'1fr').join(' ')};gap:6px;margin-bottom:6px;">
                         ${(ex.columns||['reps','weight','rest','rpe','tempo']).map(f => `<div style="background:var(--input-bg);border-radius:6px;padding:8px;text-align:center;">
-                            <div style="font-size:0.5rem;color:#555;font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;margin-bottom:4px;">${f==='weight'?'KG':f.toUpperCase()}</div>
-                            <div style="font-size:0.9rem;color:var(--brand-accent);font-weight:700;">${s[f]||'—'}</div>
+                            <div style="font-size:0.5rem;color:#555;font-family:'Montserrat',sans-serif;font-weight:800;text-transform:uppercase;margin-bottom:4px;">${PREV_COL_LABELS[f]||f.toUpperCase()}</div>
+                            <div style="font-size:${f==='notes'?'0.72rem':'0.9rem'};color:${f==='notes'?'#ccc':'var(--brand-accent)'};font-weight:${f==='notes'?400:700};word-break:break-word;line-height:1.3;">${s[f]||'—'}</div>
                         </div>`).join('')}
                     </div>`
                 ).join('');
@@ -467,13 +489,19 @@ async function loadPreviewProgram(id) {
                     : ``;
 
                 const hasVideo = !!videoUrl;
+                const groupBadge = ex.grouping ? `<div style="display:inline-block;background:var(--brand-primary);color:var(--brand-accent);padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:800;margin-bottom:8px;border:1px solid var(--brand-accent);">${String(ex.grouping).toUpperCase()}</div>` : '';
+                const cueHTML = ex.notes ? `<div class="ex-cues"><i class="fas fa-comment-dots"></i><span>${String(ex.notes).replace(/</g,'&lt;')}</span></div>` : '';
                 return `<div style="margin-bottom:16px;">
+                    ${groupBadge}
+                    ${cueHTML}
                     <div onclick="${clickAction}" style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1rem;color:${hasVideo?'var(--brand-accent)':'#888'};padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:10px;cursor:${hasVideo?'pointer':'default'};">
                         ${hasVideo ? '<i class="fas fa-play-circle" style="font-size:1.2rem;margin-right:8px;"></i>' : ''}${cleanName}
                     </div>
                     ${sets}
                 </div>`;
-            }).join('');
+            };
+            const prevSection = (title, list, color) => list.length ? `<div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.7rem;letter-spacing:1px;color:${color};border-left:3px solid ${color};padding:2px 0 2px 8px;margin:4px 0 12px;">${title}</div>` + list.map(renderPrevEx).join('') : '';
+            const exHTML = prevSection('WARM UP', warmup, 'var(--brand-accent)') + prevSection('MAIN', exercises, 'var(--brand-secondary)');
 
             return `<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;">
                 <div style="padding:12px 16px;background:var(--input-bg);border-bottom:1px solid var(--border);">
@@ -797,19 +825,21 @@ function generateExerciseHTML(list, type, isRepeat) {
         const cleanName = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || ex.name;
         const exBodyId = `ex-body-${prefix}-${i}`;
         const cols = ex.columns || ['reps','weight','rest','rpe','tempo'];
-        const COL_LABELS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME'};
+        const COL_LABELS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',notes:'NOTES'};
         const COL_TYPES = {reps:'number',weight:'number',rest:'text',rpe:'number',tempo:'text',pace:'text',speed:'number',time:'text'};
         const COL_ACT = {reps:'act_reps',weight:'act_weight',rest:'act_rest',rpe:'act_rpe',tempo:'act_tempo',pace:'act_pace',speed:'act_speed',time:'act_time'};
-        const gridCols = `36px ${cols.map(()=>'1fr').join(' ')} 36px`;
+        const gridCols = `36px ${cols.map(c=>c==='notes'?'2fr':'1fr').join(' ')} 36px`;
+        const cueHTML = ex.notes ? `<div class="ex-cues"><i class="fas fa-comment-dots"></i><span>${String(ex.notes).replace(/</g,'&lt;')}</span></div>` : '';
 
         return `<div class="exercise-card">
             ${groupBadge}
+            ${cueHTML}
             <div class="exercise-title" style="justify-content:space-between;">
                 <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;" onclick="openExercisePreview('${ex.name.replace(/'/g,"\\'")}')">
                     <i class="fas fa-play-circle" style="font-size:28px;opacity:0.8;color:var(--brand-accent);flex-shrink:0;"></i>
                     <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${cleanName}</span>
                 </div>
-                <button onclick="toggleExercise('${exBodyId}');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:4px 8px;border-radius:4px;font-size:0.65rem;font-family:'Montserrat';font-weight:800;cursor:pointer;flex-shrink:0;" id="toggle-${exBodyId}">▲</button>
+                <button onclick="toggleExercise('${exBodyId}');event.stopPropagation();" style="background:none;border:1px solid #333;color:#555;padding:4px 8px;border-radius:4px;font-size:0.65rem;font-family:'Montserrat';font-weight:800;cursor:pointer;flex-shrink:0;" id="toggle-${exBodyId}">COLLAPSE ▲</button>
             </div>
             <div id="${exBodyId}">
             ${(ex.setsData||[]).map((s, si) => {
@@ -825,9 +855,10 @@ function generateExerciseHTML(list, type, isRepeat) {
                 const doRow = cols.map(c => {
                     const tooltip = c==='rpe' ? `<span class="help-icon" style="color:var(--brand-accent)88;" onclick="document.getElementById('rpe-tooltip').classList.add('open');event.stopPropagation();">?</span>`
                                   : c==='tempo' ? `<span class="help-icon" style="color:var(--brand-accent)88;" onclick="document.getElementById('tempo-tooltip').classList.add('open');event.stopPropagation();">?</span>` : '';
-                    return `<div><div class="cell-header" style="color:var(--brand-accent)88;">${COL_LABELS[c]||c.toUpperCase()} ${tooltip}</div><div class="do-cell">${s[c]||'—'}</div></div>`;
+                    return `<div><div class="cell-header" style="color:var(--brand-accent)88;">${COL_LABELS[c]||c.toUpperCase()} ${tooltip}</div><div class="do-cell${c==='notes'?' do-notes':''}">${s[c]||'—'}</div></div>`;
                 }).join('');
                 const didRow = cols.map(c => {
+                    if (c === 'notes') return '<div></div>';
                     const actField = COL_ACT[c] || ('act_'+c);
                     const t = COL_TYPES[c]||'text';
                     const step = c==='rpe'?'step="0.5"':'';
@@ -850,7 +881,6 @@ function generateExerciseHTML(list, type, isRepeat) {
                     <input type="text" class="note-input" placeholder="Comments/Reflections..." maxlength="80" value="${(s.act_note||'').replace(/"/g,'&quot;')}" onchange="${onChangeFn.replace(/FIELD/g,'act_note')}">
                 </div>`;
             }).join('')}
-            ${ex.notes ? `<div style="font-size:0.8rem;color:#777;margin-top:5px;font-style:italic;">Coach Note: ${ex.notes}</div>` : ''}
             </div>
         </div>`;
     }).join('');
@@ -879,7 +909,7 @@ function toggleExercise(bodyId) {
     if (!body) return;
     const collapsed = body.style.display === 'none';
     body.style.display = collapsed ? 'block' : 'none';
-    if (btn) btn.textContent = collapsed ? '▲' : '▼';
+    if (btn) btn.textContent = collapsed ? 'COLLAPSE ▲' : 'EXPAND ▼';
 }
 function collapseAll(sectionId) {
     const section = document.getElementById(sectionId);
@@ -887,7 +917,7 @@ function collapseAll(sectionId) {
     section.querySelectorAll('[id^="ex-body-"]').forEach(body => {
         body.style.display = 'none';
         const btn = document.getElementById('toggle-'+body.id);
-        if (btn) btn.textContent = '▼';
+        if (btn) btn.textContent = 'EXPAND ▼';
     });
 }
 function expandAll(sectionId) {
@@ -896,7 +926,7 @@ function expandAll(sectionId) {
     section.querySelectorAll('[id^="ex-body-"]').forEach(body => {
         body.style.display = 'block';
         const btn = document.getElementById('toggle-'+body.id);
-        if (btn) btn.textContent = '▲';
+        if (btn) btn.textContent = 'COLLAPSE ▲';
     });
 }
 function toggleSection(sectionId) {
@@ -1056,43 +1086,96 @@ function tCalc1RM(){
     }
     document.getElementById('t-rm-output').style.display='block';
 }
-// ── METRONOME SOUNDS ──────────────────────────────
+
+// ── METRONOME (per-beat sounds + accents) ─────────
 var T_METRO_SOUNDS=['wood','click','rim','cowbell','beep'];
-var tMetroSound=(function(){try{var s=localStorage.getItem('rp_metro_sound');return T_METRO_SOUNDS.indexOf(s)>-1?s:'wood';}catch(e){return 'wood';}})();
-var tNoiseBuf=null;
+var T_SOUND_LABEL={wood:'WOOD',click:'CLICK',rim:'RIM',cowbell:'BELL',beep:'BEEP'};
+var T_LEVEL_GAIN=[0,0.3,0.65,1]; // mute, soft, normal, accent
+var tBeatIdx=0,tNoiseBuf=null;
+function tDefaultPattern(n,s){var a=[];for(var i=0;i<n;i++)a.push({sound:s||'wood',level:i===0?3:2});return a;}
+function tLoadPattern(){
+    try{var p=JSON.parse(localStorage.getItem('rp_metro_pattern'));
+        if(Array.isArray(p)&&p.length>=1&&p.length<=12&&p.every(function(b){return b&&T_METRO_SOUNDS.indexOf(b.sound)>-1&&b.level>=0&&b.level<=3;}))return p;}catch(e){}
+    var s='wood';try{var o=localStorage.getItem('rp_metro_sound');if(T_METRO_SOUNDS.indexOf(o)>-1)s=o;}catch(e){}
+    return tDefaultPattern(4,s);
+}
+var tBeats=tLoadPattern();
+function tSavePattern(){try{localStorage.setItem('rp_metro_pattern',JSON.stringify(tBeats));}catch(e){}}
+
 function tEnsureAudio(){if(!tAudioCtx)tAudioCtx=new(window.AudioContext||window.webkitAudioContext)();if(tAudioCtx.state==='suspended')tAudioCtx.resume();}
 function tGetNoise(){if(tNoiseBuf)return tNoiseBuf;var len=Math.floor(tAudioCtx.sampleRate*0.1);tNoiseBuf=tAudioCtx.createBuffer(1,len,tAudioCtx.sampleRate);var d=tNoiseBuf.getChannelData(0);for(var i=0;i<len;i++)d[i]=Math.random()*2-1;return tNoiseBuf;}
-function tEnv(t,peak,decay){var g=tAudioCtx.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+0.002);g.gain.exponentialRampToValueAtTime(0.0001,t+decay);g.connect(tAudioCtx.destination);return g;}
-function tPlayClick(t){
+function tEnv(t,peak,decay){var g=tAudioCtx.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(peak,0.0002),t+0.002);g.gain.exponentialRampToValueAtTime(0.0001,t+decay);g.connect(tAudioCtx.destination);return g;}
+function tPlayClick(t,sound,vol){
+    if(!vol)return;
     var ctx=tAudioCtx,o,o2,n,f,g;
-    if(tMetroSound==='wood'){ // warm woodblock
+    if(sound==='wood'){
         o=ctx.createOscillator();o.type='sine';o.frequency.setValueAtTime(1400,t);o.frequency.exponentialRampToValueAtTime(700,t+0.03);
-        g=tEnv(t,0.9,0.08);o.connect(g);o.start(t);o.stop(t+0.09);
-    }else if(tMetroSound==='click'){ // crisp mechanical tick
+        g=tEnv(t,0.9*vol,0.08);o.connect(g);o.start(t);o.stop(t+0.09);
+    }else if(sound==='click'){
         n=ctx.createBufferSource();n.buffer=tGetNoise();f=ctx.createBiquadFilter();f.type='highpass';f.frequency.value=3000;
-        g=tEnv(t,0.9,0.02);n.connect(f);f.connect(g);n.start(t);n.stop(t+0.03);
-    }else if(tMetroSound==='rim'){ // rimshot
+        g=tEnv(t,0.9*vol,0.02);n.connect(f);f.connect(g);n.start(t);n.stop(t+0.03);
+    }else if(sound==='rim'){
         n=ctx.createBufferSource();n.buffer=tGetNoise();f=ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=2200;f.Q.value=1.5;
-        g=tEnv(t,0.8,0.05);n.connect(f);f.connect(g);n.start(t);n.stop(t+0.06);
-        o=ctx.createOscillator();o.type='triangle';o.frequency.value=450;var g2=tEnv(t,0.5,0.04);o.connect(g2);o.start(t);o.stop(t+0.05);
-    }else if(tMetroSound==='cowbell'){
+        g=tEnv(t,0.8*vol,0.05);n.connect(f);f.connect(g);n.start(t);n.stop(t+0.06);
+        o=ctx.createOscillator();o.type='triangle';o.frequency.value=450;var g2=tEnv(t,0.5*vol,0.04);o.connect(g2);o.start(t);o.stop(t+0.05);
+    }else if(sound==='cowbell'){
         o=ctx.createOscillator();o2=ctx.createOscillator();o.type=o2.type='square';o.frequency.value=540;o2.frequency.value=800;
         f=ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=800;f.Q.value=2;
-        g=tEnv(t,0.35,0.25);o.connect(f);o2.connect(f);f.connect(g);o.start(t);o2.start(t);o.stop(t+0.26);o2.stop(t+0.26);
-    }else{ // beep (original)
-        o=ctx.createOscillator();o.frequency.value=1000;g=tEnv(t,1,0.025);o.connect(g);o.start(t);o.stop(t+0.03);
+        g=tEnv(t,0.35*vol,0.25);o.connect(f);o2.connect(f);f.connect(g);o.start(t);o2.start(t);o.stop(t+0.26);o2.stop(t+0.26);
+    }else{
+        o=ctx.createOscillator();o.frequency.value=1000;g=tEnv(t,1*vol,0.025);o.connect(g);o.start(t);o.stop(t+0.03);
     }
 }
-function tSetMetroSound(s){
-    tMetroSound=s;try{localStorage.setItem('rp_metro_sound',s);}catch(e){}
-    document.querySelectorAll('.metro-sound-btn').forEach(function(b){b.classList.toggle('active',b.dataset.sound===s);});
-    if(!tMetroPlaying){tEnsureAudio();tPlayClick(tAudioCtx.currentTime+0.02);} // preview
-}
-function tInitMetroSoundUI(){document.querySelectorAll('.metro-sound-btn').forEach(function(b){b.classList.toggle('active',b.dataset.sound===tMetroSound);});}
-document.addEventListener('DOMContentLoaded',tInitMetroSoundUI);
+function tPreview(i){if(tMetroPlaying)return;tEnsureAudio();var b=tBeats[i];tPlayClick(tAudioCtx.currentTime+0.02,b.sound,T_LEVEL_GAIN[b.level]);}
 
-function tMetroScheduler(){const bpm=parseFloat(document.getElementById('t-m-slider').value),spb=60/bpm;while(tNextTick<tAudioCtx.currentTime+0.1){tPlayClick(tNextTick);const delay=Math.max(0,(tNextTick-tAudioCtx.currentTime)*1000);setTimeout(()=>{const d=document.getElementById('t-bpm-val');if(!d)return;d.style.color='#fff';d.style.transform='scale(1.15)';setTimeout(()=>{d.style.color='var(--brand-accent)';d.style.transform='scale(1)';},60);},delay);tNextTick+=spb;}tMetroTimerID=setTimeout(tMetroScheduler,25);}
-function tToggleMetronome(){tEnsureAudio();const btn=document.getElementById('t-metro-btn');tMetroPlaying=!tMetroPlaying;if(tMetroPlaying){btn.textContent='Stop';btn.classList.add('running');tNextTick=tAudioCtx.currentTime;tMetroScheduler();}else{btn.textContent='Start';btn.classList.remove('running');clearTimeout(tMetroTimerID);}}
+// ── BEAT UI ───────────────────────────────────────
+function tRenderBeats(){
+    var row=document.getElementById('mb-row');if(!row)return;
+    document.getElementById('mb-count').textContent=tBeats.length;
+    row.innerHTML=tBeats.map(function(b,i){
+        return '<div class="mb-beat'+(b.level===0?' muted':'')+'">'
+            +'<div class="mb-bar" onclick="tCycleLevel('+i+')"><div class="mb-fill" style="height:'+(b.level/3*100)+'%"></div><span class="mb-num">'+(i+1)+'</span></div>'
+            +'<button class="mb-snd" onclick="tCycleSound('+i+')">'+T_SOUND_LABEL[b.sound]+'</button></div>';
+    }).join('');
+}
+function tCycleLevel(i){tBeats[i].level=(tBeats[i].level+3)%4;tSavePattern();tRenderBeats();tPreview(i);}
+function tCycleSound(i){var k=T_METRO_SOUNDS.indexOf(tBeats[i].sound);tBeats[i].sound=T_METRO_SOUNDS[(k+1)%T_METRO_SOUNDS.length];if(tBeats[i].level===0)tBeats[i].level=2;tSavePattern();tRenderBeats();tPreview(i);}
+function tSetBeatCount(d){
+    var n=Math.min(12,Math.max(1,tBeats.length+d));
+    while(tBeats.length<n)tBeats.push({sound:tBeats[tBeats.length-1].sound,level:2});
+    while(tBeats.length>n)tBeats.pop();
+    if(tBeatIdx>=n)tBeatIdx=0;
+    tSavePattern();tRenderBeats();
+}
+function tSetAllSound(s){tBeats.forEach(function(b){b.sound=s;});tSavePattern();tRenderBeats();tPreview(0);}
+function tFlashBeat(i){
+    var els=document.querySelectorAll('#mb-row .mb-beat');
+    els.forEach(function(e,j){e.classList.toggle('on',j===i);});
+    var d=document.getElementById('t-bpm-val');
+    if(d&&tBeats[i]&&tBeats[i].level>0){d.style.color='#fff';d.style.transform='scale(1.15)';setTimeout(function(){d.style.color='var(--brand-accent)';d.style.transform='scale(1)';},60);}
+}
+document.addEventListener('DOMContentLoaded',tRenderBeats);
+
+// ── SCHEDULER ─────────────────────────────────────
+function tMetroScheduler(){
+    var bpm=parseFloat(document.getElementById('t-m-slider').value),spb=60/bpm;
+    while(tNextTick<tAudioCtx.currentTime+0.1){
+        var i=tBeatIdx%tBeats.length,b=tBeats[i];
+        tPlayClick(tNextTick,b.sound,T_LEVEL_GAIN[b.level]);
+        (function(i,delay){setTimeout(function(){if(tMetroPlaying)tFlashBeat(i);},delay);})(i,Math.max(0,(tNextTick-tAudioCtx.currentTime)*1000));
+        tBeatIdx=(i+1)%tBeats.length;
+        tNextTick+=spb;
+    }
+    tMetroTimerID=setTimeout(tMetroScheduler,25);
+}
+function tToggleMetronome(){
+    tEnsureAudio();
+    var btn=document.getElementById('t-metro-btn');
+    tMetroPlaying=!tMetroPlaying;
+    if(tMetroPlaying){btn.textContent='Stop';btn.classList.add('running');tBeatIdx=0;tNextTick=tAudioCtx.currentTime+0.05;tMetroScheduler();}
+    else{btn.textContent='Start';btn.classList.remove('running');clearTimeout(tMetroTimerID);document.querySelectorAll('#mb-row .mb-beat').forEach(function(e){e.classList.remove('on');});}
+}
+
 let tCdRunning=false,tCdTime=60,tCdInterval=null;
 function tUpdateCDDisplay(){const m=Math.floor(tCdTime/60),s=tCdTime%60;document.getElementById('t-cd-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
 function tToggleCountdown(){const btn=document.getElementById('t-cd-btn');if(tCdRunning){clearInterval(tCdInterval);tCdRunning=false;btn.textContent='Start';btn.classList.remove('running');}else{tCdTime=parseInt(document.getElementById('t-cd-input').value)||60;tCdRunning=true;btn.textContent='Stop';btn.classList.add('running');tCdInterval=setInterval(()=>{tCdTime--;tUpdateCDDisplay();if(tCdTime<=0){clearInterval(tCdInterval);tCdRunning=false;btn.textContent='Start';btn.classList.remove('running');tCdTime=parseInt(document.getElementById('t-cd-input').value)||60;tUpdateCDDisplay();}},1000);}}
