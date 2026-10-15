@@ -3,749 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Dashboard 1| RestPeriod</title>
+    <title>Education Builder | RestPeriod</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
         :root {
             --brand-bg: #020c12; --card-bg: #0e1b24; --brand-accent: #26C6DA;
             --brand-secondary: #2E7D32; --text-main: #E0F7FA; --brand-danger: #ff5252;
-            --border: #1a2a35;
+            --border: #1a2a35; --input-bg: #050d12;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: 40px; }
+        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; }
 
         .nav-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: #000; border-bottom: 1px solid #004d7a; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 8px; }
         .nav-brand { font-family: 'Montserrat'; font-weight: 800; font-size: 1.1rem; }
         .nav-brand span { color: var(--brand-accent); }
         .nav-links { display: flex; gap: 16px; flex-wrap: wrap; }
-        .nav-links a { color: #888; text-decoration: none; font-family: 'Montserrat'; font-weight: 700; font-size: 0.75rem; transition: 0.2s; }
+        .nav-links a { color: #888; text-decoration: none; font-family: 'Montserrat'; font-weight: 700; font-size: 0.75rem; }
         .nav-links a:hover { color: var(--brand-accent); }
         .nav-links a.active { color: white; border-bottom: 2px solid var(--brand-accent); }
 
-        .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
-        .section-title { font-family: 'Montserrat'; font-weight: 800; font-size: 0.8rem; color: #555; text-transform: uppercase; letter-spacing: 2px; margin: 8px 0 14px; }
+        .layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; max-width: 1500px; margin: 0 auto; padding: 20px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; }
+        .card-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .card-title { font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* STAT CARDS */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px 16px; text-align: center; position: relative; overflow: hidden; }
-        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--brand-accent); }
-        .stat-card.green::before { background: var(--brand-secondary); }
-        .stat-card.red::before { background: var(--brand-danger); }
-        .stat-card.purple::before { background: #c084fc; }
-        .stat-card.gold::before { background: #fbbf24; }
-        .stat-icon { font-size: 1.4rem; margin-bottom: 8px; }
-        .stat-val { font-family: 'Montserrat'; font-size: 2rem; font-weight: 800; color: var(--brand-accent); line-height: 1; margin-bottom: 4px; }
-        .stat-card.green .stat-val { color: #4ade80; }
-        .stat-card.red .stat-val { color: var(--brand-danger); }
-        .stat-card.purple .stat-val { color: #c084fc; }
-        .stat-card.gold .stat-val { color: #fbbf24; }
-        .stat-label { font-size: 0.65rem; color: #888; font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-sub { font-size: 0.65rem; color: #555; margin-top: 4px; }
+        /* LIST */
+        .list-search { width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: white; padding: 8px 10px; border-radius: 6px; font-size: 0.8rem; margin: 12px 16px 4px; width: calc(100% - 32px); }
+        .list-body { padding: 4px 8px 12px; max-height: calc(100vh - 190px); overflow-y: auto; }
+        .list-section { font-family: 'Montserrat'; font-weight: 800; font-size: 0.6rem; color: #555; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 8px 4px; }
+        .list-group { font-size: 0.65rem; color: #888; padding: 8px 8px 2px; font-weight: 600; }
+        .list-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 0.82rem; border: 1px solid transparent; }
+        .list-item:hover { background: rgba(38,198,218,0.05); }
+        .list-item.active { border-color: var(--brand-accent); background: rgba(38,198,218,0.08); }
+        .list-item .dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
+        .list-item .dot.draft { background: #fb923c; }
+        .list-item .ord { margin-left: auto; color: #555; font-size: 0.65rem; }
+        .empty { color: #555; font-size: 0.8rem; padding: 20px; text-align: center; }
 
-        /* DATA CARDS */
-        .data-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 24px; overflow: hidden; }
-        .data-card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .data-card-title { font-family: 'Montserrat'; font-size: 0.72rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; }
-        .data-card-note { font-size: 0.7rem; color: #555; }
-        .card-body { padding: 16px 18px; }
-        .table-wrap { overflow-x: auto; max-height: 460px; overflow-y: auto; }
+        /* EDITOR */
+        .ed-fields { display: grid; grid-template-columns: 140px 1fr 1fr 1fr 90px; gap: 10px; padding: 16px; border-bottom: 1px solid var(--border); }
+        .ed-fields .full { grid-column: 1 / -1; }
+        label { display: block; font-family: 'Montserrat'; font-weight: 800; font-size: 0.55rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        input[type=text], input[type=number], select, textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: white; padding: 9px 10px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brand-accent); }
+        .hint { font-size: 0.65rem; color: #555; margin-top: 3px; }
 
-        /* TABLES */
-        .data-table { width: 100%; border-collapse: collapse; }
-        .data-table th { padding: 10px 16px; text-align: left; font-size: 0.58rem; font-family: 'Montserrat'; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); background: #050d12; position: sticky; top: 0; }
-        .data-table td { padding: 11px 16px; font-size: 0.82rem; border-bottom: 1px solid #0a1520; vertical-align: middle; }
-        .data-table tr:last-child td { border-bottom: none; }
-        .data-table tr:hover td { background: rgba(38,198,218,0.03); }
-        .muted { color: #888; font-size: 0.78rem; }
-        .dim { color: #555; font-size: 0.78rem; }
-        .empty { text-align: center; color: #555; padding: 20px; font-size: 0.82rem; }
-        a.mail { color: #888; text-decoration: none; }
-        a.mail:hover { color: var(--brand-accent); }
+        .ed-split { display: grid; grid-template-columns: 1fr 1fr; min-height: 480px; }
+        .ed-pane { padding: 16px; display: flex; flex-direction: column; min-width: 0; }
+        .ed-pane + .ed-pane { border-left: 1px solid var(--border); }
+        #f-body { flex: 1; min-height: 420px; resize: vertical; font-family: 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 0.85rem; line-height: 1.6; }
+        .md-help { font-size: 0.65rem; color: #555; margin-top: 6px; line-height: 1.6; }
+        .md-help code { background: #000; padding: 1px 4px; border-radius: 3px; color: #aaa; }
+        .preview { background: #000; border-radius: 8px; padding: 24px 20px; flex: 1; overflow-y: auto; max-height: 70vh; }
 
-        .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.6rem; font-weight: 800; font-family: 'Montserrat'; white-space: nowrap; }
-        .badge-blue { background: #26C6DA22; color: var(--brand-accent); border: 1px solid #26C6DA44; }
-        .badge-green { background: #2E7D3222; color: #4ade80; border: 1px solid #2E7D3244; }
-        .badge-purple { background: #c084fc22; color: #c084fc; border: 1px solid #c084fc44; }
-        .badge-red { background: #ff525222; color: #ff5252; border: 1px solid #ff525244; }
-        .badge-orange { background: #fb923c22; color: #fb923c; border: 1px solid #fb923c44; }
-        .badge-gold { background: #fbbf2422; color: #fbbf24; border: 1px solid #fbbf2444; }
+        .ed-tabs { display: none; gap: 4px; padding: 10px 16px 0; }
+        .ed-tab { flex: 1; padding: 8px; border: 1px solid var(--border); background: none; color: #888; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.65rem; cursor: pointer; }
+        .ed-tab.active { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
 
-        /* FUNNEL */
-        .funnel-row { display: grid; grid-template-columns: 170px 1fr 90px; gap: 12px; align-items: center; margin-bottom: 10px; }
-        .funnel-label { font-family: 'Montserrat'; font-weight: 800; font-size: 0.68rem; text-transform: uppercase; color: #ccc; }
-        .funnel-label small { display: block; font-family: 'Open Sans'; font-weight: 400; font-size: 0.65rem; color: #555; text-transform: none; }
-        .funnel-track { background: #050d12; border-radius: 6px; height: 26px; overflow: hidden; }
-        .funnel-fill { height: 100%; background: linear-gradient(90deg, var(--brand-secondary), var(--brand-accent)); border-radius: 6px; display: flex; align-items: center; padding-left: 10px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.72rem; color: #000; min-width: 34px; }
-        .funnel-fill.na { background: #1a2a35; color: #555; }
-        .funnel-pct { text-align: right; font-size: 0.72rem; color: #888; }
-        .funnel-pct b { color: var(--brand-accent); font-family: 'Montserrat'; }
+        /* IMAGES */
+        .imgs { padding: 12px 16px; border-top: 1px solid var(--border); }
+        .img-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .img-tile { width: 96px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: #000; }
+        .img-tile img { width: 100%; height: 64px; object-fit: cover; display: block; }
+        .img-tile div { display: flex; }
+        .img-tile button { flex: 1; background: none; border: none; color: #888; font-size: 0.6rem; font-family: 'Montserrat'; font-weight: 800; padding: 5px 0; cursor: pointer; }
+        .img-tile button:hover { color: var(--brand-accent); }
+        .img-tile button.rm:hover { color: var(--brand-danger); }
 
-        /* WEEK CHART */
-        .week-chart { display: flex; align-items: flex-end; gap: 6px; height: 140px; padding-top: 10px; }
-        .week-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
-        .week-bar { width: 100%; background: var(--brand-accent); border-radius: 4px 4px 0 0; min-height: 2px; }
-        .week-bar.zero { background: #1a2a35; }
-        .week-count { font-size: 0.62rem; color: #888; margin-bottom: 3px; font-family: 'Montserrat'; font-weight: 800; }
-        .week-label { font-size: 0.55rem; color: #555; margin-top: 5px; white-space: nowrap; }
-
-        /* FEED */
-        .feed-item { display: flex; gap: 12px; padding: 10px 18px; border-bottom: 1px solid #0a1520; align-items: flex-start; font-size: 0.8rem; }
-        .feed-item:last-child { border-bottom: none; }
-        .feed-icon { width: 22px; text-align: center; flex-shrink: 0; }
-        .feed-text { flex: 1; }
-        .feed-time { color: #555; font-size: 0.7rem; white-space: nowrap; }
-
-        /* ADD COACH FORM */
-        .add-coach-form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end; padding: 16px 18px; background: #050d12; border-bottom: 1px solid var(--border); }
-        .form-group label { font-size: 0.58rem; font-family: 'Montserrat'; font-weight: 800; color: #888; text-transform: uppercase; display: block; margin-bottom: 4px; }
-        .form-group input { width: 100%; background: var(--card-bg); border: 1px solid var(--border); color: white; padding: 9px 12px; border-radius: 6px; font-family: inherit; font-size: 0.85rem; }
-        .form-group input:focus { outline: none; border-color: var(--brand-accent); }
-
-        .btn { border: none; padding: 9px 18px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-block; }
+        .ed-actions { display: flex; gap: 8px; align-items: center; padding: 12px 16px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+        .btn { border: none; padding: 9px 16px; border-radius: 6px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
         .btn-accent { background: var(--brand-accent); color: #000; }
-        .btn-accent:hover { background: #fff; color: #000; }
-        .btn-green { background: var(--brand-secondary); color: white; }
-        .btn-green:hover { background: #3a9a3e; }
-        .btn-ghost { background: transparent; border: 1px solid var(--border); color: #888; }
+        .btn-ghost { background: none; border: 1px solid var(--border); color: #888; }
         .btn-ghost:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+        .btn-danger { background: none; border: 1px solid var(--brand-danger); color: var(--brand-danger); }
+        .btn-danger:hover { background: var(--brand-danger); color: white; }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .pub { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #aaa; cursor: pointer; margin-left: 6px; }
+        .pub input { accent-color: #4ade80; width: 16px; height: 16px; }
+        .status { margin-left: auto; font-size: 0.7rem; color: #555; }
+        .status.dirty { color: #fb923c; }
 
-        .mini-bar { background: #0a1520; border-radius: 4px; height: 5px; overflow: hidden; margin-top: 4px; min-width: 60px; }
-        .mini-bar-fill { height: 100%; background: linear-gradient(90deg, var(--brand-secondary), var(--brand-accent)); border-radius: 4px; }
+        /* lesson typography (matches lesson.html) */
+        .lesson-tag { font-size: 0.65rem; color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+        .lesson-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.5rem; color: white; line-height: 1.25; margin-bottom: 20px; }
+        .lesson-body { font-size: 0.95rem; color: #ccc; line-height: 1.8; }
+        .lesson-body h1, .lesson-body h2, .lesson-body h3 { font-family: 'Montserrat', sans-serif; font-weight: 800; color: white; line-height: 1.3; margin: 28px 0 10px; }
+        .lesson-body h1 { font-size: 1.3rem; } .lesson-body h2 { font-size: 1.15rem; color: var(--brand-accent); } .lesson-body h3 { font-size: 1rem; }
+        .lesson-body p { margin: 0 0 14px; }
+        .lesson-body ul, .lesson-body ol { margin: 0 0 14px; padding-left: 22px; }
+        .lesson-body li { margin-bottom: 5px; }
+        .lesson-body strong { color: white; }
+        .lesson-body a { color: var(--brand-accent); }
+        .lesson-body img { max-width: 100%; border-radius: 10px; margin: 8px 0 14px; display: block; }
+        .lesson-body blockquote { border-left: 3px solid var(--brand-accent); padding: 4px 0 4px 14px; margin: 0 0 14px; color: #999; font-style: italic; }
+        .lesson-body hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+        .lesson-body table { width: 100%; border-collapse: collapse; margin: 0 0 14px; font-size: 0.82rem; }
+        .lesson-body th, .lesson-body td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; }
+        .lesson-body th { color: var(--brand-accent); font-family: 'Montserrat', sans-serif; font-size: 0.65rem; text-transform: uppercase; }
 
-        .table-search { background: #050d12; border: 1px solid var(--border); color: white; padding: 7px 12px; border-radius: 6px; font-family: inherit; font-size: 0.82rem; width: 200px; }
-        .table-search:focus { outline: none; border-color: var(--brand-accent); }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--brand-secondary); color: white; padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; display: none; z-index: 9000; font-family: 'Montserrat'; }
+        #toast.err { background: var(--brand-danger); }
 
-        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .two-col > .data-card { margin-bottom: 24px; }
-
-        .loading { text-align: center; padding: 40px; color: #333; font-size: 0.85rem; }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #1a2a35; border-top-color: var(--brand-accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        @media (max-width: 900px) {
-            .container { padding: 16px; }
-            .add-coach-form { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .two-col { grid-template-columns: 1fr; gap: 0; }
-            .funnel-row { grid-template-columns: 110px 1fr 60px; gap: 8px; }
-            .table-search { width: 100%; }
+        @media (max-width: 1000px) {
+            .layout { grid-template-columns: 1fr; padding: 12px; }
+            .list-body { max-height: 260px; }
+            .ed-fields { grid-template-columns: 1fr 1fr; }
+            .ed-tabs { display: flex; }
+            .ed-split { grid-template-columns: 1fr; }
+            .ed-pane + .ed-pane { border-left: none; }
+            .ed-split[data-view="write"] .pane-preview, .ed-split[data-view="preview"] .pane-write { display: none; }
         }
     </style>
 </head>
 <body>
 
+<div id="toast"></div>
+
 <div class="nav-top">
-    <div class="nav-brand">REST <span>PERIOD</span> <span style="font-size:0.65rem;color:#555;font-weight:700;margin-left:8px;">MEGA DASHBOARD</span></div>
+    <div class="nav-brand">REST <span>PERIOD</span> <span style="font-size:0.65rem;color:#555;font-weight:700;margin-left:8px;">EDUCATION BUILDER</span></div>
     <div class="nav-links">
         <a href="dashboard.html">Coach</a>
         <a href="builder.html">Builder</a>
-        <a href="library.html">Library</a>
-        <a href="megauser.html" class="active">Mega</a>
+        <a href="megauser.html">Mega</a>
+        <a href="education.html" class="active">Education</a>
+        <a href="explore.html?tab=theory" target="_blank">View Explore ↗</a>
         <a href="#" onclick="handleLogout()">Logout</a>
     </div>
 </div>
 
-<div class="container">
+<div class="layout">
 
-    <!-- STATS -->
-    <div class="stats-grid" id="stats-grid">
-        <div class="loading"><span class="spinner"></span>Loading...</div>
-    </div>
-
-    <!-- ═══════════ FREE USER FUNNEL ═══════════ -->
-    <div class="section-title">Free User Funnel</div>
-
-    <div class="data-card">
-        <div class="data-card-header">
-            <div class="data-card-title">🔻 Funnel</div>
-            <div class="data-card-note" id="funnel-note"></div>
+    <!-- LIST -->
+    <div class="card">
+        <div class="card-head">
+            <div class="card-title">Lessons</div>
+            <button class="btn btn-accent" onclick="newLesson()"><i class="fas fa-plus"></i> New</button>
         </div>
-        <div class="card-body" id="funnel"><div class="loading"><span class="spinner"></span></div></div>
+        <input type="text" class="list-search" placeholder="Search…" oninput="renderList(this.value.toLowerCase())">
+        <div class="list-body" id="list"><div class="empty">Loading…</div></div>
     </div>
 
-    <div class="two-col">
-        <div class="data-card">
-            <div class="data-card-header">
-                <div class="data-card-title">📈 Signups per Week</div>
-                <div class="data-card-note">Last 12 weeks · free users</div>
+    <!-- EDITOR -->
+    <div class="card" id="editor">
+        <div class="ed-fields">
+            <div>
+                <label>Section</label>
+                <select id="f-section" onchange="onSectionChange();markDirty()">
+                    <option value="theory">Theory</option>
+                    <option value="philosophy">Philosophy</option>
+                </select>
             </div>
-            <div class="card-body"><div class="week-chart" id="signup-chart"></div></div>
-        </div>
-
-        <div class="data-card">
-            <div class="data-card-header">
-                <div class="data-card-title">⚡ Activation</div>
+            <div id="wrap-group">
+                <label>Group (shelf heading)</label>
+                <input type="text" id="f-group" list="group-options" placeholder="e.g. Principles of Training" oninput="markDirty()">
+                <datalist id="group-options"></datalist>
             </div>
-            <div class="card-body" id="activation"></div>
-        </div>
-    </div>
-
-    <div class="data-card">
-        <div class="data-card-header">
-            <div class="data-card-title">🚪 Drop-off: Signed Up, No Session Yet</div>
-            <div class="data-card-note" id="dropoff-note"></div>
-        </div>
-        <div class="table-wrap">
-            <table class="data-table">
-                <thead><tr><th>Name</th><th>Email</th><th>Joined</th><th>Days Since</th><th>Last Seen</th><th>Started Program</th></tr></thead>
-                <tbody id="dropoff-table"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="two-col">
-        <div class="data-card">
-            <div class="data-card-header">
-                <div class="data-card-title">🏆 Programs Free Users Start</div>
+            <div>
+                <label>Title</label>
+                <input type="text" id="f-title" placeholder="e.g. Principle of Adaptation" oninput="markDirty()">
             </div>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead><tr><th>Program</th><th>Users</th><th>Avg Progress</th><th>Finished</th></tr></thead>
-                    <tbody id="free-progs-table"></tbody>
-                </table>
+            <div id="wrap-label">
+                <label>Card word</label>
+                <input type="text" id="f-label" placeholder="e.g. Adaptation" oninput="markDirty()">
+            </div>
+            <div>
+                <label id="lbl-order">Order</label>
+                <input type="number" id="f-order" placeholder="1" oninput="markDirty()">
+            </div>
+            <div id="wrap-tag" class="full" style="max-width:320px;">
+                <label>Tag (small text above title)</label>
+                <input type="text" id="f-tag" placeholder="e.g. Principles" oninput="markDirty()">
             </div>
         </div>
 
-        <div class="data-card">
-            <div class="data-card-header">
-                <div class="data-card-title">🔒 Premium Interest</div>
-                <div class="data-card-note">Padlock clicks · 90 days</div>
-            </div>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead><tr><th>Program</th><th>Clicks</th><th>Unique Users</th></tr></thead>
-                    <tbody id="premium-table"></tbody>
-                </table>
-            </div>
+        <div class="ed-tabs">
+            <button class="ed-tab active" data-v="write" onclick="setView('write')">Write</button>
+            <button class="ed-tab" data-v="preview" onclick="setView('preview')">Preview</button>
         </div>
-    </div>
 
-    <!-- ═══════════ ACTIVITY ═══════════ -->
-    <div class="section-title">Activity</div>
-
-    <div class="data-card">
-        <div class="data-card-header">
-            <div class="data-card-title">🕒 Recent Activity</div>
-            <div class="data-card-note">Last 30 days</div>
-        </div>
-        <div id="feed" style="max-height:420px;overflow-y:auto;"></div>
-    </div>
-
-    <!-- ═══════════ PEOPLE ═══════════ -->
-    <div class="section-title">People</div>
-
-    <div class="data-card">
-        <div class="data-card-header">
-            <div class="data-card-title">🆓 Free Users</div>
-            <input type="text" class="table-search" placeholder="Search..." oninput="renderFreeUsers(this.value.toLowerCase())">
-        </div>
-        <div class="table-wrap">
-            <table class="data-table">
-                <thead><tr><th>Name</th><th>Email</th><th>Joined</th><th>Last Seen</th><th>Sessions</th><th>Last Session</th><th>Status</th></tr></thead>
-                <tbody id="free-users-table"><tr><td colspan="7" class="loading"><span class="spinner"></span></td></tr></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="two-col">
-        <div class="data-card">
-            <div class="data-card-header">
-                <div class="data-card-title">🏋️ Trainers</div>
-                <button class="btn btn-accent" onclick="toggleAddCoach()">+ Add Trainer</button>
-            </div>
-            <div id="add-coach-form" style="display:none;">
-                <div class="add-coach-form">
-                    <div class="form-group"><label>Name</label><input type="text" id="new-coach-name" placeholder="Jane Smith"></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="new-coach-email" placeholder="jane@gym.com"></div>
-                    <div class="form-group"><label>Password</label><input type="text" id="new-coach-pass" placeholder="Temp password"></div>
-                    <button class="btn btn-green" onclick="saveNewCoach()">Create</button>
+        <div class="ed-split" id="ed-split" data-view="write">
+            <div class="ed-pane pane-write">
+                <label>Lesson text</label>
+                <textarea id="f-body" placeholder="Write here…" oninput="markDirty();renderPreview()"></textarea>
+                <div class="md-help">
+                    <code>## Heading</code> &nbsp; <code>**bold**</code> &nbsp; <code>*italic*</code> &nbsp; <code>- list item</code> &nbsp; <code>1. numbered</code> &nbsp; <code>&gt; quote</code> &nbsp; <code>---</code> line &nbsp; <code>[link](https://…)</code><br>
+                    Blank line = new paragraph. Images: upload below, then tap <b>Insert</b>.
                 </div>
             </div>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Last Seen</th></tr></thead>
-                    <tbody id="trainers-table"><tr><td colspan="4" class="loading"><span class="spinner"></span></td></tr></tbody>
-                </table>
+            <div class="ed-pane pane-preview">
+                <label>Preview</label>
+                <div class="preview" id="preview"></div>
             </div>
         </div>
 
-        <div class="data-card">
-            <div class="data-card-header">
-                <div class="data-card-title">👥 Clients</div>
-                <input type="text" class="table-search" placeholder="Search clients..." oninput="renderClients(this.value.toLowerCase())">
-            </div>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead><tr><th>Name</th><th>Programs</th><th>Sessions</th><th>Last Session</th></tr></thead>
-                    <tbody id="clients-table"><tr><td colspan="4" class="loading"><span class="spinner"></span></td></tr></tbody>
-                </table>
-            </div>
+        <div class="imgs">
+            <label>Images</label>
+            <div id="img-hint" class="hint">Save the lesson first, then you can add images.</div>
+            <input type="file" id="f-images" accept="image/*" multiple style="display:none;" onchange="uploadImages(this.files)">
+            <button class="btn btn-ghost" id="btn-upload" onclick="document.getElementById('f-images').click()" style="margin-top:6px;"><i class="fas fa-image"></i> Upload images</button>
+            <div class="img-strip" id="img-strip"></div>
+        </div>
+
+        <div class="ed-actions">
+            <button class="btn btn-accent" id="btn-save" onclick="saveLesson()"><i class="fas fa-save"></i> Save</button>
+            <label class="pub"><input type="checkbox" id="f-published" onchange="markDirty()"> Published</label>
+            <a class="btn btn-ghost" id="btn-open" target="_blank" style="display:none;"><i class="fas fa-external-link-alt"></i> Open</a>
+            <button class="btn btn-ghost" id="btn-copy" onclick="copyLink()" style="display:none;"><i class="fas fa-link"></i> Copy link</button>
+            <button class="btn btn-danger" id="btn-delete" onclick="deleteLesson()" style="display:none;"><i class="fas fa-trash"></i></button>
+            <span class="status" id="status">New lesson</span>
         </div>
     </div>
-
-    <!-- ═══════════ PROGRAMS ═══════════ -->
-    <div class="data-card">
-        <div class="data-card-header">
-            <div class="data-card-title">📋 Active Programs</div>
-            <input type="text" class="table-search" placeholder="Search programs..." oninput="renderPrograms(this.value.toLowerCase())">
-        </div>
-        <div class="table-wrap">
-            <table class="data-table">
-                <thead><tr><th>Program</th><th>User</th><th>Progress</th><th>Sessions</th><th>Last Active</th><th>Status</th></tr></thead>
-                <tbody id="programs-table"><tr><td colspan="6" class="loading"><span class="spinner"></span></td></tr></tbody>
-            </table>
-        </div>
-    </div>
-
 </div>
 
 <script>
 (function() {
     const pb2 = new PocketBase('https://restperiod.org');
-    if (!pb2.authStore.isValid) { window.location.href = '/index.html'; return; }
-    if (pb2.authStore.model.role !== 'admin') { window.location.href = '/index.html'; }
+    if (!pb2.authStore.isValid || pb2.authStore.model.role !== 'admin') window.location.href = '/index.html';
 })();
 
-const pb = new PocketBase('https://restperiod.org');
-const DAY = 86400000;
+const PB_URL = 'https://restperiod.org';
+const pb = new PocketBase(PB_URL);
+const BUILTIN_GROUPS = ['Principles of Training', 'Types of Training Blocks'];
 
-let allUsers = [], allTrainers = [], allClients = [], allFreeUsers = [];
-let allPrograms = [], activePrograms = [], sessionLogs = [], events = [], contactMsgs = [];
-let userById = {}, programById = {};
-let userSessions = {};   // userId -> sorted array of { date: Date, program: name }
-let userPrograms = {};   // userId -> programs
-let hasLastSeen = false, hasEvents = false;
+let lessons = [], current = null, dirty = false;
+
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function $(id) { return document.getElementById(id); }
+let toastT;
+function toast(msg, err) { const t = $('toast'); t.textContent = msg; t.className = err ? 'err' : ''; t.style.display = 'block'; clearTimeout(toastT); toastT = setTimeout(() => t.style.display = 'none', 2200); }
 
 window.onload = async () => {
-    if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
-    pb.collection('users').authRefresh({ requestKey: null }).catch(() => {});
-    await loadAll();
+    await loadList();
+    const id = new URLSearchParams(location.search).get('id');
+    if (id && lessons.find(l => l.id === id)) openLesson(id); else newLesson(true);
 };
 
-// ── HELPERS ───────────────────────────────────────
-function esc(s) {
-    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-}
-function toDate(v) { if (!v) return null; const d = new Date(v); return isNaN(d) ? null : d; }
-function fmtDate(d) { return d ? d.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' }) : '—'; }
-function fmtShort(d) { return d ? d.toLocaleDateString([], { day: 'numeric', month: 'short' }) : '—'; }
-function ago(d) {
-    if (!d) return '—';
-    const days = Math.floor((Date.now() - d) / DAY);
-    if (days <= 0) return 'Today';
-    if (days === 1) return 'Yesterday';
-    if (days < 30) return `${days}d ago`;
-    if (days < 365) return `${Math.floor(days / 30)}mo ago`;
-    return `${Math.floor(days / 365)}y ago`;
-}
-function daysSince(d) { return d ? Math.floor((Date.now() - d) / DAY) : null; }
-function median(arr) {
-    if (!arr.length) return null;
-    const s = [...arr].sort((a, b) => a - b), m = Math.floor(s.length / 2);
-    return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
-}
-function pct(a, b) { return b > 0 ? Math.round((a / b) * 100) : 0; }
-function parseSchedule(p) {
-    let data = p.workout_data;
-    if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) { data = null; } }
-    if (!data) return [];
-    const s = data.schedule || data;
-    return Array.isArray(s) ? s : [];
-}
-function progStats(p) {
-    const schedule = parseSchedule(p);
-    const total = schedule.length;
-    const done = schedule.filter(s => s.sessionDate).length;
-    return { total, done, pct: pct(done, total), schedule };
-}
-function lastSeenOf(u) { return toDate(u.last_seen); }
-function lastSessionOf(uid) { const s = userSessions[uid]; return s && s.length ? s[s.length - 1].date : null; }
-function lastActiveOf(u) {
-    const a = lastSeenOf(u), b = lastSessionOf(u.id);
-    if (a && b) return a > b ? a : b;
-    return a || b;
-}
-function subBadge(u) {
-    const s = u.subscription_status || 'free';
-    if (s === 'active') return '<span class="badge badge-gold">★ Subscriber</span>';
-    if (s === 'cancelled') return '<span class="badge badge-red">Cancelled</span>';
-    if (s === 'past_due') return '<span class="badge badge-orange">Past Due</span>';
-    return '<span class="badge badge-purple">Free</span>';
-}
-
-// ── LOAD ──────────────────────────────────────────
-async function loadAll() {
+// ── LIST ──────────────────────────────────────────
+async function loadList() {
     try {
-        const since90 = new Date(Date.now() - 90 * DAY).toISOString().replace('T', ' ');
-        const [usersRes, programsRes, logsRes, eventsRes, contactRes] = await Promise.all([
-            pb.collection('users').getFullList({ sort: 'name', requestKey: null }),
-            pb.collection('programs').getFullList({ sort: '-created', requestKey: null }),
-            pb.collection('session_logs').getFullList({ sort: 'date', requestKey: null }).catch(e => { console.warn('session_logs', e); return []; }),
-            pb.collection('events').getFullList({ filter: `created >= "${since90}"`, sort: '-created', requestKey: null })
-                .then(r => { hasEvents = true; return r; })
-                .catch(e => { console.warn('events', e); return []; }),
-            pb.collection('contact_messages').getFullList({ sort: '-created', requestKey: null }).catch(() => [])
-        ]);
-
-        allUsers = usersRes;
-        allTrainers = usersRes.filter(u => u.role === 'trainer' || u.role === 'admin');
-        allClients = usersRes.filter(u => u.role === 'client');
-        allFreeUsers = usersRes.filter(u => u.role === 'free');
-        allPrograms = programsRes;
-        activePrograms = programsRes.filter(p => !p.archived);
-        sessionLogs = logsRes;
-        events = eventsRes;
-        contactMsgs = contactRes;
-        hasLastSeen = usersRes.some(u => 'last_seen' in u);
-
-        userById = Object.fromEntries(usersRes.map(u => [u.id, u]));
-        programById = Object.fromEntries(programsRes.map(p => [p.id, p]));
-
-        buildActivityMaps();
-
-        renderStats();
-        renderFunnel();
-        renderSignupChart();
-        renderActivation();
-        renderDropoff();
-        renderFreePrograms();
-        renderPremium();
-        renderFeed();
-        renderFreeUsers();
-        renderTrainers();
-        renderClients();
-        renderPrograms();
+        lessons = await pb.collection('lessons').getFullList({ sort: 'section,group,order,title', requestKey: null });
     } catch (e) {
-        console.error(e);
-        document.getElementById('stats-grid').innerHTML = `<div class="empty">Failed to load: ${esc(e.message)}</div>`;
+        $('list').innerHTML = `<div class="empty">Couldn't load lessons.<br><br>Has the <b>lessons</b> collection been created in PocketBase?<br><span style="font-size:0.7rem;">${esc(e.message)}</span></div>`;
+        return;
     }
+    renderList();
+    const groups = [...new Set([...BUILTIN_GROUPS, ...lessons.filter(l => l.section === 'theory').map(l => l.group).filter(Boolean)])];
+    $('group-options').innerHTML = groups.map(g => `<option value="${esc(g)}">`).join('');
 }
 
-// Merge session dates from program schedules + session_logs, de-duped per user/day/program
-function buildActivityMaps() {
-    userSessions = {}; userPrograms = {};
-    const seen = new Set();
-    const add = (uid, d, progName) => {
-        if (!uid || !d) return;
-        const key = `${uid}|${d.toISOString().slice(0, 10)}|${progName}`;
-        if (seen.has(key)) return;
-        seen.add(key);
-        (userSessions[uid] ||= []).push({ date: d, program: progName });
+function renderList(filter = '') {
+    const list = filter ? lessons.filter(l => (l.title + ' ' + l.group + ' ' + l.tag).toLowerCase().includes(filter)) : lessons;
+    if (!list.length) { $('list').innerHTML = `<div class="empty">${filter ? 'No matches.' : 'No lessons yet. Hit <b>New</b>.'}</div>`; return; }
+    const item = l => `<div class="list-item ${current && current.id === l.id ? 'active' : ''}" onclick="openLesson('${l.id}')">
+        <span class="dot ${l.published ? '' : 'draft'}" title="${l.published ? 'Published' : 'Draft'}"></span>
+        <span>${esc(l.title || 'Untitled')}</span>
+        <span class="ord">${l.order ?? ''}</span></div>`;
+    let html = '';
+    const theory = list.filter(l => l.section !== 'philosophy');
+    if (theory.length) {
+        html += '<div class="list-section">Theory</div>';
+        const byGroup = {};
+        theory.forEach(l => (byGroup[l.group || 'Ungrouped'] ||= []).push(l));
+        Object.entries(byGroup).forEach(([g, ls]) => { html += `<div class="list-group">${esc(g)}</div>` + ls.map(item).join(''); });
+    }
+    const phil = list.filter(l => l.section === 'philosophy');
+    if (phil.length) html += '<div class="list-section">Philosophy</div>' + phil.map(item).join('');
+    $('list').innerHTML = html;
+}
+
+// ── EDITOR ────────────────────────────────────────
+function confirmLeave() { return !dirty || confirm('You have unsaved changes. Discard them?'); }
+
+function newLesson(silent) {
+    if (!silent && !confirmLeave()) return;
+    current = null;
+    $('f-section').value = 'theory';
+    $('f-group').value = ''; $('f-title').value = ''; $('f-label').value = ''; $('f-tag').value = '';
+    $('f-order').value = ''; $('f-body').value = ''; $('f-published').checked = false;
+    onSectionChange(); renderPreview(); renderImages(); setButtons();
+    dirty = false; setStatus('New lesson');
+    history.replaceState({}, '', 'education.html');
+    renderList();
+    $('f-title').focus();
+}
+
+function openLesson(id) {
+    if (current && current.id === id) return;
+    if (!confirmLeave()) return;
+    const l = lessons.find(x => x.id === id); if (!l) return;
+    current = l;
+    $('f-section').value = l.section || 'theory';
+    $('f-group').value = l.group || ''; $('f-title').value = l.title || ''; $('f-label').value = l.label || '';
+    $('f-tag').value = l.tag || ''; $('f-order').value = l.order ?? ''; $('f-body').value = l.body || '';
+    $('f-published').checked = !!l.published;
+    onSectionChange(); renderPreview(); renderImages(); setButtons();
+    dirty = false; setStatus('Saved ' + new Date(l.updated).toLocaleString([], { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }));
+    history.replaceState({}, '', 'education.html?id=' + id);
+    renderList();
+}
+
+function onSectionChange() {
+    const phil = $('f-section').value === 'philosophy';
+    $('wrap-group').style.display = phil ? 'none' : '';
+    $('wrap-label').style.display = phil ? 'none' : '';
+    $('wrap-tag').style.display = phil ? 'none' : '';
+    $('lbl-order').textContent = phil ? 'Chapter #' : 'Order';
+    renderPreview();
+}
+
+function markDirty() { dirty = true; setStatus('Unsaved changes', true); }
+function setStatus(t, isDirty) { const s = $('status'); s.textContent = t; s.className = 'status' + (isDirty ? ' dirty' : ''); }
+
+function setButtons() {
+    const saved = !!current;
+    $('btn-open').style.display = saved ? '' : 'none';
+    $('btn-copy').style.display = saved ? '' : 'none';
+    $('btn-delete').style.display = saved ? '' : 'none';
+    $('btn-upload').disabled = !saved;
+    $('img-hint').style.display = saved ? 'none' : '';
+    if (saved) $('btn-open').href = 'lesson.html?id=' + current.id;
+}
+
+function setView(v) {
+    $('ed-split').dataset.view = v;
+    document.querySelectorAll('.ed-tab').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+}
+
+function renderPreview() {
+    const phil = $('f-section').value === 'philosophy';
+    const tag = phil ? ('Lesson ' + ($('f-order').value || '')) : $('f-tag').value;
+    const body = DOMPurify.sanitize(marked.parse($('f-body').value || '', { breaks: true }));
+    $('preview').innerHTML = `${tag ? `<div class="lesson-tag">${esc(tag)}</div>` : ''}
+        <div class="lesson-title">${esc($('f-title').value || 'Untitled')}</div>
+        <div class="lesson-body">${body || '<p style="color:#555;">Start writing to see the preview.</p>'}</div>`;
+}
+
+// ── SAVE / DELETE ─────────────────────────────────
+async function saveLesson() {
+    const title = $('f-title').value.trim();
+    if (!title) { toast('Add a title first', true); $('f-title').focus(); return; }
+    const phil = $('f-section').value === 'philosophy';
+    const data = {
+        section: $('f-section').value,
+        group: phil ? '' : $('f-group').value.trim(),
+        title,
+        label: phil ? '' : ($('f-label').value.trim() || title.split(' ').slice(-1)[0]),
+        tag: phil ? '' : $('f-tag').value.trim(),
+        order: $('f-order').value === '' ? null : Number($('f-order').value),
+        body: $('f-body').value,
+        published: $('f-published').checked
     };
-
-    allPrograms.forEach(p => {
-        if (!p.client) return;
-        (userPrograms[p.client] ||= []).push(p);
-        parseSchedule(p).forEach(s => add(p.client, toDate(s.sessionDate), p.name || 'Program'));
-    });
-    sessionLogs.forEach(l => {
-        const prog = programById[l.program];
-        add(l.client, toDate(l.date || l.created), prog?.name || 'Session');
-    });
-    Object.values(userSessions).forEach(arr => arr.sort((a, b) => a.date - b.date));
-}
-
-// ── STATS ─────────────────────────────────────────
-function renderStats() {
-    const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
-    const newThisMonth = allUsers.filter(u => toDate(u.created) >= monthStart).length;
-    const subs = allUsers.filter(u => u.subscription_status === 'active').length;
-    const active7 = allUsers.filter(u => { const d = lastActiveOf(u); return d && Date.now() - d < 7 * DAY; }).length;
-    const active30 = allUsers.filter(u => { const d = lastActiveOf(u); return d && Date.now() - d < 30 * DAY; }).length;
-    const totalSessions = Object.values(userSessions).reduce((a, s) => a + s.length, 0);
-    const inProgress = activePrograms.filter(p => { const s = progStats(p); return s.done > 0 && s.done < s.total; }).length;
-
-    document.getElementById('stats-grid').innerHTML = `
-        <div class="stat-card"><div class="stat-icon">🏋️</div><div class="stat-val">${allTrainers.length}</div><div class="stat-label">Trainers</div></div>
-        <div class="stat-card green"><div class="stat-icon">👥</div><div class="stat-val">${allClients.length}</div><div class="stat-label">Clients</div></div>
-        <div class="stat-card purple"><div class="stat-icon">🆓</div><div class="stat-val">${allFreeUsers.length}</div><div class="stat-label">Free Users</div></div>
-        <div class="stat-card gold"><div class="stat-icon">★</div><div class="stat-val">${subs}</div><div class="stat-label">Subscribers</div></div>
-        <div class="stat-card"><div class="stat-icon">✨</div><div class="stat-val">${newThisMonth}</div><div class="stat-label">New This Month</div></div>
-        <div class="stat-card green"><div class="stat-icon">🔥</div><div class="stat-val">${active7}</div><div class="stat-label">Active 7 Days</div><div class="stat-sub">${active30} in 30 days</div></div>
-        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-val">${inProgress}</div><div class="stat-label">Programs In Progress</div></div>
-        <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-val">${totalSessions}</div><div class="stat-label">Sessions Logged</div></div>
-    `;
-}
-
-// ── FUNNEL ────────────────────────────────────────
-function renderFunnel() {
-    const pool = allFreeUsers;
-    const signed = pool.length;
-    const cameBack = hasLastSeen
-        ? pool.filter(u => { const ls = lastSeenOf(u), c = toDate(u.created); return ls && c && ls - c > DAY; }).length
-        : null;
-    const started = pool.filter(u => (userPrograms[u.id] || []).length || (userSessions[u.id] || []).length).length;
-    const firstSession = pool.filter(u => (userSessions[u.id] || []).length >= 1).length;
-    const habit = pool.filter(u => (userSessions[u.id] || []).length >= 3).length;
-    const converted = pool.filter(u => u.subscription_status === 'active').length;
-    const churned = pool.filter(u => ['cancelled', 'past_due'].includes(u.subscription_status)).length;
-
-    const stages = [
-        { label: 'Signed Up', sub: 'free accounts', n: signed },
-        { label: 'Came Back', sub: 'seen 1+ day after signup', n: cameBack },
-        { label: 'Started Program', sub: 'claimed or logged', n: started },
-        { label: 'First Session', sub: '1+ session logged', n: firstSession },
-        { label: 'Habit', sub: '3+ sessions', n: habit },
-        { label: 'Subscribed', sub: 'active subscription', n: converted }
-    ];
-
-    let prev = signed;
-    document.getElementById('funnel').innerHTML = stages.map((s, i) => {
-        if (s.n === null) {
-            return `<div class="funnel-row">
-                <div class="funnel-label">${s.label}<small>${s.sub}</small></div>
-                <div class="funnel-track"><div class="funnel-fill na" style="width:100%">needs last_seen field</div></div>
-                <div class="funnel-pct">—</div></div>`;
-        }
-        const w = Math.max(pct(s.n, signed), s.n ? 3 : 0);
-        const step = i === 0 ? '' : `<b>${pct(s.n, prev)}%</b> of prev`;
-        prev = s.n;
-        return `<div class="funnel-row">
-            <div class="funnel-label">${s.label}<small>${s.sub}</small></div>
-            <div class="funnel-track"><div class="funnel-fill" style="width:${w}%">${s.n}</div></div>
-            <div class="funnel-pct">${step}</div></div>`;
-    }).join('') + (churned ? `<div class="dim" style="margin-top:8px;">Churned (cancelled / past due): <b style="color:var(--brand-danger)">${churned}</b></div>` : '');
-
-    document.getElementById('funnel-note').textContent = `Overall conversion ${pct(converted, signed)}%`;
-}
-
-// ── SIGNUPS PER WEEK ──────────────────────────────
-function renderSignupChart() {
-    const weeks = [];
-    const now = new Date(); now.setHours(0, 0, 0, 0);
-    const monday = new Date(now); monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-    for (let i = 11; i >= 0; i--) {
-        const start = new Date(monday); start.setDate(monday.getDate() - i * 7);
-        const end = new Date(start); end.setDate(start.getDate() + 7);
-        const n = allFreeUsers.filter(u => { const c = toDate(u.created); return c >= start && c < end; }).length;
-        weeks.push({ start, n });
-    }
-    const max = Math.max(1, ...weeks.map(w => w.n));
-    document.getElementById('signup-chart').innerHTML = weeks.map(w => `
-        <div class="week-col" title="Week of ${fmtShort(w.start)}: ${w.n}">
-            <div class="week-count">${w.n || ''}</div>
-            <div class="week-bar ${w.n ? '' : 'zero'}" style="height:${Math.round((w.n / max) * 100)}%"></div>
-            <div class="week-label">${fmtShort(w.start)}</div>
-        </div>`).join('');
-}
-
-// ── ACTIVATION ────────────────────────────────────
-function renderActivation() {
-    const pool = allFreeUsers;
-    const withSession = pool.filter(u => (userSessions[u.id] || []).length);
-    const daysToFirst = withSession.map(u => Math.max(0, (userSessions[u.id][0].date - toDate(u.created)) / DAY));
-    const within7 = daysToFirst.filter(d => d <= 7).length;
-    // Only count users old enough to have had 7 days
-    const eligible = pool.filter(u => daysSince(toDate(u.created)) >= 7).length;
-    const med = median(daysToFirst);
-    const active7 = pool.filter(u => { const d = lastActiveOf(u); return d && Date.now() - d < 7 * DAY; }).length;
-    const active30 = pool.filter(u => { const d = lastActiveOf(u); return d && Date.now() - d < 30 * DAY; }).length;
-
-    const row = (label, val, sub) => `
-        <div style="display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid #0a1520;">
-            <div><div class="funnel-label">${label}</div><div class="dim">${sub}</div></div>
-            <div class="stat-val" style="font-size:1.4rem;">${val}</div>
-        </div>`;
-
-    document.getElementById('activation').innerHTML =
-        row('Activated in 7 days', `${pct(within7, eligible)}%`, `${within7} of ${eligible} users older than a week`) +
-        row('Median days to 1st session', med === null ? '—' : med.toFixed(1), `across ${withSession.length} users`) +
-        row('Active last 7 days', active7, `${pct(active7, pool.length)}% of free users`) +
-        row('Active last 30 days', active30, `${pct(active30, pool.length)}% of free users`);
-}
-
-// ── DROP-OFF ──────────────────────────────────────
-function renderDropoff() {
-    const list = allFreeUsers
-        .filter(u => !(userSessions[u.id] || []).length)
-        .sort((a, b) => toDate(b.created) - toDate(a.created));
-    document.getElementById('dropoff-note').textContent = `${list.length} of ${allFreeUsers.length} free users`;
-    const tb = document.getElementById('dropoff-table');
-    if (!list.length) { tb.innerHTML = '<tr><td colspan="6" class="empty">Everyone has logged a session. 🎉</td></tr>'; return; }
-    tb.innerHTML = list.map(u => {
-        const c = toDate(u.created), progs = userPrograms[u.id] || [];
-        return `<tr>
-            <td><strong>${esc(u.name || '—')}</strong></td>
-            <td><a class="mail" href="mailto:${esc(u.email)}">${esc(u.email)}</a></td>
-            <td class="dim">${fmtDate(c)}</td>
-            <td class="muted">${daysSince(c)}</td>
-            <td class="dim">${hasLastSeen ? ago(lastSeenOf(u)) : '—'}</td>
-            <td>${progs.length ? `<span class="badge badge-blue">${esc(progs[0].name)}</span>` : '<span class="dim">No</span>'}</td>
-        </tr>`;
-    }).join('');
-}
-
-// ── PROGRAMS FREE USERS START ─────────────────────
-function renderFreePrograms() {
-    const freeIds = new Set(allFreeUsers.map(u => u.id));
-    const groups = {};
-    allPrograms.filter(p => freeIds.has(p.client)).forEach(p => {
-        const key = p.name || 'Untitled';
-        const s = progStats(p);
-        const g = (groups[key] ||= { users: new Set(), pcts: [], finished: 0 });
-        g.users.add(p.client);
-        g.pcts.push(s.pct);
-        if (s.total > 0 && s.done >= s.total) g.finished++;
-    });
-    const rows = Object.entries(groups).sort((a, b) => b[1].users.size - a[1].users.size);
-    const tb = document.getElementById('free-progs-table');
-    if (!rows.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">No free users have started a program yet.</td></tr>'; return; }
-    tb.innerHTML = rows.map(([name, g]) => {
-        const avg = Math.round(g.pcts.reduce((a, b) => a + b, 0) / g.pcts.length);
-        return `<tr>
-            <td><strong>${esc(name)}</strong></td>
-            <td><span class="badge badge-blue">${g.users.size}</span></td>
-            <td><div style="font-size:0.75rem;color:var(--brand-accent);font-weight:700;">${avg}%</div><div class="mini-bar"><div class="mini-bar-fill" style="width:${avg}%"></div></div></td>
-            <td class="muted">${g.finished}</td>
-        </tr>`;
-    }).join('');
-}
-
-// ── PREMIUM INTEREST ──────────────────────────────
-function renderPremium() {
-    const tb = document.getElementById('premium-table');
-    if (!hasEvents) { tb.innerHTML = '<tr><td colspan="3" class="empty">No <code>events</code> collection yet. Add it to track padlock clicks.</td></tr>'; return; }
-    const groups = {};
-    events.filter(e => e.type === 'padlock_click').forEach(e => {
-        let meta = e.meta; if (typeof meta === 'string') { try { meta = JSON.parse(meta); } catch (_) { meta = {}; } }
-        const key = meta?.program || 'Unknown';
-        const g = (groups[key] ||= { clicks: 0, users: new Set() });
-        g.clicks++; if (e.user) g.users.add(e.user);
-    });
-    const rows = Object.entries(groups).sort((a, b) => b[1].clicks - a[1].clicks);
-    if (!rows.length) { tb.innerHTML = '<tr><td colspan="3" class="empty">No padlock clicks recorded yet.</td></tr>'; return; }
-    tb.innerHTML = rows.map(([name, g]) => `<tr>
-        <td><strong>${esc(name)}</strong></td>
-        <td><span class="badge badge-gold">${g.clicks}</span></td>
-        <td class="muted">${g.users.size}</td>
-    </tr>`).join('');
-}
-
-// ── ACTIVITY FEED ─────────────────────────────────
-function renderFeed() {
-    const cutoff = Date.now() - 30 * DAY;
-    const items = [];
-    allUsers.forEach(u => {
-        const c = toDate(u.created);
-        if (c && c >= cutoff) items.push({ d: c, icon: '✨', html: `<strong>${esc(u.name || u.email)}</strong> signed up <span class="badge badge-purple">${esc(u.role || 'user')}</span>` });
-    });
-    Object.entries(userSessions).forEach(([uid, arr]) => {
-        const u = userById[uid];
-        arr.filter(s => s.date >= cutoff).forEach(s => items.push({ d: s.date, icon: '✅', html: `<strong>${esc(u?.name || 'Unknown')}</strong> logged a session in <span style="color:var(--brand-accent)">${esc(s.program)}</span>` }));
-    });
-    contactMsgs.forEach(m => {
-        const c = toDate(m.created);
-        if (c && c >= cutoff) items.push({ d: c, icon: '✉️', html: `<strong>${esc(m.from_name || m.from_email)}</strong> sent a message: <span class="muted">${esc(m.subject || '')}</span>` });
-    });
-    events.filter(e => e.type === 'padlock_click').forEach(e => {
-        const c = toDate(e.created);
-        if (c && c >= cutoff) {
-            let meta = e.meta; if (typeof meta === 'string') { try { meta = JSON.parse(meta); } catch (_) { meta = {}; } }
-            items.push({ d: c, icon: '🔒', html: `<strong>${esc(userById[e.user]?.name || 'Someone')}</strong> tapped premium <span style="color:#fbbf24">${esc(meta?.program || '')}</span>` });
-        }
-    });
-    items.sort((a, b) => b.d - a.d);
-    const el = document.getElementById('feed');
-    if (!items.length) { el.innerHTML = '<div class="empty">No activity in the last 30 days.</div>'; return; }
-    el.innerHTML = items.slice(0, 60).map(i => `
-        <div class="feed-item"><div class="feed-icon">${i.icon}</div><div class="feed-text">${i.html}</div><div class="feed-time">${ago(i.d)}</div></div>`).join('');
-}
-
-// ── FREE USERS ────────────────────────────────────
-function renderFreeUsers(filter = '') {
-    const list = (filter ? allFreeUsers.filter(u => (u.name || '').toLowerCase().includes(filter) || (u.email || '').toLowerCase().includes(filter)) : allFreeUsers)
-        .slice().sort((a, b) => (lastActiveOf(b) || 0) - (lastActiveOf(a) || 0));
-    const tb = document.getElementById('free-users-table');
-    if (!list.length) { tb.innerHTML = '<tr><td colspan="7" class="empty">No free users found.</td></tr>'; return; }
-    tb.innerHTML = list.map(u => {
-        const n = (userSessions[u.id] || []).length;
-        return `<tr>
-            <td><strong>${esc(u.name || '—')}</strong></td>
-            <td><a class="mail" href="mailto:${esc(u.email)}">${esc(u.email)}</a></td>
-            <td class="dim">${fmtDate(toDate(u.created))}</td>
-            <td class="dim">${hasLastSeen ? ago(lastSeenOf(u)) : '—'}</td>
-            <td><span class="badge ${n ? 'badge-green' : 'badge-red'}">${n}</span></td>
-            <td class="dim">${ago(lastSessionOf(u.id))}</td>
-            <td>${subBadge(u)}</td>
-        </tr>`;
-    }).join('');
-}
-
-// ── TRAINERS ──────────────────────────────────────
-function renderTrainers() {
-    const tb = document.getElementById('trainers-table');
-    if (!allTrainers.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">No trainers yet.</td></tr>'; return; }
-    tb.innerHTML = allTrainers.map(t => `<tr>
-        <td><strong>${esc(t.name || '—')}</strong></td>
-        <td class="muted">${esc(t.email)}</td>
-        <td><span class="badge ${t.role === 'admin' ? 'badge-gold' : 'badge-blue'}">${esc(t.role)}</span></td>
-        <td class="dim">${hasLastSeen ? ago(lastSeenOf(t)) : '—'}</td>
-    </tr>`).join('');
-}
-
-// ── CLIENTS ───────────────────────────────────────
-function renderClients(filter = '') {
-    const list = filter ? allClients.filter(c => (c.name || '').toLowerCase().includes(filter) || (c.email || '').toLowerCase().includes(filter)) : allClients;
-    const tb = document.getElementById('clients-table');
-    if (!list.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">No clients found.</td></tr>'; return; }
-    tb.innerHTML = list.map(c => {
-        const progs = (userPrograms[c.id] || []).filter(p => !p.archived).length;
-        const n = (userSessions[c.id] || []).length;
-        return `<tr>
-            <td><strong>${esc(c.name || '—')}</strong><div class="dim">${esc(c.email)}</div></td>
-            <td><span class="badge badge-green">${progs}</span></td>
-            <td class="muted">${n}</td>
-            <td class="dim">${ago(lastSessionOf(c.id))}</td>
-        </tr>`;
-    }).join('');
-}
-
-// ── ACTIVE PROGRAMS ───────────────────────────────
-function renderPrograms(filter = '') {
-    const list = activePrograms.filter(p => p.client && (!filter || (p.name || '').toLowerCase().includes(filter) || (userById[p.client]?.name || '').toLowerCase().includes(filter)));
-    const tb = document.getElementById('programs-table');
-    if (!list.length) { tb.innerHTML = '<tr><td colspan="6" class="empty">No programs found.</td></tr>'; return; }
-    tb.innerHTML = list.map(p => {
-        const s = progStats(p);
-        const last = s.schedule.map(x => toDate(x.sessionDate)).filter(Boolean).sort((a, b) => b - a)[0];
-        const u = userById[p.client];
-        let status;
-        if (s.done === 0) status = '<span class="badge badge-red">Not Started</span>';
-        else if (s.total > 0 && s.done >= s.total) status = '<span class="badge badge-green">Complete</span>';
-        else status = '<span class="badge badge-blue">In Progress</span>';
-        const roleBadge = u?.role === 'free' ? ' <span class="badge badge-purple" style="font-size:0.5rem;">FREE</span>' : '';
-        return `<tr>
-            <td><strong>${esc(p.name || 'Untitled')}</strong>${p.is_repeatable ? ' <span class="badge badge-purple" style="font-size:0.5rem;">🔁</span>' : ''}</td>
-            <td class="muted">${esc(u?.name || '—')}${roleBadge}</td>
-            <td><div style="font-size:0.75rem;color:var(--brand-accent);font-weight:700;">${s.pct}%</div><div class="mini-bar"><div class="mini-bar-fill" style="width:${s.pct}%"></div></div></td>
-            <td class="muted">${s.done}/${s.total}</td>
-            <td class="dim">${fmtShort(last)}</td>
-            <td>${status}</td>
-        </tr>`;
-    }).join('');
-}
-
-// ── ADD TRAINER ───────────────────────────────────
-function toggleAddCoach() {
-    const f = document.getElementById('add-coach-form');
-    f.style.display = f.style.display === 'none' ? 'block' : 'none';
-}
-async function saveNewCoach() {
-    const name = document.getElementById('new-coach-name').value.trim();
-    const email = document.getElementById('new-coach-email').value.trim();
-    const pass = document.getElementById('new-coach-pass').value.trim();
-    if (!name || !email || !pass) return alert('Please fill in all fields.');
+    const btn = $('btn-save'); btn.disabled = true;
     try {
-        await pb.collection('users').create({ name, email, password: pass, passwordConfirm: pass, role: 'trainer' });
-        ['new-coach-name', 'new-coach-email', 'new-coach-pass'].forEach(id => document.getElementById(id).value = '');
-        toggleAddCoach();
-        await loadAll();
-    } catch (e) { alert('Failed: ' + e.message); }
+        const rec = current
+            ? await pb.collection('lessons').update(current.id, data, { requestKey: null })
+            : await pb.collection('lessons').create(data, { requestKey: null });
+        dirty = false;
+        await loadList();
+        current = null; openLesson(rec.id);
+        toast(data.published ? 'Saved — live on Explore' : 'Saved as draft');
+    } catch (e) {
+        toast('Save failed: ' + e.message, true);
+        console.error(e);
+    } finally { btn.disabled = false; }
 }
 
-function handleLogout() { pb.authStore.clear(); window.location.href = 'index.html'; }
+async function deleteLesson() {
+    if (!current) return;
+    if (!confirm(`Delete "${current.title}"? This can't be undone.`)) return;
+    try {
+        await pb.collection('lessons').delete(current.id, { requestKey: null });
+        dirty = false; toast('Deleted');
+        await loadList(); newLesson(true);
+    } catch (e) { toast('Delete failed: ' + e.message, true); }
+}
+
+function copyLink() {
+    if (!current) return;
+    navigator.clipboard.writeText(location.origin + '/lesson.html?id=' + current.id).then(() => toast('Link copied'));
+}
+
+// ── IMAGES ────────────────────────────────────────
+function imgUrl(fn) { return `${PB_URL}/api/files/lessons/${current.id}/${fn}`; }
+
+function renderImages() {
+    const strip = $('img-strip');
+    if (!current || !(current.images || []).length) { strip.innerHTML = ''; return; }
+    strip.innerHTML = current.images.map(fn => `<div class="img-tile">
+        <img src="${imgUrl(fn)}?thumb=200x0" loading="lazy" onerror="this.src='${imgUrl(fn)}'">
+        <div><button onclick="insertImage('${fn}')">INSERT</button><button class="rm" onclick="removeImage('${fn}')">✕</button></div>
+    </div>`).join('');
+}
+
+async function uploadImages(files) {
+    if (!current || !files.length) return;
+    const fd = new FormData();
+    [...files].forEach(f => fd.append('images+', f));
+    toast('Uploading…');
+    try {
+        const rec = await pb.collection('lessons').update(current.id, fd, { requestKey: null });
+        current.images = rec.images; Object.assign(lessons.find(l => l.id === current.id) || {}, { images: rec.images });
+        renderImages(); toast('Uploaded — tap INSERT to place it');
+    } catch (e) { toast('Upload failed: ' + e.message, true); }
+    $('f-images').value = '';
+}
+
+function insertImage(fn) {
+    const ta = $('f-body'), pos = ta.selectionStart ?? ta.value.length;
+    const snippet = `\n\n![](${imgUrl(fn)})\n\n`;
+    ta.value = ta.value.slice(0, pos) + snippet + ta.value.slice(ta.selectionEnd ?? pos);
+    ta.focus(); ta.selectionStart = ta.selectionEnd = pos + snippet.length;
+    markDirty(); renderPreview();
+}
+
+async function removeImage(fn) {
+    if (!confirm('Remove this image? Remove it from the text too if you inserted it.')) return;
+    try {
+        const rec = await pb.collection('lessons').update(current.id, { 'images-': [fn] }, { requestKey: null });
+        current.images = rec.images; renderImages(); toast('Image removed');
+    } catch (e) { toast('Remove failed: ' + e.message, true); }
+}
+
+// ── KEYS / LEAVE ──────────────────────────────────
+document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); saveLesson(); }
+});
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+function handleLogout() { if (!confirmLeave()) return; dirty = false; pb.authStore.clear(); window.location.href = 'index.html'; }
 </script>
 </body>
 </html>
