@@ -4,37 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Explore | RestPeriod</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
-        :root {
-            --brand-primary: #003B5C; --brand-secondary: #2E7D32; --brand-accent: #26C6DA;
-            --brand-bg: #020c12; --text-main: #E0F7FA; --card-bg: #0e1b24;
-            --input-bg: #002840; --border: #1a2a35; --nav-height: 65px;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: calc(var(--nav-height) + 20px); overflow-x: hidden; }
-
-        /* ── PAGE HEADER ── */
+        /* ── PAGE SPECIFIC ── */
         .page-header { padding: 20px 20px 0; }
-        .page-header h1 { font-family: 'Montserrat'; font-weight: 800; font-size: 1.6rem; color: white; margin-bottom: 4px; }
         .page-header p { color: #555; font-size: 0.8rem; }
 
-        /* ── PILL TABS ── */
-        .pill-tabs { display: flex; gap: 8px; padding: 16px 20px 0; overflow-x: auto; scrollbar-width: none; }
-        .pill-tabs::-webkit-scrollbar { display: none; }
-        .pill { padding: 8px 20px; border-radius: 50px; border: 1px solid var(--border); background: var(--card-bg); color: #666; font-family: 'Montserrat'; font-weight: 800; font-size: 0.72rem; cursor: pointer; white-space: nowrap; transition: 0.2s; letter-spacing: 0.5px; }
-        .pill.active { background: var(--brand-accent); color: #000; border-color: var(--brand-accent); }
-
-        /* ── TAB CONTENT ── */
-        .tab-panel { display: none; padding: 20px; }
-        .tab-panel.active { display: block; }
-
-        /* ── SECTION TITLE ── */
-        .section-title { font-family: 'Montserrat'; font-size: 0.65rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1.5px; margin: 24px 0 12px; }
-
-        /* ── TRAIN TAB — shelf cards ── */
+        /* ── TRAIN TAB ── */
         .shelf-section { margin-bottom: 32px; }
         .shelf-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .shelf-emoji { font-size: 1.1rem; }
@@ -47,36 +25,32 @@
         .prog-card { width: 160px; min-width: 160px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
         .prog-card:hover { border-color: var(--brand-accent); transform: translateY(-2px); }
         .prog-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
-        .prog-thumb-placeholder { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
-        .thumb-strength { background: linear-gradient(135deg, #1a0a3a, #003B5C); }
-        .thumb-power    { background: linear-gradient(135deg, #1a0a00, #3a2000); }
-        .thumb-run      { background: linear-gradient(135deg, #001a0a, #0a2a00); }
-        .thumb-circuit  { background: linear-gradient(135deg, #001a2c, #0a1a3a); }
-        .thumb-mobility { background: linear-gradient(135deg, #1a0a2a, #0a1a0a); }
-        .thumb-cardio   { background: linear-gradient(135deg, #2a0a0a, #1a0a0a); }
-        .thumb-warmup   { background: linear-gradient(135deg, #2a1000, #3a1500); }
-        .thumb-other    { background: linear-gradient(135deg, #0a0a1a, #1a1a2a); }
         .prog-card-body { padding: 8px 10px 10px; }
         .prog-name { font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; color: white; margin-bottom: 3px; line-height: 1.3; }
-        .prog-meta { font-size: 0.62rem; color: #555; }
-        .prog-badge { font-size: 0.5rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 5px; background: #001a2c; color: var(--brand-accent); border: 1px solid #26C6DA33; }
+        .prog-badge { font-size: 0.5rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 5px; background: var(--input-bg); color: var(--brand-accent); border: 1px solid rgba(82,183,136,0.2); }
+        .prog-card.locked { opacity: 0.55; }
+        .prog-card.premium-owned { border: 2px solid gold; box-shadow: 0 0 12px rgba(255,215,0,0.3); }
+        .prog-card.premium-owned:hover { border-color: gold; box-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .prog-thumb-wrap { position: relative; }
+        .prog-lock { position: absolute; bottom: 6px; right: 6px; background: rgba(0,0,0,0.7); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+        .prog-star { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.7); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
 
         /* ── PHILOSOPHY TAB ── */
         .lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
         .lesson-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; cursor: pointer; transition: 0.2s; position: relative; }
         .lesson-card:hover { border-color: var(--brand-accent); }
-        .lesson-card.read { border-color: #2E7D32; background: #0a1a0a; }
+        .lesson-card.read { border-color: var(--brand-secondary); background: var(--input-bg); }
         .lesson-card.saved { border-color: #c084fc44; }
         .lesson-num { font-family: 'Montserrat'; font-weight: 800; font-size: 1.4rem; color: var(--brand-accent); line-height: 1; margin-bottom: 6px; }
-        .lesson-card.read .lesson-num { color: #4ade80; }
-        .lesson-label { font-size: 0.62rem; color: #555; font-family: 'Montserrat'; font-weight: 700; text-transform: uppercase; }
+        .lesson-card.read .lesson-num { color: var(--brand-accent); }
         .lesson-badges { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
-        .badge-read { font-size: 0.48rem; background: #052e16; color: #4ade80; border: 1px solid #166534; padding: 2px 6px; border-radius: 10px; font-family: 'Montserrat'; font-weight: 800; }
+        .badge-read { font-size: 0.48rem; background: var(--input-bg); color: var(--brand-accent); border: 1px solid var(--brand-secondary); padding: 2px 6px; border-radius: 10px; font-family: 'Montserrat'; font-weight: 800; }
         .badge-saved { font-size: 0.48rem; background: #1a0a2a; color: #c084fc; border: 1px solid #c084fc44; padding: 2px 6px; border-radius: 10px; font-family: 'Montserrat'; font-weight: 800; }
-        .lesson-card .check-icon { position: absolute; top: 8px; right: 8px; color: #4ade80; font-size: 0.7rem; display: none; }
+        .lesson-card .check-icon { position: absolute; top: 8px; right: 8px; color: var(--brand-accent); font-size: 0.7rem; display: none; }
         .lesson-card.read .check-icon { display: block; }
 
         /* ── THEORY TAB ── */
+        .theory-group { margin-bottom: 28px; }
         .theory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; }
         .theory-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.2s; opacity: 0.6; position: relative; }
         .theory-card:hover { border-color: var(--brand-accent); opacity: 0.8; }
@@ -86,7 +60,7 @@
         .theory-title { font-family: 'Montserrat'; font-weight: 800; font-size: 0.78rem; color: white; line-height: 1.3; }
         .theory-coming { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #555; font-size: 0.45rem; font-family: 'Montserrat'; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
 
-        /* ── CHAPTER READER MODAL ── */
+        /* ── READER MODAL ── */
         .reader-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; flex-direction: column; }
         .reader-modal.open { display: flex; }
         .reader-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); background: #000; flex-shrink: 0; }
@@ -95,34 +69,50 @@
         .reader-close { background: none; border: none; color: #555; font-size: 1.3rem; cursor: pointer; padding: 4px; }
         .reader-save-btn { background: none; border: 1px solid var(--border); color: #666; padding: 5px 12px; border-radius: 20px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.6rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
         .reader-save-btn.saved { border-color: #c084fc; color: #c084fc; }
-        .reader-frame-wrap { flex: 1; overflow: hidden; position: relative; }
+        .reader-frame-wrap { flex: 1; overflow: hidden; }
         .reader-frame { width: 100%; height: 100%; border: none; background: #000; }
         .reader-footer { padding: 12px 20px; border-top: 1px solid var(--border); background: #000; display: flex; gap: 10px; flex-shrink: 0; }
         .btn-mark-read { flex: 1; padding: 13px; border: none; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; transition: 0.2s; }
         .btn-mark-read.unread { background: var(--brand-accent); color: #000; }
-        .btn-mark-read.read { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+        .btn-mark-read.read { background: var(--input-bg); color: var(--brand-accent); border: 1px solid var(--brand-secondary); }
         .btn-prev-next { background: var(--card-bg); border: 1px solid var(--border); color: #888; padding: 13px 16px; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.75rem; cursor: pointer; transition: 0.2s; }
         .btn-prev-next:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
         .btn-prev-next:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* ── PROGRAM DETAIL MODAL ── */
+        /* ── PROGRAM MODAL ── */
         .prog-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 4000; align-items: flex-end; justify-content: center; }
         .prog-modal.open { display: flex; }
         .prog-modal-box { background: var(--card-bg); border-radius: 16px 16px 0 0; border: 1px solid var(--border); border-bottom: none; width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto; padding: 24px; }
         .prog-modal-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; margin-bottom: 16px; }
         .prog-modal-title { font-family: 'Montserrat'; font-size: 1.1rem; font-weight: 800; color: white; margin-bottom: 8px; }
-        .prog-modal-desc { font-size: 0.82rem; color: #888; line-height: 1.6; margin-bottom: 16px; }
+        .prog-modal-desc { font-size: 0.82rem; color: #888; line-height: 1.6; margin-bottom: 16px; white-space: pre-line; }
         .prog-modal-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-        .prog-modal-meta span { font-size: 0.65rem; color: #888; background: #050d12; border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; font-family: 'Montserrat'; font-weight: 700; }
+        .prog-modal-meta span { font-size: 0.65rem; color: #888; background: var(--card-bg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; font-family: 'Montserrat'; font-weight: 700; }
         .btn-start { background: var(--brand-accent); color: #000; border: none; padding: 14px; width: 100%; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.9rem; cursor: pointer; margin-bottom: 8px; }
         .btn-modal-close { background: none; border: 1px solid var(--border); color: #555; padding: 12px; width: 100%; border-radius: 8px; font-family: 'Montserrat'; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
 
-        /* ── BOTTOM NAV ── */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: #000; border-top: 1px solid var(--border); display: flex; z-index: 3000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; color: #444; transition: 0.2s; text-decoration: none; border: none; background: none; padding: 0; }
-        .nav-item.active { color: var(--brand-accent); }
-        .nav-item i { font-size: 1.1rem; }
-        .nav-item span { font-family: 'Montserrat'; font-weight: 800; font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* ── TAB PANELS ── */
+        .tab-panel { display: none; padding: 20px; }
+        .tab-panel.active { display: block; }
+
+        /* ── PREMIUM ── */
+        .premium-banner { background: linear-gradient(135deg, #0D211A, #1B4D3E); border: 1px solid var(--brand-accent); border-radius: 12px; padding: 20px; margin: 16px 0; text-align: center; }
+        .premium-banner h3 { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1rem; color: var(--brand-accent); margin-bottom: 8px; }
+        .premium-banner p { font-size: 0.82rem; color: #888; margin-bottom: 16px; line-height: 1.6; }
+        .btn-upgrade { background: var(--brand-accent); color: #07140E; border: none; padding: 12px 28px; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+        .btn-upgrade:hover { background: #74C69D; }
+        .premium-lock { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: var(--input-bg); border: 1px dashed var(--border); border-radius: 8px; margin-bottom: 8px; }
+        .premium-lock span { font-size: 0.75rem; color: #555; font-family: 'Montserrat', sans-serif; font-weight: 800; }
+
+        /* ── FAQ ACCORDION ── */
+        .faq-item { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+        .faq-question { padding: 14px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.8rem; color: var(--text-main); background: var(--card-bg); transition: 0.2s; user-select: none; }
+        .faq-question:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+        .faq-question.open { color: var(--brand-accent); border-bottom: 1px solid var(--border); }
+        .faq-chevron { font-size: 0.7rem; transition: transform 0.2s; }
+        .faq-question.open .faq-chevron { transform: rotate(180deg); }
+        .faq-answer { display: none; padding: 14px 16px; font-size: 0.82rem; color: #888; line-height: 1.8; background: var(--card-bg); }
+        .faq-answer.open { display: block; }
 
         #toast { position: fixed; bottom: calc(var(--nav-height) + 12px); left: 50%; transform: translateX(-50%); background: var(--brand-secondary); color: white; padding: 8px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; display: none; z-index: 9000; white-space: nowrap; font-family: 'Montserrat'; }
     </style>
@@ -167,13 +157,33 @@
 
 <!-- PILL TABS -->
 <div class="pill-tabs">
-    <div class="pill active" onclick="switchTab('train')">🏋️ Train</div>
-    <div class="pill" onclick="switchTab('philosophy')">📖 Philosophy</div>
-    <div class="pill" onclick="switchTab('theory')">🧪 Theory</div>
+    <div class="pill active" onclick="switchTab('train')">TRAIN</div>
+    <div class="pill" onclick="switchTab('philosophy')">PHILOSOPHY</div>
+    <div class="pill" onclick="switchTab('theory')">THEORY</div>
+    <div class="pill" onclick="switchTab('start')">START HERE</div>
+</div>
+
+<!-- START HERE TAB -->
+<div class="tab-panel" id="tab-start">
+
+    <img src="me1.jpeg" alt="Daniel Hardie" style="width:160px;height:160px;border-radius:50%;object-fit:cover;display:block;margin:16px auto 20px;border:2px solid var(--brand-accent);">
+
+    <div class="section-title">About Rest Period</div>
+    <div style="font-size:0.88rem;color:#888;line-height:1.8;margin-bottom:24px;">
+        Rest Period is an online exercise and educational resource for people wanting help, guidance and support with their training. Built by Daniel Hardie — Strength and Conditioning Coach, Exercise Scientist and Educator — with 15 years in the fitness industry.<br><br>
+        The aim is simple: more humans moving better, more of the time, safely and enjoyably.
+    </div>
+
+    <div class="section-title">FAQ</div>
+    <div id="faq-list"></div>
+
+    <img src="me2.jpeg" alt="Daniel Hardie" style="width:100%;max-width:400px;border-radius:10px;object-fit:cover;display:block;margin:24px auto 0;border:1px solid var(--border);">
+
 </div>
 
 <!-- TRAIN TAB -->
 <div class="tab-panel active" id="tab-train">
+    <div id="premium-banner-wrap"></div>
     <div id="train-shelves">
         <div style="text-align:center;padding:60px 0;color:#555;">
             <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;display:block;margin-bottom:12px;"></i>
@@ -191,7 +201,7 @@
 <!-- THEORY TAB -->
 <div class="tab-panel" id="tab-theory">
     <div class="section-title">Exercise Science</div>
-    <div class="theory-grid" id="theory-grid"></div>
+    <div id="theory-groups"></div>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -223,96 +233,156 @@
 const pb = new PocketBase('https://restperiod.org');
 const PB_URL = 'https://restperiod.org';
 
+// ── EVENT TRACKING (feeds megauser.html) ──────────
+// Fire-and-forget. Never blocks the UI; silently no-ops if `events` doesn't exist.
+function track(type, meta = {}) {
+    if (!pb.authStore.isValid) return;
+    pb.collection('events').create(
+        { user: pb.authStore.model.id, type, meta },
+        { requestKey: null }
+    ).catch(() => {});
+}
+
 // ── CHAPTERS ──────────────────────────────────────
 const CHAPTERS = [
-    { num: 1,  file: 'rpchp1Chapter 1 - RUNNING IN THE THE WRONG PLACE.html' },
-    { num: 2,  file: 'rpchp2Chapter 2 - IMPOSSIBLE IS SOMETHING.html' },
-    { num: 3,  file: 'rpchp3Chapter 3 - LOW BUY IN.html' },
-    { num: 4,  file: 'rpchp4Chapter 4 - NO MATTER WHAT.html' },
-    { num: 5,  file: 'rpchp5Chapter 5 - WHAT WOULD AN ATHLETE DO?.html' },
-    { num: 6,  file: 'rpchp6Chapter 6 - ABOVE AVERAGE.html' },
-    { num: 7,  file: 'rpchp7Chapter 7  - THE FIRE HOSE AND THE OPEN WINDOW.html' },
-    { num: 8,  file: 'rpchp8Chapter 8 - UNMUCKUPABLE EXERCISES.html' },
-    { num: 9,  file: 'rpchp9Chapter 9 - LISTEN TO OTHERS, EVEN IF YOU DON\'T UNDERSTAND THEM.html' },
-    { num: 10, file: 'rpchp10Chapter 10 - OWN YOUR LOCAL AREA.html' },
-    { num: 11, file: 'rpchp11Chapter 11 - FIND AN OUTLET, THEN ANOTHER.html' },
-    { num: 12, file: 'rpchp12Chapter 12 - IGNORE PROGRESS.html' },
-    { num: 13, file: 'rpchp13Chapter 13 - DEATH, TAXES AND INJURIES.html' },
-    { num: 14, file: 'rpchp14Chapter 14 - START AGAIN.html' },
-    { num: 15, file: 'rpchp15Chapter 15 - SHOW ME THE RESULTS!.html' },
-    { num: 16, file: 'rpchp16Chapter 16 - HUMAN FIRST.html' },
-    { num: 17, file: 'rpchp17Chapter 17 -  GENERALIST SPECIALIST.html' },
-    { num: 18, file: 'rpchp18Chapter 18 - FLIP THE RATIO.html' },
-    { num: 19, file: 'rpchp19Chapter 19 - UNTIL THE DAY YOU DIE.html' },
-    { num: 20, file: 'rpchp20Chapter 20  - RESERVES.html' },
-    { num: 21, file: 'rpchp21Chapter 21 - USE IT OR LOSE IT.html' },
-    { num: 22, file: 'rpchp22Chapter 22 - BALLERINAS TALKING TO BOXERS.html' },
-    { num: 23, file: 'rpchp23Chapter 23 - RANDOM ANSWERS.html' },
-    { num: 24, file: 'rpchp24Chapter 24 - THINGS WE DON\'T GET ANYMORE.html' },
-    { num: 25, file: 'rpchp25Chapter 25 - DO NOTHING.html' },
-    { num: 26, file: 'rpchp26Chapter 26 - ENERGY (Jeff).html' },
-    { num: 27, file: 'rpchp27Chapter 27 - EVERYDAY INSPIRATIONS.html' },
-    { num: 28, file: 'rpchp28Chapter 28 - NEVER FORCE ANYTHING (Tareq).html' },
-    { num: 29, file: 'rpchp29Chapter 29 - GUARDING.html' },
-    { num: 30, file: 'rpchp30Chapter 30 - LET THE BODY DO THE THIN.html' },
-    { num: 31, file: 'rpchp31Chapter 31 - TRAIN, THEN PRACTICE..html' },
-    { num: 32, file: 'rpchp32Chapter 32 - DON\'T WIN, COMPETE.html' },
-    { num: 33, file: 'rpchp33Chapter 33 - 12 HOURS LATER.html' },
-    { num: 34, file: 'rpchp34Chapter 34 - EIGHT DAYS A WEEK.html' },
-    { num: 35, file: 'rpchp35Chapter 35- HOOK YOUR FUTURE SELF UP.html' },
-    { num: 36, file: 'rpchp36Chapter 36 - TO BUY OR NOT BUY THE KAYAK.html' },
-    { num: 37, file: 'rpchp37Chapter 37 - TRUST THE PROCESS... IF YOU KNOW IT.html' },
+    { num: 1,  title: 'RUNNING IN THE WRONG PLACE',           file: 'rpchp1Chapter 1 - RUNNING IN THE THE WRONG PLACE.html' },
+    { num: 2,  title: 'IMPOSSIBLE IS SOMETHING',              file: 'rpchp2Chapter 2 - IMPOSSIBLE IS SOMETHING.html' },
+    { num: 3,  title: 'LOW BUY IN',                           file: 'rpchp3Chapter 3 - LOW BUY IN.html' },
+    { num: 4,  title: 'NO MATTER WHAT',                       file: 'rpchp4Chapter 4 - NO MATTER WHAT.html' },
+    { num: 5,  title: 'WHAT WOULD AN ATHLETE DO?',            file: 'rpchp5Chapter 5 - WHAT WOULD AN ATHLETE DO?.html' },
+    { num: 6,  title: 'ABOVE AVERAGE',                        file: 'rpchp6Chapter 6 - ABOVE AVERAGE.html' },
+    { num: 7,  title: 'THE FIRE HOSE AND THE OPEN WINDOW',    file: 'rpchp7Chapter 7  - THE FIRE HOSE AND THE OPEN WINDOW.html' },
+    { num: 8,  title: 'UNMUCKUPABLE EXERCISES',               file: 'rpchp8Chapter 8 - UNMUCKUPABLE EXERCISES.html' },
+    { num: 9,  title: "LISTEN TO OTHERS, EVEN IF YOU DON'T UNDERSTAND THEM", file: "rpchp9Chapter 9 - LISTEN TO OTHERS, EVEN IF YOU DON'T UNDERSTAND THEM.html" },
+    { num: 10, title: 'OWN YOUR LOCAL AREA',                  file: 'rpchp10Chapter 10 - OWN YOUR LOCAL AREA.html' },
+    { num: 11, title: 'FIND AN OUTLET, THEN ANOTHER',         file: 'rpchp11Chapter 11 - FIND AN OUTLET, THEN ANOTHER.html' },
+    { num: 12, title: 'IGNORE PROGRESS',                      file: 'rpchp12Chapter 12 - IGNORE PROGRESS.html' },
+    { num: 13, title: 'DEATH, TAXES AND INJURIES',            file: 'rpchp13Chapter 13 - DEATH, TAXES AND INJURIES.html' },
+    { num: 14, title: 'START AGAIN',                          file: 'rpchp14Chapter 14 - START AGAIN.html' },
+    { num: 15, title: 'SHOW ME THE RESULTS!',                 file: 'rpchp15Chapter 15 - SHOW ME THE RESULTS!.html' },
+    { num: 16, title: 'HUMAN FIRST',                          file: 'rpchp16Chapter 16 - HUMAN FIRST.html' },
+    { num: 17, title: 'GENERALIST SPECIALIST',                file: 'rpchp17Chapter 17 -  GENERALIST SPECIALIST.html' },
+    { num: 18, title: 'FLIP THE RATIO',                       file: 'rpchp18Chapter 18 - FLIP THE RATIO.html' },
+    { num: 19, title: 'UNTIL THE DAY YOU DIE',                file: 'rpchp19Chapter 19 - UNTIL THE DAY YOU DIE.html' },
+    { num: 20, title: 'RESERVES',                             file: 'rpchp20Chapter 20  - RESERVES.html' },
+    { num: 21, title: 'USE IT OR LOSE IT',                    file: 'rpchp21Chapter 21 - USE IT OR LOSE IT.html' },
+    { num: 22, title: 'BALLERINAS TALKING TO BOXERS',         file: 'rpchp22Chapter 22 - BALLERINAS TALKING TO BOXERS.html' },
+    { num: 23, title: 'RANDOM ANSWERS',                       file: 'rpchp23Chapter 23 - RANDOM ANSWERS.html' },
+    { num: 24, title: "THINGS WE DON'T GET ANYMORE",          file: "rpchp24Chapter 24 - THINGS WE DON'T GET ANYMORE.html" },
+    { num: 25, title: 'DO NOTHING',                           file: 'rpchp25Chapter 25 - DO NOTHING.html' },
+    { num: 26, title: 'ENERGY (Jeff)',                        file: 'rpchp26Chapter 26 - ENERGY (Jeff).html' },
+    { num: 27, title: 'EVERYDAY INSPIRATIONS',                file: 'rpchp27Chapter 27 - EVERYDAY INSPIRATIONS.html' },
+    { num: 28, title: 'NEVER FORCE ANYTHING (Tareq)',         file: 'rpchp28Chapter 28 - NEVER FORCE ANYTHING (Tareq).html' },
+    { num: 29, title: 'GUARDING',                             file: 'rpchp29Chapter 29 - GUARDING.html' },
+    { num: 30, title: 'LET THE BODY DO THE THING',            file: 'rpchp30Chapter 30 - LET THE BODY DO THE THIN.html' },
+    { num: 31, title: 'TRAIN, THEN PRACTICE',                 file: 'rpchp31Chapter 31 - TRAIN, THEN PRACTICE..html' },
+    { num: 32, title: "DON'T WIN, COMPETE",                   file: "rpchp32Chapter 32 - DON'T WIN, COMPETE.html" },
+    { num: 33, title: '12 HOURS LATER',                       file: 'rpchp33Chapter 33 - 12 HOURS LATER.html' },
+    { num: 34, title: 'EIGHT DAYS A WEEK',                    file: 'rpchp34Chapter 34 - EIGHT DAYS A WEEK.html' },
+    { num: 35, title: 'HOOK YOUR FUTURE SELF UP',             file: 'rpchp35Chapter 35- HOOK YOUR FUTURE SELF UP.html' },
+    { num: 36, title: 'TO BUY OR NOT BUY THE KAYAK',          file: 'rpchp36Chapter 36 - TO BUY OR NOT BUY THE KAYAK.html' },
+    { num: 37, title: 'TRUST THE PROCESS... IF YOU KNOW IT',  file: 'rpchp37Chapter 37 - TRUST THE PROCESS... IF YOU KNOW IT.html' },
 ];
 
-// ── THEORY PLACEHOLDERS ───────────────────────────
-const THEORY_ITEMS = [
-    { emoji:'💪', tag:'Strength', title:'Progressive Overload Explained' },
-    { emoji:'🧠', tag:'Recovery', title:'Why Sleep is Your Secret Weapon' },
-    { emoji:'🏃', tag:'Running', title:'The Aerobic Base — What It Actually Means' },
-    { emoji:'⚡', tag:'Power', title:'Fast vs Slow Twitch Muscle Fibres' },
-    { emoji:'🤸', tag:'Mobility', title:'Flexibility vs Mobility — The Difference' },
-    { emoji:'❤️', tag:'Cardio', title:'Heart Rate Zones Demystified' },
-    { emoji:'🔄', tag:'Programming', title:'Periodisation for Everyday Athletes' },
-    { emoji:'🥗', tag:'Nutrition', title:'Protein Timing and Muscle Repair' },
-    { emoji:'🧘', tag:'Mindset', title:'The Stress-Recovery Cycle' },
-    { emoji:'🦴', tag:'Anatomy', title:'Understanding the Posterior Chain' },
-    { emoji:'🔥', tag:'Warm Up', title:'Why Warm Ups Actually Work' },
-    { emoji:'📊', tag:'Data', title:'Reading Your Body\'s Signals' },
+// ── THEORY ────────────────────────────────────────
+const THEORY_GROUPS = [
+    {
+        title: 'Principles of Training',
+        items: [
+            { tag:'Principles', title:'Principles of Recovery',     label:'Recovery',      file:'principlesofrecovery.html' },
+            { tag:'Principles', title:'Principle of Overload',      label:'Overload',      file:'principleofoverload.html' },
+            { tag:'Principles', title:'Principle of Progression',   label:'Progression',   file:'principleofprogression.html' },
+            { tag:'Principles', title:'Principle of Reversibility', label:'Reversibility', file:'principleofreversibility.html' },
+            { tag:'Principles', title:'Principle of Specificity',   label:'Specificity',   file:'principleofspecificity.html' },
+            { tag:'Principles', title:'Principle of Individuality', label:'Individuality', file:'principleofindividuality.html' },
+        ]
+    },
+    {
+        title: 'Types of Training Blocks',
+        items: [
+            { tag:'Training Blocks', title:'Accumulation',    label:'Accumulation',    file:'trainingblockaccumulation.html' },
+            { tag:'Training Blocks', title:'Intensification', label:'Intensification', file:'trainingblockintensification.html' },
+            { tag:'Training Blocks', title:'Realisation',     label:'Realisation',     file:'trainingblockrealisation.html' },
+            { tag:'Training Blocks', title:'Conjugate',       label:'Conjugate',       file:'trainingblockconjugate.html' },
+        ]
+    }
 ];
+let THEORY_ITEMS = THEORY_GROUPS.flatMap(g => g.items);
+
+// ── LESSONS FROM EDUCATION BUILDER (PocketBase `lessons`) ──
+async function loadDbLessons() {
+    let recs = [];
+    try {
+        recs = await pb.collection('lessons').getFullList({ filter: 'published=true', sort: 'order,title', requestKey: null });
+    } catch (e) { return; } // collection not set up yet — keep built-in content only
+    if (!recs.length) return;
+    recs.filter(r => r.section !== 'philosophy').forEach(r => {
+        const gTitle = r.group || 'More Theory';
+        let g = THEORY_GROUPS.find(x => x.title.toLowerCase() === gTitle.toLowerCase());
+        if (!g) { g = { title: gTitle, items: [] }; THEORY_GROUPS.push(g); }
+        g.items.push({ tag: r.tag || gTitle, title: r.title, label: r.label || r.title, file: 'lesson.html?id=' + r.id });
+    });
+    THEORY_ITEMS = THEORY_GROUPS.flatMap(g => g.items);
+    recs.filter(r => r.section === 'philosophy').forEach(r => {
+        const num = r.order || (Math.max(0, ...CHAPTERS.map(c => c.num)) + 1);
+        if (CHAPTERS.some(c => c.num === num)) return; // don't clash with an existing chapter number
+        CHAPTERS.push({ num, title: r.title.toUpperCase(), file: 'lesson.html?id=' + r.id });
+    });
+    CHAPTERS.sort((a, b) => a.num - b.num);
+    renderTheory();
+    renderLessons();
+}
 
 // ── STATE ─────────────────────────────────────────
 let readLessons = new Set();
 let savedLessons = new Set();
 let currentLessonIndex = 0;
 let freeMasterPrograms = [];
+let isPremium = false;
 
 const CATEGORY_META = {
-    STRENGTH: { emoji:'💪', label:'Strength', thumbClass:'thumb-strength', color:'#c084fc' },
-    POWER:    { emoji:'⚡', label:'Power',    thumbClass:'thumb-power',    color:'#fb923c' },
-    RUN:      { emoji:'🏃', label:'Run',      thumbClass:'thumb-run',      color:'#4ade80' },
-    CIRCUIT:  { emoji:'🔄', label:'Circuit',  thumbClass:'thumb-circuit',  color:'#26C6DA' },
-    MOBILITY: { emoji:'🤸', label:'Mobility', thumbClass:'thumb-mobility', color:'#a78bfa' },
-    CARDIO:   { emoji:'❤️', label:'Cardio',   thumbClass:'thumb-cardio',   color:'#f87171' },
-    'WARM UP':{ emoji:'🔥', label:'Warm Up',  thumbClass:'thumb-warmup',   color:'#fb923c' },
-    OTHER:    { emoji:'📋', label:'Other',    thumbClass:'thumb-other',    color:'#888'    },
+    STRENGTH:   { label:'Strength',   thumbClass:'thumb-strength',   color:'#c084fc' },
+    POWER:      { label:'Power',      thumbClass:'thumb-power',      color:'#fb923c' },
+    RUN:        { label:'Run',        thumbClass:'thumb-run',        color:'var(--brand-accent)' },
+    CIRCUIT:    { label:'Circuit',    thumbClass:'thumb-circuit',    color:'var(--brand-accent)' },
+    BODYWEIGHT: { label:'Bodyweight', thumbClass:'thumb-bodyweight', color:'#e879f9' },
+    MOBILITY:   { label:'Mobility',   thumbClass:'thumb-mobility',   color:'#a78bfa' },
+    CARDIO:     { label:'Cardio',     thumbClass:'thumb-cardio',     color:'#f87171' },
+    'WARM UP':  { label:'Warm Up',    thumbClass:'thumb-warmup',     color:'#fb923c' },
+    OTHER:      { label:'Other',      thumbClass:'thumb-other',      color:'#888'    },
 };
-const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','MOBILITY','CARDIO','WARM UP','OTHER'];
+const CATEGORY_ORDER = ['STRENGTH','POWER','RUN','CIRCUIT','BODYWEIGHT','MOBILITY','CARDIO','WARM UP','OTHER'];
 
 // ── INIT ──────────────────────────────────────────
 window.onload = async () => {
     if (!pb.authStore.isValid) { window.location.href = 'index.html'; return; }
+    // Refresh token → fires last_seen hook for returning users
+    pb.collection('users').authRefresh({ requestKey: null }).catch(() => {});
+
     loadUserProgress();
     renderLessons();
     renderTheory();
+    loadDbLessons();
+    renderFAQ();
+    checkPremiumStatus();
     await loadTrainPrograms();
+
+    const urlTab = new URLSearchParams(window.location.search).get('tab');
+    if (urlTab) switchTab(urlTab);
+
+    // Returning from Stripe → poll for activation
+    if (window.location.search.includes('subscribed=1') || document.referrer.includes('buy.stripe.com')) {
+        pollForSubscription();
+    }
 };
 
 // ── TABS ──────────────────────────────────────────
 function switchTab(tab) {
-    document.querySelectorAll('.pill').forEach((p,i) => p.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    const tabs = ['train','philosophy','theory'];
+    const tabs = ['train','philosophy','theory','start'];
     const idx = tabs.indexOf(tab);
+    if (idx === -1) return;
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.pill')[idx].classList.add('active');
     document.getElementById(`tab-${tab}`).classList.add('active');
 }
@@ -320,16 +390,20 @@ function switchTab(tab) {
 // ── USER PROGRESS (localStorage) ─────────────────
 function loadUserProgress() {
     const uid = pb.authStore.model.id;
-    const r = localStorage.getItem(`rp_read_${uid}`);
-    const s = localStorage.getItem(`rp_saved_${uid}`);
-    readLessons = r ? new Set(JSON.parse(r)) : new Set();
-    savedLessons = s ? new Set(JSON.parse(s)) : new Set();
+    try {
+        const r = localStorage.getItem(`rp_read_${uid}`);
+        const s = localStorage.getItem(`rp_saved_${uid}`);
+        readLessons = r ? new Set(JSON.parse(r)) : new Set();
+        savedLessons = s ? new Set(JSON.parse(s)) : new Set();
+    } catch (e) { readLessons = new Set(); savedLessons = new Set(); }
 }
 
 function saveUserProgress() {
     const uid = pb.authStore.model.id;
-    localStorage.setItem(`rp_read_${uid}`, JSON.stringify([...readLessons]));
-    localStorage.setItem(`rp_saved_${uid}`, JSON.stringify([...savedLessons]));
+    try {
+        localStorage.setItem(`rp_read_${uid}`, JSON.stringify([...readLessons]));
+        localStorage.setItem(`rp_saved_${uid}`, JSON.stringify([...savedLessons]));
+    } catch (e) {}
 }
 
 // ── RENDER LESSONS ────────────────────────────────
@@ -341,10 +415,10 @@ function renderLessons() {
         return `<div class="lesson-card ${isRead?'read':''} ${isSaved?'saved':''}" onclick="openLesson(${i})">
             <i class="fas fa-check check-icon"></i>
             <div class="lesson-num">${String(ch.num).padStart(2,'0')}</div>
-            <div class="lesson-label">Lesson ${ch.num}</div>
+            <div class="lesson-label" style="font-size:0.7rem;font-weight:700;color:#aaa;line-height:1.3;margin-top:4px;">${ch.title}</div>
             <div class="lesson-badges">
                 ${isRead ? '<span class="badge-read">✓ Read</span>' : ''}
-                ${isSaved ? '<span class="badge-saved">🔖 Saved</span>' : ''}
+                ${isSaved ? '<span class="badge-saved">Saved</span>' : ''}
             </div>
         </div>`;
     }).join('');
@@ -352,32 +426,67 @@ function renderLessons() {
 
 // ── RENDER THEORY ─────────────────────────────────
 function renderTheory() {
-    const grid = document.getElementById('theory-grid');
-    const colours = ['#1a0a3a','#001a0a','#1a0a00','#001a2c','#1a0a2a','#0a001a'];
-    grid.innerHTML = THEORY_ITEMS.map((t,i) => `
-        <div class="theory-card" onclick="showToast('Coming soon!')">
-            <span class="theory-coming">Coming soon</span>
-            <div class="theory-thumb" style="background:${colours[i%colours.length]};">${t.emoji}</div>
-            <div class="theory-body">
-                <div class="theory-tag">${t.tag}</div>
-                <div class="theory-title">${t.title}</div>
+    const colours = [
+        'linear-gradient(135deg,#0D211A,#1B4D3E)',
+        'linear-gradient(135deg,#0A1C24,#1B3E4D)',
+        'linear-gradient(135deg,#1C0D21,#2E1B4D)',
+        'linear-gradient(135deg,#241A08,#4D3308)',
+        'linear-gradient(135deg,#2D0B10,#4D1B1E)',
+        'linear-gradient(135deg,#08210D,#1E4D2B)',
+    ];
+    let idx = 0;
+    document.getElementById('theory-groups').innerHTML = THEORY_GROUPS.map(g => `
+        <div class="theory-group">
+            <div class="shelf-header">
+                <span class="shelf-title" style="color:var(--brand-accent);">${g.title}</span>
+                <div class="shelf-line"></div>
+                <span class="shelf-count">${g.items.length}</span>
+            </div>
+            <div class="theory-grid">
+                ${g.items.map(t => {
+                    const i = idx++;
+                    const hasFile = !!t.file;
+                    const onclick = hasFile ? `openTheoryLesson(${i})` : `showToast('Coming soon!')`;
+                    const badge = hasFile
+                        ? `<span class="theory-coming" style="background:rgba(82,183,136,0.15);color:var(--brand-accent);">Read</span>`
+                        : `<span class="theory-coming">Coming soon</span>`;
+                    return `<div class="theory-card" style="opacity:${hasFile ? 1 : 0.5};" onclick="${onclick}">
+                        ${badge}
+                        <div class="theory-thumb" style="background:${colours[i % colours.length]};font-size:1.3rem;font-family:'Montserrat',sans-serif;font-weight:800;color:rgba(255,255,255,0.15);letter-spacing:-1px;">${t.label}</div>
+                        <div class="theory-body">
+                            <div class="theory-tag">${t.tag}</div>
+                            <div class="theory-title">${t.title}</div>
+                        </div>
+                    </div>`;
+                }).join('')}
             </div>
         </div>`).join('');
+}
+
+function openTheoryLesson(i) {
+    const t = THEORY_ITEMS[i]; if (!t) return;
+    const filename = t.file.includes('.html') ? t.file : t.file + '.html';
+    document.getElementById('reader-lesson-num').textContent = t.title;
+    document.getElementById('reader-frame').src = filename;
+    ['reader-save-btn','reader-prev','reader-next','reader-mark-btn'].forEach(id => document.getElementById(id).style.display = 'none');
+    document.getElementById('reader-modal').classList.add('open');
+    track('theory_open', { title: t.title });
 }
 
 // ── LESSON READER ─────────────────────────────────
 function openLesson(index) {
     currentLessonIndex = index;
     const ch = CHAPTERS[index];
-    document.getElementById('reader-lesson-num').textContent = `Lesson ${ch.num}`;
     document.getElementById('reader-frame').src = ch.file;
     updateReaderUI();
     document.getElementById('reader-modal').classList.add('open');
+    track('lesson_open', { lesson: ch.num });
 }
 
 function closeReader() {
     document.getElementById('reader-modal').classList.remove('open');
     document.getElementById('reader-frame').src = 'about:blank';
+    ['reader-save-btn','reader-prev','reader-next','reader-mark-btn'].forEach(id => document.getElementById(id).style.display = '');
     renderLessons();
 }
 
@@ -388,10 +497,8 @@ function updateReaderUI() {
     const markBtn = document.getElementById('reader-mark-btn');
     markBtn.textContent = isRead ? '✓ Marked as Read' : 'Mark as Read';
     markBtn.className = `btn-mark-read ${isRead ? 'read' : 'unread'}`;
-    const saveBtn = document.getElementById('reader-save-btn');
-    const saveLabel = document.getElementById('reader-save-label');
-    saveLabel.textContent = isSaved ? 'Saved' : 'Save';
-    saveBtn.className = `reader-save-btn ${isSaved ? 'saved' : ''}`;
+    document.getElementById('reader-save-label').textContent = isSaved ? 'Saved' : 'Save';
+    document.getElementById('reader-save-btn').className = `reader-save-btn ${isSaved ? 'saved' : ''}`;
     document.getElementById('reader-prev').disabled = currentLessonIndex === 0;
     document.getElementById('reader-next').disabled = currentLessonIndex === CHAPTERS.length - 1;
     document.getElementById('reader-lesson-num').textContent = `Lesson ${ch.num} of ${CHAPTERS.length}`;
@@ -413,7 +520,7 @@ function toggleSaveLesson() {
         showToast('Removed from saved');
     } else {
         savedLessons.add(ch.num);
-        showToast('🔖 Saved to your library');
+        showToast('Saved to your library');
     }
     saveUserProgress();
     updateReaderUI();
@@ -423,20 +530,36 @@ function navigateLesson(dir) {
     const next = currentLessonIndex + dir;
     if (next < 0 || next >= CHAPTERS.length) return;
     currentLessonIndex = next;
-    const ch = CHAPTERS[currentLessonIndex];
-    document.getElementById('reader-frame').src = ch.file;
+    document.getElementById('reader-frame').src = CHAPTERS[currentLessonIndex].file;
     updateReaderUI();
 }
 
 // ── TRAIN — FREE PROGRAMS ─────────────────────────
 async function loadTrainPrograms() {
     try {
-        const recs = await pb.collection('programs').getFullList({
+        freeMasterPrograms = await pb.collection('programs').getFullList({
             filter: 'is_free=true && archived=false', sort: 'name', requestKey: null
         });
-        freeMasterPrograms = recs;
         renderTrainShelves();
     } catch(e) { console.error(e); }
+}
+
+function renderPremiumBanner() {
+    const wrap = document.getElementById('premium-banner-wrap');
+    if (!wrap) return;
+    if (isPremium || !pb.authStore.isValid) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = `<div class="premium-banner">
+        <h3>Unlock Premium Programs</h3>
+        <p>Get full access to all strength, power, run and circuit programs for <strong style="color:var(--brand-accent)">$19.99 NZD/month</strong>. Cancel anytime.</p>
+        <button class="btn-upgrade" onclick="startUpgrade('banner')">Upgrade — $19.99 NZD/mo</button>
+    </div>`;
+}
+
+function parseSchedule(p) {
+    let data = p.workout_data;
+    try { if (typeof data === 'string') data = JSON.parse(data); } catch(e) { data = null; }
+    const schedule = data?.schedule || data || [];
+    return Array.isArray(schedule) ? schedule : [];
 }
 
 function renderTrainShelves() {
@@ -448,19 +571,17 @@ function renderTrainShelves() {
     const grouped = {};
     freeMasterPrograms.forEach(p => {
         const cat = (p.category||'OTHER').toUpperCase();
-        if (!grouped[cat]) grouped[cat] = [];
-        grouped[cat].push(p);
+        (grouped[cat] ||= []).push(p);
     });
     const sortedCats = Object.keys(grouped).sort((a,b) => {
-        const ai=CATEGORY_ORDER.indexOf(a), bi=CATEGORY_ORDER.indexOf(b);
-        return (ai===-1?99:ai)-(bi===-1?99:bi);
+        const ai = CATEGORY_ORDER.indexOf(a), bi = CATEGORY_ORDER.indexOf(b);
+        return (ai===-1?99:ai) - (bi===-1?99:bi);
     });
     container.innerHTML = sortedCats.map(cat => {
-        const meta = CATEGORY_META[cat]||CATEGORY_META.OTHER;
+        const meta = CATEGORY_META[cat] || CATEGORY_META.OTHER;
         const progs = grouped[cat];
         return `<div class="shelf-section">
             <div class="shelf-header">
-                <span class="shelf-emoji">${meta.emoji}</span>
                 <span class="shelf-title" style="color:${meta.color};">${meta.label}</span>
                 <div class="shelf-line"></div>
                 <span class="shelf-count">${progs.length}</span>
@@ -476,43 +597,56 @@ function renderTrainShelves() {
 
 function buildProgCard(p) {
     const cat = (p.category||'OTHER').toUpperCase();
-    const meta = CATEGORY_META[cat]||CATEGORY_META.OTHER;
-    let data = p.workout_data;
-    try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
-    const schedule = data?.schedule||data||[];
-    const sessionCount = Array.isArray(schedule)?schedule.length:0;
+    const meta = CATEGORY_META[cat] || CATEGORY_META.OTHER;
+    const sessionCount = parseSchedule(p).length;
     const thumbHtml = p.cover_image
-        ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;">${meta.emoji}</div>`
-        : `<div class="prog-thumb-placeholder ${meta.thumbClass}">${meta.emoji}</div>`;
-    return `<div class="prog-card" onclick="openProgModal('${p.id}')">
-        ${thumbHtml}
+        ? `<img class="prog-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="prog-thumb-placeholder ${meta.thumbClass}" style="display:none;"></div>`
+        : `<div class="prog-thumb-placeholder ${meta.thumbClass}"></div>`;
+    const locked = p.is_premium && !isPremium;
+    const premiumOwned = p.is_premium && isPremium;
+    const cardClass = locked ? 'prog-card locked' : premiumOwned ? 'prog-card premium-owned' : 'prog-card';
+    return `<div class="${cardClass}" onclick="openProgModal('${p.id}')">
+        <div class="prog-thumb-wrap">
+            ${thumbHtml}
+            ${locked ? '<div class="prog-lock">🔒</div>' : ''}
+            ${premiumOwned ? '<div class="prog-star">⭐</div>' : ''}
+        </div>
         <div class="prog-card-body">
             <div class="prog-name">${p.name}</div>
-            <div class="prog-badge">${p.is_repeatable?'🔁 Repeatable':sessionCount+' sessions'}</div>
+            <div class="prog-badge">${p.is_repeatable ? 'Repeatable' : sessionCount + ' sessions'}</div>
         </div>
     </div>`;
 }
 
 function openProgModal(id) {
-    const p = freeMasterPrograms.find(x=>x.id===id); if (!p) return;
+    const p = freeMasterPrograms.find(x => x.id === id); if (!p) return;
     const cat = (p.category||'OTHER').toUpperCase();
-    const meta = CATEGORY_META[cat]||CATEGORY_META.OTHER;
-    let data = p.workout_data;
-    try { if (typeof data==='string') data=JSON.parse(data); } catch(e) {}
-    const schedule = data?.schedule||data||[];
-    const sessionCount = Array.isArray(schedule)?schedule.length:0;
+    const meta = CATEGORY_META[cat] || CATEGORY_META.OTHER;
+    const sessionCount = parseSchedule(p).length;
+    const locked = p.is_premium && !isPremium;
+
+    if (locked) track('padlock_click', { program: p.name, program_id: p.id });
+    else track('program_view', { program: p.name, program_id: p.id });
+
     const thumbHtml = p.cover_image
         ? `<img class="prog-modal-thumb" src="${PB_URL}/api/files/programs/${p.id}/${p.cover_image}" onerror="this.style.display='none'">`
-        : `<div class="prog-modal-thumb ${meta.thumbClass}" style="display:flex;align-items:center;justify-content:center;font-size:3rem;border-radius:8px;">${meta.emoji}</div>`;
+        : `<div class="prog-modal-thumb ${meta.thumbClass}" style="display:flex;align-items:center;justify-content:center;font-size:3rem;border-radius:8px;"></div>`;
     document.getElementById('prog-modal-content').innerHTML = `
         ${thumbHtml}
         <div class="prog-modal-title">${p.name}</div>
-        <div class="prog-modal-desc">${p.description||'No description available.'}</div>
+        <div class="prog-modal-desc">${p.description || 'No description available.'}</div>
         <div class="prog-modal-meta">
-            <span>${meta.emoji} ${meta.label}</span>
-            <span>${p.is_repeatable?'🔁 Repeatable':sessionCount+' sessions'}</span>
+            <span>${meta.label}</span>
+            <span>${p.is_repeatable ? 'Repeatable' : sessionCount + ' sessions'}</span>
         </div>
-        <button class="btn-start" onclick="startProgram('${p.id}')">▶ Start This Program</button>
+        ${locked
+            ? `<div style="background:linear-gradient(135deg,#0D211A,#1B4D3E);border:1px solid var(--brand-accent);border-radius:10px;padding:16px;margin-bottom:8px;text-align:center;">
+                <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.8rem;color:var(--brand-accent);margin-bottom:6px;">PREMIUM PROGRAM</div>
+                <div style="font-size:0.78rem;color:#888;margin-bottom:14px;">Unlock all premium programs for $19.99 NZD/month</div>
+                <button class="btn-start" onclick="startUpgrade('program', '${p.id}')">Upgrade to Access</button>
+              </div>`
+            : `<button class="btn-start" onclick="startProgram('${p.id}')">▶ Start This Program</button>`
+        }
         <button class="btn-modal-close" onclick="closeProgModal()">Close</button>`;
     document.getElementById('prog-modal').classList.add('open');
 }
@@ -520,17 +654,104 @@ function openProgModal(id) {
 function closeProgModal() { document.getElementById('prog-modal').classList.remove('open'); }
 
 async function startProgram(templateId) {
-    const template = freeMasterPrograms.find(p=>p.id===templateId); if (!template) return;
+    const template = freeMasterPrograms.find(p => p.id === templateId); if (!template) return;
     try {
         const newProg = await pb.collection('programs').create({
             name: template.name, client: pb.authStore.model.id,
             workout_data: template.workout_data, is_free: false,
-            is_repeatable: template.is_repeatable||false, category: template.category||'', archived: false
+            is_repeatable: template.is_repeatable || false, category: template.category || '', archived: false
         });
+        track('program_start', { program: template.name, program_id: template.id });
         closeProgModal();
-        showToast('Program started! 🔥');
+        showToast('Program started');
         setTimeout(() => { window.location.href = `program.html?id=${newProg.id}`; }, 1000);
-    } catch(e) { alert('Failed: '+e.message); }
+    } catch(e) { alert('Failed: ' + e.message); }
+}
+
+// ── PREMIUM ──────────────────────────────────────
+async function checkPremiumStatus() {
+    if (!pb.authStore.isValid) return;
+    try {
+        const user = await pb.collection('users').getOne(pb.authStore.model.id, { requestKey: null });
+        isPremium = user.subscription_status === 'active';
+    } catch(e) {
+        isPremium = pb.authStore.model.subscription_status === 'active';
+    }
+    renderPremiumBanner();
+    renderTrainShelves();
+}
+
+function startUpgrade(source = 'unknown', programId = '') {
+    const prog = programId ? freeMasterPrograms.find(p => p.id === programId) : null;
+    track('upgrade_click', { source, program: prog?.name || '' });
+    const email = pb.authStore.isValid ? pb.authStore.model.email : '';
+    const url = 'https://buy.stripe.com/3cI4gB0Ry1c05z91Kzf7i00' + (email ? '?prefilled_email=' + encodeURIComponent(email) : '');
+    // Small delay so the event has a chance to send before navigating away
+    setTimeout(() => { window.location.href = url; }, 150);
+}
+
+// ── SUBSCRIPTION POLL ────────────────────────────
+async function pollForSubscription(attempts = 0) {
+    if (attempts > 12) return; // ~1 minute
+    try {
+        const user = await pb.collection('users').getOne(pb.authStore.model.id, { requestKey: null });
+        if (user.subscription_status === 'active') {
+            isPremium = true;
+            renderPremiumBanner();
+            renderTrainShelves();
+            showToast('Premium unlocked!');
+            track('subscribed', {});
+            window.history.replaceState({}, '', window.location.pathname);
+            return;
+        }
+    } catch(e) {}
+    setTimeout(() => pollForSubscription(attempts + 1), 5000);
+}
+
+// ── FAQ ──────────────────────────────────────────
+const FAQ = [
+    {
+        q: "Is Rest Period free?",
+        a: "All of Rest Period is free — create an account, access the exercise library, start programs, log results and read educational resources. Over time a paid subscription will offer more programs, courses and coaching tools. There will always be a free tier, because we never want someone's financial position to be a barrier to starting exercise."
+    },
+    {
+        q: "Can I get 1-1 coaching?",
+        a: "Daniel offers 1-1 in-person coaching in Wellington, New Zealand and online coaching using Rest Period's coaching platform. Get in touch through the contact page to find out more."
+    },
+    {
+        q: "Where do I start?",
+        a: "Depending on your level of ability, you might choose from the warm ups to improve your readiness to train, sample a running drill workout, or dive right into a full training block adding your weights and reps along the way. If you're unsure, the Start Here tab is a great place to begin."
+    },
+    {
+        q: "What is Rest Period?",
+        a: "Rest Period is an exercise tool and educational resource. It includes a full exercise library, science-backed educational resources, guided warm up, strength, speed and mobility programs, and a philosophy section drawn from real conversations with clients over 15 years of coaching."
+    },
+    {
+        q: "Do I need to log in to use it?",
+        a: "Anyone can access the exercise library without logging in. Creating a free account gives you access to programs, session logging, read tracking and saved content."
+    },
+    {
+        q: "Is this suitable for beginners?",
+        a: "Yes. The programs range from beginner warm ups and mobility work through to full strength training blocks. As always, consult a medical professional to ensure you are ready and able to exercise safely before starting any program."
+    },
+];
+
+function renderFAQ() {
+    const list = document.getElementById('faq-list');
+    if (!list) return;
+    list.innerHTML = FAQ.map((item, i) => `
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(${i})" id="faq-q-${i}">
+                <span>${item.q}</span>
+                <span class="faq-chevron">▼</span>
+            </div>
+            <div class="faq-answer" id="faq-a-${i}">${item.a}</div>
+        </div>`).join('');
+}
+
+function toggleFAQ(i) {
+    document.getElementById(`faq-q-${i}`).classList.toggle('open');
+    document.getElementById(`faq-a-${i}`).classList.toggle('open');
 }
 
 // ── TOAST ─────────────────────────────────────────
@@ -539,7 +760,7 @@ function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.style.display = 'block';
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.style.display='none', 2000);
+    toastTimer = setTimeout(() => t.style.display = 'none', 2000);
 }
 </script>
 </body>
