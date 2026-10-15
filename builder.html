@@ -139,7 +139,7 @@
                 <label>Block Name</label>
                 <input type="text" id="prog-name" placeholder="e.g. Hypertrophy Phase 1" oninput="triggerAutoSave()">
                 <label>Program Description</label>
-                <input type="text" id="prog-desc" placeholder="e.g. 6-week lower body strength block." oninput="triggerAutoSave()">
+                <textarea id="prog-desc" rows="5" style="resize:vertical;" placeholder="e.g. 6-week lower body strength block.&#10;&#10;Press Enter twice for a new paragraph." oninput="triggerAutoSave()"></textarea>
                 <label>Category</label>
                 <select id="prog-category" onchange="triggerAutoSave()">
                     <option value="">-- Select Category --</option>
@@ -218,9 +218,9 @@
 
             <div style="margin-bottom:10px;">
                 <label>Session Description <span style="color:#555;font-size:0.6rem;font-weight:400;text-transform:none;">(shown to client as program description)</span></label>
-                <input type="text" id="session-desc-input" placeholder="e.g. Focus on control and depth today."
+                <textarea id="session-desc-input" rows="3" style="resize:vertical;" placeholder="e.g. Focus on control and depth today."
                     oninput="programData[currentWeekIndex].description=this.value;"
-                    onblur="triggerAutoSave();">
+                    onblur="triggerAutoSave();"></textarea>
             </div>
             <div style="margin-bottom:16px;">
                 <label>Session Notes <span style="color:#555;font-size:0.6rem;font-weight:400;text-transform:none;">(coach-only notes — changes, cues, client feedback)</span></label>
@@ -685,10 +685,11 @@ function renderListMarkup(id, list, type) {
                 <i class="fas fa-trash-alt" style="color:#555;cursor:pointer;" onclick="programData[currentWeekIndex].${type}.splice(${i},1); saveHistory(); renderLists();"></i>
             </div>
             <input type="text" value="${(ex.grouping||'').replace(/"/g,'&quot;')}" placeholder="Group (e.g. A1)" onchange="programData[currentWeekIndex].${type}[${i}].grouping=this.value; saveHistory();">
+            <textarea rows="2" style="resize:vertical;" placeholder="Cues (e.g. Brace, drive through the heels) — shown to client under the grouping" onchange="programData[currentWeekIndex].${type}[${i}].notes=this.value; saveHistory();">${String(ex.notes||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}</textarea>
             <div style="margin-bottom:8px;">
                 ${(()=>{
                     const cols = ex.columns || ['reps','weight','rest','rpe','tempo'];
-                    const ALL_COLS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',distance:'DIST'};
+                    const ALL_COLS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',distance:'DIST',notes:'NOTES'};
                     const ALL_COL_KEYS = Object.keys(ALL_COLS);
                     const activeCols = cols.filter(c => ALL_COLS[c]);
                     const inactiveCols = ALL_COL_KEYS.filter(c => !cols.includes(c));
@@ -709,16 +710,16 @@ function renderListMarkup(id, list, type) {
             </div>
             ${(()=>{
                 const cols = ex.columns || ['reps','weight','rest','rpe','tempo'];
-                const ALL_COLS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',distance:'DIST'};
+                const ALL_COLS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',distance:'DIST',notes:'NOTES'};
                 const activeCols = cols.filter(c => ALL_COLS[c]);
                 const colCount = activeCols.length + 2; // +SET label +delete
-                const gridCols = `0.6fr ${activeCols.map(()=>'1fr').join(' ')} 0.4fr`;
+                const gridCols = `0.6fr ${activeCols.map(c=>c==='notes'?'2fr':'1fr').join(' ')} 0.4fr`;
                 return ex.setsData.map((s,si) => `
                 <div class="metrics-grid" style="grid-template-columns:${gridCols};">
                     <div class="metric-unit"><label>SET ${si+1}</label></div>
                     ${activeCols.map(c => {
-                        const placeholder = c==='rest'?'90s':c==='tempo'?'//':'';
-                        return `<div class="metric-unit"><label>${ALL_COLS[c]}</label><input type="text" value="${s[c]||''}" placeholder="${placeholder}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}]['${c}']=this.value; saveHistory();"></div>`;
+                        const placeholder = c==='rest'?'90s':c==='tempo'?'//':c==='notes'?'e.g. pause at bottom':'';
+                        return `<div class="metric-unit"><label>${ALL_COLS[c]}</label><input type="text" value="${String(s[c]||'').replace(/"/g,'&quot;')}" placeholder="${placeholder}" onchange="programData[currentWeekIndex].${type}[${i}].setsData[${si}]['${c}']=this.value; saveHistory();"></div>`;
                     }).join('')}
                     <i class="fas fa-minus-circle" style="color:#b71c1c;cursor:pointer;align-self:center;" onclick="programData[currentWeekIndex].${type}[${i}].setsData.splice(${si},1); saveHistory(); renderLists();"></i>
                 </div>`).join('');
@@ -727,7 +728,7 @@ function renderListMarkup(id, list, type) {
         </div>`).join('');
 }
 
-const CANONICAL_COL_ORDER = ['reps','weight','rest','rpe','tempo','pace','speed','time','distance'];
+const CANONICAL_COL_ORDER = ['reps','weight','rest','rpe','tempo','pace','speed','time','distance','notes'];
 
 let _colDragSrc = null; // {type, exIdx, colIdx}
 

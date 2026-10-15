@@ -435,7 +435,7 @@ async function loadPreviewProgram(id) {
         if (descBanner && prog.description) {
             descBanner.innerHTML = `<div style="background:var(--input-bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:4px;">
                 <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.7rem;color:var(--brand-accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">About This Program</div>
-                <div style="font-size:0.85rem;color:#aaa;line-height:1.7;">${prog.description}</div>
+                <div style="font-size:0.85rem;color:#aaa;line-height:1.7;white-space:pre-line;">${prog.description}</div>
             </div>`;
         }
 
@@ -459,7 +459,7 @@ async function loadPreviewProgram(id) {
             const warmup = session.warmup || [];
             const exercises = session.exercises || [];
             const allEx = [...warmup, ...exercises];
-            const PREV_COL_LABELS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',notes:'NOTES'};
+            const PREV_COL_LABELS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',distance:'DIST',notes:'NOTES'};
             const label = prog.is_repeatable ? `Session` : `Session ${si + 1}`;
 
             const renderPrevEx = ex => {
@@ -771,10 +771,10 @@ function renderContent() {
 
     const descHtml = [
         currentProgram.description
-            ? `<div style="background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">📋 ${currentProgram.description}</div>`
+            ? `<div style="white-space:pre-line;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">📋 ${currentProgram.description}</div>`
             : '',
         session.description
-            ? `<div style="background:var(--input-bg);border:1px solid #1a3a4a;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">💬 ${session.description}</div>`
+            ? `<div style="white-space:pre-line;background:var(--input-bg);border:1px solid #1a3a4a;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;color:#aaa;font-style:italic;border-left:3px solid var(--brand-accent);">💬 ${session.description}</div>`
             : ''
     ].join('');
 
@@ -825,7 +825,7 @@ function generateExerciseHTML(list, type, isRepeat) {
         const cleanName = ex.name.replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || ex.name;
         const exBodyId = `ex-body-${prefix}-${i}`;
         const cols = ex.columns || ['reps','weight','rest','rpe','tempo'];
-        const COL_LABELS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',notes:'NOTES'};
+        const COL_LABELS = {reps:'REPS',weight:'KG',rest:'REST',rpe:'RPE',tempo:'TEMPO',pace:'PACE',speed:'SPEED',time:'TIME',distance:'DIST',notes:'NOTES'};
         const COL_TYPES = {reps:'number',weight:'number',rest:'text',rpe:'number',tempo:'text',pace:'text',speed:'number',time:'text'};
         const COL_ACT = {reps:'act_reps',weight:'act_weight',rest:'act_rest',rpe:'act_rpe',tempo:'act_tempo',pace:'act_pace',speed:'act_speed',time:'act_time'};
         const gridCols = `36px ${cols.map(c=>c==='notes'?'2fr':'1fr').join(' ')} 36px`;
