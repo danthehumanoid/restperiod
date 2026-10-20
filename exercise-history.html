@@ -211,7 +211,7 @@ window.onload = async () => {
             e.entries.forEach(en => en.sets.forEach(s => {
                 const v = e1rm(s.weight, s.reps);
                 if (v != null && (bestE == null || v > bestE)) { bestE = v; best = s; }
-                if (s.weight != null && (heaviest == null || s.weight > heaviest.weight)) heaviest = s;
+                if (s.weight != null && (heaviest == null || s.weight > heaviest.weight || (s.weight === heaviest.weight && (s.reps || 0) > (heaviest.reps || 0)))) heaviest = s;
             }));
             e.bestE1rm = bestE; e.bestSet = best; e.heaviest = heaviest;
             e.last = e.entries[0]?.date;
@@ -269,7 +269,7 @@ function openExercise(key, fromLoad) {
         en.prE = topE > 0 && topE > runMaxE && runMaxE !== -Infinity && !en.prW;
         runMaxW = Math.max(runMaxW, topW); runMaxE = Math.max(runMaxE, topE);
         en.topW = topW > -Infinity ? topW : null; en.topE = topE > -Infinity ? topE : null;
-        en.topIdx = en.sets.findIndex(s => s.weight === en.topW);
+        en.topIdx = en.sets.reduce((bi, s, i) => (s.weight === en.topW && (bi < 0 || (s.reps || 0) > (en.sets[bi].reps || 0))) ? i : bi, -1);
     });
 
     const totalSets = e.entries.reduce((a, en) => a + en.sets.length, 0);
