@@ -391,6 +391,17 @@ let tAudioCtx = null, tMetroPlaying = false, tMetroTimerID = null, tNextTick = 0
 const IS_PREVIEW = new URLSearchParams(window.location.search).get('preview') === '1';
 const PREVIEW_ID = new URLSearchParams(window.location.search).get('id');
 
+// ── VISITOR TRACKING (anonymous, feeds megauser) ──
+function anonId() {
+    try { let a = localStorage.getItem('rp_anon'); if (!a) { a = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('rp_anon', a); } return a; }
+    catch (e) { return ''; }
+}
+function trackAnon(type, meta) {
+    if (pb.authStore.isValid) return; // only count people who aren't signed in
+    const ref = new URLSearchParams(location.search).get('ref') || '';
+    pb.collection('events').create({ type: 'anon_' + type, meta: Object.assign({ anon: anonId(), ref: ref }, meta || {}) }, { requestKey: null }).catch(function(){});
+}
+
 window.onload = async () => {
     // Preview mode — allow guests to view a specific program
     if (IS_PREVIEW && PREVIEW_ID) {
@@ -407,6 +418,7 @@ window.onload = async () => {
 async function loadPreviewProgram(id) {
     try {
         const prog = await pb.collection('programs').getOne(id, {requestKey: null});
+        trackAnon('preview_open', { program: prog.name, program_id: prog.id });
         let data = prog.workout_data;
         if (typeof data === 'string') data = JSON.parse(data);
         const schedule = data.schedule || data || [];

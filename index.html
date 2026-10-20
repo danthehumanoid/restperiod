@@ -152,7 +152,7 @@
 
     <!-- SHOWCASE PROGRAMS -->
     <!-- FREE PROGRAMS TITLE (always visible) -->
-    <p style="text-align:center;font-size:0.8rem;color:#888;margin-bottom:16px;letter-spacing:0.5px;">Help yourself to training programs below for free</p>
+    <p style="text-align:center;font-size:0.8rem;color:#888;margin-bottom:16px;letter-spacing:0.5px;">Help yourself to programs for free</p>
 
     <div id="showcase-section" style="display:none;margin-bottom:24px;">
         <div id="showcase-grid"></div>
@@ -362,6 +362,21 @@ if (pb.authStore.isValid) {
     const role = pb.authStore.model.role;
     if (role === 'trainer' || role === 'admin') window.location.href = '/dashboard.html';
 }
+
+// ── VISITOR TRACKING (anonymous, feeds megauser) ──
+function anonId() {
+    try { let a = localStorage.getItem('rp_anon'); if (!a) { a = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('rp_anon', a); } return a; }
+    catch (e) { return ''; }
+}
+function trackAnon(type, meta) {
+    if (pb.authStore.isValid) return; // only count people who aren't signed in
+    const ref = new URLSearchParams(location.search).get('ref') || '';
+    pb.collection('events').create({ type: 'anon_' + type, meta: Object.assign({ anon: anonId(), ref: ref }, meta || {}) }, { requestKey: null }).catch(function(){});
+}
+
+// one visit per browser tab session
+try { if (!sessionStorage.getItem('rp_visit')) { sessionStorage.setItem('rp_visit', '1'); trackAnon('visit', { page: 'index' }); } } catch (e) {}
+
 function redirect(role) {
     if (role === 'trainer' || role === 'admin') window.location.href = '/dashboard.html';
     else window.location.href = '/client-dashboard.html';
@@ -458,10 +473,12 @@ async function loadShowcasePrograms() {
                 card.dataset.cat = cat;
 
                 card.addEventListener('click', function() {
+                    trackAnon('program_click', { program: this.dataset.name, program_id: this.dataset.id });
                     openProgDetail(this.dataset.id, this.dataset.name, this.dataset.desc, this.dataset.meta, this.dataset.img, this.dataset.cat);
                 });
                 card.querySelector('.share-btn-sc').addEventListener('click', function(e) {
                     e.stopPropagation();
+                    trackAnon('program_share', { program: card.dataset.name, program_id: card.dataset.id });
                     copyShareLink(card.dataset.id);
                 });
 
@@ -558,6 +575,7 @@ async function signup(){
     try {
         await pb.collection('users').create({name,email,password,passwordConfirm:confirm,role:'free',emailVisibility:true});
         const auth=await pb.collection('users').authWithPassword(email,password);
+        try { await pb.collection('events').create({ user: auth.record.id, type: 'signup', meta: { anon: anonId(), ref: urlParams.get('ref') || '', after_program: afterProgram || '' } }, { requestKey: null }); } catch(e){}
         if (afterProgram) {
             try {
                 const tmpl=await pb.collection('programs').getOne(afterProgram,{requestKey:null});

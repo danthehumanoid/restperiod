@@ -155,6 +155,32 @@
         <div class="loading"><span class="spinner"></span>Loading...</div>
     </div>
 
+    <!-- ═══════════ KEY METRICS ═══════════ -->
+    <div class="section-title">Key Metrics · Signups &amp; Visitor Program Clicks</div>
+    <div class="stats-grid" id="key-metrics"></div>
+
+    <div class="two-col">
+        <div class="data-card">
+            <div class="data-card-header">
+                <div class="data-card-title">👆 Visitor Program Clicks per Week</div>
+                <div class="data-card-note">Not signed in · cards + shared previews</div>
+            </div>
+            <div class="card-body"><div class="week-chart" id="clicks-chart"></div></div>
+        </div>
+        <div class="data-card">
+            <div class="data-card-header">
+                <div class="data-card-title">🎯 Programs Visitors Click</div>
+                <div class="data-card-note">Last 30 days</div>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>Program</th><th>Clicks</th><th>Visitors</th><th>Went on to sign up</th></tr></thead>
+                    <tbody id="visitor-progs-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- ═══════════ FREE USER FUNNEL ═══════════ -->
     <div class="section-title">Free User Funnel</div>
 
@@ -407,6 +433,7 @@ async function loadAll() {
         buildActivityMaps();
 
         renderStats();
+        renderKeyMetrics();
         renderFunnel();
         renderSignupChart();
         renderActivation();
@@ -468,6 +495,80 @@ function renderStats() {
         <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-val">${inProgress}</div><div class="stat-label">Programs In Progress</div></div>
         <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-val">${totalSessions}</div><div class="stat-label">Sessions Logged</div></div>
     `;
+}
+
+// ── KEY METRICS: SIGNUPS + VISITOR PROGRAM CLICKS ─
+function metaOf(e) { let m = e.meta; if (typeof m === 'string') { try { m = JSON.parse(m); } catch (_) { m = {}; } } return m || {}; }
+
+function weekBars(elId, dates) {
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    const monday = new Date(now); monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+    const weeks = [];
+    for (let i = 11; i >= 0; i--) {
+        const start = new Date(monday); start.setDate(monday.getDate() - i * 7);
+        const end = new Date(start); end.setDate(start.getDate() + 7);
+        weeks.push({ start, n: dates.filter(d => d >= start && d < end).length });
+    }
+    const max = Math.max(1, ...weeks.map(w => w.n));
+    document.getElementById(elId).innerHTML = weeks.map(w => `
+        <div class="week-col" title="Week of ${fmtShort(w.start)}: ${w.n}">
+            <div class="week-count">${w.n || ''}</div>
+            <div class="week-bar ${w.n ? '' : 'zero'}" style="height:${Math.round((w.n / max) * 100)}%"></div>
+            <div class="week-label">${fmtShort(w.start)}</div>
+        </div>`).join('');
+}
+
+function renderKeyMetrics() {
+    const now = Date.now(), d7 = now - 7 * DAY, d30 = now - 30 * DAY;
+    const signupUsers = allUsers.filter(u => u.role === 'free' || u.role === 'client');
+    const su7 = signupUsers.filter(u => toDate(u.created) >= d7).length;
+    const su30 = signupUsers.filter(u => toDate(u.created) >= d30).length;
+
+    const anon = events.filter(e => (e.type || '').startsWith('anon_')).map(e => ({ ...e, m: metaOf(e), d: toDate(e.created) }));
+    const clicks = anon.filter(e => e.type === 'anon_program_click' || e.type === 'anon_preview_open');
+    const c7 = clicks.filter(e => e.d >= d7).length, c30 = clicks.filter(e => e.d >= d30).length;
+    const visitors30 = new Set(anon.filter(e => e.d >= d30 && e.m.anon).map(e => e.m.anon));
+    const clickers30 = new Set(clicks.filter(e => e.d >= d30 && e.m.anon).map(e => e.m.anon));
+
+    // link anonymous visitors to the account they created
+    const signups = events.filter(e => e.type === 'signup').map(e => ({ ...e, m: metaOf(e), d: toDate(e.created) })).filter(e => e.m.anon);
+    const signedAnon = new Map(signups.map(s => [s.m.anon, s.d]));
+    const clicksBefore = signups.map(s => clicks.filter(c => c.m.anon === s.m.anon && c.d <= s.d).length);
+    const tracked = clicksBefore.length;
+    const clickedFirst = clicksBefore.filter(n => n > 0).length;
+    const avgBefore = tracked ? (clicksBefore.reduce((a, b) => a + b, 0) / tracked) : null;
+    const clickerConv = clickers30.size ? pct([...clickers30].filter(a => signedAnon.has(a)).length, clickers30.size) : null;
+
+    const note = hasEvents ? '' : '<div class="stat-sub">needs events collection</div>';
+    document.getElementById('key-metrics').innerHTML = `
+        <div class="stat-card green"><div class="stat-icon">✉️</div><div class="stat-val">${su7}</div><div class="stat-label">Signups · 7 days</div><div class="stat-sub">${su30} in 30 days</div></div>
+        <div class="stat-card"><div class="stat-icon">👆</div><div class="stat-val">${hasEvents ? c7 : '—'}</div><div class="stat-label">Visitor Program Clicks · 7d</div><div class="stat-sub">${hasEvents ? c30 + ' in 30 days' : ''}</div>${note}</div>
+        <div class="stat-card"><div class="stat-icon">🧭</div><div class="stat-val">${hasEvents ? visitors30.size : '—'}</div><div class="stat-label">Visitors · 30d</div><div class="stat-sub">${hasEvents ? clickers30.size + ' clicked a program' : ''}</div></div>
+        <div class="stat-card purple"><div class="stat-icon">🔁</div><div class="stat-val">${avgBefore == null ? '—' : avgBefore.toFixed(1)}</div><div class="stat-label">Clicks Before Signup</div><div class="stat-sub">${tracked ? `avg · ${clickedFirst}/${tracked} clicked first` : 'starts counting from now'}</div></div>
+        <div class="stat-card gold"><div class="stat-icon">🎯</div><div class="stat-val">${clickerConv == null ? '—' : clickerConv + '%'}</div><div class="stat-label">Clickers Who Signed Up</div><div class="stat-sub">visitors who clicked, 30d</div></div>
+    `;
+
+    weekBars('clicks-chart', clicks.map(e => e.d).filter(Boolean));
+
+    const groups = {};
+    clicks.filter(e => e.d >= d30).forEach(e => {
+        const k = e.m.program || 'Unknown';
+        const g = (groups[k] ||= { clicks: 0, anons: new Set() });
+        g.clicks++; if (e.m.anon) g.anons.add(e.m.anon);
+    });
+    const rows = Object.entries(groups).sort((a, b) => b[1].clicks - a[1].clicks);
+    const tb = document.getElementById('visitor-progs-table');
+    if (!hasEvents) { tb.innerHTML = '<tr><td colspan="4" class="empty">Create the <code>events</code> collection to start counting.</td></tr>'; return; }
+    if (!rows.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">No visitor clicks yet. Counting starts once the new index.html is live.</td></tr>'; return; }
+    tb.innerHTML = rows.map(([name, g]) => {
+        const conv = [...g.anons].filter(a => signedAnon.has(a)).length;
+        return `<tr>
+            <td><strong>${esc(name)}</strong></td>
+            <td><span class="badge badge-blue">${g.clicks}</span></td>
+            <td class="muted">${g.anons.size}</td>
+            <td>${conv ? `<span class="badge badge-green">${conv}</span>` : '<span class="dim">0</span>'}</td>
+        </tr>`;
+    }).join('');
 }
 
 // ── FUNNEL ────────────────────────────────────────
@@ -639,6 +740,10 @@ function renderFeed() {
     contactMsgs.forEach(m => {
         const c = toDate(m.created);
         if (c && c >= cutoff) items.push({ d: c, icon: '✉️', html: `<strong>${esc(m.from_name || m.from_email)}</strong> sent a message: <span class="muted">${esc(m.subject || '')}</span>` });
+    });
+    events.filter(e => e.type === 'anon_program_click' || e.type === 'anon_preview_open').forEach(e => {
+        const c = toDate(e.created);
+        if (c && c >= cutoff) items.push({ d: c, icon: '👆', html: `A visitor ${e.type === 'anon_preview_open' ? 'opened a shared preview of' : 'clicked'} <span style="color:var(--brand-accent)">${esc(metaOf(e).program || 'a program')}</span>` });
     });
     events.filter(e => e.type === 'padlock_click').forEach(e => {
         const c = toDate(e.created);
