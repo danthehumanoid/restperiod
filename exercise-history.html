@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise History | RestPeriod</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
+        :root {
+            --brand-bg: #020c12; --card-bg: #0e1b24; --brand-accent: #26C6DA;
+            --brand-secondary: #2E7D32; --text-main: #E0F7FA; --brand-danger: #ff5252;
+            --border: #1a2a35; --input-bg: #050d12;
+            --series-top: #16A6B8; --series-e1rm: #A86BEB;   /* validated on #0e1b24 */
+            --ink: #E0F7FA; --ink-2: #aaa; --ink-3: #666;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Open Sans', sans-serif; background: var(--brand-bg); color: var(--text-main); min-height: 100vh; padding-bottom: 40px; }
+
+        .nav-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: #000; border-bottom: 1px solid #004d7a; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 8px; }
+        .nav-brand { font-family: 'Montserrat'; font-weight: 800; font-size: 1.1rem; }
+        .nav-brand span { color: var(--brand-accent); }
+        .nav-links { display: flex; gap: 16px; flex-wrap: wrap; }
+        .nav-links a { color: #888; text-decoration: none; font-family: 'Montserrat'; font-weight: 700; font-size: 0.75rem; }
+        .nav-links a:hover { color: var(--brand-accent); }
+
+        .head { max-width: 1300px; margin: 0 auto; padding: 20px 20px 0; }
+        .client-name { font-family: 'Montserrat'; font-weight: 800; font-size: 1.3rem; }
+        .client-sub { color: var(--ink-3); font-size: 0.8rem; margin-top: 2px; }
+
+        .layout { display: grid; grid-template-columns: 360px 1fr; gap: 20px; max-width: 1300px; margin: 0 auto; padding: 16px 20px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; }
+        .card-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .card-title { font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 800; color: var(--brand-accent); text-transform: uppercase; letter-spacing: 1px; }
+
+        .controls { padding: 10px 12px; display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+        .controls input[type=text] { flex: 1; min-width: 140px; background: var(--input-bg); border: 1px solid var(--border); color: white; padding: 8px 10px; border-radius: 6px; font-size: 0.8rem; font-family: inherit; }
+        .controls input:focus, .controls select:focus { outline: none; border-color: var(--brand-accent); }
+        .controls select { background: var(--input-bg); border: 1px solid var(--border); color: #ccc; padding: 7px 8px; border-radius: 6px; font-size: 0.75rem; }
+        .toggle { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--ink-2); cursor: pointer; }
+
+        .ex-list { max-height: calc(100vh - 260px); overflow-y: auto; }
+        .ex-row { padding: 10px 14px; border-bottom: 1px solid #0a1520; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; }
+        .ex-row:hover { background: rgba(38,198,218,0.05); }
+        .ex-row.active { background: rgba(38,198,218,0.1); box-shadow: inset 3px 0 0 var(--brand-accent); }
+        .ex-name { font-weight: 600; font-size: 0.85rem; }
+        .ex-count { font-family: 'Montserrat'; font-weight: 800; font-size: 0.7rem; color: var(--brand-accent); text-align: right; }
+        .ex-meta { font-size: 0.68rem; color: var(--ink-3); }
+        .ex-best { font-size: 0.68rem; color: var(--ink-2); text-align: right; }
+        .wu { font-size: 0.5rem; font-family: 'Montserrat'; font-weight: 800; color: #fb923c; border: 1px solid #fb923c55; border-radius: 3px; padding: 0 4px; margin-left: 4px; vertical-align: middle; }
+
+        .detail-empty { color: var(--ink-3); text-align: center; padding: 80px 20px; font-size: 0.85rem; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 16px; }
+        .stat { background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+        .stat-val { font-family: 'Montserrat'; font-weight: 800; font-size: 1.3rem; color: var(--ink); line-height: 1.1; }
+        .stat-lbl { font-size: 0.58rem; color: var(--ink-3); font-family: 'Montserrat'; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+        .stat-sub { font-size: 0.68rem; color: var(--ink-2); margin-top: 2px; }
+
+        /* CHART */
+        .chart-wrap { padding: 4px 16px 12px; position: relative; }
+        .legend { display: flex; gap: 16px; font-size: 0.7rem; color: var(--ink-2); margin-bottom: 6px; }
+        .legend span { display: inline-flex; align-items: center; gap: 6px; }
+        .legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid; }
+        #chart { width: 100%; height: 220px; display: block; }
+        .tip { position: absolute; pointer-events: none; background: #000; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; font-size: 0.72rem; color: var(--ink); white-space: nowrap; display: none; z-index: 5; }
+        .tip b { font-family: 'Montserrat'; }
+        .tip .sw { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+
+        /* HISTORY TABLE */
+        .hist { padding: 0 16px 16px; }
+        .hist table { width: 100%; border-collapse: collapse; }
+        .hist th { text-align: left; font-size: 0.56rem; font-family: 'Montserrat'; font-weight: 800; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 8px; border-bottom: 1px solid var(--border); }
+        .hist td { padding: 10px 8px; border-bottom: 1px solid #0a1520; font-size: 0.8rem; vertical-align: top; }
+        .hist .date { white-space: nowrap; font-weight: 600; }
+        .hist .prog { color: var(--ink-3); font-size: 0.7rem; }
+        .sets { display: flex; flex-wrap: wrap; gap: 4px; }
+        .set { background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; padding: 3px 7px; font-size: 0.75rem; white-space: nowrap; }
+        .set.top { border-color: var(--series-top); }
+        .set .plan { color: var(--ink-3); font-size: 0.62rem; margin-left: 4px; }
+        .pr { font-size: 0.55rem; font-family: 'Montserrat'; font-weight: 800; color: #fbbf24; border: 1px solid #fbbf2466; border-radius: 3px; padding: 1px 5px; margin-left: 6px; vertical-align: middle; }
+        .note { font-size: 0.7rem; color: var(--ink-2); font-style: italic; margin-top: 4px; }
+
+        .loading { text-align: center; padding: 40px; color: #555; font-size: 0.85rem; }
+
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; padding: 12px; }
+            .ex-list { max-height: 300px; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .hist th:nth-child(3), .hist td:nth-child(3) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-top">
+    <div class="nav-brand">REST <span>PERIOD</span> <span style="font-size:0.65rem;color:#555;font-weight:700;margin-left:8px;">EXERCISE HISTORY</span></div>
+    <div class="nav-links">
+        <a href="dashboard.html">← Dashboard</a>
+        <a href="builder.html">Builder</a>
+        <a href="#" onclick="pb.authStore.clear();location.href='index.html'">Logout</a>
+    </div>
+</div>
+
+<div class="head">
+    <div class="client-name" id="client-name">Loading…</div>
+    <div class="client-sub" id="client-sub"></div>
+</div>
+
+<div class="layout">
+    <div class="card">
+        <div class="card-head"><div class="card-title">Exercises</div><span class="ex-meta" id="ex-total"></span></div>
+        <div class="controls">
+            <input type="text" id="q" placeholder="Search exercises…" oninput="renderList()">
+            <select id="sort" onchange="renderList()">
+                <option value="recent">Most recent</option>
+                <option value="count">Most done</option>
+                <option value="e1rm">Strongest</option>
+                <option value="az">A–Z</option>
+            </select>
+            <label class="toggle"><input type="checkbox" id="show-wu" checked onchange="renderList()"> Warm-ups</label>
+        </div>
+        <div class="ex-list" id="ex-list"><div class="loading">Loading…</div></div>
+    </div>
+
+    <div class="card" id="detail"><div class="detail-empty"><i class="fas fa-chart-line" style="font-size:2rem;opacity:0.2;display:block;margin-bottom:12px;"></i>Pick an exercise to see every time it's been done.</div></div>
+</div>
+
+<script>
+(function() {
+    const pb2 = new PocketBase('https://restperiod.org');
+    if (!pb2.authStore.isValid) { location.href = '/index.html'; return; }
+    const r = pb2.authStore.model.role;
+    if (r !== 'trainer' && r !== 'admin') location.href = '/index.html';
+})();
+
+const pb = new PocketBase('https://restperiod.org');
+const CLIENT_ID = new URLSearchParams(location.search).get('client');
+let exercises = {};   // key -> { key, name, warmup, entries: [{date, program, session, sets:[...], note}] }
+let currentKey = null, listKeys = [], chartPts = null;
+
+// ── HELPERS ───────────────────────────────────────
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function cleanName(n) { return (String(n || '').replace(/^((?:[A-Z][A-Z0-9-]*)\s+)+/, '').trim() || String(n || '')).replace(/\s+/g, ' '); }
+function keyOf(n) { return cleanName(n).toLowerCase(); }
+function num(v) { const x = parseFloat(String(v ?? '').replace(',', '.')); return isNaN(x) ? null : x; }
+function toDate(v) { if (!v) return null; const d = new Date(String(v).length === 10 ? v + 'T12:00:00' : v); return isNaN(d) ? null : d; }
+function fmt(d) { return d ? d.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' }) : '—'; }
+function fmtShort(d) { return d ? d.toLocaleDateString([], { day: 'numeric', month: 'short' }) : ''; }
+function ago(d) { if (!d) return '—'; const days = Math.floor((Date.now() - d) / 86400000); return days <= 0 ? 'today' : days === 1 ? 'yesterday' : days < 60 ? days + 'd ago' : Math.floor(days / 30) + 'mo ago'; }
+function e1rm(w, r) { return (w > 0 && r >= 1 && r <= 12) ? w * (1 + r / 30) : null; } // Epley, only for sensible rep ranges
+function kg(x) { return x == null ? '—' : (Math.round(x * 10) / 10) + 'kg'; }
+function parseJSON(v) { if (typeof v === 'string') { try { return JSON.parse(v); } catch (e) { return null; } } return v; }
+
+const EXTRA_ACT = ['act_time', 'act_distance', 'act_pace', 'act_speed', 'act_tempo', 'act_rest'];
+function isLogged(s) { return ['act_reps', 'act_weight', 'act_rpe', ...EXTRA_ACT].some(k => s[k] !== undefined && s[k] !== '' && s[k] !== null) || s.act_done; }
+
+// ── LOAD ──────────────────────────────────────────
+window.onload = async () => {
+    if (!CLIENT_ID) { document.getElementById('client-name').textContent = 'No client selected'; return; }
+    try {
+        const [user, progs, logs] = await Promise.all([
+            pb.collection('users').getOne(CLIENT_ID, { requestKey: null }),
+            pb.collection('programs').getFullList({ filter: `client="${CLIENT_ID}"`, sort: 'created', requestKey: null }),
+            pb.collection('session_logs').getFullList({ filter: `client="${CLIENT_ID}"`, sort: 'date', requestKey: null }).catch(() => [])
+        ]);
+        document.getElementById('client-name').textContent = user.name || user.email;
+        document.title = (user.name || 'Client') + ' · Exercise History | RestPeriod';
+
+        const progById = Object.fromEntries(progs.map(p => [p.id, p]));
+        const seen = new Set();
+        const addSession = (date, progName, sessLabel, warmup, main) => {
+            [[warmup, true], [main, false]].forEach(([list, isWU]) => (list || []).forEach(ex => {
+                const sets = (ex.setsData || []).filter(isLogged).map((s, i) => ({
+                    idx: i + 1,
+                    reps: num(s.act_reps), weight: num(s.act_weight), rpe: num(s.act_rpe),
+                    pReps: s.reps, pWeight: s.weight,
+                    extra: EXTRA_ACT.filter(k => s[k]).map(k => `${k.replace('act_', '')} ${s[k]}`).join(' · '),
+                    note: s.act_note || ''
+                }));
+                if (!sets.length) return;
+                const key = keyOf(ex.name);
+                const sig = `${key}|${date.toISOString().slice(0, 10)}|${progName}|${sets.map(s => s.reps + 'x' + s.weight).join(',')}`;
+                if (seen.has(sig)) return; seen.add(sig);
+                const e = (exercises[key] ||= { key, name: cleanName(ex.name), warmup: isWU, mainSeen: false, entries: [] });
+                if (!isWU) { e.mainSeen = true; e.warmup = false; }
+                e.entries.push({ date, program: progName, session: sessLabel, sets });
+            }));
+        };
+
+        let sessionCount = 0;
+        progs.forEach(p => {
+            const data = parseJSON(p.workout_data) || {};
+            const schedule = Array.isArray(data.schedule) ? data.schedule : (Array.isArray(data) ? data : []);
+            schedule.forEach((s, i) => {
+                const d = toDate(s.sessionDate); if (!d) return;
+                sessionCount++;
+                addSession(d, p.name || 'Program', 'Session ' + (s.sessionNum || s.weekNum || i + 1), s.warmup, s.exercises);
+            });
+        });
+        logs.forEach(l => {
+            const d = toDate(l.date) || toDate(l.created); if (!d) return;
+            const data = parseJSON(l.workout_data) || {};
+            sessionCount++;
+            addSession(d, progById[l.program]?.name || 'Repeat session', 'Logged session', data.warmup, data.exercises);
+        });
+
+        Object.values(exercises).forEach(e => {
+            e.entries.sort((a, b) => b.date - a.date);
+            let best = null, bestE = null, heaviest = null;
+            e.entries.forEach(en => en.sets.forEach(s => {
+                const v = e1rm(s.weight, s.reps);
+                if (v != null && (bestE == null || v > bestE)) { bestE = v; best = s; }
+                if (s.weight != null && (heaviest == null || s.weight > heaviest.weight)) heaviest = s;
+            }));
+            e.bestE1rm = bestE; e.bestSet = best; e.heaviest = heaviest;
+            e.last = e.entries[0]?.date;
+        });
+
+        document.getElementById('client-sub').textContent = `${sessionCount} logged session${sessionCount !== 1 ? 's' : ''} · ${progs.length} program${progs.length !== 1 ? 's' : ''} · ${Object.keys(exercises).length} exercises`;
+        renderList();
+        const pre = new URLSearchParams(location.search).get('ex');
+        if (pre && exercises[pre]) openExercise(pre, true);
+    } catch (e) {
+        console.error(e);
+        document.getElementById('client-name').textContent = 'Couldn\'t load history';
+        document.getElementById('ex-list').innerHTML = `<div class="loading">${esc(e.message)}</div>`;
+    }
+};
+
+// ── LIST ──────────────────────────────────────────
+function renderList() {
+    const q = document.getElementById('q').value.toLowerCase().trim();
+    const sort = document.getElementById('sort').value;
+    const showWU = document.getElementById('show-wu').checked;
+    let list = Object.values(exercises).filter(e => (showWU || !e.warmup) && (!q || e.key.includes(q)));
+    const by = {
+        recent: (a, b) => b.last - a.last,
+        count: (a, b) => b.entries.length - a.entries.length || b.last - a.last,
+        e1rm: (a, b) => (b.bestE1rm || 0) - (a.bestE1rm || 0),
+        az: (a, b) => a.key.localeCompare(b.key)
+    };
+    list.sort(by[sort]);
+    document.getElementById('ex-total').textContent = list.length + ' shown';
+    const el = document.getElementById('ex-list');
+    if (!list.length) { el.innerHTML = `<div class="loading">${Object.keys(exercises).length ? 'No matches.' : 'No logged sets yet.'}</div>`; return; }
+    listKeys = list.map(e => e.key);
+    el.innerHTML = list.map((e, i) => `<div class="ex-row ${e.key === currentKey ? 'active' : ''}" onclick="openExercise(listKeys[${i}])">
+        <div class="ex-name">${esc(e.name)}${e.warmup ? '<span class="wu">WARM-UP</span>' : ''}</div>
+        <div class="ex-count">${e.entries.length}×</div>
+        <div class="ex-meta">Last ${ago(e.last)}</div>
+        <div class="ex-best">${e.bestSet ? `${e.bestSet.weight}kg × ${e.bestSet.reps}` : (e.heaviest ? kg(e.heaviest.weight) : '')}</div>
+    </div>`).join('');
+}
+
+// ── DETAIL ────────────────────────────────────────
+function openExercise(key, fromLoad) {
+    const e = exercises[key]; if (!e) return;
+    currentKey = key; renderList();
+    history.replaceState({}, '', `exercise-history.html?client=${CLIENT_ID}&ex=${encodeURIComponent(key)}`);
+
+    // Running PRs (oldest → newest) for badges
+    const chrono = [...e.entries].reverse();
+    let runMaxW = -Infinity, runMaxE = -Infinity;
+    chrono.forEach(en => {
+        const topW = Math.max(...en.sets.map(s => s.weight ?? -Infinity));
+        const topE = Math.max(...en.sets.map(s => e1rm(s.weight, s.reps) ?? -Infinity));
+        en.prW = topW > 0 && topW > runMaxW && runMaxW !== -Infinity;
+        en.prE = topE > 0 && topE > runMaxE && runMaxE !== -Infinity && !en.prW;
+        runMaxW = Math.max(runMaxW, topW); runMaxE = Math.max(runMaxE, topE);
+        en.topW = topW > -Infinity ? topW : null; en.topE = topE > -Infinity ? topE : null;
+        en.topIdx = en.sets.findIndex(s => s.weight === en.topW);
+    });
+
+    const totalSets = e.entries.reduce((a, en) => a + en.sets.length, 0);
+    const first = chrono[0]?.date;
+    const hasWeight = e.entries.some(en => en.topW > 0);
+
+    document.getElementById('detail').innerHTML = `
+        <div class="card-head"><div class="card-title">${esc(e.name)}</div><span class="ex-meta">${fmt(first)} → ${fmt(e.last)}</span></div>
+        <div class="stats">
+            <div class="stat"><div class="stat-val">${e.entries.length}</div><div class="stat-lbl">Sessions</div><div class="stat-sub">${totalSets} sets logged</div></div>
+            <div class="stat"><div class="stat-val">${e.heaviest ? kg(e.heaviest.weight) : '—'}</div><div class="stat-lbl">Heaviest</div><div class="stat-sub">${e.heaviest && e.heaviest.reps != null ? '× ' + e.heaviest.reps + ' reps' : ''}</div></div>
+            <div class="stat"><div class="stat-val">${e.bestE1rm ? kg(e.bestE1rm) : '—'}</div><div class="stat-lbl">Est. 1RM</div><div class="stat-sub">${e.bestSet ? `from ${e.bestSet.weight}kg × ${e.bestSet.reps}` : 'needs reps ≤ 12 with weight'}</div></div>
+            <div class="stat"><div class="stat-val">${ago(e.last)}</div><div class="stat-lbl">Last done</div><div class="stat-sub">${fmt(e.last)}</div></div>
+        </div>
+        ${hasWeight && chrono.length > 1 ? `<div class="chart-wrap">
+            <div class="legend"><span><i style="border-color:var(--series-top)"></i>Top set (kg)</span><span><i style="border-color:var(--series-e1rm);border-top-style:dashed"></i>Est. 1RM (kg)</span></div>
+            <svg id="chart" role="img" aria-label="Top set weight and estimated 1RM over time"></svg>
+            <div class="tip" id="tip"></div>
+        </div>` : ''}
+        <div class="hist">
+            <table>
+                <thead><tr><th>Date</th><th>Sets (reps × kg @ RPE)</th><th>Program</th></tr></thead>
+                <tbody>${e.entries.map(en => `<tr>
+                    <td class="date">${fmt(en.date)}${en.prW ? '<span class="pr">PB</span>' : en.prE ? '<span class="pr">e1RM PB</span>' : ''}</td>
+                    <td><div class="sets">${en.sets.map((s, i) => `<span class="set ${i === en.topIdx && en.topW > 0 ? 'top' : ''}">${s.reps ?? '–'} × ${s.weight ?? '–'}${s.rpe != null ? ' @' + s.rpe : ''}${s.extra ? ' · ' + esc(s.extra) : ''}${(s.pReps || s.pWeight) ? `<span class="plan">plan ${esc(s.pReps || '–')}×${esc(s.pWeight || '–')}</span>` : ''}</span>`).join('')}</div>
+                        ${en.sets.filter(s => s.note).map(s => `<div class="note">Set ${s.idx}: ${esc(s.note)}</div>`).join('')}</td>
+                    <td class="prog">${esc(en.program)}<br>${esc(en.session)}</td>
+                </tr>`).join('')}</tbody>
+            </table>
+        </div>`;
+    chartPts = (hasWeight && chrono.length > 1) ? chrono.filter(en => en.topW > 0 || en.topE > 0) : null;
+    if (chartPts) drawChart(chartPts);
+    if (window.innerWidth <= 900 && !fromLoad) document.getElementById('detail').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── CHART (inline SVG, one kg axis, two series) ───
+function drawChart(pts) {
+    const svg = document.getElementById('chart'), tip = document.getElementById('tip');
+    const W = svg.clientWidth || 600, H = 220, P = { l: 42, r: 16, t: 10, b: 26 };
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const xs = pts.map(p => +p.date), x0 = Math.min(...xs), x1 = Math.max(...xs);
+    const vals = pts.flatMap(p => [p.topW, p.topE]).filter(v => v > 0);
+    let y0 = Math.min(...vals), y1 = Math.max(...vals);
+    const pad = Math.max(2.5, (y1 - y0) * 0.12);
+    const span = (y1 - y0) + 2 * pad, step = span <= 30 ? 5 : span <= 60 ? 10 : span <= 120 ? 20 : 50;
+    y0 = Math.max(0, Math.floor((y0 - pad) / step) * step); y1 = Math.ceil((y1 + pad) / step) * step;
+    const X = t => P.l + (x1 === x0 ? (W - P.l - P.r) / 2 : (t - x0) / (x1 - x0) * (W - P.l - P.r));
+    const Y = v => P.t + (1 - (v - y0) / (y1 - y0 || 1)) * (H - P.t - P.b);
+
+    let g = '';
+    for (let v = y0; v <= y1 + 0.001; v += step) {
+        const y = Y(v);
+        g += `<line x1="${P.l}" x2="${W - P.r}" y1="${y}" y2="${y}" stroke="#1a2a35" stroke-width="1"/>`;
+        g += `<text x="${P.l - 6}" y="${y + 3}" text-anchor="end" font-size="10" fill="#666">${Math.round(v)}</text>`;
+    }
+    const xl = [pts[0], pts[Math.floor(pts.length / 2)], pts[pts.length - 1]].filter((p, i, a) => a.indexOf(p) === i);
+    xl.forEach((p, i) => g += `<text x="${X(+p.date)}" y="${H - 6}" text-anchor="${i === 0 ? 'start' : i === xl.length - 1 ? 'end' : 'middle'}" font-size="10" fill="#666">${fmtShort(p.date)}</text>`);
+
+    const line = (key, color, dash) => {
+        const ps = pts.filter(p => p[key] > 0);
+        if (ps.length < 1) return '';
+        const d = ps.map((p, i) => `${i ? 'L' : 'M'}${X(+p.date).toFixed(1)},${Y(p[key]).toFixed(1)}`).join('');
+        return `<path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" ${dash ? 'stroke-dasharray="5 4"' : ''}/>` +
+            ps.map(p => `<circle cx="${X(+p.date)}" cy="${Y(p[key])}" r="4" fill="${color}" stroke="#0e1b24" stroke-width="2"/>`).join('');
+    };
+    g += line('topE', '#A86BEB', true) + line('topW', '#16A6B8', false);
+
+    // direct labels on the latest point
+    const last = pts[pts.length - 1];
+    if (last.topW > 0) g += `<text x="${X(+last.date) - 6}" y="${Y(last.topW) + 14}" text-anchor="end" font-size="10" fill="#aaa">${kg(last.topW)}</text>`;
+    if (last.topE > 0) g += `<text x="${X(+last.date) - 6}" y="${Y(last.topE) - 8}" text-anchor="end" font-size="10" fill="#aaa">${kg(last.topE)}</text>`;
+
+    g += `<line id="xh" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" stroke="#555" stroke-width="1" visibility="hidden"/>`;
+    g += `<rect x="${P.l}" y="0" width="${W - P.l - P.r}" height="${H}" fill="transparent" id="hit"/>`;
+    svg.innerHTML = g;
+
+    const hit = svg.querySelector('#hit'), xh = svg.querySelector('#xh');
+    const move = ev => {
+        const r = svg.getBoundingClientRect();
+        const mx = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
+        const sx = mx * (W / r.width);
+        let best = pts[0], bd = Infinity;
+        pts.forEach(p => { const d = Math.abs(X(+p.date) - sx); if (d < bd) { bd = d; best = p; } });
+        const px = X(+best.date);
+        xh.setAttribute('x1', px); xh.setAttribute('x2', px); xh.setAttribute('visibility', 'visible');
+        const topSet = best.sets[best.topIdx];
+        tip.innerHTML = `<b>${fmt(best.date)}</b><br>
+            <span class="sw" style="background:#16A6B8"></span>Top set ${kg(best.topW)}${topSet && topSet.reps != null ? ' × ' + topSet.reps : ''}<br>
+            <span class="sw" style="background:#A86BEB"></span>Est. 1RM ${kg(best.topE)}`;
+        tip.style.display = 'block';
+        const tx = px * (r.width / W) + 16, maxX = r.width - tip.offsetWidth - 4;
+        tip.style.left = Math.min(tx, maxX) + 'px'; tip.style.top = '30px';
+    };
+    const leave = () => { tip.style.display = 'none'; xh.setAttribute('visibility', 'hidden'); };
+    hit.addEventListener('mousemove', move); hit.addEventListener('touchmove', move, { passive: true });
+    hit.addEventListener('mouseleave', leave); hit.addEventListener('touchend', leave);
+}
+let _rz; window.addEventListener('resize', () => { clearTimeout(_rz); _rz = setTimeout(() => { if (chartPts && document.getElementById('chart')) drawChart(chartPts); }, 150); });
+</script>
+</body>
+</html>
