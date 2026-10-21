@@ -6,6 +6,7 @@
     <title>Mega Dashboard | RestPeriod</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.3/pocketbase.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans:wght@400;600&display=swap');
         :root {
@@ -177,6 +178,42 @@
                     <thead><tr><th>Program</th><th>Clicks</th><th>Visitors</th><th>Went on to sign up</th></tr></thead>
                     <tbody id="visitor-progs-table"></tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="two-col">
+        <div class="data-card">
+            <div class="data-card-header">
+                <div class="data-card-title">📍 Where People Come From</div>
+                <div class="data-card-note">QR codes &amp; tagged links · 90 days</div>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>Source</th><th>Visitors</th><th>Program clicks</th><th>Signups</th></tr></thead>
+                    <tbody id="sources-table"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="data-card">
+            <div class="data-card-header">
+                <div class="data-card-title">🔳 Make a QR Code</div>
+            </div>
+            <div class="card-body">
+                <div class="form-group" style="margin-bottom:10px;">
+                    <label>Where will it go? (becomes the source name)</label>
+                    <input type="text" id="qr-src" placeholder="e.g. poster-kelburn-park" oninput="makeQR()">
+                </div>
+                <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+                    <div id="qr-box" style="background:#fff;padding:12px;border-radius:8px;width:184px;height:184px;display:flex;align-items:center;justify-content:center;color:#999;font-size:0.75rem;text-align:center;">Type a name</div>
+                    <div style="flex:1;min-width:180px;">
+                        <div class="dim" style="margin-bottom:4px;">Link</div>
+                        <div id="qr-url" style="font-size:0.8rem;word-break:break-all;color:var(--brand-accent);margin-bottom:12px;">—</div>
+                        <button class="btn btn-accent" onclick="downloadQR()" style="margin-bottom:6px;">⬇ Download PNG</button>
+                        <button class="btn btn-ghost" onclick="copyQRLink()">Copy link</button>
+                        <div class="dim" style="margin-top:10px;line-height:1.5;">Use one name per poster or place. Scans show up in the table on the left.</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -434,6 +471,7 @@ async function loadAll() {
 
         renderStats();
         renderKeyMetrics();
+        renderSources();
         renderFunnel();
         renderSignupChart();
         renderActivation();
@@ -570,6 +608,52 @@ function renderKeyMetrics() {
         </tr>`;
     }).join('');
 }
+
+// ── TRAFFIC SOURCES (?ref=…) ──────────────────────
+function renderSources() {
+    const tb = document.getElementById('sources-table');
+    if (!hasEvents) { tb.innerHTML = '<tr><td colspan="4" class="empty">Needs the events collection.</td></tr>'; return; }
+    const rows = {};
+    const row = k => (rows[k] ||= { visitors: new Set(), clicks: 0, signups: 0 });
+    events.forEach(e => {
+        const m = metaOf(e), src = m.ref || 'direct';
+        if ((e.type || '').startsWith('anon_')) {
+            if (m.anon) row(src).visitors.add(m.anon);
+            if (e.type === 'anon_program_click' || e.type === 'anon_preview_open') row(src).clicks++;
+        } else if (e.type === 'signup') row(src).signups++;
+    });
+    const list = Object.entries(rows).sort((a, b) => (a[0] === 'direct') - (b[0] === 'direct') || b[1].signups - a[1].signups || b[1].visitors.size - a[1].visitors.size);
+    if (!list.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">No visits yet.</td></tr>'; return; }
+    tb.innerHTML = list.map(([src, r]) => `<tr>
+        <td><strong>${esc(src)}</strong></td>
+        <td class="muted">${r.visitors.size}</td>
+        <td><span class="badge badge-blue">${r.clicks}</span></td>
+        <td>${r.signups ? `<span class="badge badge-green">${r.signups}</span>` : '<span class="dim">0</span>'}</td>
+    </tr>`).join('');
+}
+
+// ── QR MAKER ──────────────────────────────────────
+function qrSlug() { return document.getElementById('qr-src').value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+function qrLink() { const s = qrSlug(); return s ? 'https://restperiod.org/?ref=' + s : ''; }
+function makeQR() {
+    const box = document.getElementById('qr-box'), url = qrLink();
+    document.getElementById('qr-url').textContent = url || '—';
+    box.innerHTML = '';
+    if (!url) { box.textContent = 'Type a name'; return; }
+    new QRCode(box, { text: url, width: 160, height: 160, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+}
+function downloadQR() {
+    const url = qrLink(); if (!url) return alert('Type a name first.');
+    // render a large, print-quality version off-screen
+    const tmp = document.createElement('div');
+    new QRCode(tmp, { text: url, width: 1200, height: 1200, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+    const canvas = tmp.querySelector('canvas');
+    const pad = 80, out = document.createElement('canvas');
+    out.width = canvas.width + pad * 2; out.height = canvas.height + pad * 2;
+    const ctx = out.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, out.width, out.height); ctx.drawImage(canvas, pad, pad);
+    const a = document.createElement('a'); a.download = 'restperiod-qr-' + qrSlug() + '.png'; a.href = out.toDataURL('image/png'); a.click();
+}
+function copyQRLink() { const u = qrLink(); if (u) navigator.clipboard.writeText(u).then(() => alert('Link copied')); }
 
 // ── FUNNEL ────────────────────────────────────────
 function renderFunnel() {

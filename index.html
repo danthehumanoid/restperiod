@@ -368,9 +368,15 @@ function anonId() {
     try { let a = localStorage.getItem('rp_anon'); if (!a) { a = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('rp_anon', a); } return a; }
     catch (e) { return ''; }
 }
+function refSource() {
+    // remembers where a visitor came from (QR poster, Instagram…) across pages and visits
+    let r = '';
+    try { r = new URLSearchParams(location.search).get('ref') || ''; if (r) localStorage.setItem('rp_ref', r); else r = localStorage.getItem('rp_ref') || ''; } catch (e) {}
+    return r;
+}
 function trackAnon(type, meta) {
     if (pb.authStore.isValid) return; // only count people who aren't signed in
-    const ref = new URLSearchParams(location.search).get('ref') || '';
+    const ref = refSource();
     pb.collection('events').create({ type: 'anon_' + type, meta: Object.assign({ anon: anonId(), ref: ref }, meta || {}) }, { requestKey: null }).catch(function(){});
 }
 
@@ -575,7 +581,7 @@ async function signup(){
     try {
         await pb.collection('users').create({name,email,password,passwordConfirm:confirm,role:'free',emailVisibility:true});
         const auth=await pb.collection('users').authWithPassword(email,password);
-        try { await pb.collection('events').create({ user: auth.record.id, type: 'signup', meta: { anon: anonId(), ref: urlParams.get('ref') || '', after_program: afterProgram || '' } }, { requestKey: null }); } catch(e){}
+        try { await pb.collection('events').create({ user: auth.record.id, type: 'signup', meta: { anon: anonId(), ref: refSource(), after_program: afterProgram || '' } }, { requestKey: null }); } catch(e){}
         if (afterProgram) {
             try {
                 const tmpl=await pb.collection('programs').getOne(afterProgram,{requestKey:null});
